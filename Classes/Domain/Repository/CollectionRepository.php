@@ -12,10 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use Doctrine\DBAL\Result;
-use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Collection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -45,7 +42,7 @@ class CollectionRepository extends AbstractRepository
     ];
 
     /**
-     * Finds all collections
+     * Finds all collections for given uids
      *
      * @access public
      *
@@ -56,16 +53,7 @@ class CollectionRepository extends AbstractRepository
     public function findAllByUids(array $uids): QueryResultInterface
     {
         $query = $this->createQuery();
-
-        $constraints = [];
-        $constraints[] = $query->in('uid', $uids);
-
-        if (count($constraints)) {
-            $query->matching($query->logicalAnd(...$constraints));
-        }
-
-        $this->debugQuery($query);
-
+        $query->matching($query->in('uid', $uids));
         return $query->execute();
     }
 
@@ -124,42 +112,39 @@ class CollectionRepository extends AbstractRepository
      * @access public
      *
      * @param mixed[] $settings
-     * @param mixed $set
+     * @param string $set
      *
-     * @return Result
+     * @return array<string,string> The found row as associative array with keys
+     *                              'index_name' and 'index_query' or an empty
+     *                              array when not found.
      */
-    public function getIndexNameForSolr(array $settings, mixed $set): Result
+    public function getIndexNameForSolr(array $settings, string $set): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_collections');
+        $query = $this->createQuery();
 
-        $where = '';
-        if (!$settings['showUserDefined']) {
-            $where = $queryBuilder->expr()->eq('fe_cruser_id', 0);
+        $constraints = [];
+        // Match by oai_name
+        $constraints[] = $query->equals('oaiName', $set);
+
+        // Exclude user defined collections when requested
+        if (!($settings['showUserDefined'] ?? false)) {
+            $constraints[] = $query->equals('feCruserId', 0);
         }
-        // For SOLR we need the index_name of the collection,
-        // For DB Query we need the UID of the collection
-        $result = $queryBuilder
-            ->select(
-                'index_name',
-                'uid',
-                'index_search as index_query'
-            )
-            ->from('tx_dlf_collections')
-            ->where(
-                $queryBuilder->expr()->eq('pid', intval($settings['storagePid'])),
-                $queryBuilder->expr()->eq(
-                    'oai_name',
-                    $queryBuilder->expr()->literal($set)
-                ),
-                $where,
-                Helper::whereExpression('tx_dlf_collections')
-            )
-            ->setMaxResults(1);
 
-        $this->debugQueryBuilder($result);
+        $query->matching($query->logicalAnd(...$constraints));
+        $query->setLimit(1);
 
-        return $result->executeQuery();
+        $this->debugQuery($query);
+
+        $collection = $query->execute()->getFirst();
+        if ($collection === null) {
+            return [];
+        }
+
+        return [
+            'index_name' => $collection->getIndexName(),
+            'index_query' => $collection->getIndexSearch()
+        ];
     }
 
 }
