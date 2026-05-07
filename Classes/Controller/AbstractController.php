@@ -207,6 +207,19 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
+     * Activate debug mode for the view in the controller,
+     * which allows to output the debug of all variables in the template.
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function activateDebugMode(): void
+    {
+        $this->view->assign('debugActive', true);
+    }
+
+    /**
      * Build the multiview documents.
      *
      * @param string $docUrl The URL of the document.
@@ -799,7 +812,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     private function getDocumentByUid(int $documentId): ?AbstractDocument
     {
         $doc = null;
-        $this->document = $this->documentRepository->findOneByIdAndSettings($documentId);
+        $this->document = $this->documentRepository->findByUid($documentId);
 
         if ($this->document) {
             $doc = Helper::getDocumentInstance($this->document->getLocation(), $this->settings);

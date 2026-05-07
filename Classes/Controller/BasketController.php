@@ -620,7 +620,7 @@ class BasketController extends AbstractController
         foreach ($hookObjects as $hookObj) {
             if (method_exists($hookObj, 'customizeMailBody')) {
                 // TODO: check it, this method doesnt exist in hooks
-                $mailBody = $hookObj->customizeMailBody($mailText, $pdfUrl); // @phpstan-ignore-line
+                $mailBody = $hookObj->customizeMailBody($mailText, $pdfUrl);
             }
         }
         $from = MailUtility::getSystemFrom();

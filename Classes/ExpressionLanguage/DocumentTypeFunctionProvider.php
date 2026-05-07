@@ -64,35 +64,19 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     protected DocumentRepository $documentRepository;
 
     /**
-     * @param DocumentRepository $documentRepository
-     */
-    public function injectDocumentRepository(DocumentRepository $documentRepository): void
-    {
-        $this->documentRepository = $documentRepository;
-    }
-
-    /**
      * Initialize the extbase repositories
      *
      * @access protected
      *
      * @param int $storagePid The storage pid
      *
-     * @param int $pid the page id
-     *
      * @return void
      */
-    protected function initializeRepositories(int $storagePid, int $pid): void
+    protected function initializeRepositories(int $storagePid): void
     {
-        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
-        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute(
-            'frontend.typoscript',
-            TypoScriptHelper::getFrontendTyposcript($pid)
-        );
-        $frameworkConfiguration = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-        $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange($storagePid, 0);
-        $configurationManager->setConfiguration($frameworkConfiguration);
         $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
+        $this->documentRepository->useStoragePid(MathUtility::forceIntegerInRange($storagePid, 0));
+
     }
 
     /**
@@ -165,10 +149,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
             return null;
         }
 
-        $pid = $arguments['page']['pid'] ?? $arguments['page'];
-
         // Load document with current plugin parameters.
-        $this->loadDocument($queryParams['tx_dlf'], $storagePid, $pid);
+        $this->loadDocument($queryParams['tx_dlf'], $storagePid);
         if (!isset($this->document) || $this->document->getCurrentDocument() === null) {
             return null;
         }
@@ -186,23 +168,19 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      *
      * @param mixed[] $requestData The request data
      * @param int $storagePid Storage Pid
-     * @param int $pid the page id
      *
      * @return void
      */
-    protected function loadDocument(array $requestData, int $storagePid, int $pid): void
+    protected function loadDocument(array $requestData, int $storagePid): void
     {
         // Try to get document format from database
         if (!empty($requestData['id'])) {
-            $this->initializeRepositories($storagePid, $pid);
+            $this->initializeRepositories($storagePid);
             $doc = null;
             $this->document = null;
             if (MathUtility::canBeInterpretedAsInteger($requestData['id'])) {
                 // find document from repository by uid
-                $this->document = $this->documentRepository->findOneByIdAndSettings(
-                    (int) $requestData['id'],
-                    ['storagePid' => $storagePid]
-                );
+                $this->document = $this->documentRepository->findByUid((int) $requestData['id']);
                 if ($this->document) {
                     $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $storagePid]);
                 } else {

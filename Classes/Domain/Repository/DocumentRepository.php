@@ -72,7 +72,7 @@ class DocumentRepository extends AbstractRepository
 
         if (isset($parameters['id']) && MathUtility::canBeInterpretedAsInteger($parameters['id'])) {
 
-            $document = $this->findOneByIdAndSettings($parameters['id']);
+            $document = $this->findByUid($parameters['id']);
 
         } elseif (isset($parameters['recordId'])) {
 
@@ -150,23 +150,6 @@ class DocumentRepository extends AbstractRepository
         $this->debugQuery($query);
 
         return $query->execute();
-    }
-
-    /**
-     * Finds all documents for the given settings
-     *
-     * @access public
-     *
-     * @param int $uid
-     * @param array<string, mixed> $settings
-     *
-     * @return Document|null
-     */
-    public function findOneByIdAndSettings(int $uid, array $settings = []): ?Document
-    {
-        $settings['documentSets'] = $uid;
-
-        return $this->findDocumentsBySettings($settings)->getFirst(); // @phpstan-ignore-line
     }
 
     /**
