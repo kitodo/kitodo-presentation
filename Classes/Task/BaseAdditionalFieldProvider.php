@@ -13,9 +13,9 @@
 namespace Kitodo\Dlf\Task;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Model\SolrCore;
+use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use TYPO3\CMS\Backend\Tree\Repository\PageTreeRepository;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -307,25 +307,22 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
      *
      * @param int|null $pid UID of storage page
      *
-     * @return mixed[] Array of valid Solr cores
+     * @return array<string,int> Array of valid Solr cores (label => uid)
      */
     private function getSolrCores(?int $pid = null): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_solrcores');
+        $solrCoreRepository = GeneralUtility::makeInstance(SolrCoreRepository::class);
+        if ($pid !== null) {
+            $solrCoreRepository->useStoragePid($pid);
+        } else {
+            $solrCoreRepository->ignoreStoragePid();
+        }
+        $allSolrCores = $solrCoreRepository->findAll();
 
         $solrCores = [];
-        $result = $queryBuilder->select('uid', 'label', 'index_name')
-            ->from('tx_dlf_solrcores');
-        if ($pid !== null) {
-            $queryBuilder->where(
-                $queryBuilder->expr()
-                    ->eq('pid', $queryBuilder->createNamedParameter((int) $pid, Connection::PARAM_INT))
-            );
-        }
-        $result = $queryBuilder->executeQuery();
-
-        while ($record = $result->fetchAssociative()) {
-            $solrCores[$record['label'] . ' (' . $record['index_name'] . ')'] = $record['uid'];
+        /** @var SolrCore $solrCore */
+        foreach ($allSolrCores as $solrCore) {
+            $solrCores[$solrCore->getLabel() . ' (' . $solrCore->getIndexName() . ')'] = $solrCore->getUid();
         }
 
         return $solrCores;
