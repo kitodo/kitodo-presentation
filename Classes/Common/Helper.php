@@ -17,7 +17,6 @@ use Kitodo\Dlf\Domain\Model\Structure;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\Uri;
@@ -127,8 +126,6 @@ class Helper
      * @param string $queue The queue's unique identifier
      *
      * @return FlashMessageQueue The queue the message was added to
-     *
-     * @throws \TYPO3\CMS\Core\Exception
      */
     public static function addMessage(string $message, string $title, ContextualFeedbackSeverity $severity, bool $session = false, string $queue = 'kitodo.default.flashMessages'): FlashMessageQueue
     {
@@ -380,8 +377,6 @@ class Helper
      * @param int $pid Get the "index_name" from this page
      *
      * @return string "index_name" for the given UID
-     *
-     * @throws \Doctrine\DBAL\Exception
      */
     public static function getIndexNameFromUid(int $uid, string $table, int $pid = -1): string
     {
@@ -488,8 +483,6 @@ class Helper
      * @param int $pid Get the "index_name" from this page only
      *
      * @return array<int|string, string> Array mapping record UID to its index_name
-     *
-     * @throws \Doctrine\DBAL\Exception
      */
     public static function getDocumentStructures(int $pid = -1): array
     {
@@ -551,8 +544,6 @@ class Helper
      * @param bool $cmdFirst Should the command map be processed first?
      *
      * @return array<string,int> Array of substituted "NEW..." identifiers and their actual UIDs.
-     *
-     * @throws AspectNotFoundException
      */
     public static function processDatabaseAsAdmin(array $data = [], array $cmd = [], bool $reverseOrder = false, bool $cmdFirst = false): array
     {
@@ -658,8 +649,6 @@ class Helper
      * @param string $pid Get the translation from this page
      *
      * @return string Localized label for $indexName
-     *
-     * @throws AspectNotFoundException
      */
     public static function translate(string $indexName, string $table, string $pid): string
     {
