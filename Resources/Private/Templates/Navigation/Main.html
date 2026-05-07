@@ -11,6 +11,10 @@
     LICENSE.txt file that was distributed with this source code.
 </f:comment>
 
+<f:if condition="{debugActive}">
+    <f:debug title="all">{_all}</f:debug>
+</f:if>
+
 <f:comment>Render all navigation features in the given order.</f:comment>
 <f:for each="{features}" key="feature" as="enabled">
     <f:if condition="{feature}">
