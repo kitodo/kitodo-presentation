@@ -48,7 +48,6 @@ class AbstractRepository extends Repository
      *
      * @return void
      */
-
     public function activateDebugMode(): void
     {
         $this->debug = true;
@@ -60,7 +59,7 @@ class AbstractRepository extends Repository
      * @access public
      *
      * @return void
-        */
+     */
     public function ignoreDeleted(): void
     {
         $querySettings = $this->getDefaultQuerySettings();
@@ -114,6 +113,34 @@ class AbstractRepository extends Repository
     }
 
     /**
+     * Sets deleted records to be returned by the find methods in the repository.
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function showDeleted(): void
+    {
+        $querySettings = $this->getDefaultQuerySettings();
+        $querySettings->setIncludeDeleted(true);
+        $this->setDefaultQuerySettings($querySettings);
+    }
+
+    /**
+     * Sets hidden records to be returned by the find methods in the repository.
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function showHidden(): void
+    {
+        $querySettings = $this->getDefaultQuerySettings();
+        $querySettings->setIgnoreEnableFields(true);
+        $this->setDefaultQuerySettings($querySettings);
+    }
+
+    /**
      * Debug query.
      *
      * @access protected
@@ -147,34 +174,6 @@ class AbstractRepository extends Repository
             DebuggerUtility::var_dump($queryBuilder->getSQL());
             DebuggerUtility::var_dump($queryBuilder->getParameters());
         }
-    }
-
-    /**
-     * Sets deleted records to be returned by the find methods in the repository.
-     *
-     * @access public
-     *
-     * @return void
-     */
-    public function showDeleted(): void
-    {
-        $querySettings = $this->getDefaultQuerySettings();
-        $querySettings->setIncludeDeleted(true);
-        $this->setDefaultQuerySettings($querySettings);
-    }
-
-    /**
-     * Sets hidden records to be not returned by the find methods in the repository.
-     *
-     * @access public
-     *
-     * @return void
-     */
-    public function showHidden(): void
-    {
-        $querySettings = $this->getDefaultQuerySettings();
-        $querySettings->setIgnoreEnableFields(true);
-        $this->setDefaultQuerySettings($querySettings);
     }
 
     /**
