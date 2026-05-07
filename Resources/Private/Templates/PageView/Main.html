@@ -12,6 +12,10 @@
     LICENSE.txt file that was distributed with this source code.
 </f:comment>
 
+<f:if condition="{debugActive}">
+    <f:debug title="all">{_all}</f:debug>
+</f:if>
+
 <div id="tx-dlf-map" class="tx-dlf-map" data-dic="overview-map:{f:translate(key: 'pageview.overview-map')}">
     <div id="tx-dlf-annotationselection"></div>
 </div>

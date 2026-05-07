@@ -11,6 +11,10 @@
     LICENSE.txt file that was distributed with this source code.
 </f:comment>
 
+<f:if condition="{debugActive}">
+    <f:debug title="all">{_all}</f:debug>
+</f:if>
+
 <ul class="tx-dlf-annotation-list">
     <f:for each="{annotations}" as="annotation">
         <f:if condition="{kitodo:isInArray(needle: currentPage, haystack: annotation.pageNumbers)}">
