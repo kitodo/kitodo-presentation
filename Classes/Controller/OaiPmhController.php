@@ -276,9 +276,9 @@ class OaiPmhController extends AbstractController
         // Get allowed GET and POST variables.
         $this->getUrlParams($this->request);
 
-        $this->collectionRepository->setStoragePid((int) $this->settings['storagePid']);
-        $this->libraryRepository->setStoragePid((int) $this->settings['storagePid']);
-        $this->tokenRepository->setStoragePid((int) $this->settings['storagePid']);
+        $this->collectionRepository->useStoragePid((int) $this->settings['storagePid']);
+        $this->libraryRepository->useStoragePid((int) $this->settings['storagePid']);
+        $this->tokenRepository->useStoragePid((int) $this->settings['storagePid']);
 
         // Delete expired resumption tokens.
         $this->deleteExpiredTokens();
@@ -592,14 +592,12 @@ class OaiPmhController extends AbstractController
         if (!empty($this->parameters['set'])) {
             // For SOLR we need the index_name of the collection,
             // For DB Query we need the UID of the collection
-
-            $result = $this->collectionRepository->getIndexNameForSolr($this->settings, $this->parameters['set']);
-            $resArray = $result->fetchAssociative();
-            if ($resArray) {
-                if ($resArray['index_query'] != "") {
-                    $solrQuery .= '(' . $resArray['index_query'] . ')';
+            $indexName = $this->collectionRepository->getIndexNameForSolr($this->settings, $this->parameters['set']);
+            if (!empty($indexName)) {
+                if (!empty($indexName['index_query'])) {
+                    $solrQuery .= '(' . $indexName['index_query'] . ')';
                 } else {
-                    $solrQuery .= 'collection:' . '"' . $resArray['index_name'] . '"';
+                    $solrQuery .= 'collection:' . '"' . $indexName['index_name'] . '"';
                 }
             } else {
                 $this->error = 'noSetHierarchy';
