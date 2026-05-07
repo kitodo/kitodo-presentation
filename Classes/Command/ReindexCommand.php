@@ -210,9 +210,6 @@ class ReindexCommand extends BaseCommand
             GeneralUtility::makeInstance(DocumentCacheManager::class)->flush();
         }
 
-        // Clear state of persistence manager to prevent memory exhaustion.
-        $this->persistenceManager->clearState();
-
         $io->success('All done!');
 
         return Command::SUCCESS;
