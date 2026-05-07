@@ -12,8 +12,8 @@
 
 namespace Kitodo\Dlf\Task;
 
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use Kitodo\Dlf\Domain\Model\Collection;
+use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 
@@ -131,19 +131,15 @@ class ReindexAdditionalFieldProvider extends BaseAdditionalFieldProvider
      */
     private function getCollections(int $pid): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_collections');
+        $collectionRepository = GeneralUtility::makeInstance(CollectionRepository::class);
+        $collectionRepository->useStoragePid($pid);
 
         $collections = [];
-        $result = $queryBuilder->select('uid', 'label')
-            ->from('tx_dlf_collections')
-            ->where(
-                $queryBuilder->expr()
-                    ->eq('pid', $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT))
-            )
-            ->executeQuery();
+        $allCollections = $collectionRepository->findAll();
 
-        while ($record = $result->fetchAssociative()) {
-            $collections[$record['label']] = $record['uid'];
+        /** @var Collection $collection */
+        foreach ($allCollections as $collection) {
+            $collections[$collection->getLabel()] = $collection->getUid();
         }
 
         return $collections;
