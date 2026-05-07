@@ -42,7 +42,7 @@ class CollectionRepository extends AbstractRepository
     ];
 
     /**
-     * Finds all collections
+     * Finds all collections for given uids
      *
      * @access public
      *
@@ -53,16 +53,7 @@ class CollectionRepository extends AbstractRepository
     public function findAllByUids(array $uids): QueryResultInterface
     {
         $query = $this->createQuery();
-
-        $constraints = [];
-        $constraints[] = $query->in('uid', $uids);
-
-        if (count($constraints)) {
-            $query->matching($query->logicalAnd(...$constraints));
-        }
-
-        $this->debugQuery($query);
-
+        $query->matching($query->in('uid', $uids));
         return $query->execute();
     }
 
