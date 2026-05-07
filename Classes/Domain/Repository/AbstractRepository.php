@@ -48,6 +48,7 @@ class AbstractRepository extends Repository
      *
      * @return void
      */
+
     public function activateDebugMode(): void
     {
         $this->debug = true;
@@ -174,6 +175,18 @@ class AbstractRepository extends Repository
             DebuggerUtility::var_dump($queryBuilder->getSQL());
             DebuggerUtility::var_dump($queryBuilder->getParameters());
         }
+    }
+
+    /**
+     * Persist objects.
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function persistAll(): void
+    {
+        $this->persistenceManager->persistAll();
     }
 
     /**
