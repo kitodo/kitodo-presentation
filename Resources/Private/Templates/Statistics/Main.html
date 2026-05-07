@@ -11,6 +11,10 @@
     LICENSE.txt file that was distributed with this source code.
 </f:comment>
 
+<f:if condition="{debugActive}">
+    <f:debug title="all">{_all}</f:debug>
+</f:if>
+
 <div class="tx-dlf-statistics">
     <f:comment>We need to use the lib.parseFunc here, as the default lib.parseFunc_RTE keeps empty lines.</f:comment>
     <f:format.html parseFuncTSPath="lib.parseFunc_RTE">

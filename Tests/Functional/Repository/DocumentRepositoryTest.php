@@ -111,9 +111,9 @@ class DocumentRepositoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function canFindOneByIdAndSettings(): void
+    public function canFindByUid(): void
     {
-        $document = $this->documentRepository->findOneByIdAndSettings(1001);
+        $document = $this->documentRepository->findByUid(1001);
         self::assertInstanceOf(Document::class, $document);
         self::assertEquals(1001, $document->getUid());
     }

@@ -207,6 +207,19 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
+     * Activate debug mode for the view in the controller,
+     * which allows to output the debug of all variables in the template.
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function activateDebugMode(): void
+    {
+        $this->view->assign('debugActive', true);
+    }
+
+    /**
      * Build the multiview documents.
      *
      * @param string $docUrl The URL of the document.
@@ -268,8 +281,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
         // Try to get document format from database
         if (!empty($documentId)) {
-
-
             $doc = null;
 
             if (MathUtility::canBeInterpretedAsInteger($documentId)) {
@@ -281,9 +292,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             if ($this->document !== null && $doc !== null) {
                 $this->document->setCurrentDocument($doc);
             }
-
         } elseif (!empty($this->requestData['recordId'])) {
-
             $this->document = $this->documentRepository->findOneBy(['recordId' => $this->requestData['recordId']]);
 
             if ($this->document !== null) {
@@ -798,12 +807,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @param int $documentId The document's UID
      *
-     * @return AbstractDocument
+     * @return ?AbstractDocument
      */
-    private function getDocumentByUid(int $documentId)
+    private function getDocumentByUid(int $documentId): ?AbstractDocument
     {
         $doc = null;
-        $this->document = $this->documentRepository->findOneByIdAndSettings($documentId);
+        $this->document = $this->documentRepository->findByUid($documentId);
 
         if ($this->document) {
             $doc = Helper::getDocumentInstance($this->document->getLocation(), $this->settings);
@@ -827,9 +836,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @param string $documentUrl The document's URL
      *
-     * @return AbstractDocument
+     * @return ?AbstractDocument
      */
-    protected function getDocumentByUrl(string $documentUrl)
+    protected function getDocumentByUrl(string $documentUrl): ?AbstractDocument
     {
         $doc = Helper::getDocumentInstance($documentUrl, $this->settings);
         if ($doc !== null) {
