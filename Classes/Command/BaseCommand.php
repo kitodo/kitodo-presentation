@@ -14,9 +14,11 @@ namespace Kitodo\Dlf\Command;
 
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Indexer;
+use Kitodo\Dlf\Domain\Model\SolrCore;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
+use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
@@ -27,8 +29,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Connection;
 
 /**
  * Base class for CLI Command classes.
@@ -60,6 +60,12 @@ class BaseCommand extends Command
 
     /**
      * @access protected
+     * @var SolrCoreRepository
+     */
+    protected SolrCoreRepository $solrCoreRepository;
+
+    /**
+     * @access protected
      * @var StructureRepository
      */
     protected StructureRepository $structureRepository;
@@ -86,6 +92,7 @@ class BaseCommand extends Command
         CollectionRepository $collectionRepository,
         DocumentRepository $documentRepository,
         LibraryRepository $libraryRepository,
+        SolrCoreRepository $solrCoreRepository,
         StructureRepository $structureRepository,
     ) {
         parent::__construct();
@@ -93,6 +100,7 @@ class BaseCommand extends Command
         $this->collectionRepository = $collectionRepository;
         $this->documentRepository = $documentRepository;
         $this->libraryRepository = $libraryRepository;
+        $this->solrCoreRepository = $solrCoreRepository;
         $this->structureRepository = $structureRepository;
     }
 
@@ -146,23 +154,13 @@ class BaseCommand extends Command
      */
     protected function getSolrCores(int $pageId): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_solrcores');
+        $this->solrCoreRepository->useStoragePid($pageId);
 
         $solrCores = [];
-        $result = $queryBuilder
-            ->select('uid', 'index_name')
-            ->from('tx_dlf_solrcores')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'pid',
-                    $queryBuilder->createNamedParameter($pageId, Connection::PARAM_INT)
-                )
-            )
-            ->executeQuery();
-
-        while ($record = $result->fetchAssociative()) {
-            $solrCores[$record['index_name']] = $record['uid'];
+        $cores = $this->solrCoreRepository->findAll();
+        /** @var SolrCore $core */
+        foreach ($cores as $core) {
+            $solrCores[$core->getIndexName()] = $core->getUid();
         }
 
         return $solrCores;

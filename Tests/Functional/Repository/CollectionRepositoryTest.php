@@ -165,26 +165,24 @@ class CollectionRepositoryTest extends FunctionalTestCase
     public function canGetIndexNameForSolr(): void
     {
         $indexName = $this->collectionRepository->getIndexNameForSolr(
-            ['showUserDefined' => true, 'storagePid' => '20000'],
+            ['showUserDefined' => true],
             'history'
         );
-        $result = $indexName->fetchAllAssociative();
-        self::assertEquals(1, $indexName->rowCount());
-        self::assertEquals('Geschichte', $result[0]['index_name']);
-        self::assertEquals('*:*', $result[0]['index_query']);
-        self::assertEquals('1103', $result[0]['uid']);
+        self::assertCount(2, $indexName);
+        self::assertEquals('Geschichte', $indexName['index_name']);
+        self::assertEquals('*:*', $indexName['index_query']);
 
         $indexName = $this->collectionRepository->getIndexNameForSolr(
-            ['showUserDefined' => false, 'storagePid' => '20000'],
+            ['showUserDefined' => false],
             'history'
         );
-        self::assertEquals(0, $indexName->rowCount());
+        self::assertEmpty($indexName);
 
         $indexName = $this->collectionRepository->getIndexNameForSolr(
-            ['showUserDefined' => false, 'storagePid' => '20000'],
+            ['showUserDefined' => false],
             'collection-with-single-document'
         );
-        self::assertEquals(1, $indexName->rowCount());
-        self::assertEquals('collection-with-single-document', $indexName->fetchOne());
+        self::assertNotEmpty($indexName);
+        self::assertEquals('collection-with-single-document', $indexName['index_name']);
     }
 }
