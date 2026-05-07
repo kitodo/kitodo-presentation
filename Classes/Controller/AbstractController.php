@@ -415,7 +415,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @param string $parameterName
      * @param string[] $pluginNames
      *
-     * @return mixed[]
+     * @return array<string,mixed> Array parameter from the request or an empty array
      */
     protected function getArrayParameterSafely(string $parameterName, array $pluginNames = []): array
     {
@@ -684,7 +684,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @param PaginationInterface $pagination
      * @param PaginatorInterface $paginator
      *
-     * @return mixed[]
+     * @return array<string,mixed> Array containing pagination data (ints, arrays and nulls)
      */
     //TODO: clean this function
     protected function buildSimplePagination(PaginationInterface $pagination, PaginatorInterface $paginator): array
