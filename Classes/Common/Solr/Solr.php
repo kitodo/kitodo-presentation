@@ -21,7 +21,6 @@ use Solarium\Core\Client\Adapter\Http;
 use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -198,10 +197,10 @@ class Solr implements LoggerAwareInterface
             $fields = [];
             $metadataRepository = GeneralUtility::makeInstance(MetadataRepository::class);
             $metadataRepository->useStoragePid($pid);
-            $resArray = $metadataRepository->findIndexedFields($pid);
+            $result = $metadataRepository->findIndexedFields();
 
-            while ($resArray) {
-                $fields[] = $resArray['index_name'] . '_' . ($resArray['index_tokenized'] ? 't' : 'u') . ($resArray['index_stored'] ? 's' : 'u') . 'i';
+            foreach ($result as $metadata) {
+                $fields[] = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . 'i';
             }
 
             // Check if queried field is valid.

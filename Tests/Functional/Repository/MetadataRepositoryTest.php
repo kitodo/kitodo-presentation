@@ -110,7 +110,7 @@ class MetadataRepositoryTest extends FunctionalTestCase
      */
     public function canFindIndexedFields(): void
     {
-        $metadata = $this->metadataRepository->findIndexedFields(20000);
-        self::assertCount(6, $metadata);
+        $metadata = $this->metadataRepository->findIndexedFields();
+        self::assertEquals(6, $metadata->count());
     }
 }
