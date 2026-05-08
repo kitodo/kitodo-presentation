@@ -113,4 +113,32 @@ class MetadataRepositoryTest extends FunctionalTestCase
         $metadata = $this->metadataRepository->findIndexedFields();
         self::assertEquals(6, $metadata->count());
     }
+
+    /**
+     * @test
+     * @group find
+     */
+    public function canFindWithFormat(): void
+    {
+        $metadata = $this->metadataRepository->findWithFormat(20000, 'mods');
+        self::assertCount(2, $metadata);
+        self::assertEquals('title', $metadata[0]['index_name']);
+        self::assertEquals('collection', $metadata[1]['index_name']);
+
+        $metadata = $this->metadataRepository->findWithFormat(20000, 'alto');
+        self::assertEmpty($metadata);
+
+        $metadata = $this->metadataRepository->findWithFormat(20000, 'xyz');
+        self::assertEmpty($metadata);
+    }
+
+    /**
+     * @test
+     * @group find
+     */
+    public function canFindWithoutFormat(): void
+    {
+        $metadata = $this->metadataRepository->findWithoutFormat(20000);
+        self::assertCount(3, $metadata);
+    }
 }

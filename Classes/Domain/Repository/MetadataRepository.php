@@ -173,6 +173,8 @@ class MetadataRepository extends AbstractRepository
                 $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($type))
             );
 
+        $this->debugQueryBuilder($query);
+
         return $query->executeQuery()->fetchAllAssociative();
     }
 
@@ -202,6 +204,8 @@ class MetadataRepository extends AbstractRepository
                 $queryBuilder->expr()->eq(self::TABLE . '.format', 0),
                 $queryBuilder->expr()->neq(self::TABLE . '.default_value', $queryBuilder->createNamedParameter(''))
             );
+
+        $this->debugQueryBuilder($query);
 
         return $query->executeQuery()->fetchAllAssociative();
     }
