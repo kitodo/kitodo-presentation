@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Result;
 use Kitodo\Dlf\Domain\Model\Metadata;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
@@ -280,6 +281,29 @@ class MetadataRepository extends AbstractRepository
                 )
             );
 
+        return $query->executeQuery()->fetchAllAssociative();
+    }
+
+    public function findIndexedFields(int $pid): array
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_metadata');
+
+        $query = $queryBuilder
+            ->select(
+                'index_name',
+                'index_tokenized',
+                'index_stored'
+            )
+            ->from('tx_dlf_metadata')
+            ->where(
+                $queryBuilder->expr()->eq('index_indexed', 1),
+                $queryBuilder->expr()->eq('pid', $pid),
+                $queryBuilder->expr()->or(
+                    $queryBuilder->expr()->in('sys_language_uid', [-1, 0]),
+                    $queryBuilder->expr()->eq('l18n_parent', 0)
+                )
+            );
         return $query->executeQuery()->fetchAllAssociative();
     }
 
