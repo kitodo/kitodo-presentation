@@ -43,16 +43,19 @@ limitations under the License.
         <fieldType name="geojson" class="solr.SpatialRecursivePrefixTreeFieldType" spatialContextFactory="Geo3D" geo="true" planetModel="WGS84" format="GeoJSON" />
         <fieldType name="standard" class="solr.TextField" positionIncrementGap="100">
             <analyzer>
+                <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-UmlautLongS.txt"/>
                 <tokenizer class="solr.StandardTokenizerFactory" />
                 <filter class="solr.LowerCaseFilterFactory" />
             </analyzer>
         </fieldType>
         <fieldType name="autocomplete" class="solr.TextField" positionIncrementGap="100">
             <analyzer type="index">
+                <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-UmlautLongS.txt"/>
                 <tokenizer class="solr.KeywordTokenizerFactory" />
                 <filter class="solr.LowerCaseFilterFactory" />
             </analyzer>
             <analyzer type="query">
+                <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-UmlautLongS.txt"/>
                 <tokenizer class="solr.WhitespaceTokenizerFactory" />
                 <filter class="solr.LowerCaseFilterFactory" />
             </analyzer>
@@ -62,6 +65,7 @@ limitations under the License.
             <analyzer type="index">
                 <!-- For converting OCR to plaintext -->
                 <charFilter class="solrocr.OcrCharFilterFactory" />
+                <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-UmlautLongS.txt"/>
 
                 <charFilter class="solr.HTMLStripCharFilterFactory" />
                 <tokenizer class="solr.WhitespaceTokenizerFactory" />
@@ -81,6 +85,7 @@ limitations under the License.
             <!-- TODO: which filters here are the character filters? -->
             <!-- TODO: check why some filters are outcommented -->
             <analyzer type="query">
+                <charFilter class="solr.MappingCharFilterFactory" mapping="mapping-UmlautLongS.txt"/>
                 <tokenizer class="solr.WhitespaceTokenizerFactory" />
                 <filter class="solr.SynonymGraphFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true" />
                 <filter class="solr.StopFilterFactory" ignoreCase="true" words="stopwords.txt" />
