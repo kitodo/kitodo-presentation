@@ -43,11 +43,11 @@
     "ubl/php-iiif-prezi-reader": "0.3.2",
     "solarium/solarium": "^6.4",
     "softcreatr/jsonpath": "^0.10",
-    "symfony/process": "^7.3"
+    "symfony/process": "^7.4"
   },
   "require-dev": {
-    "fluidtypo3/vhs": "^7.1",
-    "friendsofphp/php-cs-fixer": "^3.94",
+    "fluidtypo3/vhs": "^7.2",
+    "friendsofphp/php-cs-fixer": "^3.95",
     "phpstan/phpstan": "^1.12",
     "phpunit/phpunit": "^10.5",
     "spatie/phpunit-watcher": "^1.24",
