@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Domain\Model\Token;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Token repository.
@@ -23,9 +22,9 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @access public
  *
- * @extends Repository<Token>
+ * @extends AbstractRepository<Token>
  */
-class TokenRepository extends Repository
+class TokenRepository extends AbstractRepository
 {
     /**
      * Delete all expired token
@@ -47,6 +46,8 @@ class TokenRepository extends Repository
         if (count($constraints)) {
             $query->matching($query->logicalAnd(...$constraints));
         }
+
+        $this->debugQuery($query);
 
         $tokensToBeRemoved = $query->execute();
 

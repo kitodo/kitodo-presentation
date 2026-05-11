@@ -87,38 +87,79 @@ export default class ThumbnailPreview {
     this.network = params.network;
     this.interaction = params.interaction;
 
-    /** @private @type {number | null} */
+    /**
+     * @private
+     * @type {number | null}
+     */
     this.fps = null;
-    /** @private @type {Chapters | null} */
+
+    /**
+     * @private
+     * @type {Chapters | null}
+     */
     this.chapters = null;
+
     /**
      * Thumbnail tracks, ordered by quality/bandwidth descending.
      * @private
      * @type {dlf.media.ThumbnailTrack[]}
      */
     this.thumbnailTracks = [];
+
     /**
      * Thumbnail track to which cursor is currently snapped.
      *
      * This is also used for downloading thumbnail images, so that the thumbnail
      * segmentation cannot change during snap.
      *
-     * @private
      * @type {dlf.media.ThumbnailTrack | null}
+     *
+     * @private
      */
     this.snapToThumbnail = null;
-    /** @private @type {LastRendered | null} */
+
+    /**
+     * @type {LastRendered | null}
+     *
+     * @private
+     */
     this.lastRendered = null;
-    /** @private @type {boolean} */
+
+    /**
+     * @type {boolean}
+     *
+     * @private
+     */
     this.isChanging = false;
-    /** @private @type {{ clientX: number; seconds: number } | null} */
+
+    /**
+     * @type {{ clientX: number; seconds: number } | null}
+     *
+     * @private
+     */
     this.deltaStart = null;
-    /** @private @type {Current | null} */
+
+    /**
+     * @type {Current | null}
+     *
+     * @private
+     */
     this.current = null;
-    /** @private @type {number | null} */
+
+    /**
+     * @type {number | null}
+     *
+     * @private
+     */
     this.renderAnimationFrame = null;
-    /** @private @type {SeekMode} */
+
+    /**
+     * @type {SeekMode}
+     *
+     * @private
+     */
     this.seekMode = 'wide';
+
     /** @private */
     this.openDisplayTimeout = null;
 
@@ -246,8 +287,9 @@ export default class ThumbnailPreview {
   }
 
   /**
-   * @private
    * @param {PointerEvent} e
+   *
+   * @private
    */
   async onPointerMove(e) {
     const rawSeekPosition = this.mouseEventToPosition(e);
@@ -283,8 +325,9 @@ export default class ThumbnailPreview {
   }
 
   /**
-   * @private
    * @param {PointerEvent} e
+   *
+   * @private
    */
   async onPointerDown(e) {
     // Check primary button
@@ -302,8 +345,9 @@ export default class ThumbnailPreview {
   }
 
   /**
-   * @private
    * @param {PointerEvent} e
+   *
+   * @private
    */
   onPointerUpOrCancel(e) {
     this.endChange();
@@ -316,10 +360,11 @@ export default class ThumbnailPreview {
   }
 
   /**
-   * @private
    * @param {MouseEvent} e
    * @param {boolean} allowWideSeekArea
    * @returns {RawSeekPosition | undefined}
+   *
+   * @private
    */
   mouseEventToPosition(e, allowWideSeekArea = true) {
     const duration = this.saneVideoDuration();
@@ -422,9 +467,10 @@ export default class ThumbnailPreview {
   /**
    * Resizes display to match aspect ratio of given thumbnail size.
    *
-   * @private
    * @param {number} thumbWidth
    * @param {number} thumbHeight
+   *
+   * @private
    */
   ensureDisplaySize(thumbWidth, thumbHeight) {
     const previewHeight = Math.floor(DISPLAY_WIDTH / thumbWidth * thumbHeight);
@@ -436,8 +482,9 @@ export default class ThumbnailPreview {
   /**
    * Renders best available thumbnail at current position.
    *
-   * @private
    * @param {boolean} isOpening
+   *
+   * @private
    */
   currentRenderBest(isOpening = false) {
     // We don't wan't the thumbnail preview to be opened when the user is just
@@ -491,11 +538,12 @@ export default class ThumbnailPreview {
   /**
    * Renders the specified thumbnail to the display and shows it to the user.
    *
-   * @private
    * @param {string} uri
    * @param {dlf.media.ThumbnailOnTrack} thumb
    * @param {HTMLImageElement} tilesetImage
    * @param {SeekPosition} seekPosition
+   *
+   * @private
    */
   renderImageAndShow(uri, thumb, tilesetImage, seekPosition) {
     this.ensureDisplaySize(thumb.width, thumb.height);
@@ -513,11 +561,12 @@ export default class ThumbnailPreview {
   /**
    * Renders the specified thumbnail to the display.
    *
-   * @private
    * @param {string} uri
    * @param {dlf.media.ThumbnailOnTrack} thumb
    * @param {HTMLImageElement} tilesetImage
    * @param {boolean} force
+   *
+   * @private
    */
   renderImage(uri, thumb, tilesetImage, force = false) {
     // Check if it's another thumbnail (`imageTime` and `bandwidth` as proxy)
@@ -548,8 +597,9 @@ export default class ThumbnailPreview {
   /**
    * Positions the thumbnail container to match {@link seekPosition}.
    *
-   * @private
    * @param {SeekPosition} seekPosition
+   *
+   * @private
    */
   positionContainer(seekPosition) {
     // Align the container so that the mouse underneath is centered,
@@ -568,9 +618,10 @@ export default class ThumbnailPreview {
    * - Sets chapter and timecode texts
    * - Positions the container
    *
-   * @private
    * @param {SeekPosition} seekPosition
    * @param {dlf.media.Thumbnail | null} thumb
+   *
+   * @private
    */
   renderSeekPosition(seekPosition, thumb = null) {
     const duration = this.saneVideoDuration();
@@ -617,8 +668,9 @@ export default class ThumbnailPreview {
   /**
    * Starts seeking and scrubbing.
    *
-   * @public
    * @param {number | null} clientX
+   *
+   * @public
    */
   beginChange(clientX = null) {
     if (!this.isChanging) {
@@ -632,8 +684,9 @@ export default class ThumbnailPreview {
 
   /**
    *
-   * @private
    * @param {number | null} clientX
+   *
+   * @private
    */
   convertDelta(clientX) {
     if (clientX === null) {
@@ -664,7 +717,7 @@ export default class ThumbnailPreview {
   }
 
   /**
-   * Whether or not the thumbnail preview container is currently shown.
+   * Whether the thumbnail preview container is currently shown.
    *
    * @type {boolean}
    */
@@ -695,10 +748,11 @@ export default class ThumbnailPreview {
   }
 
   /**
-   * @private
    * @param {number} position
    * @param {number} maximumBandwidth
    * @returns {Promise<dlf.media.ThumbnailOnTrack[]>}
+   *
+   * @private
    */
   async getThumbnails(position, maximumBandwidth) {
     /** @type {dlf.media.ThumbnailTrack[]} */
@@ -730,10 +784,11 @@ export default class ThumbnailPreview {
 
   /**
    *
-   * @private
    * @param {dlf.media.ThumbnailTrack} track
    * @param {number} position
    * @returns {Promise<dlf.media.ThumbnailOnTrack | null>}
+   *
+   * @private
    */
   async getSingleThumbnail(track, position) {
     const thumbRaw = await track.getThumb(position);
@@ -747,10 +802,11 @@ export default class ThumbnailPreview {
   }
 
   /**
-   * Whether or not to show a thumbnail image (if available).
+   * Whether to show a thumbnail image (if available).
+   *
+   * @returns {boolean}
    *
    * @private
-   * @returns {boolean}
    */
   showThumbnailImage() {
     const video = this.player.getMediaElement();
@@ -764,8 +820,9 @@ export default class ThumbnailPreview {
    * Returns either the video duration as finite, non-negative number,
    * or `undefined` otherwise.
    *
-   * @private
    * @returns {number | undefined}
+   *
+   * @private
    */
   saneVideoDuration() {
     const duration = this.player.getMediaElement()?.duration;

@@ -451,7 +451,7 @@ class PageViewController extends AbstractController
      * @param string $fileGrpImages File group
      * @param ?MetsDocument $specificDoc Optional specific document
      *
-     * @return mixed[]|null File info array or null if not found
+     * @return array<string,mixed>|null File info array or null if not found
      */
     private function fetchFileInfo(int $page, string $fileGrpImages, ?MetsDocument $specificDoc): ?array
     {

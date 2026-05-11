@@ -3,6 +3,10 @@
       data-namespace-typo3-fluid="true"
       lang="en">
 
+<f:if condition="{debugActive}">
+    <f:debug title="all">{_all}</f:debug>
+</f:if>
+
 <f:if condition="{media}">
     <script>
         document.body.setAttribute("data-mediaplayer", "yes");
@@ -24,7 +28,7 @@
                         </div>
                     </div>
                 </f:if>
-                
+
                 <div id="panel-equalizer" class="panel panel-equalizer" data-panel="equalizer" hidden>
                     <f:if condition="{settings.equalizer.enabled}">
                         <dlf-equalizer id="{settings.elementId}-equalizer" forPlayer="{settings.elementId}"></dlf-equalizer>

@@ -113,6 +113,9 @@ class SearchController extends AbstractController
             return $this->htmlResponse();
         }
 
+        $this->collectionRepository->useStoragePid($this->settings['storagePid']);
+        $this->metadataRepository->useStoragePid($this->settings['storagePid']);
+
         $this->addFieldsForExtendedSearch();
 
         $this->enableSuggester();
@@ -247,7 +250,7 @@ class SearchController extends AbstractController
      *
      * @param mixed[] $facets
      *
-     * @return mixed[] HMENU array
+     * @return array<int,array<string,mixed>> HMENU array
      */
     private function makeFacetsMenuArray(array $facets): array
     {

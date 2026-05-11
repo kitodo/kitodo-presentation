@@ -13,6 +13,9 @@
 namespace Kitodo\Dlf\Common;
 
 use Kitodo\Dlf\Configuration\UseGroupsConfiguration;
+use Kitodo\Dlf\Domain\Model\Format;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Log\Logger;
@@ -76,6 +79,12 @@ abstract class AbstractDocument
      * @var string The extension key
      */
     public static string $extKey = 'dlf';
+
+    /**
+     * @access protected
+     * @var FormatRepository This holds the format repository
+     */
+    protected FormatRepository $formatRepository;
 
     /**
      * @access protected
@@ -622,35 +631,20 @@ abstract class AbstractDocument
         // Sanitize input.
         $uid = max($uid, 0);
         if ($uid) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
+            $document = GeneralUtility::makeInstance(DocumentRepository::class)->findByUid($uid);
 
-            $result = $queryBuilder
-                ->select(
-                    'title',
-                    'partof'
-                )
-                ->from('tx_dlf_documents')
-                ->where(
-                    $queryBuilder->expr()->eq('uid', $uid),
-                    Helper::whereExpression('tx_dlf_documents')
-                )
-                ->setMaxResults(1)
-                ->executeQuery();
-
-            $resArray = $result->fetchAssociative();
-            if ($resArray) {
+            if ($document !== null) {
                 // Get title information.
-                $title = $resArray['title'];
-                $partof = $resArray['partof'];
+                $title = $document->getTitle();
+                $partOf = $document->getPartof();
                 // Search parent documents recursively for a title?
                 if (
                     $recursive
                     && empty($title)
-                    && (int) $partof
-                    && $partof != $uid
+                    && $partOf
+                    && $partOf != $uid
                 ) {
-                    $title = self::getTitle($partof, true);
+                    $title = self::getTitle($partOf, true);
                 }
             } else {
                 Helper::warning('No document with UID ' . $uid . ' found or document not accessible');
@@ -738,31 +732,17 @@ abstract class AbstractDocument
     protected function loadFormats(): void
     {
         if (!$this->formatsLoaded && $this->configPid > 0) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_formats');
+            $formats = $this->formatRepository->findAll();
 
-            // Get available data formats from database.
-            $result = $queryBuilder
-                ->select(
-                    'type',
-                    'root',
-                    'namespace',
-                    'class'
-                )
-                ->from('tx_dlf_formats')
-                ->where(
-                    $queryBuilder->expr()->eq('pid', $this->configPid)
-                )
-                ->executeQuery();
-
-            while ($resArray = $result->fetchAssociative()) {
-                // Update format registry.
-                $this->formats[$resArray['type']] = [
-                    'rootElement' => $resArray['root'],
-                    'namespaceURI' => $resArray['namespace'],
-                    'class' => $resArray['class']
+            /** @var Format $format */
+            foreach ($formats as $format) {
+                $this->formats[$format->getType()] = [
+                    'rootElement' => $format->getRoot(),
+                    'namespaceURI' => $format->getNamespace(),
+                    'class' => $format->getClass()
                 ];
             }
+
             $this->formatsLoaded = true;
         }
     }
@@ -1049,6 +1029,8 @@ abstract class AbstractDocument
         $storagePid = array_key_exists('storagePid', $settings) ? max((int) $settings['storagePid'], 0) : 0;
         $this->configPid = $storagePid;
         $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
+        $this->formatRepository = GeneralUtility::makeInstance(FormatRepository::class);
+        $this->formatRepository->useStoragePid($storagePid);
         $this->setPreloadedDocument($preloadedDocument);
         $this->init($location, $settings);
         $this->establishRecordId($storagePid);

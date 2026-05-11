@@ -74,7 +74,7 @@ class MediaPlayerController extends AbstractController
      * @param AbstractDocument $doc
      * @param int $pageNo
      *
-     * @return ?mixed[] The Mediaplayer data, or `null` if no audio/video-media source is found
+     * @return array<string,mixed>|null The Mediaplayer data, or `null` if no audio/video-media source is found
      */
     protected function getMediaplayerInfo(AbstractDocument $doc, int $pageNo): ?array
     {
@@ -118,7 +118,7 @@ class MediaPlayerController extends AbstractController
      *
      * @param AbstractDocument $doc The AbstractDocument object to collect media chapters from
      *
-     * @return mixed[] An array of media chapters with details like file IDs, page numbers, titles, and timecodes
+     * @return array<int,array<string,mixed>> An array of media chapters with details like file IDs, page numbers, titles, and timecodes
      */
     private function collectMediaChapters(AbstractDocument $doc): array
     {
@@ -138,7 +138,7 @@ class MediaPlayerController extends AbstractController
      * @param string[] $waveformUseGroups An array of waveform file use groups
      * @param string[] $imageUseGroups An array of image file use groups
      *
-     * @return mixed[] An array containing additional audio/video-media URLs like poster and waveform
+     * @return array<string,mixed> An array containing additional audio/video-media URLs like poster and waveform
      */
     private function collectAdditionalMediaUrls(AbstractDocument $doc, int $pageNo, array $thumbnailUseGroups, array $waveformUseGroups, array $imageUseGroups): array
     {

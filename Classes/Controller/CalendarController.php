@@ -111,6 +111,8 @@ class CalendarController extends AbstractController
             return $this->htmlResponse();
         }
 
+        $this->structureRepository->useStoragePid($this->settings['storagePid']);
+
         $calendarData = $this->buildCalendar();
 
         // Prepare list as alternative view.
@@ -158,6 +160,8 @@ class CalendarController extends AbstractController
             // Quit without doing anything if required variables are not set.
             return $this->htmlResponse();
         }
+
+        $this->structureRepository->useStoragePid($this->settings['storagePid']);
 
         // Get all children of anchor. This should be the year anchor documents
         $documents = $this->documentRepository->getChildrenOfYearAnchor(
@@ -385,7 +389,7 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @return mixed[]
+     * @return array<string,mixed> Calendar data array keyed by "YYYY-M" with month/week structure
      */
     private function buildCalendar(): array
     {
@@ -411,7 +415,7 @@ class CalendarController extends AbstractController
                     $lastMonth = (int) key($issuesByMonth);
                 }
             }
-            $this->getCalendarYear($calendarData, $issuesByMonth, $year, $firstMonth, $lastMonth);
+            $this->getCalendarYear($calendarData, $issuesByMonth, (int) $year, $firstMonth, $lastMonth);
             $iteration++;
         }
 
@@ -423,7 +427,7 @@ class CalendarController extends AbstractController
      *
      * @access private
      *
-     * @return mixed[]
+     * @return array<int|string, array<int, array<int, array<int, mixed>>>> Issues grouped by year => month => day
      */
     private function getIssuesByYear(): array
     {

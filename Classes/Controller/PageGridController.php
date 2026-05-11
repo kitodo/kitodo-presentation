@@ -81,7 +81,7 @@ class PageGridController extends AbstractController
      * @param int $number The page to render
      * @param string[] $fileGrpThumbs the file group(s) of thumbs
      *
-     * @return mixed[] The rendered entry ready for fluid
+     * @return array<string,string|int> The rendered entry ready for fluid
      */
     protected function getEntry(int $number, array $fileGrpThumbs): array
     {

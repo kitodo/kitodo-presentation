@@ -13,7 +13,6 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use Kitodo\Dlf\Domain\Model\MetadataSubentry;
-use TYPO3\CMS\Extbase\Persistence\Repository;
 
 /**
  * Metadata subentry repository.
@@ -23,8 +22,8 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @access public
  *
- * @extends Repository<MetadataSubentry>
+ * @extends AbstractRepository<MetadataSubentry>
  */
-class MetadataSubentryRepository extends Repository
+class MetadataSubentryRepository extends AbstractRepository
 {
 }

@@ -14,9 +14,11 @@ namespace Kitodo\Dlf\Command;
 
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Indexer;
+use Kitodo\Dlf\Domain\Model\SolrCore;
 use Kitodo\Dlf\Domain\Repository\CollectionRepository;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\LibraryRepository;
+use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Domain\Model\Collection;
 use Kitodo\Dlf\Domain\Model\Document;
@@ -25,15 +27,8 @@ use Kitodo\Dlf\Validation\DocumentValidator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
-use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Persistence\Generic\PersistenceManager;
 
 /**
  * Base class for CLI Command classes.
@@ -65,6 +60,12 @@ class BaseCommand extends Command
 
     /**
      * @access protected
+     * @var SolrCoreRepository
+     */
+    protected SolrCoreRepository $solrCoreRepository;
+
+    /**
+     * @access protected
      * @var StructureRepository
      */
     protected StructureRepository $structureRepository;
@@ -87,40 +88,24 @@ class BaseCommand extends Command
      */
     protected array $extConf;
 
-    /**
-     * @access protected
-     * @var ConfigurationManager
-     */
-    protected ConfigurationManager $configurationManager;
-
-    /**
-     * @access protected
-     * @var PersistenceManager
-     */
-    protected PersistenceManager $persistenceManager;
-
     public function __construct(
         CollectionRepository $collectionRepository,
         DocumentRepository $documentRepository,
         LibraryRepository $libraryRepository,
+        SolrCoreRepository $solrCoreRepository,
         StructureRepository $structureRepository,
-        ConfigurationManager $configurationManager,
-        PersistenceManager $persistenceManager
     ) {
         parent::__construct();
 
         $this->collectionRepository = $collectionRepository;
         $this->documentRepository = $documentRepository;
         $this->libraryRepository = $libraryRepository;
+        $this->solrCoreRepository = $solrCoreRepository;
         $this->structureRepository = $structureRepository;
-        $this->configurationManager = $configurationManager;
-        $this->persistenceManager = $persistenceManager;
     }
 
     /**
      * Initialize the extbase repository based on the given storagePid.
-     *
-     * TYPO3 10+: Find a better solution e.g. based on Symfony Dependency Injection.
      *
      * @access protected
      *
@@ -130,14 +115,12 @@ class BaseCommand extends Command
      */
     protected function initializeRepositories(int $storagePid): void
     {
-        $request = (new ServerRequest())->withAttribute("applicationType", SystemEnvironmentBuilder::REQUESTTYPE_BE);
-        $this->configurationManager->setRequest($request);
-        $frameworkConfiguration = $this->configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK);
-        $frameworkConfiguration['persistence']['storagePid'] = MathUtility::forceIntegerInRange($storagePid, 0);
-        $this->configurationManager->setConfiguration($frameworkConfiguration);
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf');
         $this->storagePid = MathUtility::forceIntegerInRange($storagePid, 0);
-        $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
+        $this->collectionRepository->useStoragePid($this->storagePid);
+        $this->documentRepository->useStoragePid($this->storagePid);
+        $this->libraryRepository->useStoragePid($this->storagePid);
+        $this->structureRepository->useStoragePid($this->storagePid);
     }
 
     /**
@@ -171,23 +154,13 @@ class BaseCommand extends Command
      */
     protected function getSolrCores(int $pageId): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_solrcores');
+        $this->solrCoreRepository->useStoragePid($pageId);
 
         $solrCores = [];
-        $result = $queryBuilder
-            ->select('uid', 'index_name')
-            ->from('tx_dlf_solrcores')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'pid',
-                    $queryBuilder->createNamedParameter($pageId, Connection::PARAM_INT)
-                )
-            )
-            ->executeQuery();
-
-        while ($record = $result->fetchAssociative()) {
-            $solrCores[$record['index_name']] = $record['uid'];
+        $cores = $this->solrCoreRepository->findAll();
+        /** @var SolrCore $core */
+        foreach ($cores as $core) {
+            $solrCores[$core->getIndexName()] = $core->getUid();
         }
 
         return $solrCores;
@@ -295,7 +268,7 @@ class BaseCommand extends Command
                 $this->documentRepository->update($document);
             }
 
-            $this->persistenceManager->persistAll();
+            $this->documentRepository->persistAll();
 
             return true;
         }
@@ -447,7 +420,7 @@ class BaseCommand extends Command
                 // add to CollectionRepository
                 $this->collectionRepository->add($documentCollection);
                 // persist collection to prevent duplicates
-                $this->persistenceManager->persistAll();
+                $this->collectionRepository->persistAll();
             }
             // add to document
             $document->addCollection($documentCollection);

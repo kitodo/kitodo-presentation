@@ -12,6 +12,10 @@
     LICENSE.txt file that was distributed with this source code.
 </f:comment>
 
+<f:if condition="{debugActive}">
+    <f:debug title="all">{_all}</f:debug>
+</f:if>
+
 <f:if condition="{settings.stylesheet}">
     <f:then>
         <?xml-stylesheet type="text/xsl" href="{f:uri.typolink(parameter:'{settings.stylesheet}', absolute:'1')}"?>

@@ -113,6 +113,10 @@ class MetadataController extends AbstractController
 
         $this->setPage();
 
+        $this->collectionRepository->useStoragePid($this->settings['storagePid']);
+        $this->metadataRepository->useStoragePid($this->settings['storagePid']);
+        $this->structureRepository->useStoragePid($this->settings['storagePid']);
+
         $this->currentDocument = $this->document->getCurrentDocument();
         $this->useOriginalIiifManifestMetadata = $this->settings['originalIiifMetadata'] == 1 && $this->currentDocument instanceof IiifManifest;
 
@@ -188,7 +192,7 @@ class MetadataController extends AbstractController
      *
      * @param mixed[] $metadata The metadata array
      *
-     * @return mixed[] The IIIF data array ready for output
+     * @return array<string,mixed> The IIIF data array ready for output
      */
     private function buildIiifData(array $metadata): array
     {
@@ -228,7 +232,7 @@ class MetadataController extends AbstractController
      * @param string $label The label string
      * @param string $value The value string
      *
-     * @return mixed[] The IIIF data array ready for output
+     * @return array{label:string,value:string,buildUrl:bool} The IIIF data array ready for output
      */
     private function buildIiifDataGroup(string $label, string $value): array
     {
@@ -257,7 +261,7 @@ class MetadataController extends AbstractController
      *
      * @param mixed[] $metadata The metadata array
      *
-     * @return mixed[] The raw metadata array ready for output
+     * @return array<int,array<string,mixed>> The raw metadata array ready for output
      */
     private function buildMetaConfigObjectData(array $metadata): array
     {
@@ -308,7 +312,7 @@ class MetadataController extends AbstractController
      *
      * @param mixed[] $metadata The metadata array
      *
-     * @return mixed[] URLs
+     * @return array<int,array<string,mixed>> URLs
      */
     private function buildUrlFromMetadata(array $metadata): array
     {
@@ -335,7 +339,7 @@ class MetadataController extends AbstractController
      *
      * @param mixed[] $metadata The metadata array
      *
-     * @return mixed[] of true values for metadata sections with external URLs
+     * @return array<int,array<string,mixed>> of true values for metadata sections with external URLs
      */
     private function hasExternalUrlForMetadata(array $metadata): array
     {
@@ -482,7 +486,7 @@ class MetadataController extends AbstractController
      *
      * @access private
      *
-     * @return mixed[] metadata
+     * @return array<int,array<string,mixed>> metadata
      */
     private function getMetadata(): array
     {
@@ -522,9 +526,9 @@ class MetadataController extends AbstractController
      * @access private
      *
      * @param mixed[] $id An array with ids
-     * @param mixed[] $metadata An array with metadata
+     * @param array<int,array<string,mixed>> $metadata An array with metadata
      *
-     * @return mixed[] metadata
+     * @return array<int,array<string,mixed>> metadata
      */
     private function getMetadataForIds(array $id, array $metadata): array
     {
@@ -548,9 +552,9 @@ class MetadataController extends AbstractController
      *
      * @access private
      *
-     * @param mixed[] $metadata
+     * @param array<int,mixed> $metadata
      *
-     * @return mixed[]
+     * @return array<int,mixed>
      */
     private function removeEmptyEntries(array $metadata): array
     {

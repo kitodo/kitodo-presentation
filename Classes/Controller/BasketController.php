@@ -119,6 +119,8 @@ class BasketController extends AbstractController
      */
     public function basketAction(): ResponseInterface
     {
+        $this->setStoragePid();
+
         $basket = $this->getBasketData();
 
         // action remove from basket
@@ -168,6 +170,8 @@ class BasketController extends AbstractController
      */
     public function addAction(): ResponseInterface
     {
+        $this->setStoragePid();
+
         $basket = $this->getBasketData();
 
         if (
@@ -189,6 +193,8 @@ class BasketController extends AbstractController
      */
     public function mainAction(): ResponseInterface
     {
+        $this->setStoragePid();
+
         $basket = $this->getBasketData();
 
         $countDocs = 0;
@@ -197,7 +203,7 @@ class BasketController extends AbstractController
         }
         $this->view->assign('countDocs', $countDocs);
 
-        $allMails = $this->mailRepository->findAllWithPid($this->settings['storagePid']);
+        $allMails = $this->mailRepository->findAll();
 
         $mailSelect = [];
         if (iterator_count($allMails) > 0) {
@@ -240,6 +246,8 @@ class BasketController extends AbstractController
      */
     protected function getBasketData(): Basket
     {
+        $this->basketRepository->useStoragePid($this->settings['storagePid']);
+
         // get user session
         $feUser = $this->request->getAttribute('frontend.user');
         $userSession = $feUser->getSession();
@@ -275,7 +283,7 @@ class BasketController extends AbstractController
      *
      * @param object|bool|null $data DocumentData
      *
-     * @return mixed[] One basket entry
+     * @return array<string,mixed> One basket entry
      */
     protected function getEntry(object|bool|null $data): array
     {
@@ -335,7 +343,7 @@ class BasketController extends AbstractController
      * @param string $id Document id
      * @param mixed[] $data DocumentData
      *
-     * @return mixed[]|false download url or false
+     * @return array<string,mixed>|false Download URL or false
      */
     protected function getDocumentData(string $id, array $data): array|false
     {
@@ -612,7 +620,7 @@ class BasketController extends AbstractController
         foreach ($hookObjects as $hookObj) {
             if (method_exists($hookObj, 'customizeMailBody')) {
                 // TODO: check it, this method doesnt exist in hooks
-                $mailBody = $hookObj->customizeMailBody($mailText, $pdfUrl); // @phpstan-ignore-line
+                $mailBody = $hookObj->customizeMailBody($mailText, $pdfUrl);
             }
         }
         $from = MailUtility::getSystemFrom();
@@ -725,5 +733,20 @@ class BasketController extends AbstractController
     {
         $context = GeneralUtility::makeInstance(Context::class);
         return $context->getPropertyFromAspect('frontend.user', 'isLoggedIn');
+    }
+
+    /**
+     * Set storage pid for repositories.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function setStoragePid(): void
+    {
+        $this->actionLogRepository->useStoragePid($this->settings['storagePid']);
+        $this->basketRepository->useStoragePid($this->settings['storagePid']);
+        $this->mailRepository->useStoragePid($this->settings['storagePid']);
+        $this->printerRepository->useStoragePid($this->settings['storagePid']);
     }
 }

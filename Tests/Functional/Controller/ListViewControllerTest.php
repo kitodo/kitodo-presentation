@@ -46,7 +46,7 @@ class ListViewControllerTest extends AbstractControllerTestCase
         $settings = [
             'solrcore' => self::$solrCoreId,
             'storagePid' => self::$storagePid,
-            'dont_show_single' => 'some_value',
+            'showSingle' => '0',
             'randomize' => ''
         ];
         $templateHtml = '<html xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers">

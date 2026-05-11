@@ -111,9 +111,9 @@ class DocumentRepositoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function canFindOneByIdAndSettings(): void
+    public function canFindByUid(): void
     {
-        $document = $this->documentRepository->findOneByIdAndSettings(1001);
+        $document = $this->documentRepository->findByUid(1001);
         self::assertInstanceOf(Document::class, $document);
         self::assertEquals(1001, $document->getUid());
     }
@@ -175,7 +175,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
      */
     public function canGetOaiRecord(): void
     {
-        $settings = ['show_userdefined' => false, 'storagePid' => 20000];
+        $settings = ['showUserDefined' => false, 'storagePid' => 20000];
         $parameters = ['identifier' => 'oai:de:slub-dresden:db:id-476251419'];
 
         $record = $this->documentRepository->getOaiRecord($settings, $parameters);

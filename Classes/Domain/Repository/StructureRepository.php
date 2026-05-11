@@ -12,8 +12,11 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
+use Doctrine\DBAL\Exception;
+use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\Structure;
-use TYPO3\CMS\Extbase\Persistence\Repository;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Structure repository.
@@ -25,8 +28,39 @@ use TYPO3\CMS\Extbase\Persistence\Repository;
  *
  * @method Structure|null findOneBy(array $criteria) Get a structure by criteria
  *
- * @extends Repository<Structure>
+ * @extends AbstractRepository<Structure>
  */
-class StructureRepository extends Repository
+class StructureRepository extends AbstractRepository
 {
+
+    /**
+     * Finds structure element to get thumbnail from.
+     *
+     * @param int $pid
+     * @param string $type
+     *
+     * @return list<array<string,mixed>>
+     *
+     * @throws Exception
+     */
+    public function findThumbnail(int $pid, string $type): array
+    {
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getQueryBuilderForTable('tx_dlf_structures');
+
+        $query = $queryBuilder
+            ->select('tx_dlf_structures.thumbnail AS thumbnail')
+            ->from('tx_dlf_structures')
+            ->where(
+                $queryBuilder->expr()->eq('tx_dlf_structures.pid', $pid),
+                $queryBuilder->expr()->eq(
+                    'tx_dlf_structures.index_name',
+                    $queryBuilder->expr()->literal($type)
+                ),
+                Helper::whereExpression('tx_dlf_structures')
+            )
+            ->setMaxResults(1);
+
+        return $query->executeQuery()->fetchAllAssociative();
+    }
 }

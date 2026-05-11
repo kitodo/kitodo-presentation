@@ -207,6 +207,19 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
+     * Activate debug mode for the view in the controller,
+     * which allows to output the debug of all variables in the template.
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function activateDebugMode(): void
+    {
+        $this->view->assign('debugActive', true);
+    }
+
+    /**
      * Build the multiview documents.
      *
      * @param string $docUrl The URL of the document.
@@ -259,6 +272,8 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         // Sanitize FlexForm settings to avoid later casting.
         $this->sanitizeSettings();
 
+        $this->documentRepository->useStoragePid($this->settings['storagePid']);
+
         // Get document ID from request data if not passed as parameter.
         if (!$documentId && !empty($this->requestData['id'])) {
             $documentId = $this->requestData['id'];
@@ -266,8 +281,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
         // Try to get document format from database
         if (!empty($documentId)) {
-
-
             $doc = null;
 
             if (MathUtility::canBeInterpretedAsInteger($documentId)) {
@@ -279,9 +292,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             if ($this->document !== null && $doc !== null) {
                 $this->document->setCurrentDocument($doc);
             }
-
         } elseif (!empty($this->requestData['recordId'])) {
-
             $this->document = $this->documentRepository->findOneBy(['recordId' => $this->requestData['recordId']]);
 
             if ($this->document !== null) {
@@ -404,7 +415,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @param string $parameterName
      * @param string[] $pluginNames
      *
-     * @return mixed[]
+     * @return array<string,mixed> Array parameter from the request or an empty array
      */
     protected function getArrayParameterSafely(string $parameterName, array $pluginNames = []): array
     {
@@ -581,7 +592,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
         if ($this instanceof OaiPmhController) {
             $this->setDefaultIntSetting('limit', 5);
-            $this->setDefaultIntSetting('solr_limit', 50000);
+            $this->setDefaultIntSetting('solrLimit', 50000);
         }
 
         if ($this instanceof PageViewController) {
@@ -673,7 +684,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      * @param PaginationInterface $pagination
      * @param PaginatorInterface $paginator
      *
-     * @return mixed[]
+     * @return array<string,mixed> Array containing pagination data (ints, arrays and nulls)
      */
     //TODO: clean this function
     protected function buildSimplePagination(PaginationInterface $pagination, PaginatorInterface $paginator): array
@@ -796,12 +807,12 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @param int $documentId The document's UID
      *
-     * @return AbstractDocument
+     * @return ?AbstractDocument
      */
-    private function getDocumentByUid(int $documentId)
+    private function getDocumentByUid(int $documentId): ?AbstractDocument
     {
         $doc = null;
-        $this->document = $this->documentRepository->findOneByIdAndSettings($documentId);
+        $this->document = $this->documentRepository->findByUid($documentId);
 
         if ($this->document) {
             $doc = Helper::getDocumentInstance($this->document->getLocation(), $this->settings);
@@ -825,9 +836,9 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      *
      * @param string $documentUrl The document's URL
      *
-     * @return AbstractDocument
+     * @return ?AbstractDocument
      */
-    protected function getDocumentByUrl(string $documentUrl)
+    protected function getDocumentByUrl(string $documentUrl): ?AbstractDocument
     {
         $doc = Helper::getDocumentInstance($documentUrl, $this->settings);
         if ($doc !== null) {

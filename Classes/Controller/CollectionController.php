@@ -83,6 +83,9 @@ class CollectionController extends AbstractController
             return $this->htmlResponse();
         }
 
+        $this->collectionRepository->useStoragePid($this->settings['storagePid']);
+        $this->metadataRepository->useStoragePid($this->settings['storagePid']);
+
         // Sort collections according to order in plugin flexform configuration
         if ($this->settings['collections']) {
             $sortedCollections = [];
@@ -94,7 +97,7 @@ class CollectionController extends AbstractController
             $collections = $this->collectionRepository->findAll();
         }
 
-        if (iterator_count($collections) == 1 && empty($this->settings['dont_show_single']) && is_array($collections)) {
+        if (iterator_count($collections) == 1 && empty($this->settings['showSingle']) && is_array($collections)) {
             return $this->redirect('show', null, null, ['collection' => array_pop($collections)]);
         }
 
@@ -219,7 +222,7 @@ class CollectionController extends AbstractController
      * @param array<Collection> $collections to be processed
      * @param Solr $solr for query
      *
-     * @return mixed[]
+     * @return array<int,array{collection:Collection,info:array<string,mixed>}> Processed collections keyed by priority-based integer
      */
     private function processCollections(array$collections, Solr $solr): array
     {

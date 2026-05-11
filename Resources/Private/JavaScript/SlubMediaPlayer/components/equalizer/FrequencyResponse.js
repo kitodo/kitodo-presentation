@@ -91,10 +91,11 @@ export default class FrequencyResponse {
   }
 
   /**
-   * @private
    * @param {number[]} coefficients
    * @param {number} w
    * @returns {[number, number]}
+   *
+   * @private
    */
   fft(coefficients, w) {
     let real = 0;
