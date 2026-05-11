@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Common\Solr;
 
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Solarium\Client;
@@ -20,7 +21,6 @@ use Solarium\Core\Client\Adapter\Http;
 use Solarium\QueryType\Server\CoreAdmin\Result\StatusResult;
 use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
@@ -193,31 +193,14 @@ class Solr implements LoggerAwareInterface
     {
         // Is there a field query?
         if (preg_match('/^[[:alnum:]]+_[tu][su]i:\(?.*\)?$/', $query)) {
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_metadata');
-
             // Get all indexed fields.
             $fields = [];
-            $result = $queryBuilder
-                ->select(
-                    'index_name',
-                    'index_tokenized',
-                    'index_stored'
-                )
-                ->from('tx_dlf_metadata')
-                ->where(
-                    $queryBuilder->expr()->eq('index_indexed', 1),
-                    $queryBuilder->expr()->eq('pid', (int) $pid),
-                    $queryBuilder->expr()->or(
-                        $queryBuilder->expr()->in('sys_language_uid', [-1, 0]),
-                        $queryBuilder->expr()->eq('l18n_parent', 0)
-                    ),
-                    Helper::whereExpression('tx_dlf_metadata')
-                )
-                ->executeQuery();
+            $metadataRepository = GeneralUtility::makeInstance(MetadataRepository::class);
+            $metadataRepository->useStoragePid($pid);
+            $result = $metadataRepository->findIndexedFields();
 
-            while ($resArray = $result->fetchAssociative()) {
-                $fields[] = $resArray['index_name'] . '_' . ($resArray['index_tokenized'] ? 't' : 'u') . ($resArray['index_stored'] ? 's' : 'u') . 'i';
+            foreach ($result as $metadata) {
+                $fields[] = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . 'i';
             }
 
             // Check if queried field is valid.

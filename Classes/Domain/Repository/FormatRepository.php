@@ -12,10 +12,7 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use Doctrine\DBAL\Exception;
 use Kitodo\Dlf\Domain\Model\Format;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Format repository.
@@ -29,35 +26,4 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class FormatRepository extends AbstractRepository
 {
-
-    /**
-     * Find all formats by given pid.
-     *
-     * @access public
-     *
-     * @param int $pid
-     *
-     * @return list<array<string,mixed>>
-     *
-     * @throws Exception
-     */
-    public function findByPid(int $pid): array
-    {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getQueryBuilderForTable('tx_dlf_formats');
-
-        // Get available data formats from database.
-        return $queryBuilder
-            ->select(
-                'type',
-                'root',
-                'namespace',
-                'class'
-            )
-            ->from('tx_dlf_formats')
-            ->where(
-                $queryBuilder->expr()->eq('pid', $pid)
-            )
-            ->executeQuery()->fetchAllAssociative();
-    }
 }
