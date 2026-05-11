@@ -46,8 +46,8 @@ dlfScoreUtil.fetchScoreDataFromServer = function (image, scoreUrl, pagebeginning
     pageHeight: image.height,
     pageWidth: image.width,
     adjustPageHeight: true,
-    adjustPageWidth: true,
-    scale: image.width > image.height ? 40 : 80
+    adjustPageWidth: false,
+    scaleToPageSize: true
   });
 
   if (scoreUrl === '') {
@@ -276,13 +276,11 @@ const dlfViewerScoreControl = function (dlfViewer, pagebeginning, pagecount) {
  */
 dlfViewerScoreControl.prototype.loadScoreData = function (image, scoreData, tk) {
   var target = document.getElementById('tx-dlf-score-' + this.dlfViewer.counter);
-  // Const target = document.getElementById('tx-dlf-score');
 
   const width = image.width;
   const height = image.height;
 
   var extent = [-width, -height, width, height];
-  // [offsetWidth, -imageSourceObj.height, imageSourceObj.width + offsetWidth, 0]
 
   var proj = new ol.proj.Projection({
     code: 'score-projection',
@@ -295,7 +293,6 @@ dlfViewerScoreControl.prototype.loadScoreData = function (image, scoreData, tk) 
     // View: tx_dlf_viewer.view,
     view: new ol.View({
       projection: proj,
-      //Center: [0, 0],            center: ol.extent.getCenter(extent),
       center: [0, 0],
       extent,
       zoom: 1,
@@ -363,11 +360,8 @@ dlfViewerScoreControl.prototype.loadScoreData = function (image, scoreData, tk) 
     } else if (pdfFormat === "B4") {
       pdfSize = [2500, 3530];
     }
-
     var pdfOrientation = width > height ? 'landscape' : '';
     var pdfLandscape = pdfOrientation === 'landscape';
-    var pdfHeight = pdfLandscape ? pdfSize[0] : pdfSize[1];
-    var pdfWidth = pdfLandscape ? pdfSize[1] : pdfSize[0];
 
     /**
      * Get the font name
@@ -414,13 +408,15 @@ dlfViewerScoreControl.prototype.loadScoreData = function (image, scoreData, tk) 
     var pdfOptions = {
       adjustPageHeight: false,
       adjustPageWidth: false,
-      breaks: "auto",
+      justifyVertically: true,
+      landscape: pdfLandscape,
       mdivAll: true,
       mmOutput: true,
-      footer: "auto",
-      pageHeight: pdfHeight,
-      pageWidth: pdfWidth,
-      scale: pdfOrientation === 'landscape' ? 80 : 100
+      pageHeight: pdfSize[1],
+      pageMarginBottom: pdfLandscape ? 0 : 200,
+      pageMarginLeft: pdfLandscape ? 240 : 50,
+      pageWidth: pdfSize[0],
+      scaleToPageSize: true
     };
 
     const pdf_tk = new verovio.toolkit();
