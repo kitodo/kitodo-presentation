@@ -284,6 +284,31 @@ class MetadataRepository extends AbstractRepository
     }
 
     /**
+     * Find all metadata which is indexed.
+     *
+     * @access public
+     *
+     * @return QueryResultInterface<int, Metadata>
+     */
+    public function findIndexedFields(): QueryResultInterface
+    {
+        $query = $this->createQuery();
+
+        $constraints = [];
+        $constraints[] = $query->equals('indexIndexed', 1);
+        $constraints[] = $query->logicalOr(
+            $query->in('sysLanguageUid', [-1, 0]),
+            $query->equals('l18nParent', 0)
+        );
+
+        $query->matching($query->logicalAnd(...$constraints));
+
+        $this->debugQuery($query);
+
+        return $query->execute();
+    }
+
+    /**
      * Get query builder for tx_dlf_metadata table.
      *
      * @return QueryBuilder

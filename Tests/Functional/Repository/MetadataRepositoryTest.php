@@ -71,9 +71,9 @@ class MetadataRepositoryTest extends FunctionalTestCase
     public function canFindBySettings(): void
     {
         $metadataByLabel = $this->findBySettings([]);
-        self::assertCount(6, $metadataByLabel);
+        self::assertCount(7, $metadataByLabel);
         self::assertEquals(
-            'Ort, Untertitel, Autor, Institution, Sammlungen, Titel',
+            'Ort, Untertitel, Autor, Institution, Sammlungen, Titel, PURL',
             implode(', ', array_keys($metadataByLabel))
         );
 
@@ -102,5 +102,15 @@ class MetadataRepositoryTest extends FunctionalTestCase
             'Autor, Titel',
             implode(', ', array_keys($metadataByLabel))
         );
+    }
+
+    /**
+     * @test
+     * @group find
+     */
+    public function canFindIndexedFields(): void
+    {
+        $metadata = $this->metadataRepository->findIndexedFields();
+        self::assertEquals(6, $metadata->count());
     }
 }
