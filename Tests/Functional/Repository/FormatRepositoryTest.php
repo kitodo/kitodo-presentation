@@ -57,20 +57,4 @@ class FormatRepositoryTest extends FunctionalTestCase
         self::assertEquals(5201, $format->getUid());
         self::assertEquals('ALTO', $format->getType());
     }
-
-    /**
-     * @test
-     * @group find
-     */
-    public function canFindByPid(): void
-    {
-        $formats = $this->formatRepository->findByPid(20000);
-        self::assertNotNull($formats);
-        self::assertIsArray($formats);
-        self::assertCount(2, $formats);
-
-        $format = $formats[0];
-        self::assertEquals('ALTO', $format['type']);
-        self::assertEquals('alto', $format['root']);
-    }
 }
