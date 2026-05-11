@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Common;
 
 use Kitodo\Dlf\Configuration\UseGroupsConfiguration;
+use Kitodo\Dlf\Domain\Model\Format;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -731,14 +732,14 @@ abstract class AbstractDocument
     protected function loadFormats(): void
     {
         if (!$this->formatsLoaded && $this->configPid > 0) {
-            // TODO: it should work with findBy(['pid' => this->configPid]) or findAll(), but returns empty result
-            $formats = $this->formatRepository->findByPid($this->configPid);
+            $formats = $this->formatRepository->findAll();
 
+            /** @var Format $format */
             foreach ($formats as $format) {
-                $this->formats[$format['type']] = [
-                    'rootElement' => $format['root'],
-                    'namespaceURI' => $format['namespace'],
-                    'class' => $format['class']
+                $this->formats[$format->getType()] = [
+                    'rootElement' => $format->getRoot(),
+                    'namespaceURI' => $format->getNamespace(),
+                    'class' => $format->getClass()
                 ];
             }
 
@@ -1029,6 +1030,7 @@ abstract class AbstractDocument
         $this->configPid = $storagePid;
         $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
         $this->formatRepository = GeneralUtility::makeInstance(FormatRepository::class);
+        $this->formatRepository->useStoragePid($storagePid);
         $this->setPreloadedDocument($preloadedDocument);
         $this->init($location, $settings);
         $this->establishRecordId($storagePid);
