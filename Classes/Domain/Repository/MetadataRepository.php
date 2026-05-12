@@ -173,37 +173,43 @@ class MetadataRepository extends AbstractRepository
                 $queryBuilder->expr()->eq('tx_dlf_formats_joins.type', $queryBuilder->createNamedParameter($type))
             );
 
+        $this->debugQueryBuilder($query);
+
         return $query->executeQuery()->fetchAllAssociative();
     }
 
     /**
      * Finds all metadata without a format, but with a default value.
      *
-     * @param int $pid
-     *
      * @return list<array<string,mixed>>
      *
      * @throws Exception
      */
-    public function findWithoutFormat(int $pid): array
+    public function findWithoutFormat(): array
     {
-        $queryBuilder = $this->getQueryBuilder();
-        $query = $queryBuilder
-            ->select(
-                self::TABLE . '.index_name AS index_name',
-                self::TABLE . '.is_sortable AS is_sortable',
-                self::TABLE . '.default_value AS default_value',
-                self::TABLE . '.format AS format'
-            )
-            ->from(self::TABLE)
-            ->where(
-                $queryBuilder->expr()->eq(self::TABLE . '.pid', $pid),
-                $queryBuilder->expr()->eq(self::TABLE . '.l18n_parent', 0),
-                $queryBuilder->expr()->eq(self::TABLE . '.format', 0),
-                $queryBuilder->expr()->neq(self::TABLE . '.default_value', $queryBuilder->createNamedParameter(''))
-            );
+        $query = $this->createQuery();
 
-        return $query->executeQuery()->fetchAllAssociative();
+        $constraints = [];
+        $constraints[] = $query->equals('l18nParent', 0);
+        $constraints[] = $query->equals('format', 0);
+        $constraints[] = $query->logicalNot($query->equals('defaultValue', ''));
+
+        $query->matching($query->logicalAnd(...$constraints));
+
+        $this->debugQuery($query);
+
+        $result = $query->execute();
+
+        $rows = [];
+        foreach ($result as $metadata) {
+            $rows[] = [
+                'index_name' => $metadata->getIndexName(),
+                'is_sortable' => $metadata->getIsSortable(),
+                'default_value' => $metadata->getDefaultValue(),
+            ];
+        }
+
+        return $rows;
     }
 
     /**
