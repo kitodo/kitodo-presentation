@@ -691,6 +691,7 @@ final class IiifManifest extends AbstractDocument
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
         $this->metadataRepository = GeneralUtility::makeInstance(MetadataRepository::class);
+        $this->metadataRepository->useStoragePid($this->configPid);
     }
 
     /**
