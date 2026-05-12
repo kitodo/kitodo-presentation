@@ -17,6 +17,7 @@ use DOMElement;
 use DOMNode;
 use DOMNodeList;
 use DOMXPath;
+use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Hooks\KitodoProductionHacks;
@@ -1121,8 +1122,12 @@ final class MetsDocument extends AbstractDocument
     protected function init(string $location, array $settings): void
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($this));
+        $this->formatRepository = GeneralUtility::makeInstance(FormatRepository::class);
         $this->metadataRepository = GeneralUtility::makeInstance(MetadataRepository::class);
         $this->structureRepository = GeneralUtility::makeInstance(StructureRepository::class);
+        $this->formatRepository->useStoragePid($this->configPid);
+        $this->metadataRepository->useStoragePid($this->configPid);
+        $this->structureRepository->useStoragePid($this->configPid);
         $this->settings = $settings;
         // Get METS node from XML file.
         $this->registerNamespaces($this->xml);
