@@ -138,7 +138,11 @@ class MetadataRepositoryTest extends FunctionalTestCase
      */
     public function canFindWithoutFormat(): void
     {
-        $metadata = $this->metadataRepository->findWithoutFormat(20000);
+        $metadata = $this->metadataRepository->findWithoutFormat();
         self::assertCount(3, $metadata);
+        self::assertCount(3, $metadata[0]);
+        self::assertEquals('author', $metadata[0]['index_name']);
+        self::assertEquals('institution', $metadata[1]['index_name']);
+        self::assertEquals('purl', $metadata[2]['index_name']);
     }
 }
