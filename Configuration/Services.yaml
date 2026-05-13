@@ -19,6 +19,12 @@ services:
         command: 'kitodo:setup'
         description: 'Create a default root page tree and viewer setup.'
 
+  Kitodo\Dlf\Command\TenantSetupCommand:
+    tags:
+      - name: console.command
+        command: 'kitodo:tenantSetup'
+        description: 'Run the tenant setup for an existing configuration folder.'
+
   Kitodo\Dlf\Command\DeleteCommand:
     tags:
       - name: console.command
