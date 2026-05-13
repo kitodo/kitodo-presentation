@@ -33,7 +33,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  */
 class MetadataRepository extends AbstractRepository
 {
-    const TABLE = 'tx_dlf_metadata';
+    private const TABLE = 'tx_dlf_metadata';
 
     /**
      * Finds all collection for the given settings
@@ -313,7 +313,7 @@ class MetadataRepository extends AbstractRepository
      *
      * @return QueryBuilder
      */
-    private function getQueryBuilder() : QueryBuilder
+    private function getQueryBuilder(): QueryBuilder
     {
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable(self::TABLE);

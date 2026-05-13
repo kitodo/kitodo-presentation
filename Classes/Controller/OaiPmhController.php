@@ -228,7 +228,7 @@ class OaiPmhController extends AbstractController
      *
      * @return void
      */
-    private function addDublinCoreData(array &$metadata, string $key,string $value): void
+    private function addDublinCoreData(array &$metadata, string $key, string $value): void
     {
         if (!empty($value)) {
             $metadata[] = [$key => $value];
