@@ -48,7 +48,7 @@ final class BootstrapRootSetupService
         $this->writeSiteConfiguration($context, $rootPageId);
 
         $configurationPageId = $this->createPage($rootPageId, self::CONFIGURATION_PAGE_TITLE, ['doktype' => 254, 'sorting' => 256]);
-        $viewerPageId = $this->createPage($rootPageId, self::VIEWER_PAGE_TITLE, ['slug' => $context['viewerPageSlug'],'sorting' => 512]);
+        $viewerPageId = $this->createPage($rootPageId, self::VIEWER_PAGE_TITLE, ['slug' => $context['viewerPageSlug'], 'sorting' => 512]);
 
         $templateId = $this->ensureTemplate($rootPageId);
         $this->updateTemplate(
@@ -247,7 +247,7 @@ final class BootstrapRootSetupService
 
     /**
      * Asserts that the given site identifier is available (no existing site folder with the same name).
-     * 
+     *
      * @param string $siteIdentifier
      * @throws RuntimeException
      * @return void
@@ -261,7 +261,7 @@ final class BootstrapRootSetupService
 
     /**
      * Checks whether a site with the given identifier already exists.
-     * 
+     *
      * @param string $siteIdentifier
      * @return bool
      */
@@ -278,7 +278,7 @@ final class BootstrapRootSetupService
 
     /**
      * Checks if any existing site configuration uses the given site base.
-     * 
+     *
      * @param string $siteBase
      * @return bool
      */
@@ -295,7 +295,7 @@ final class BootstrapRootSetupService
 
     /**
      * Asserts that the given root page title is available (no existing root page with the same title).
-     * 
+     *
      * @param string $rootPageTitle
      * @throws RuntimeException
      * @return void
@@ -321,10 +321,11 @@ final class BootstrapRootSetupService
 
     /**
      * Asserts that custom root and viewer slugs are only used together with the root site base "/" to avoid conflicts with existing pages.
-     * 
+     *
      * @param string $siteBase
      * @param string $rootSlug
      * @param string $viewerSlug
+     * @throws RuntimeException
      * @return void
      */
     private function assertBaseCompatibleWithSlugs(string $siteBase, string $rootSlug, string $viewerSlug): void
@@ -339,7 +340,7 @@ final class BootstrapRootSetupService
 
     /**
      * Normalizes and validates the custom site identifier option. It must only contain lowercase letters, numbers and hyphens.
-     * 
+     *
      * @param mixed $value
      * @return string|null The normalized identifier or null if no valid value is provided.
      */
@@ -357,7 +358,7 @@ final class BootstrapRootSetupService
 
     /**
      * Normalizes and validates the custom site base option. It must start with a slash and end with a slash (unless it's just "/").
-     * 
+     *
      * @param mixed $value
      * @return string|null The normalized base or null if no valid value is provided.
      */
@@ -378,7 +379,7 @@ final class BootstrapRootSetupService
 
     /**
      * Normalizes and validates the custom slug options. They must start with a slash and must not end with a slash (unless it's just "/").
-     * 
+     *
      * @param mixed $value
      * @param string $optionName The name of the option for error messages.
      * @return string|null The normalized slug or null if no valid value is provided.
@@ -406,7 +407,7 @@ final class BootstrapRootSetupService
 
     /**
      * Creates or updates the root template and ensures the required static TypoScript includes are present.
-     * 
+     *
      * @param int $rootPageId The UID of the root page.
      * @return int The uid of the created or updated template record.
      */
@@ -462,7 +463,7 @@ final class BootstrapRootSetupService
 
     /**
      * Rewrites the bootstrap template constants to the imported page IDs.
-     * 
+     *
      * @param int $templateId The uid of the template record to update.
      * @param int $rootPageId The UID of the root page.
      * @param int $viewerPageId The UID of the viewer page.
@@ -474,8 +475,7 @@ final class BootstrapRootSetupService
         int $rootPageId,
         int $viewerPageId,
         int $configurationPageId
-    ): void
-    {
+    ): void {
         $constants = [
             'plugin.tx_dlf.persistence.storagePid = ' . $configurationPageId,
             'plugin.tx_dlf.basicViewer.rootPid = ' . $rootPageId,
@@ -494,7 +494,7 @@ final class BootstrapRootSetupService
 
     /**
      * Determines the next sorting value for a new page under the given parent page by finding the current maximum sorting value and adding 256.
-     * 
+     *
      * @param int $pid
      * @return int The next sorting value to use for a new page under the given parent page.
      */
@@ -516,7 +516,7 @@ final class BootstrapRootSetupService
 
     /**
      * Inserts a new row into the given table with the provided data and returns the uid of the newly created record.
-     * 
+     *
      * @param string $table The name of the table to insert into.
      * @param array<string, mixed> $data The data to insert.
      * @return int The uid of the newly created record.
@@ -530,7 +530,7 @@ final class BootstrapRootSetupService
 
     /**
      * Updates a row in the given table with the provided data.
-     * 
+     *
      * @param string $table The name of the table to update.
      * @param int $uid The uid of the row to update.
      * @param array<string, mixed> $data The data to update.
@@ -544,7 +544,7 @@ final class BootstrapRootSetupService
 
     /**
      * Merges the required static TypoScript files with any existing includes, ensuring there are no duplicates and that the required files are included.
-     * 
+     *
      * @param string $includeStaticFile The existing include_static_file value from the template record.
      * @return string The merged include_static_file value with required files included.
      */

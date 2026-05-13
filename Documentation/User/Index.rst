@@ -21,6 +21,7 @@ User Manual
 
    ManualViewerSetup
    BootstrapViewerSetup
+   TenantSetup
 
 .. _indexing_documents:
 
