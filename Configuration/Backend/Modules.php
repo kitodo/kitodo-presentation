@@ -26,7 +26,7 @@ return [
         'navigationComponentId' => '@typo3/backend/page-tree/page-tree-element',
         'controllerActions'     => [
             \Kitodo\Dlf\Controller\Backend\NewTenantController::class => [
-                'index','error','addFormat','addMetadata','addSolrCore','addStructure'
+                'index','error','createPages','addFormat','addMetadata','addSolrCore','addStructure'
             ],
         ],
     ],

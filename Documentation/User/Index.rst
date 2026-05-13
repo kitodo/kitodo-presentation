@@ -20,6 +20,7 @@ User Manual
    :hidden:
 
    ManualViewerSetup
+   BootstrapViewerSetup
 
 .. _indexing_documents:
 

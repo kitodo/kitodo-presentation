@@ -1,0 +1,33 @@
+<f:comment>
+    <!--
+     * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+     *
+     * This file is part of the Kitodo and TYPO3 projects.
+     *
+     * @license GNU General Public License version 3 or later.
+     * For the full copyright and license information, please read the
+     * LICENSE.txt file that was distributed with this source code.
+    -->
+</f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers/Be"
+      data-namespace-typo3-fluid="true">
+
+<f:variable name="rootSetupTitle" value="{f:translate(key: 'newTenant.rootSetupMissing')}" />
+<f:variable name="rootSetupMessage" value="{f:translate(key: 'newTenant.rootSetupMissingMsg')}" />
+<f:if condition="{refreshPageTree}">
+    <be:pageRenderer includeJsFiles="{0: 'EXT:dlf/Resources/Public/JavaScript/Backend/new-tenant-root.js'}" />
+</f:if>
+
+<div class="module-body t3js-module-body" data-refresh-page-tree="{f:if(condition: refreshPageTree, then: '1', else: '0')}">
+    <h1><f:translate key="newTenant.module" /></h1>
+
+    <div class="p-2">
+        <f:render partial="Backend/InfoBox" arguments="{title: rootSetupTitle, message: rootSetupMessage, alert: 'warning'}" />
+        <f:form action="createPages" name="pages">
+            <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createPages')}" class="btn btn-primary" />
+        </f:form>
+    </div>
+</div>
+
+</html>
