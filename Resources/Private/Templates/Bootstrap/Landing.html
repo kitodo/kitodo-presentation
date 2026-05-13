@@ -1,0 +1,89 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+<div class="tx-dlf-default-viewer-shell tx-dlf-default-viewer-landing">
+    <div class="tx-dlf-default-viewer-welcome">
+        <section class="tx-dlf-default-viewer-welcome-hero">
+            <p class="tx-dlf-default-viewer-kicker">Kitodo Presentation</p>
+            <h1>New viewer instance</h1>
+            <p class="tx-dlf-default-viewer-welcome-lead">
+                This installation already includes a working viewer page and a prepared configuration folder.
+            </p>
+
+            <form class="tx-dlf-default-viewer-input-form" action="{f:uri.page(pageUid: viewerPid)}" method="get" onsubmit="var input=this.querySelector('input[name='tx_dlf[id]']'); if(input){ input.value=input.value.trim(); }">
+                <label class="tx-dlf-default-viewer-input-label" for="tx-dlf-default-viewer-document-url">
+                    Enter a METS, OAI-PMH or other supported document URL
+                </label>
+                <div class="tx-dlf-default-viewer-input-row">
+                    <input id="tx-dlf-default-viewer-document-url"
+                           class="tx-dlf-default-viewer-input"
+                           type="url"
+                           name="tx_dlf[id]"
+                           placeholder="https://example.org/record.xml"
+                           inputmode="url"
+                           autocomplete="off" />
+                    <button type="submit" class="tx-dlf-default-viewer-button">Open</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="tx-dlf-default-viewer-welcome-section">
+            <div class="tx-dlf-default-viewer-welcome-header">
+                <p class="tx-dlf-default-viewer-kicker">Examples</p>
+                <h2>Examples of supported content types</h2>
+            </div>
+
+            <div class="tx-dlf-default-viewer-example-grid">
+                <article class="tx-dlf-default-viewer-example-card">
+                    <p class="tx-dlf-default-viewer-kicker">Classic documents</p>
+                    <h3>Prints, letters, newspapers</h3>
+                    <p>Representative METS/OAI-PMH document for traditional digitized materials such as prints, letters, newspapers and other classic sources.</p>
+                    <p>Examples:</p>
+                    <f:link.page pageUid="{viewerPid}" class="tx-dlf-default-viewer-link"
+                        additionalParams="{tx_dlf: {id: 'http://digital.slub-dresden.de/oai/?verb=GetRecord&metadataPrefix=mets&identifier=oai:de:slub-dresden:db:id-263566811'}}">
+                        "Der furnembsten, notwendigsten, der gantzen Architectur ..."
+                    </f:link.page>
+                    <f:link.page pageUid="{viewerPid}" class="tx-dlf-default-viewer-link"
+                        additionalParams="{tx_dlf: {id: 'http://daten.digitale-sammlungen.de/~db/mets/bsb00020619_mets.xml'}}">
+                        "Prima [- Undecima] pars librorum divi Aurelii Augustini ..."
+                    </f:link.page>
+                    <f:link.page pageUid="{viewerPid}" class="tx-dlf-default-viewer-link"
+                        additionalParams="{tx_dlf: {id: 'https://digi.bib.uni-mannheim.de/fileadmin/digi/428458289/428458289.xml'}}">
+                        "Historia Baetica"
+                    </f:link.page>
+                </article>
+
+                <article class="tx-dlf-default-viewer-example-card">
+                    <p class="tx-dlf-default-viewer-kicker">Musical sources</p>
+                    <h3>Scores and bar-by-bar navigation</h3>
+                    <p>Support for digitized musical sources in MEI format is stable. Musical scores are rendered with Verovio and can be navigated bar by bar.</p>
+                    <span class="tx-dlf-default-viewer-link tx-dlf-default-viewer-link-muted">Examples coming soon</span>
+                </article>
+
+                <article class="tx-dlf-default-viewer-example-card">
+                    <p class="tx-dlf-default-viewer-kicker">3D objects</p>
+                    <h3>Embedded model viewers</h3>
+                    <p>Support for 3D objects is now an official feature. Kitodo.Presentation integrates Google&apos;s open source model-viewer and also allows other viewers to be used instead.</p>
+                    <span class="tx-dlf-default-viewer-link tx-dlf-default-viewer-link-muted">Examples coming soon</span>
+                </article>
+            </div>
+        </section>
+
+        <section class="tx-dlf-default-viewer-welcome-section tx-dlf-default-viewer-welcome-section-compact">
+            <div class="tx-dlf-default-viewer-welcome-header">
+                <p class="tx-dlf-default-viewer-kicker">Formats</p>
+                <h2>Supported input formats</h2>
+            </div>
+            <ul class="tx-dlf-default-viewer-format-list">
+                <li>OAI-PMH endpoints delivering compatible records</li>
+                <li>METS documents</li>
+                                <li>OCR and full text via ALTO and TEI</li>
+                <li>MEI-based musical sources</li>
+                <li>3D object workflows through configured embedded viewers</li>
+            </ul>
+            <p>
+                Open documents on the viewer page by passing the source URL in <code>tx_dlf[id]</code>.
+            </p>
+        </section>
+    </div>
+</div>
+</html>
