@@ -1,0 +1,6 @@
+plugin.tx_dlf {
+    basicViewer {
+        rootPid =
+        viewerPid =
+    }
+}
