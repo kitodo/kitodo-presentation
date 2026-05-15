@@ -1,0 +1,85 @@
+page = PAGE
+page {
+    typeNum = 0
+    meta.viewport = width=device-width, initial-scale=1
+    includeCSS.dlfBasicViewer = EXT:dlf/Resources/Public/Stylesheets/default-viewer.css
+
+    10 = FLUIDTEMPLATE
+    10 {
+        templateRootPaths.10 = EXT:dlf/Resources/Private/Templates/Bootstrap/
+        file = EXT:dlf/Resources/Private/Templates/Bootstrap/Landing.html
+
+        variables {
+            rootPid = TEXT
+            rootPid.value = {$plugin.tx_dlf.basicViewer.rootPid}
+
+            viewerPid = TEXT
+            viewerPid.value = {$plugin.tx_dlf.basicViewer.viewerPid}
+
+            documentId = TEXT
+            documentId.data = GP:tx_dlf|id
+        }
+    }
+}
+
+plugin.tx_dlf_navigation = EXTBASEPLUGIN
+plugin.tx_dlf_navigation {
+    extensionName = Dlf
+    pluginName = Navigation
+    settings {
+        pageStep = 10
+        features = pagesBackward,pageSelect,pagesForward
+    }
+}
+
+plugin.tx_dlf_metadata = EXTBASEPLUGIN
+plugin.tx_dlf_metadata {
+    extensionName = Dlf
+    pluginName = Metadata
+    settings {
+        linkTitle = 0
+        getTitle = 0
+        showFull = 1
+        rootline = 1
+        separator = #
+    }
+}
+
+plugin.tx_dlf_pageview = EXTBASEPLUGIN
+plugin.tx_dlf_pageview {
+    extensionName = Dlf
+    pluginName = PageView
+    settings {
+        features =
+        elementId = tx-dlf-map
+        useInternalProxy = 1
+    }
+}
+
+plugin.tx_dlf_tableofcontents = EXTBASEPLUGIN
+plugin.tx_dlf_tableofcontents {
+    extensionName = Dlf
+    pluginName = TableOfContents
+    settings {
+        targetPid = {$plugin.tx_dlf.basicViewer.viewerPid}
+    }
+}
+
+plugin.tx_dlf_toolbox = EXTBASEPLUGIN
+plugin.tx_dlf_toolbox {
+    extensionName = Dlf
+    pluginName = Toolbox
+    settings {
+        tools = rotationTool,zoomTool,imageDownloadTool,pdfDownloadTool,fulltextTool,fulltextDownloadTool
+        showAsList = 0
+        activateFullTextInitially = 0
+        fullTextScrollElement = #tx-dlf-toolbox-fulltext-selection
+    }
+}
+
+[getTSFE() && getTSFE().id == {$plugin.tx_dlf.basicViewer.viewerPid}]
+page {
+    bodyTag = <body class="tx-dlf-default-viewer tx-dlf-default-viewer-page">
+    10.file = EXT:dlf/Resources/Private/Templates/Bootstrap/Viewer.html
+}
+[END]

@@ -17,6 +17,8 @@ use Kitodo\Dlf\Domain\Model\Structure;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Authentication\CommandLineUserAuthentication;
+use TYPO3\CMS\Core\Core\Bootstrap;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\Uri;
@@ -548,11 +550,19 @@ class Helper
     public static function processDatabaseAsAdmin(array $data = [], array $cmd = [], bool $reverseOrder = false, bool $cmdFirst = false): array
     {
         $context = GeneralUtility::makeInstance(Context::class);
+        $isCli = Environment::isCli();
+        $isBackendRequest = isset($GLOBALS['TYPO3_REQUEST']) && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend();
 
-        if (
-            ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()
-            && $context->getPropertyFromAspect('backend.user', 'isAdmin')
-        ) {
+        if ($isCli) { // Initialize CLI user if not already done (e.g. by a CommandController)
+            if (!isset($GLOBALS['BE_USER'])) {
+                Bootstrap::initializeBackendUser(CommandLineUserAuthentication::class);
+            }
+            if (empty($GLOBALS['BE_USER']->user['uid'] ?? null) || !$GLOBALS['BE_USER']->isAdmin()) {
+                Bootstrap::initializeBackendAuthentication();
+            }
+        }
+
+        if (($isCli && isset($GLOBALS['BE_USER']) && $GLOBALS['BE_USER']->isAdmin()) || ($isBackendRequest && $context->getPropertyFromAspect('backend.user', 'isAdmin'))) {
             // Instantiate TYPO3 core engine.
             $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
             // We do not use workspaces and have to bypass restrictions in DataHandler.

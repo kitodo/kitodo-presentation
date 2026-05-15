@@ -12,25 +12,13 @@
 
 namespace Kitodo\Dlf\Controller\Backend;
 
-use Kitodo\Dlf\Common\Helper;
-use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Controller\AbstractController;
-use Kitodo\Dlf\Domain\Model\Format;
-use Kitodo\Dlf\Domain\Model\Metadata;
-use Kitodo\Dlf\Domain\Model\SolrCore;
-use Kitodo\Dlf\Domain\Model\Structure;
-use Kitodo\Dlf\Domain\Repository\FormatRepository;
-use Kitodo\Dlf\Domain\Repository\MetadataRepository;
-use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
-use Kitodo\Dlf\Domain\Repository\StructureRepository;
+use Kitodo\Dlf\Service\BootstrapRootSetupService;
+use Kitodo\Dlf\Service\TenantDefaultsSetupService;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Exception\SiteNotFoundException;
-use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
-use TYPO3\CMS\Core\Site\Entity\NullSite;
-use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -57,86 +45,28 @@ class NewTenantController extends AbstractController
 
     /**
      * @access protected
-     * @var mixed[] All configured site languages
      */
-    protected array $siteLanguages;
-
-    /**
-     * @access protected
-     * @var LocalizationFactory Language factory to get language key/values by our own.
-     */
-    protected LocalizationFactory $languageFactory;
-
-    /**
-     * @access protected
-     * @var FormatRepository
-     */
-    protected FormatRepository $formatRepository;
+    protected TenantDefaultsSetupService $tenantDefaultsSetupService;
 
     /**
      * @access public
-     *
-     * @param FormatRepository $formatRepository
-     *
-     * @return void
      */
-    public function injectFormatRepository(FormatRepository $formatRepository): void
+    public function injectTenantDefaultsSetupService(TenantDefaultsSetupService $tenantDefaultsSetupService): void
     {
-        $this->formatRepository = $formatRepository;
+        $this->tenantDefaultsSetupService = $tenantDefaultsSetupService;
     }
 
     /**
      * @access protected
-     * @var MetadataRepository
      */
-    protected MetadataRepository $metadataRepository;
+    protected BootstrapRootSetupService $bootstrapRootSetupService;
 
     /**
      * @access public
-     *
-     * @param MetadataRepository $metadataRepository
-     *
-     * @return void
      */
-    public function injectMetadataRepository(MetadataRepository $metadataRepository): void
+    public function injectBootstrapRootSetupService(BootstrapRootSetupService $bootstrapRootSetupService): void
     {
-        $this->metadataRepository = $metadataRepository;
-    }
-
-    /**
-     * @access protected
-     * @var StructureRepository
-     */
-    protected StructureRepository $structureRepository;
-
-    /**
-     * @access public
-     *
-     * @param StructureRepository $structureRepository
-     *
-     * @return void
-     */
-    public function injectStructureRepository(StructureRepository $structureRepository): void
-    {
-        $this->structureRepository = $structureRepository;
-    }
-
-    /**
-     * @access protected
-     * @var SolrCoreRepository
-     */
-    protected SolrCoreRepository $solrCoreRepository;
-
-    /**
-     * @access public
-     *
-     * @param SolrCoreRepository $solrCoreRepository
-     *
-     * @return void
-     */
-    public function injectSolrCoreRepository(SolrCoreRepository $solrCoreRepository): void
-    {
-        $this->solrCoreRepository = $solrCoreRepository;
+        $this->bootstrapRootSetupService = $bootstrapRootSetupService;
     }
 
     /**
@@ -150,7 +80,7 @@ class NewTenantController extends AbstractController
      *
      * @return ResponseInterface the response
      */
-    protected function templateResponse(bool $isError, array $extraData): ResponseInterface
+    protected function templateResponse(string $template, array $extraData): ResponseInterface
     {
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
@@ -160,7 +90,6 @@ class NewTenantController extends AbstractController
         $moduleTemplate->assignMultiple($this->viewData);
         $moduleTemplate->assignMultiple($extraData);
         $moduleTemplate->setFlashMessageQueue($messageQueue);
-        $template = $isError ? 'Backend/NewTenant/Error' : 'Backend/NewTenant/Index';
         return $moduleTemplate->renderResponse($template);
     }
 
@@ -175,25 +104,28 @@ class NewTenantController extends AbstractController
     {
         $this->pid = (int) ($this->request->getQueryParams()['id'] ?? null);
 
-        $this->formatRepository->useStoragePid($this->pid);
-        $this->metadataRepository->useStoragePid($this->pid);
-        $this->solrCoreRepository->useStoragePid($this->pid);
-        $this->structureRepository->useStoragePid($this->pid);
-
         $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
         $frameworkConfiguration['persistence']['storagePid'] = $this->pid;
         $this->configurationManager->setConfiguration($frameworkConfiguration);
 
-        $this->languageFactory = GeneralUtility::makeInstance(LocalizationFactory::class);
-
-        try {
-            $site = GeneralUtility::makeInstance(SiteFinder::class)->getSiteByPageId($this->pid);
-        } catch (SiteNotFoundException $e) {
-            $site = new NullSite();
-        }
-        $this->siteLanguages = $site->getLanguages();
     }
 
+
+    /**
+     * Action creating a default page tree from the virtual root page.
+     *
+     * @access public
+     */
+    public function createPagesAction(): ResponseInterface
+    {
+        if ($this->pid !== 0) {
+            return $this->redirect('error');
+        }
+
+        $this->bootstrapRootSetupService->runSetup();
+
+        return $this->redirect('index', null, null, ['refreshPageTree' => 1]);
+    }
 
     /**
      * Action adding formats records
@@ -204,29 +136,12 @@ class NewTenantController extends AbstractController
      */
     public function addFormatAction(): ResponseInterface
     {
-        // Include formats definition file.
-        $formatsDefaults = $this->getRecords('Format');
-
-        $doPersist = false;
-
-        foreach ($formatsDefaults as $type => $values) {
-            // if default format record is not found, add it to the repository
-            if ($this->formatRepository->findOneBy(['type' => $type]) === null) {
-                $newRecord = GeneralUtility::makeInstance(Format::class);
-                $newRecord->setType($type);
-                $newRecord->setRoot($values['root']);
-                $newRecord->setNamespace($values['namespace']);
-                $newRecord->setClass($values['class']);
-                $this->formatRepository->add($newRecord);
-
-                $doPersist = true;
-            }
-        }
-
-        // We must persist here, if we changed anything.
-        if ($doPersist === true) {
-            $this->formatRepository->persistAll();
-        }
+        $this->tenantDefaultsSetupService->run($this->pid, [
+            'formats' => true,
+            'structures' => false,
+            'metadata' => false,
+            'solrCore' => false,
+        ]);
 
         return $this->redirect('index');
     }
@@ -240,81 +155,12 @@ class NewTenantController extends AbstractController
      */
     public function addMetadataAction(): ResponseInterface
     {
-        // Include metadata definition file.
-        $metadataDefaults = $this->getRecords('Metadata');
-
-        // load language file in own array
-        $metadataLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_metadata.xlf', $this->siteLanguages[0]->getLocale()->getLanguageCode());
-
-        $insertedFormats = $this->formatRepository->findAll();
-
-        $availableFormats = [];
-        foreach ($insertedFormats as $insertedFormat) {
-            $availableFormats[$insertedFormat->getRoot()] = $insertedFormat->getUid();
-        }
-
-        $defaultWrap = BackendUtility::getTcaFieldConfiguration('tx_dlf_metadata', 'wrap')['default'];
-
-        $data = [];
-        foreach ($metadataDefaults as $indexName => $values) {
-            $formatIds = [];
-
-            foreach ($values['format'] as $format) {
-                $format['encoded'] = $availableFormats[$format['format_root']];
-                unset($format['format_root']);
-                $formatIds[] = uniqid('NEW');
-                $data['tx_dlf_metadataformat'][end($formatIds)] = $format;
-                $data['tx_dlf_metadataformat'][end($formatIds)]['pid'] = $this->pid;
-            }
-
-            $data['tx_dlf_metadata'][uniqid('NEW')] = [
-                'pid' => $this->pid,
-                'label' => $this->getLLL('metadata.' . $indexName, $this->siteLanguages[0]->getLocale()->getLanguageCode(), $metadataLabels),
-                'index_name' => $indexName,
-                'format' => implode(',', $formatIds),
-                'default_value' => $values['default_value'],
-                'wrap' => !empty($values['wrap']) ? $values['wrap'] : $defaultWrap,
-                'index_tokenized' => $values['index_tokenized'],
-                'index_stored' => $values['index_stored'],
-                'index_indexed' => $values['index_indexed'],
-                'index_boost' => $values['index_boost'],
-                'is_sortable' => $values['is_sortable'],
-                'is_facet' => $values['is_facet'],
-                'is_listed' => $values['is_listed'],
-                'index_autocomplete' => $values['index_autocomplete'],
-            ];
-        }
-
-        $metadataIds = Helper::processDatabaseAsAdmin($data, [], true);
-
-        $insertedMetadata = [];
-        foreach ($metadataIds as $id => $uid) {
-            /** @var Metadata $metadata */
-            $metadata = $this->metadataRepository->findByUid($uid);
-            // id array contains also ids of formats
-            if ($metadata != null) {
-                $insertedMetadata[$uid] = $metadata->getIndexName();
-            }
-        }
-
-        foreach ($this->siteLanguages as $siteLanguage) {
-            if ($siteLanguage->getLanguageId() === 0) {
-                // skip default language
-                continue;
-            }
-
-            $translateData = [];
-            foreach ($insertedMetadata as $id => $indexName) {
-                $translateData['tx_dlf_metadata'][uniqid('NEW')] = [
-                    'pid' => $this->pid,
-                    'sys_language_uid' => $siteLanguage->getLanguageId(),
-                    'l18n_parent' => $id,
-                    'label' => $this->getLLL('metadata.' . $indexName, $siteLanguage->getLocale()->getLanguageCode(), $metadataLabels),
-                ];
-            }
-
-            Helper::processDatabaseAsAdmin($translateData);
-        }
+        $this->tenantDefaultsSetupService->run($this->pid, [
+            'formats' => false,
+            'structures' => false,
+            'metadata' => true,
+            'solrCore' => false,
+        ]);
 
         return $this->redirect('index');
     }
@@ -328,29 +174,12 @@ class NewTenantController extends AbstractController
      */
     public function addSolrCoreAction(): ResponseInterface
     {
-        $doPersist = false;
-
-        // load language file in own array
-        $beLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_be.xlf', $this->siteLanguages[0]->getLocale()->getLanguageCode());
-
-        // @phpstan-ignore-next-line findAll() returns QueryResultInterface and there is function getFirst()
-        if ($this->solrCoreRepository->findAll()->getFirst() === null) {
-            $newRecord = GeneralUtility::makeInstance(SolrCore::class);
-            $newRecord->setLabel($this->getLLL('flexform.solrcore', $this->siteLanguages[0]->getLocale()->getLanguageCode(), $beLabels). ' (PID ' . $this->pid . ')');
-            $indexName = Solr::createCore('');
-            if (!empty($indexName)) {
-                $newRecord->setIndexName($indexName);
-
-                $this->solrCoreRepository->add($newRecord);
-
-                $doPersist = true;
-            }
-        }
-
-        // We must persist here, if we changed anything.
-        if ($doPersist === true) {
-            $this->solrCoreRepository->persistAll();
-        }
+        $this->tenantDefaultsSetupService->run($this->pid, [
+            'formats' => false,
+            'structures' => false,
+            'metadata' => false,
+            'solrCore' => true,
+        ]);
 
         return $this->redirect('index');
     }
@@ -364,50 +193,12 @@ class NewTenantController extends AbstractController
      */
     public function addStructureAction(): ResponseInterface
     {
-        // Include structure definition file.
-        $structureDefaults = $this->getRecords('Structure');
-
-        // load language file in own array
-        $structureLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_structure.xlf', $this->siteLanguages[0]->getLocale()->getLanguageCode());
-
-        $data = [];
-        foreach ($structureDefaults as $indexName => $values) {
-            $data['tx_dlf_structures'][uniqid('NEW')] = [
-                'pid' => $this->pid,
-                'toplevel' => $values['toplevel'],
-                'label' => $this->getLLL('structure.' . $indexName, $this->siteLanguages[0]->getLocale()->getLanguageCode(), $structureLabels),
-                'index_name' => $indexName,
-                'oai_name' => $values['oai_name'],
-                'thumbnail' => 0,
-            ];
-        }
-        $structureIds = Helper::processDatabaseAsAdmin($data, [], true);
-
-        $insertedStructures = [];
-        foreach ($structureIds as $id => $uid) {
-            /** @var Structure $structure */
-            $structure = $this->structureRepository->findByUid($uid);
-            $insertedStructures[$uid] = $structure->getIndexName();
-        }
-
-        foreach ($this->siteLanguages as $siteLanguage) {
-            if ($siteLanguage->getLanguageId() === 0) {
-                // skip default language
-                continue;
-            }
-
-            $translateData = [];
-            foreach ($insertedStructures as $id => $indexName) {
-                $translateData['tx_dlf_structures'][uniqid('NEW')] = [
-                    'pid' => $this->pid,
-                    'sys_language_uid' => $siteLanguage->getLanguageId(),
-                    'l18n_parent' => $id,
-                    'label' => $this->getLLL('structure.' . $indexName, $siteLanguage->getLocale()->getLanguageCode(), $structureLabels),
-                ];
-            }
-
-            Helper::processDatabaseAsAdmin($translateData);
-        }
+        $this->tenantDefaultsSetupService->run($this->pid, [
+            'formats' => false,
+            'structures' => true,
+            'metadata' => false,
+            'solrCore' => false,
+        ]);
 
         return $this->redirect('index');
     }
@@ -423,29 +214,32 @@ class NewTenantController extends AbstractController
     {
         $recordInfos = [];
 
+        if ($this->pid === 0) {
+            return $this->templateResponse('Backend/NewTenant/Root', [
+                'refreshPageTree' => (bool)($this->request->getQueryParams()['refreshPageTree'] ?? false),
+            ]);
+        }
+
         $this->pageInfo = BackendUtility::readPageAccess($this->pid, $GLOBALS['BE_USER']->getPagePermsClause(1)) ?: [];
 
         if (!isset($this->pageInfo['doktype']) || $this->pageInfo['doktype'] != 254) {
             return $this->redirect('error');
         }
 
-        $formatsDefaults = $this->getRecords('Format');
-        $recordInfos['formats']['numCurrent'] = $this->formatRepository->countAll();
-        $recordInfos['formats']['numDefault'] = count($formatsDefaults);
+        $recordInfos['formats']['numCurrent'] = $this->countRecords('tx_dlf_formats');
+        $recordInfos['formats']['numDefault'] = count($this->getRecords('Format'));
 
-        $structuresDefaults = $this->getRecords('Structure');
-        $recordInfos['structures']['numCurrent'] = $this->structureRepository->countAll();
-        $recordInfos['structures']['numDefault'] = count($structuresDefaults);
+        $recordInfos['structures']['numCurrent'] = $this->countRecords('tx_dlf_structures');
+        $recordInfos['structures']['numDefault'] = count($this->getRecords('Structure'));
 
-        $metadataDefaults = $this->getRecords('Metadata');
-        $recordInfos['metadata']['numCurrent'] = $this->metadataRepository->countAll();
-        $recordInfos['metadata']['numDefault'] = count($metadataDefaults);
+        $recordInfos['metadata']['numCurrent'] = $this->countRecords('tx_dlf_metadata');
+        $recordInfos['metadata']['numDefault'] = count($this->getRecords('Metadata'));
 
-        $recordInfos['solrcore']['numCurrent'] = $this->solrCoreRepository->countAll();
+        $recordInfos['solrcore']['numCurrent'] = $this->countRecords('tx_dlf_solrcores');
 
         $viewData = ['recordInfos' => $recordInfos];
 
-        return $this->templateResponse(false, $viewData);
+        return $this->templateResponse('Backend/NewTenant/Index', $viewData);
     }
 
     /**
@@ -457,29 +251,26 @@ class NewTenantController extends AbstractController
      */
     public function errorAction(): ResponseInterface
     {
-        return $this->templateResponse(true, []);
+        return $this->templateResponse('Backend/NewTenant/Error', []);
     }
 
     /**
-     * Get language label for given key and language.
-     *
-     * @access private
-     *
-     * @param string $index
-     * @param string $lang
-     * @param mixed[] $langArray
-     *
-     * @return string
+     * Count non-deleted records on the current configuration folder.
      */
-    private function getLLL(string $index, string $lang, array $langArray): string
+    private function countRecords(string $table): int
     {
-        if (isset($langArray[$lang][$index][0]['target'])) {
-            return $langArray[$lang][$index][0]['target'];
-        } elseif (isset($langArray['default'][$index][0]['target'])) {
-            return $langArray['default'][$index][0]['target'];
-        } else {
-            return 'Missing translation for ' . $index;
-        }
+        $queryBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Database\ConnectionPool::class)
+            ->getQueryBuilderForTable($table);
+
+        return (int)$queryBuilder
+            ->count('uid')
+            ->from($table)
+            ->where(
+                $queryBuilder->expr()->eq('pid', $queryBuilder->createNamedParameter($this->pid, \TYPO3\CMS\Core\Database\Connection::PARAM_INT)),
+                $queryBuilder->expr()->eq('deleted', $queryBuilder->createNamedParameter(0, \TYPO3\CMS\Core\Database\Connection::PARAM_INT))
+            )
+            ->executeQuery()
+            ->fetchOne();
     }
 
     /**
@@ -494,16 +285,17 @@ class NewTenantController extends AbstractController
     private function getRecords(string $recordType): array
     {
         $filePath = GeneralUtility::getFileAbsFileName('EXT:dlf/Resources/Private/Data/' . $recordType . 'Defaults.json');
-        if (file_exists($filePath)) {
-            $fileContents = file_get_contents($filePath);
-            if (is_string($fileContents)) {
-                $records = json_decode($fileContents, true);
-
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    return $records;
-                }
-            }
+        if (!file_exists($filePath)) {
+            return [];
         }
-        return [];
+
+        $fileContents = file_get_contents($filePath);
+        if (!is_string($fileContents)) {
+            return [];
+        }
+
+        $records = json_decode($fileContents, true);
+        return json_last_error() === JSON_ERROR_NONE && is_array($records) ? $records : [];
     }
+
 }

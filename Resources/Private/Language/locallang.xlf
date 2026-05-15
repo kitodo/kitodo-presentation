@@ -200,6 +200,21 @@
             <trans-unit id="newTenant.module">
                 <source><![CDATA[New Tenant Module]]></source>
             </trans-unit>
+            <trans-unit id="newTenant.createPages">
+                <source><![CDATA[Create default pages]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.rootSetupOkay">
+                <source><![CDATA[Default pages found!]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.rootSetupOkayMsg">
+                <source><![CDATA[The root page already contains the default Viewer page and the Kitodo Configuration folder.]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.rootSetupMissing">
+                <source><![CDATA[Create new default page tree]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.rootSetupMissingMsg">
+                <source><![CDATA[Create a new default page tree with the standard Viewer page and the Kitodo Configuration folder.]]></source>
+            </trans-unit>
             <trans-unit id="newTenant.createSolrCore">
                 <source><![CDATA[Create solr core]]></source>
             </trans-unit>

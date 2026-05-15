@@ -22,6 +22,12 @@ if (!defined('TYPO3')) {
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
     'dlf',
+    'Configuration/TypoScript/BasicViewer/',
+    'Install Basic Viewer'
+);
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
+    'dlf',
     'Configuration/TypoScript/Plugins/Feeds/',
     'RSS Feed Plugin Configuration'
 );
