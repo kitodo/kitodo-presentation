@@ -269,6 +269,26 @@
                 <source><![CDATA[New Tenant Module]]></source>
                 <target><![CDATA[Modul Neuer Mandant]]></target>
             </trans-unit>
+            <trans-unit id="newTenant.createPages" approved="yes">
+                <source><![CDATA[Create default pages]]></source>
+                <target><![CDATA[Standardseiten anlegen]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.rootSetupOkay" approved="yes">
+                <source><![CDATA[Default pages found!]]></source>
+                <target><![CDATA[Standardseiten gefunden!]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.rootSetupOkayMsg" approved="yes">
+                <source><![CDATA[The root page already contains the default Viewer page and the Kitodo Configuration folder.]]></source>
+                <target><![CDATA[Die Root-Seite enthält bereits die Standardseite Viewer und den Ordner Kitodo Configuration.]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.rootSetupMissing" approved="yes">
+                <source><![CDATA[Create new default page tree]]></source>
+                <target><![CDATA[Neue Standard-Seitenstruktur anlegen]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.rootSetupMissingMsg" approved="yes">
+                <source><![CDATA[Create a new default page tree with the standard Viewer page and the Kitodo Configuration folder.]]></source>
+                <target><![CDATA[Es wird eine neue Standard-Seitenstruktur mit der Seite Viewer und dem Ordner Kitodo Configuration angelegt.]]></target>
+            </trans-unit>
             <trans-unit id="newTenant.createFormat" approved="yes">
                 <source><![CDATA[Create default namespaces]]></source>
                 <target><![CDATA[Standard-Namensräume anlegen]]></target>
