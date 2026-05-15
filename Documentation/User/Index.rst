@@ -16,6 +16,11 @@ User Manual
     :local:
     :depth: 2
 
+.. toctree::
+   :hidden:
+
+   ManualViewerSetup
+
 .. _indexing_documents:
 
 Indexing Documents
