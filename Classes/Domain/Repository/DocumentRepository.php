@@ -329,22 +329,7 @@ class DocumentRepository extends AbstractRepository
             $this->debugQueryBuilder($subQueryBuilder);
         } else {
             // Include all collections.
-            // $countTitles[0] = $this->count(['partof' => 0]);
-
-            $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable('tx_dlf_documents');
-
-            // Include all collections.
-            $countTitles = $queryBuilder
-                ->count('uid')
-                ->from('tx_dlf_documents')
-                ->where(
-                    $queryBuilder->expr()->eq('pid', (int) $settings['storagePid']),
-                    $queryBuilder->expr()->eq('partof', 0),
-                    Helper::whereExpression('tx_dlf_documents')
-                )
-                ->executeQuery()
-                ->fetchFirstColumn();
+            $countTitles[0] = $this->count(['partof' => 0]);
 
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
