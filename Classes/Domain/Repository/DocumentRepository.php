@@ -242,7 +242,7 @@ class DocumentRepository extends AbstractRepository
      */
     public function getStatisticsForSelectedCollection(array $settings): array
     {
-        if ($settings['collections']) {
+        if (array_key_exists('collections', $settings)) {
             // Include only selected collections.
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
@@ -328,6 +328,9 @@ class DocumentRepository extends AbstractRepository
             $this->debugQueryBuilder($queryBuilder);
             $this->debugQueryBuilder($subQueryBuilder);
         } else {
+            // Include all collections.
+            // $countTitles[0] = $this->count(['partof' => 0]);
+
             $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getQueryBuilderForTable('tx_dlf_documents');
 
