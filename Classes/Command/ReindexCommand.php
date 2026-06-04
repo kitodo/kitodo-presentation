@@ -184,7 +184,7 @@ class ReindexCommand extends BaseCommand
             return Command::FAILURE;
         }
 
-        $amount = iterator_count($documents);
+        $amount = count($documents);
 
         foreach ($documents as $id => $document) {
             $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
