@@ -145,15 +145,12 @@ class DocumentRepositoryTest extends FunctionalTestCase
     {
         $result = $this->documentRepository->findAllByCollectionsLimited([1101], 1, 2);
 
-        // should return a QueryResultInterface or an array
-        self::assertTrue(is_array($result) || $result instanceof QueryResultInterface);
-
         if (is_array($result)) {
             self::assertNotEmpty($result);
             $uids = array_map(static fn($first) => $first->getUid(), $result);
             self::assertContains(1002, $uids);
         } else {
-            // QueryResultInterface
+            /** @var QueryResultInterface $result */
             $first = $result->getFirst();
             self::assertInstanceOf(Document::class, $first);
             self::assertEquals(1002, $first->getUid());
