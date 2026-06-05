@@ -32,7 +32,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class StructureRepository extends AbstractRepository
 {
-
     /**
      * Finds structure element to get thumbnail from.
      *

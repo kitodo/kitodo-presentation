@@ -128,7 +128,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
 
         if (is_array($result)) {
             self::assertNotEmpty($result);
-            $uids = array_map(static fn($first) => $first->getUid(), $result);
+            $uids = array_map(static fn ($first) => $first->getUid(), $result);
             self::assertContains(1001, $uids);
         } else {
             // QueryResultInterface
@@ -150,7 +150,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
 
         if (is_array($result)) {
             self::assertNotEmpty($result);
-            $uids = array_map(static fn($first) => $first->getUid(), $result);
+            $uids = array_map(static fn ($first) => $first->getUid(), $result);
             self::assertContains(1002, $uids);
         } else {
             // QueryResultInterface

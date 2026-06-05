@@ -26,5 +26,4 @@ use Kitodo\Dlf\Domain\Model\Mail;
  */
 class MailRepository extends AbstractRepository
 {
-
 }
