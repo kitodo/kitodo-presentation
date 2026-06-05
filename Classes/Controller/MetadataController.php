@@ -33,9 +33,9 @@ class MetadataController extends AbstractController
 {
     /**
      * @access private
-     * @var AbstractDocument
+     * @var AbstractDocument|IiifManifest|null
      */
-    private $currentDocument;
+    private AbstractDocument|IiifManifest|null $currentDocument;
 
     /**
      * @access private
@@ -125,8 +125,7 @@ class MetadataController extends AbstractController
         // Get toplevel metadata?
         if (!$metadata || ($this->settings['rootline'] == 1 && $metadata[0]['_id'] != $topLevelId)) {
             $data = [];
-            if ($this->useOriginalIiifManifestMetadata) {
-                // @phpstan-ignore-next-line
+            if ($this->useOriginalIiifManifestMetadata && $this->currentDocument instanceof IiifManifest) {
                 $data = $this->currentDocument->getManifestMetadata($topLevelId);
             } else {
                 $data = $this->currentDocument->getToplevelMetadata();
@@ -533,8 +532,7 @@ class MetadataController extends AbstractController
     private function getMetadataForIds(array $id, array $metadata): array
     {
         foreach ($id as $sid) {
-            if ($this->useOriginalIiifManifestMetadata) {
-                // @phpstan-ignore-next-line
+            if ($this->useOriginalIiifManifestMetadata && $this->currentDocument instanceof IiifManifest) {
                 $data = $this->currentDocument->getManifestMetadata($sid);
             } else {
                 $data = $this->currentDocument->getMetadata($sid);
