@@ -998,7 +998,7 @@ final class MetsDocument extends AbstractDocument
         // Exclude metadata with subentries, we will fetch them later.
         $resultWithFormat = $this->metadataRepository->findWithFormat($this->configPid, $this->mdSec[$dmdId]['type']);
         // Get all metadata without a format, but with a default value next.
-        $resultWithoutFormat = $this->metadataRepository->findWithoutFormat($this->configPid);
+        $resultWithoutFormat = $this->metadataRepository->findWithoutFormat();
         // Merge both result sets.
         $allResults = array_merge($resultWithFormat, $resultWithoutFormat);
 
