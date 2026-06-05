@@ -12,8 +12,8 @@
 
 namespace Kitodo\Dlf\Task;
 
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use Kitodo\Dlf\Domain\Model\Library;
+use Kitodo\Dlf\Domain\Repository\LibraryRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Scheduler\Controller\SchedulerModuleController;
 
@@ -141,21 +141,17 @@ class HarvestAdditionalFieldProvider extends BaseAdditionalFieldProvider
      */
     private function getLibraries(int $pid): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_dlf_libraries');
+        $libraryRepository = GeneralUtility::makeInstance(LibraryRepository::class);
+        $libraryRepository->useStoragePid($pid);
+        $libraries = $libraryRepository->findAll();
 
-        $libraries = [];
-        $result = $queryBuilder->select('uid', 'label')
-            ->from('tx_dlf_libraries')
-            ->where(
-                $queryBuilder->expr()
-                    ->eq('pid', $queryBuilder->createNamedParameter($pid, Connection::PARAM_INT))
-            )
-            ->executeQuery();
+        $records = [];
 
-        while ($record = $result->fetchAssociative()) {
-            $libraries[$record['label']] = $record['uid'];
+        /** @var Library $library */
+        foreach ($libraries as $library) {
+            $records[$library->getLabel()] = $library->getUid();
         }
 
-        return $libraries;
+        return $records;
     }
 }
