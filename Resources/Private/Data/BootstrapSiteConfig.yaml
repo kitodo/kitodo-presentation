@@ -1,0 +1,26 @@
+base: '/'
+baseVariants: {  }
+errorHandling: {  }
+languages:
+    -   title: Deutsch
+        enabled: true
+        locale: de_DE.UTF-8
+        hreflang: de-DE
+        base: /
+        websiteTitle: ''
+        navigationTitle: German
+        flag: de
+        languageId: 0
+    -   title: English
+        enabled: true
+        locale: en_US.UTF-8
+        hreflang: en-US
+        base: /en/
+        websiteTitle: ''
+        navigationTitle: English
+        fallbackType: strict
+        fallbacks: ''
+        flag: us
+        languageId: 1
+rootPageId: 1
+routes: {  }

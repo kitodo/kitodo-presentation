@@ -16,22 +16,22 @@
         <f:if condition="{double} === 0">
             <f:then>
                 <f:if condition="{pageLinks.0}">
-                    <f:link.external uri="{pageLinks.0}"><f:translate key="toolbox.general.downloadSinglePage" /> (PDF)</f:link.external>
+                    <f:link.external uri="{pageLinks.0}" target="_blank"><f:translate key="toolbox.general.downloadSinglePage" /> (PDF)</f:link.external>
                 </f:if>
             </f:then>
             <f:else>
                 <f:if condition="{pageLinks.0}">
-                    <f:link.external uri="{pageLinks.0}"><f:translate key="toolbox.general.downloadLeftPage" /> (PDF)</f:link.external>
+                    <f:link.external uri="{pageLinks.0}" target="_blank"><f:translate key="toolbox.general.downloadLeftPage" /> (PDF)</f:link.external>
                 </f:if>
                 <f:if condition="{pageLinks.1}">
-                    <f:link.external uri="{pageLinks.1}"><f:translate key="toolbox.general.downloadRightPage" /> (PDF)</f:link.external>
+                    <f:link.external uri="{pageLinks.1}" target="_blank"><f:translate key="toolbox.general.downloadRightPage" /> (PDF)</f:link.external>
                 </f:if>
             </f:else>
         </f:if>
     </span>
     <span class="tx-dlf-tools-pdf-work">
         <f:if condition="{workLink}">
-            <f:link.external uri="{workLink}"><f:translate key="toolbox.pdfDownload.downloadWork"/> (PDF)</f:link.external>
+            <f:link.external uri="{workLink}" target="_blank"><f:translate key="toolbox.pdfDownload.downloadWork"/> (PDF)</f:link.external>
         </f:if>
     </span>
     <span class="tx-dlf-tools-score">
