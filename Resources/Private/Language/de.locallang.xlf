@@ -109,6 +109,14 @@
                 <source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
                 <target><![CDATA[Abonnieren Sie den RSS-Feed dieser Kollektion!]]></target>
             </trans-unit>
+            <trans-unit id="collection.solr.error" approved="yes">
+                <source><![CDATA[SOLR Error]]></source>
+                <target><![CDATA[SOLR Fehler]]></target>
+            </trans-unit>
+            <trans-unit id="collection.solr.errorDescription" approved="yes">
+                <source><![CDATA[Currently the SOLR server is not available.]]></source>
+                <target><![CDATA[Der SOLR-Server ist derzeit nicht verfügbar.]]></target>
+            </trans-unit>
             <trans-unit id="collection.title" approved="yes">
                 <source><![CDATA[title]]></source>
                 <target><![CDATA[Titel]]></target>
