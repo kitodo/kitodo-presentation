@@ -107,7 +107,7 @@ class OaiPmhController extends AbstractController
 
     /**
      * @access protected
-     * @var array This holds the configuration for all supported metadata prefixes
+     * @var array<string, array<string, mixed>> This holds the configuration for all supported metadata prefixes
      */
     protected array $formats = [
         'oai_dc' => [
@@ -129,7 +129,7 @@ class OaiPmhController extends AbstractController
 
     /**
      * @access protected
-     * @var array
+     * @var array<string, mixed>
      */
     protected array $parameters = [];
 
@@ -181,9 +181,9 @@ class OaiPmhController extends AbstractController
      *
      * @access private
      *
-     * @param array $record The full record array
+     * @param array<string, mixed> $record The full record array
      *
-     * @return array The mapped metadata array
+     * @return array<int, array<string, mixed>> The mapped metadata array
      */
     private function getDublinCoreData(array $record): array
     {
@@ -222,7 +222,7 @@ class OaiPmhController extends AbstractController
      *
      * @access private
      *
-     * @param array $metadata The mapped metadata array passed as reference
+     * @param array<int, array<string, mixed>> &$metadata The mapped metadata array passed as reference
      * @param string $key The key to which record value should be assigned
      * @param string $value The key from record array
      *
@@ -241,20 +241,20 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @param array $record The full record array
+     * @param array<string, mixed> $record The full record array
      *
      * @return string The fetched METS XML
      */
     protected function getMetsData(array $record): string
     {
-        $mets = null;
+        $mets = '';
         // Load METS file.
         $xml = new \DOMDocument();
         if ($xml->load($record['location'])) {
             // Get root element.
             $root = $xml->getElementsByTagNameNS($this->formats['mets']['namespace'], 'mets');
             if ($root->item(0) instanceof \DOMNode) {
-                $mets = $xml->saveXML($root->item(0));
+                $mets = (string)$xml->saveXML($root->item(0));
             } else {
                 $this->logger->error('No METS part found in document with location "' . $record['location'] . '"');
             }
@@ -307,7 +307,7 @@ class OaiPmhController extends AbstractController
         // Here we could also choose `false` for a minimized XML.
         $dom->formatOutput = true;
         $dom->loadXML($xmlOutput);
-        $formattedXmlOutput = trim($dom->saveXML());
+        $formattedXmlOutput = trim((string)$dom->saveXML());
 
         // Return the formatted XML.
         return $this->htmlResponse($formattedXmlOutput);
@@ -318,7 +318,7 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return array|null list of uids
+     * @return array<string, mixed>|null list of uids
      */
     protected function resume(): ?array
     {
@@ -357,7 +357,7 @@ class OaiPmhController extends AbstractController
 
         $document = $this->documentRepository->getOaiRecord($this->settings, $this->parameters);
 
-        if (!$document['uid']) {
+        if (empty($document['uid'])) {
             $this->error = 'idDoesNotExist';
             return;
         }
@@ -464,7 +464,7 @@ class OaiPmhController extends AbstractController
         try {
             $documentSet = $this->fetchDocumentSet();
         } catch (\Exception $exception) {
-            $this->logger->error('Error fetching document set: ' . $exception->getErrorMessage());
+            $this->logger->error('Error fetching document set: ' . $exception->getMessage());
             $this->error = 'idDoesNotExist';
             return;
         }
@@ -548,7 +548,7 @@ class OaiPmhController extends AbstractController
         try {
             $documentSet = $this->fetchDocumentSet();
         } catch (\Exception $exception) {
-            $this->logger->error('Error fetching document set: ' . $exception->getErrorMessage());
+            $this->logger->error('Error fetching document set: ' . $exception->getMessage());
             $this->error = 'idDoesNotExist';
             return;
         }
@@ -582,7 +582,7 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @return array matching records or empty array if there were some errors
+     * @return array<int, string> matching records or empty array if there were some errors
      */
     protected function fetchDocumentSet(): array
     {
@@ -757,9 +757,9 @@ class OaiPmhController extends AbstractController
      *
      * @access private
      *
-     * @param mixed[] $documentSet
+     * @param array<int, string> $documentSet
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     private function generateResultSet(array $documentSet): array
     {
@@ -779,9 +779,9 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @param array $documentListSet
+     * @param array<string, mixed> $documentListSet
      *
-     * @return array of enriched records
+     * @return array<int, array<string, mixed>>
      */
     protected function generateOutputForDocumentList(array $documentListSet): array
     {
@@ -829,7 +829,7 @@ class OaiPmhController extends AbstractController
      *
      * @access protected
      *
-     * @param array $documentListSet
+     * @param array<string, mixed> $documentListSet
      * @param int $numShownDocuments
      *
      * @return void
