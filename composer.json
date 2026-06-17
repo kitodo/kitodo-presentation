@@ -135,6 +135,58 @@
     "allow-plugins": {
       "typo3/class-alias-loader": true,
       "typo3/cms-composer-installers": true
+    },
+    "policy": {
+      "advisories": {
+        "ignore": [
+          "PKSA-2yr3-by9d-r1gh",
+          "PKSA-q3vc-jr63-rrrj",
+          "PKSA-hqhs-7j5f-td2d",
+          "PKSA-gj1k-954p-nhmk",
+          "PKSA-gr4f-6g49-cg8v",
+          "PKSA-32mm-z25f-2ysj",
+          "PKSA-vbrn-fwpj-xmx5",
+          "PKSA-vv7s-w171-wb2j",
+          "PKSA-bzt2-2962-49bj",
+          "PKSA-pg93-52nb-x8ym",
+          "PKSA-s3vj-chpj-8wrn",
+          "PKSA-6jfs-jhtj-72x7",
+          "PKSA-ghx2-mc2z-fx6x",
+          "PKSA-rtck-8z1q-gn5s",
+          "PKSA-ns26-fz7n-2jm8",
+          "PKSA-pz1k-khnw-3j7j",
+          "PKSA-rwv7-ff55-f18g",
+          "PKSA-2ssc-6m7w-s9xh",
+          "PKSA-q3vc-nbpk-d1gk",
+          "PKSA-6d7x-2gs8-wr59",
+          "PKSA-b5m3-ttcx-cz18",
+          "PKSA-3gg2-48j5-46ky",
+          "PKSA-tm11-834c-1wbq",
+          "PKSA-443h-dk5w-qm2g",
+          "PKSA-8vkj-4d3h-x586",
+          "PKSA-prgj-sgzn-q6cs",
+          "PKSA-zz7z-6zsy-d2hc",
+          "PKSA-99mg-htb6-c272",
+          "PKSA-h5xk-8nxx-znp4",
+          "PKSA-d551-hdqh-5mmf",
+          "PKSA-jbhx-knzt-5y6m",
+          "PKSA-jp7z-h3vv-yr4s",
+          "PKSA-83hy-ynvj-7pfq",
+          "PKSA-4g5g-4rkv-myqs",
+          "PKSA-y2cr-5h3j-g3ys",
+          "PKSA-gksc-phy8-f181",
+          "PKSA-4mhm-w6hx-yhcy",
+          "PKSA-54yn-xn5g-k3j9",
+          "PKSA-27mn-p368-8rxc",
+          "PKSA-npmp-rd1w-2fyt",
+          "PKSA-957f-x856-svyv",
+          "PKSA-7w9w-389g-6rb9",
+          "PKSA-9vjc-5m3y-9mrq",
+          "PKSA-4w8t-ddwx-n1z6",
+          "PKSA-t94y-b11s-1rg9",
+          "PKSA-n961-k227-s276"
+        ]
+      }
     }
   },
   "repositories": [
