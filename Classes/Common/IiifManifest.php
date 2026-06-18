@@ -520,43 +520,115 @@ final class IiifManifest extends AbstractDocument
         foreach ($allResults as $resArray) {
             // Set metadata field's value(s).
             if ($resArray['format'] > 0 && !empty($resArray['xpath'])) {
-                $values = $iiifResource->jsonPath($resArray['xpath']);
-                if (is_string($values)) {
-                    $metadata[$resArray['index_name']] = [trim($values)];
-                } elseif ($values instanceof JSONPath && is_array($values->getData()) && count($values->getData()) > 1) {
-                    $metadata[$resArray['index_name']] = [];
-                    foreach ($values->getData() as $value) {
-                        $metadata[$resArray['index_name']][] = trim((string) $value);
-                    }
+                $values = $this->evaluateJsonPathValues($iiifResource, $resArray['xpath']);
+                if (is_array($values)) {
+                    $metadata[$resArray['index_name']] = $values;
                 }
             }
+
             // Set default value if applicable.
-            if (empty($metadata[$resArray['index_name']][0]) && strlen($resArray['default_value']) > 0) {
-                $metadata[$resArray['index_name']] = [$resArray['default_value']];
-            }
+            $this->setDefaultIfEmpty($metadata, $resArray['index_name'], $resArray['default_value']);
+
             // Set sorting value if applicable.
-            if (!empty($metadata[$resArray['index_name']]) && $resArray['is_sortable']) {
-                if ($resArray['format'] > 0 && !empty($resArray['xpath_sorting'])) {
-                    $values = $iiifResource->jsonPath($resArray['xpath_sorting']);
-                    if (is_string($values)) {
-                        $metadata[$resArray['index_name'] . '_sorting'][0] = [trim((string) $values)];
-                    } elseif ($values instanceof JSONPath && is_array($values->getData()) && count($values->getData()) > 1) {
-                        $metadata[$resArray['index_name']] = [];
-                        foreach ($values->getData() as $value) {
-                            $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $value);
-                        }
-                    }
-                }
-                if (empty($metadata[$resArray['index_name'] . '_sorting'][0])) {
-                    $metadata[$resArray['index_name'] . '_sorting'][0] = $metadata[$resArray['index_name']][0];
-                }
-            }
+            $this->setSortingValue($metadata, $iiifResource, $resArray);
         }
         // Set date to empty string if not present.
         if (empty($metadata['date'][0])) {
             $metadata['date'][0] = '';
         }
         return $metadata;
+    }
+
+    /**
+     * Evaluate a JSONPath on a IIIF resource and return trimmed values or null if none.
+     *
+     * @access private
+     *
+     * @param IiifResourceInterface $iiifResource
+     * @param string $xpath
+     *
+     * @return string[]|null
+     */
+    private function evaluateJsonPathValues(IiifResourceInterface $iiifResource, string $xpath): ?array
+    {
+        try {
+            $values = $iiifResource->jsonPath($xpath);
+        } catch (\Exception $e) {
+            // Preserve previous behavior: treat errors as no value
+            return null;
+        }
+
+        if (is_string($values)) {
+            return [trim($values)];
+        }
+
+        if ($values instanceof JSONPath && is_array($values->getData()) && count($values->getData()) > 1) {
+            $result = [];
+            foreach ($values->getData() as $value) {
+                $result[] = trim((string) $value);
+            }
+            return $result;
+        }
+
+        return null;
+    }
+
+    /**
+     * Set default metadata value if no value present yet.
+     *
+     * @access private
+     *
+     * @param array $metadata
+     * @param string $indexName
+     * @param string $defaultValue
+     *
+     * @return void
+     */
+    private function setDefaultIfEmpty(array &$metadata, string $indexName, string $defaultValue): void
+    {
+        if (empty($metadata[$indexName][0]) && strlen($defaultValue) > 0) {
+            $metadata[$indexName] = [$defaultValue];
+        }
+    }
+
+    /**
+     * Evaluate and set sorting metadata if applicable.
+     *
+     * @access private
+     *
+     * @param array $metadata
+     * @param IiifResourceInterface $iiifResource
+     * @param array $resArray
+     *
+     * @return void
+     */
+    private function setSortingValue(array &$metadata, IiifResourceInterface $iiifResource, array $resArray): void
+    {
+        if (empty($metadata[$resArray['index_name']]) || !$resArray['is_sortable']) {
+            return;
+        }
+
+        if ($resArray['format'] > 0 && !empty($resArray['xpath_sorting'])) {
+            try {
+                $values = $iiifResource->jsonPath($resArray['xpath_sorting']);
+            } catch (\Exception $e) {
+                $values = null;
+            }
+
+            if (is_string($values)) {
+                $metadata[$resArray['index_name'] . '_sorting'][0] = [trim((string) $values)];
+            } elseif ($values instanceof JSONPath && is_array($values->getData()) && count($values->getData()) > 1) {
+                // preserve original behavior where an empty array was set in this branch
+                $metadata[$resArray['index_name']] = [];
+                foreach ($values->getData() as $value) {
+                    $metadata[$resArray['index_name'] . '_sorting'][0] = trim((string) $value);
+                }
+            }
+        }
+
+        if (empty($metadata[$resArray['index_name'] . '_sorting'][0])) {
+            $metadata[$resArray['index_name'] . '_sorting'][0] = $metadata[$resArray['index_name']][0];
+        }
     }
 
     /**
