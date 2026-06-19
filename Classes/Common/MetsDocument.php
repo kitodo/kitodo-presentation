@@ -84,6 +84,50 @@ final class MetsDocument extends AbstractDocument
 
     /**
      * @access protected
+     * @var string The METS namespace
+     */
+    protected const METS_NAMESPACE = 'http://www.loc.gov/METS/';
+
+    /**
+     * @access protected
+     * @var string The XLINK namespace
+     */
+    protected const XLINK_NAMESPACE = 'http://www.w3.org/1999/xlink';
+
+    /**
+     * @access protected
+     * @var string The XPATH of the logical structure map (only immediate children)
+     *
+     * @link https://www.loc.gov/standards/mets/docs/mets.v1-9.html#structMap
+     */
+    protected const STRUCTURE_MAP_LOGICAL = './mets:structMap[@TYPE="LOGICAL"]/mets:div';
+
+    /**
+     * @access protected
+     * @var string The XPATH of the logical structure map (all children)
+     *
+     * @link https://www.loc.gov/standards/mets/docs/mets.v1-9.html#structMap
+     */
+    protected const STRUCTURE_MAP_LOGICAL_ALL = './mets:structMap[@TYPE="LOGICAL"]//mets:div';
+
+    /**
+     * @access protected
+     * @var string The XPATH of the physical structure map (only immediate children)
+     *
+     * @link https://www.loc.gov/standards/mets/docs/mets.v1-9.html#structMap
+     */
+    protected const STRUCTURE_MAP_PHYSICAL = './mets:structMap[@TYPE="PHYSICAL"]/mets:div';
+
+    /**
+     * @access protected
+     * @var string The XPATH of the physical structure map (all children)
+     *
+     * @link https://www.loc.gov/standards/mets/docs/mets.v1-9.html#structMap
+     */
+    protected const STRUCTURE_MAP_PHYSICAL_ALL = './mets:structMap[@TYPE="PHYSICAL"]//mets:div';
+
+    /**
+     * @access protected
      * @var string This holds the whole XML file as string for serialization purposes
      *
      * @see __sleep() / __wakeup()
@@ -295,8 +339,8 @@ final class MetsDocument extends AbstractDocument
     {
         $mets = $this->mets
             ->xpath(
-                './mets:structMap[@TYPE="PHYSICAL"]' .
-                '//mets:div[@ID="' .  $pageId .  '"]' .
+                self::STRUCTURE_MAP_PHYSICAL_ALL .
+                '[@ID="' .  $pageId .  '"]' .
                 '/mets:fptr[@FILEID="' .  $fileId .  '"]' .
                 '/mets:area/@BEGIN'
             );
@@ -338,10 +382,10 @@ final class MetsDocument extends AbstractDocument
         } elseif ($this->mets !== null) {
             if (!empty($id)) {
                 // Get specified logical unit.
-                $divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]');
+                $divs = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@ID="' . $id . '"]');
             } else {
                 // Get all logical units at top level.
-                $divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]/mets:div');
+                $divs = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL);
             }
             if (!empty($divs)) {
                 if (!$recursive) {
@@ -408,18 +452,18 @@ final class MetsDocument extends AbstractDocument
         // Load physical structure.
         $this->magicGetPhysicalStructure();
 
-        $this->getPage($details, $structure->children('http://www.loc.gov/METS/')->mptr);
-        $this->getFiles($details, $structure->children('http://www.loc.gov/METS/')->fptr);
+        $this->getPage($details, $structure->children(self::METS_NAMESPACE)->mptr);
+        $this->getFiles($details, $structure->children(self::METS_NAMESPACE)->fptr);
 
         // Keep for later usage.
         $this->logicalUnits[$details['id']] = $details;
         // Walk the structure recursively? And are there any children of the current element?
         if (
             $recursive
-            && count($structure->children('http://www.loc.gov/METS/')->div)
+            && count($structure->children(self::METS_NAMESPACE)->div)
         ) {
             $details['children'] = [];
-            foreach ($structure->children('http://www.loc.gov/METS/')->div as $child) {
+            foreach ($structure->children(self::METS_NAMESPACE)->div as $child) {
                 // Repeat for all children.
                 $details['children'][] = $this->getLogicalStructureInfo($child, true);
             }
@@ -465,7 +509,7 @@ final class MetsDocument extends AbstractDocument
     {
         if (count($metsPointers)) {
             // Yes. Get the file reference.
-            $details['points'] = (string) $metsPointers[0]->attributes('http://www.w3.org/1999/xlink')->href;
+            $details['points'] = (string) $metsPointers[0]->attributes(self::XLINK_NAMESPACE)->href;
         } elseif (
             !empty($this->physicalStructure)
             && array_key_exists($details['id'], $this->smLinks['l2p'])
@@ -610,7 +654,7 @@ final class MetsDocument extends AbstractDocument
         }
 
         if ($this->mets !== null) {
-            $administrativeNode = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ADMID]/@ID');
+            $administrativeNode = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@ADMID]/@ID');
 
             if (!empty($administrativeNode)) {
                 $administrativeId = (string)$administrativeNode[0];
@@ -749,8 +793,8 @@ final class MetsDocument extends AbstractDocument
     {
         if (!empty($this->logicalUnits[$id])) {
             return [$this->logicalUnits[$id]['type']];
-        } elseif ($this->mets !== null) {
-            $struct = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]/@TYPE');
+        } else if ($this->mets !== null) {
+            $struct = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@ID="' . $id . '"]/@TYPE');
             if (!empty($struct)) {
                 return [(string) $struct[0]];
             }
@@ -1033,8 +1077,8 @@ final class MetsDocument extends AbstractDocument
         if (!empty($this->logicalUnits[$id])) {
             $dmdIds = $this->logicalUnits[$id]['dmdId'] ?? '';
             $admIds = $this->logicalUnits[$id]['admId'] ?? '';
-        } elseif ($this->mets !== null) {
-            $mdSec = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $id . '"]')[0] ?? null;
+        } else if ($this->mets !== null) {
+            $mdSec = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@ID="' . $id . '"]')[0] ?? null;
             if ($mdSec) {
                 $dmdIds = (string) $mdSec->attributes()->DMDID;
                 $admIds = (string) $mdSec->attributes()->ADMID;
@@ -1123,7 +1167,8 @@ final class MetsDocument extends AbstractDocument
         if ($this->mets === null) {
             return false;
         }
-        $ancestors = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $logId . '"]/ancestor::*');
+
+        $ancestors = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@ID="' . $logId . '"]/ancestor::*');
         if (!empty($ancestors)) {
             return count($ancestors);
         }
@@ -1228,7 +1273,7 @@ final class MetsDocument extends AbstractDocument
                     foreach ($amdSecXml as $amdSecTag) {
                         $childIds = [];
 
-                        foreach ($amdSecTag->children('http://www.loc.gov/METS/') as $mdSecTag) {
+                        foreach ($amdSecTag->children(self::METS_NAMESPACE) as $mdSecTag) {
                             if (!in_array($mdSecTag->getName(), self::ALLOWED_AMD_SEC)) {
                                 continue;
                             }
@@ -1330,8 +1375,8 @@ final class MetsDocument extends AbstractDocument
                         $fileGrps = $this->mets->xpath("./mets:fileSec/mets:fileGrp[@USE='$useGroup']");
                         if (!empty($fileGrps)) {
                             foreach ($fileGrps as $fileGrp) {
-                                foreach ($fileGrp->children('http://www.loc.gov/METS/')->file as $file) {
-                                    $fLocat = $file->children('http://www.loc.gov/METS/')->FLocat;
+                                foreach ($fileGrp->children(self::METS_NAMESPACE)->file as $file) {
+                                    $fLocat = $file->children(self::METS_NAMESPACE)->FLocat;
                                     $fileId = (string) $file->attributes()->ID;
                                     $this->fileGrps[$fileId] = $useGroup;
                                     $this->fileInfos[$fileId] = [
@@ -1339,7 +1384,7 @@ final class MetsDocument extends AbstractDocument
                                         'admId' => (string) $file->attributes()->ADMID,
                                         'dmdId' => (string) $file->attributes()->DMDID,
                                         'mimeType' => (string) $file->attributes()->MIMETYPE,
-                                        'location' => (string) $fLocat->attributes('http://www.w3.org/1999/xlink')->href,
+                                        'location' => (string) $fLocat->attributes(self::XLINK_NAMESPACE)->href,
                                     ];
                                 }
                             }
@@ -1358,7 +1403,7 @@ final class MetsDocument extends AbstractDocument
     protected function prepareMetadataArray(): void
     {
         if ($this->mets !== null) {
-            $ids = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID]/@ID');
+            $ids = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@DMDID]/@ID');
             // Get all logical structure nodes with metadata.
             if (!empty($ids)) {
                 foreach ($ids as $id) {
@@ -1390,12 +1435,12 @@ final class MetsDocument extends AbstractDocument
         if (!$this->physicalStructureLoaded) {
             if ($this->mets !== null) {
                 // Does the document have a structMap node of type "PHYSICAL"?
-                $elementNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]/mets:div');
+                $elementNodes = $this->mets->xpath(self::STRUCTURE_MAP_PHYSICAL . '[@TYPE="physSequence"]/mets:div');
                 if (!empty($elementNodes)) {
                     // Get file groups.
                     $fileUse = $this->magicGetFileGrps();
                     // Get the physical sequence's metadata.
-                    $physicalNodes = $this->mets->xpath('./mets:structMap[@TYPE="PHYSICAL"]/mets:div[@TYPE="physSequence"]');
+                    $physicalNodes = $this->mets->xpath(self::STRUCTURE_MAP_PHYSICAL . '[@TYPE="physSequence"]');
                     if (!empty($physicalNodes)) {
                         $firstNode = $physicalNodes[0];
                         $id = (string) $firstNode['ID'];
@@ -1436,7 +1481,7 @@ final class MetsDocument extends AbstractDocument
         // Get file groups.
         $fileUse = $this->magicGetFileGrps();
 
-        foreach ($physicalNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+        foreach ($physicalNode->children(self::METS_NAMESPACE)->fptr as $fptr) {
             $fileNode = $fptr->area ?? $fptr;
             $fileId = (string) $fileNode->attributes()->FILEID;
 
@@ -1476,13 +1521,13 @@ final class MetsDocument extends AbstractDocument
             $this->physicalStructureInfo[$id]['type'] = (string) $elementNode['TYPE'];
             $this->physicalStructureInfo[$id]['contentIds'] = $this->getAttribute($elementNode['CONTENTIDS']);
             // Get the file representations from fileSec node.
-            foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+            foreach ($elementNode->children(self::METS_NAMESPACE)->fptr as $fptr) {
                 // @fschoelzel: The following lines dont work for the Media Player, because the elseif part is never reached.
                 // $fileNode = $fptr->area ?? $fptr;
                 // $fileId = (string) $fileNode->attributes()->FILEID;
 
                 $fileId = (string) $fptr->attributes()->FILEID;
-                $area = $fptr->children('http://www.loc.gov/METS/')->area;
+                $area = $fptr->children(self::METS_NAMESPACE)->area;
 
                 // Check if file has valid @USE attribute.
                 if (!empty($fileUse[(string) $fileId])) {
@@ -1508,7 +1553,7 @@ final class MetsDocument extends AbstractDocument
 
             // Get track info with begin and extent time for later assignment with musical
             if ($this->physicalStructureInfo[$id]['type'] === 'track') {
-                foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+                foreach ($elementNode->children(self::METS_NAMESPACE)->fptr as $fptr) {
                     if (isset($fptr->area) &&  ((string) $fptr->area->attributes()->BETYPE === 'TIME')) {
                         // Check if file has valid @USE attribute.
                         $fileId = (string) $fptr->area->attributes()->FILEID;
@@ -1544,8 +1589,8 @@ final class MetsDocument extends AbstractDocument
                 $smLinks = $this->mets->xpath('./mets:structLink/mets:smLink');
                 if (!empty($smLinks)) {
                     foreach ($smLinks as $smLink) {
-                        $this->smLinks['l2p'][(string) $smLink->attributes('http://www.w3.org/1999/xlink')->from][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->to;
-                        $this->smLinks['p2l'][(string) $smLink->attributes('http://www.w3.org/1999/xlink')->to][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->from;
+                        $this->smLinks['l2p'][(string) $smLink->attributes(self::XLINK_NAMESPACE)->from][] = (string) $smLink->attributes(self::XLINK_NAMESPACE)->to;
+                        $this->smLinks['p2l'][(string) $smLink->attributes(self::XLINK_NAMESPACE)->to][] = (string) $smLink->attributes(self::XLINK_NAMESPACE)->from;
                     }
                 }
             }
@@ -1583,7 +1628,7 @@ final class MetsDocument extends AbstractDocument
                     $strctType = Helper::getIndexNameFromUid($resArray['thumbnail'], 'tx_dlf_structures', $this->configPid);
                     // Check if this document has a structure element of the desired type.
                     if ($this->mets !== null) {
-                        $strctIds = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@TYPE="' . $strctType . '"]/@ID');
+                        $strctIds = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@TYPE="' . $strctType . '"]/@ID');
                         if (!empty($strctIds)) {
                             $strctId = (string) $strctIds[0];
                         }
@@ -1622,7 +1667,7 @@ final class MetsDocument extends AbstractDocument
         if (empty($this->toplevelId)) {
             if ($this->mets !== null) {
                 // Get all logical structure nodes with metadata, but without associated METS-Pointers.
-                $divs = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]');
+                $divs = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@DMDID and not(./mets:mptr)]');
                 if (!empty($divs)) {
                     // Load smLinks.
                     $this->magicGetSmLinks();
@@ -1656,9 +1701,9 @@ final class MetsDocument extends AbstractDocument
         if (empty($this->parentHref)) {
             if ($this->mets !== null) {
                 // Get the closest ancestor of the current document which has a MPTR child.
-                $parentMptr = $this->mets->xpath('./mets:structMap[@TYPE="LOGICAL"]//mets:div[@ID="' . $this->getToplevelId() . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
+                $parentMptr = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@ID="' . $this->getToplevelId() . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
                 if (!empty($parentMptr)) {
-                    $this->parentHref = (string) $parentMptr[0]->attributes('http://www.w3.org/1999/xlink')->href;
+                    $this->parentHref = (string) $parentMptr[0]->attributes(self::XLINK_NAMESPACE)->href;
                 }
             }
         }
@@ -1753,7 +1798,7 @@ final class MetsDocument extends AbstractDocument
                         $this->musicalStructureInfo[$id]['contentIds'] = $this->getAttribute($musicalNode[0]['CONTENTIDS']);
                         // Get the file representations from fileSec node.
                         // TODO: Do we need this for the measurement container element? Can it have any files?
-                        foreach ($musicalNode[0]->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+                        foreach ($musicalNode[0]->children(self::METS_NAMESPACE)->fptr as $fptr) {
                             // Check if file has valid @USE attribute.
                             if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
                                 $this->musicalStructureInfo[$id]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = [
@@ -1788,7 +1833,7 @@ final class MetsDocument extends AbstractDocument
                             $this->musicalStructureInfo[$id]['contentIds'] = $this->getAttribute($elementNode['CONTENTIDS']);
                             // Get the file representations from fileSec node.
 
-                            foreach ($elementNode->children('http://www.loc.gov/METS/')->fptr as $fptr) {
+                            foreach ($elementNode->children(self::METS_NAMESPACE)->fptr as $fptr) {
                                 // Check if file has valid @USE attribute.
                                 $fieldId = (string) $fptr->area->attributes()->FILEID;
                                 if (!empty($fileUse[$fieldId])) {
