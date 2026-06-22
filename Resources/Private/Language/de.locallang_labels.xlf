@@ -801,6 +801,14 @@
                 <target>Solr-Schema-Feld "sid" : XML ID of this document in the METS file. This is only unique within the METS file! (Standard ist "sid")</target>
                 <source>Solr Schema Field "sid" : XML ID of this document in the METS file. This is only unique within the METS file! (default is "sid")</source>
             </trans-unit>
+            <trans-unit id="config.solr.fields.logicalId">
+                <target>Solr-Schema-Feld "logical_id" : Logical XML ID of this document in the METS file. This is only unique within the METS file! (Standard ist "logical_id")</target>
+                <source>Solr Schema Field "logical_id" : Logical XML ID of this document in the METS file. This is only unique within the METS file! (default is "logical_id")</source>
+            </trans-unit>
+            <trans-unit id="config.solr.fields.physicalId">
+                <target>Solr-Schema-Feld "physical_id" : Physical XML ID of this document in the METS file. This is only unique within the METS file! (Standard ist "physical_id")</target>
+                <source>Solr Schema Field "physical_id" : Physical XML ID of this document in the METS file. This is only unique within the METS file! (default is "physical_id")</source>
+            </trans-unit>
             <trans-unit id="config.solr.fields.toplevel">
                 <target>Solr-Schema-Feld "toplevel" : Information if it is a top-level document (Standard ist "toplevel")</target>
                 <source>Solr Schema Field "toplevel" : Information if it is a top-level document (default is "toplevel")</source>
@@ -822,7 +830,7 @@
                 <source>Solr Schema Field "structure_path" : Field providing context about the location of a resource in the structure map (default is "structure_path")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.date">
-                <target>Solr Schema Field "date" : The date a resource was issued or created. Used for datesearch (Standard ist "date")</target>
+                <target>Solr-Schema-Feld "date" : The date a resource was issued or created. Used for datesearch (Standard ist "date")</target>
                 <source>Solr Schema Field "date" : The date a resource was issued or created. Used for datesearch (default is "date")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.thumbnail">
