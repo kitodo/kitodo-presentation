@@ -39,7 +39,7 @@
     "typo3/cms-scheduler": "^12.4|^13.4",
     "typo3/cms-tstemplate": "^12.4|^13.4",
     "caseyamcl/phpoaipmh": "^3.3",
-    "slub/php-mods-reader": "^0.4",
+    "slub/php-mods-reader": "^0.5",
     "ubl/php-iiif-prezi-reader": "0.3.2",
     "solarium/solarium": "^6.4",
     "softcreatr/jsonpath": "^0.10",
