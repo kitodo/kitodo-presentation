@@ -147,7 +147,14 @@ class Solr implements LoggerAwareInterface
                 $action->setInstanceDir($core);
                 $query->setAction($action);
                 try {
-                    $response = $solrAdmin->service->coreAdmin($query);
+                    $previousErrorLevel = error_reporting(error_reporting() & ~E_DEPRECATED);
+                    try {
+                        $response = $solrAdmin->service->coreAdmin($query);
+                        error_reporting($previousErrorLevel);
+                    } catch (\Exception $e) {
+                        error_reporting($previousErrorLevel);
+                        throw $e;
+                    }
                     if ($response->getWasSuccessful()) {
                         // Core successfully created.
                         return $core;
@@ -587,7 +594,14 @@ class Solr implements LoggerAwareInterface
         }
         $query->setAction($action);
         try {
-            $response = $this->service->coreAdmin($query);
+            $previousErrorLevel = error_reporting(error_reporting() & ~E_DEPRECATED);
+            try {
+                $response = $this->service->coreAdmin($query);
+                error_reporting($previousErrorLevel);
+            } catch (\Exception $e) {
+                error_reporting($previousErrorLevel);
+                throw $e;
+            }
             if ($response->getWasSuccessful()) {
                 // Solr is reachable, but is the core as well?
                 if ($core !== null) {
