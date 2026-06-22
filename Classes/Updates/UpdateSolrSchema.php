@@ -70,7 +70,7 @@ class UpdateSolrSchema implements UpgradeWizardInterface
 
         foreach ($affectedSolrCores as $affectedSolrCore) {
 
-            $solr = Solr::getInstance($affectedSolrCore['uid']);
+            $solr = Solr::getInstance($affectedSolrCore->getUid());
             if (!$solr->ready) {
                 continue;
             }
@@ -78,7 +78,7 @@ class UpdateSolrSchema implements UpgradeWizardInterface
             $query = $solr->service->createApi(
                 [
                     'version' => Request::API_V1,
-                    'handler' => $affectedSolrCore['index_name'].'/schema',
+                    'handler' => $affectedSolrCore->getIndexName().'/schema',
                     'method' => Request::METHOD_POST,
                     'rawdata' => json_encode(
                         [
@@ -160,7 +160,7 @@ class UpdateSolrSchema implements UpgradeWizardInterface
             $query = $solr->service->createApi(
                 [
                     'version' => Request::API_V1,
-                    'handler' => $solrCore['index_name'].'/config/schemaFactory',
+                    'handler' => $solrCore->getIndexName().'/config/schemaFactory',
                     'method' => Request::METHOD_GET
                 ]
             );
@@ -173,7 +173,7 @@ class UpdateSolrSchema implements UpgradeWizardInterface
             $query = $solr->service->createApi(
                 [
                     'version' => Request::API_V1,
-                    'handler' => $solrCore['index_name'].'/schema/fields/autocomplete',
+                    'handler' => $solrCore->getIndexName().'/schema/fields/autocomplete',
                     'method' => Request::METHOD_GET
                 ]
             );
