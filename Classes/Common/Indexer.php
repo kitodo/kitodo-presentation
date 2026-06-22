@@ -350,6 +350,8 @@ class Indexer
                 // Create new Solr document.
                 $updateQuery = self::$solr->service->createUpdate();
                 $solrDoc = self::getSolrDocument($updateQuery, $document, $logicalUnit);
+                $solrDoc->setField('logical_id', $logicalUnit['id']);
+                $solrDoc->setField('physical_id', $doc->smLinks['l2p'][$logicalUnit['id']] ?? []);
                 if (MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
                     $solrDoc->setField('page', $logicalUnit['points']);
                 }
@@ -448,6 +450,8 @@ class Indexer
             // Create new Solr document.
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = self::getSolrDocument($updateQuery, $document, $physicalUnit, $fullText);
+            $solrDoc->setField('physical_id', $physicalUnit['id']);
+            $solrDoc->setField('logical_id', $doc->smLinks['p2l'][$physicalUnit['id']] ?? []);
             $solrDoc->setField('page', $page);
             $useGroupsThumbnail = GeneralUtility::trimExplode(',', $extConf['useGroupsThumbnail']);
             while ($useGroupThumbnail = array_shift($useGroupsThumbnail)) {
