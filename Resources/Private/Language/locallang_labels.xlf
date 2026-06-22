@@ -602,6 +602,12 @@
             <trans-unit id="config.solr.fields.sid">
                 <source>Solr Schema Field "sid" : XML ID of this document in the METS file. This is only unique within the METS file! (default is "sid")</source>
             </trans-unit>
+            <trans-unit id="config.solr.fields.logicalId">
+                <source>Solr Schema Field "logical_id" : Logical XML ID of this document in the METS file. This is only unique within the METS file! (default is "logical_id")</source>
+            </trans-unit>
+            <trans-unit id="config.solr.fields.physicalId">
+                <source>Solr Schema Field "physical_id" : Physical XML ID of this document in the METS file. This is only unique within the METS file! (default is "physical_id")</source>
+            </trans-unit>
             <trans-unit id="config.solr.fields.toplevel">
                 <source>Solr Schema Field "toplevel" : Information if it is a top-level document (default is "toplevel")</source>
             </trans-unit>
