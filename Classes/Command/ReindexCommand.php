@@ -20,8 +20,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * CLI Command for re-indexing collections into database and Solr.
@@ -98,6 +100,12 @@ class ReindexCommand extends BaseCommand
                 null,
                 InputOption::VALUE_NONE,
                 'If this option is set, documents are just added to the index with a soft commit.'
+            )
+            ->addOption(
+                'use-cache',
+                'uc',
+                InputOption::VALUE_NONE,
+                'If this option is set, the document will be taken from cache if cache exists.'
             );
     }
 
@@ -114,6 +122,7 @@ class ReindexCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $dryRun = $input->getOption('dry-run') != false;
+        $useCache = $input->getOption('use-cache') != false;
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
@@ -184,10 +193,11 @@ class ReindexCommand extends BaseCommand
             return Command::FAILURE;
         }
 
-        $amount = iterator_count($documents);
+        /** @var QueryResultInterface<int, Document> $documents PHPStan: narrows iterable|QueryResultInterface union to Countable */
+        $amount = count($documents);
 
         foreach ($documents as $id => $document) {
-            $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], true);
+            $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], !$useCache);
 
             if ($doc === null) {
                 $io->warning('WARNING: Document "' . $document->getLocation() . '" could not be loaded. Skip to next document.');
@@ -207,7 +217,7 @@ class ReindexCommand extends BaseCommand
                 Indexer::add($document, $this->documentRepository, $input->getOption('softCommit'));
             }
             // Clear document cache to prevent memory exhaustion.
-            GeneralUtility::makeInstance(DocumentCacheManager::class)->flush();
+            GeneralUtility::makeInstance(DocumentCacheManager::class)->remove($document->getLocation());
         }
 
         $io->success('All done!');
