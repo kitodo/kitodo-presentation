@@ -137,6 +137,10 @@ limitations under the License.
         <field name="root" type="int" indexed="true" stored="true" required="true" default="0" />
         <!-- XML ID of this document in the METS file. This is only unique within the METS file! -->
         <field name="sid" type="string" indexed="false" stored="true" required="true" default="" />
+        <!-- logical XML ID of this document in the METS file. This is only unique within the METS file! -->
+        <field name="logical_id" type="string" indexed="false" stored="true" required="true" multiValued="true" default="" />
+        <!-- physical XML ID of this document in the METS file. This is only unique within the METS file! -->
+        <field name="physical_id" type="string" indexed="false" stored="true" required="true" multiValued="true" default="" />
         <!-- If it is a top-level document, leave this as default "true". -->
         <field name="toplevel" type="boolean" indexed="true" stored="true" required="true" default="true" />
         <!-- Type of document (eg. monograph, chapter, etc.) -->
@@ -147,7 +151,7 @@ limitations under the License.
         <!-- Convenience field to provide context about the path within the logical structure map -->
         <field name="structure_path" type="string" indexed="false" stored="true" multiValued="true" default="" />
         <!-- The keydate of a resource e.g a newspaper was issued or a letter was written -->
-	    <field name="date" type="daterange" indexed="true" stored="true" multiValued="false" />
+        <field name="date" type="daterange" indexed="true" stored="true" multiValued="false" />
         <!-- URL of thumbnail image for the document. -->
         <field name="thumbnail" type="string" indexed="false" stored="true" multiValued="false" default="" />
         <!-- CatchAll field. See <copyField> below. -->

@@ -74,6 +74,10 @@ solr.fields.partof = partof
 solr.fields.root = root
 # cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.fields.sid
 solr.fields.sid = sid
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.fields.logicalId
+solr.fields.logicalId = logical_id
+# cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.fields.physicalId
+solr.fields.physicalId = physical_id
 # cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.fields.toplevel
 solr.fields.toplevel = toplevel
 # cat=Solr; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.solr.fields.type
