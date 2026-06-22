@@ -396,57 +396,114 @@ final class IiifManifest extends AbstractDocument
                 $details['type'] = $metadata['type'][0];
             }
         }
+
         $details['thumbnailId'] = $resource->getThumbnailUrl();
         $details['points'] = '';
+
         // Load structural mapping
         $this->magicGetSmLinks();
         // Load physical structure.
         $this->magicGetPhysicalStructure();
 
-        if ($resource instanceof ManifestInterface || $resource instanceof RangeInterface) {
-            $startCanvas = $resource->getStartCanvasOrFirstCanvas();
-        }
-        if (isset($startCanvas)) {
-            $details['pagination'] = $startCanvas->getLabel();
-            $startCanvasIndex = array_search($startCanvas, $this->iiif->getDefaultCanvases());
-            if ($startCanvasIndex !== false) {
-                $details['points'] = $startCanvasIndex + 1;
-            }
-        }
+        $this->applyStartCanvasInfo($details, $resource);
 
         // Keep for later usage.
         $this->logicalUnits[$details['id']] = $details;
+
         // Walk the structure recursively? And are there any children of the current element?
         if ($recursive) {
             $processedStructures[] = $resource->getId();
             $details['children'] = [];
+
             if ($resource instanceof ManifestInterface && $resource->getRootRanges() != null) {
-                $rangesToAdd = [];
-                $rootRanges = [];
-                if (count($this->iiif->getRootRanges()) == 1 && $this->iiif->getRootRanges()[0]->isTopRange()) {
-                    $rangesToAdd = $this->iiif->getRootRanges()[0]->getMemberRangesAndRanges();
-                } else {
-                    $rangesToAdd = $this->iiif->getRootRanges();
-                }
-                foreach ($rangesToAdd as $range) {
-                    $rootRanges[] = $range;
-                }
-                foreach ($rootRanges as $range) {
-                    if (!array_search($range->getId(), $processedStructures)) {
-                        $details['children'][] = $this->getLogicalStructureInfo($range, true, $processedStructures);
-                    }
-                }
+                $this->addChildrenFromManifest($details, $resource, $processedStructures);
             } elseif ($resource instanceof RangeInterface) {
-                if (!empty($resource->getAllRanges())) {
-                    foreach ($resource->getAllRanges() as $range) {
-                        if (!array_search($range->getId(), $processedStructures)) {
-                            $details['children'][] = $this->getLogicalStructureInfo($range, true, $processedStructures);
-                        }
-                    }
+                $this->addChildrenFromRange($details, $resource, $processedStructures);
+            }
+        }
+
+        return $details;
+    }
+
+    /**
+     * Apply start canvas info (pagination + points) to details if available.
+     *
+     * @access private
+     *
+     * @param array<string, string> $details Logical structure array to which the start canvas info should be applied
+     * @param IiifResourceInterface $resource IIIF resource, either a manifest or range, for which the start canvas info should be applied
+     *
+     * @return void
+     */
+    private function applyStartCanvasInfo(array &$details, IiifResourceInterface $resource): void
+    {
+        if ($resource instanceof ManifestInterface || $resource instanceof RangeInterface) {
+            $startCanvas = $resource->getStartCanvasOrFirstCanvas();
+            if (isset($startCanvas)) {
+                $details['pagination'] = $startCanvas->getLabel();
+                $startCanvasIndex = array_search($startCanvas, $this->iiif->getDefaultCanvases(), true);
+                if ($startCanvasIndex !== false) {
+                    $details['points'] = $startCanvasIndex + 1;
                 }
             }
         }
-        return $details;
+    }
+
+    /**
+     * Add children ranges when resource is a ManifestInterface.
+     *
+     * @access private
+     *
+     * @param array<string, string> $details Logical structure array to which the children should be added
+     * @param ManifestInterface $resource IIIF manifest resource for which the children should be added
+     * @param mixed[] $processedStructures IIIF resources that already have been processed
+     *
+     * @return void
+     */
+    private function addChildrenFromManifest(array &$details, ManifestInterface $resource, array &$processedStructures): void
+    {
+        $resourceRootRanges = $resource->getRootRanges();
+
+        // Determine ranges to add according to topRange handling
+        if (count($resourceRootRanges) == 1 && $resourceRootRanges[0]->isTopRange()) {
+            $rangesToAdd = $resourceRootRanges[0]->getMemberRangesAndRanges();
+        } else {
+            $rangesToAdd = $resourceRootRanges;
+        }
+
+        // Normalize into a simple array and iterate
+        $rootRanges = [];
+        foreach ($rangesToAdd as $range) {
+            $rootRanges[] = $range;
+        }
+        foreach ($rootRanges as $range) {
+            if (!in_array($range->getId(), $processedStructures, true)) {
+                $details['children'][] = $this->getLogicalStructureInfo($range, true, $processedStructures);
+            }
+        }
+    }
+
+    /**
+     * Add children ranges when resource is a RangeInterface.
+     *
+     * @access private
+     *
+     * @param array<string, string> $details Logical structure array to which the children should be added
+     * @param RangeInterface $resource IIIF range resource for which the children should be added
+     * @param mixed[] $processedStructures IIIF resources that already have been processed
+     *
+     * @return void
+     */
+    private function addChildrenFromRange(array &$details, RangeInterface $resource, array &$processedStructures): void
+    {
+        $allRanges = $resource->getAllRanges();
+        if (!empty($allRanges)) {
+            foreach ($allRanges as $range) {
+                if (!in_array($range->getId(), $processedStructures, true)) {
+                    $details['children'][] = $this->getLogicalStructureInfo($range, true, $processedStructures);
+                }
+            }
+        }
     }
 
     /**
