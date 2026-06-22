@@ -27,6 +27,7 @@ use Ubl\Iiif\Presentation\Common\Model\Resources\RangeInterface;
 use Ubl\Iiif\Presentation\Common\Vocabulary\Motivation;
 use Ubl\Iiif\Presentation\V1\Model\Resources\AbstractIiifResource1;
 use Ubl\Iiif\Presentation\V2\Model\Resources\AbstractIiifResource2;
+use Ubl\Iiif\Presentation\V2\Model\Resources\Canvas2;
 use Ubl\Iiif\Presentation\V3\Model\Resources\AbstractIiifResource3;
 use Ubl\Iiif\Services\AbstractImageService;
 use Ubl\Iiif\Services\Service;
@@ -178,85 +179,169 @@ final class IiifManifest extends AbstractDocument
      */
     protected function magicGetPhysicalStructure(): array
     {
-        // Is there no physical structure array yet?
-        if (!$this->physicalStructureLoaded) {
-            if (!($this->iiif instanceof ManifestInterface)) {
-                return [];
-            }
+        if ($this->physicalStructureLoaded) {
+            return $this->physicalStructure;
+        }
 
-            $iiifId = $this->iiif->getId();
-            $this->physicalStructureInfo[$iiifId]['id'] = $iiifId;
-            $this->physicalStructureInfo[$iiifId]['dmdId'] = $iiifId;
-            $this->physicalStructureInfo[$iiifId]['label'] = $this->iiif->getLabelForDisplay();
-            $this->physicalStructureInfo[$iiifId]['orderlabel'] = $this->iiif->getLabelForDisplay();
-            $this->physicalStructureInfo[$iiifId]['type'] = 'physSequence';
-            $this->physicalStructureInfo[$iiifId]['contentIds'] = null;
+        if (!($this->iiif instanceof ManifestInterface)) {
+            return [];
+        }
 
-            $this->setFileUseDownload($iiifId, $this->iiif);
-            $this->setFileUseFulltext($iiifId, $this->iiif);
+        $iiifId = $this->iiif->getId();
+        $this->initializeManifestStructure($iiifId);
+
+        $this->setFileUseDownload($iiifId, $this->iiif);
+        $this->setFileUseFulltext($iiifId, $this->iiif);
+
+        $canvases = $this->iiif->getDefaultCanvases();
+        if (!empty($canvases)) {
+            $elements = [];
+            $canvasOrder = 0;
 
             $fileUseThumbs = $this->useGroupsConfiguration->getThumbnail();
             $fileUses = $this->useGroupsConfiguration->getImage();
 
-            if (!empty($this->iiif->getDefaultCanvases())) {
-                // canvases have not order property, but the context defines canveses as @list with a specific order, so we can provide an alternative
-                $elements = [];
-                $canvasOrder = 0;
-                foreach ($this->iiif->getDefaultCanvases() as $canvas) {
-                    $canvasOrder++;
-                    $thumbnailUrl = $canvas->getThumbnailUrl();
-                    // put thumbnails in thumbnail filegroup
-                    if (
-                        !empty($thumbnailUrl)
-                        && empty($this->physicalStructureInfo[$iiifId]['files'][$fileUseThumbs[0]])
-                    ) {
-                        $this->physicalStructureInfo[$iiifId]['files'][$fileUseThumbs[0]] = $thumbnailUrl;
-                    }
-                    // populate structural metadata info
-                    $elements[$canvasOrder] = $canvas->getId();
-                    $this->physicalStructureInfo[$elements[$canvasOrder]]['id'] = $canvas->getId();
-                    $this->physicalStructureInfo[$elements[$canvasOrder]]['dmdId'] = null;
-                    $this->physicalStructureInfo[$elements[$canvasOrder]]['label'] = $canvas->getLabelForDisplay();
-                    $this->physicalStructureInfo[$elements[$canvasOrder]]['orderlabel'] = $canvas->getLabelForDisplay();
-                    // assume that a canvas always represents a page
-                    $this->physicalStructureInfo[$elements[$canvasOrder]]['type'] = 'page';
-                    $this->physicalStructureInfo[$elements[$canvasOrder]]['contentIds'] = null;
-                    $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'] = null;
-                    if (!empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
-                        $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'] = [];
-                        foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
-                            $this->physicalStructureInfo[$elements[$canvasOrder]]['annotationContainers'][] = $annotationContainer->getId();
-                            if ($this->getIndexAnnotations() == 1) {
-                                $this->hasFulltext = true;
-                                $this->hasFulltextSet = true;
-                            }
-                        }
-                    }
+            foreach ($canvases as $canvas) {
+                $canvasOrder++;
+                $canvasId = $canvas->getId();
+                $elements[$canvasOrder] = $canvasId;
 
-                    $this->setFileUseFulltext($elements[$canvasOrder], $canvas);
-
-                    if (!empty($fileUses)) {
-                        $image = $canvas->getImageAnnotations()[0];
-                        foreach ($fileUses as $fileUse) {
-                            if ($image->getBody() !== null && $image->getBody() instanceof ContentResourceInterface) {
-                                $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUse] = $image->getBody()->getId();
-                            }
-                        }
-                    }
-                    if (!empty($thumbnailUrl)) {
-                        $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseThumbs[0]] = $thumbnailUrl;
-                    }
-
-                    $this->setFileUseDownload($elements[$canvasOrder], $canvas);
-                }
-                $this->numPages = $canvasOrder;
-                // Merge and re-index the array to get nice numeric indexes.
-                array_unshift($elements, $iiifId);
-                $this->physicalStructure = $elements;
+                $this->processCanvas($iiifId, $canvasId, $canvas, $fileUseThumbs, $fileUses);
             }
-            $this->physicalStructureLoaded = true;
+
+            $this->numPages = $canvasOrder;
+            array_unshift($elements, $iiifId);
+            $this->physicalStructure = $elements;
         }
+
+        $this->physicalStructureLoaded = true;
         return $this->physicalStructure;
+    }
+
+    /**
+     * Initializes the manifest structure for a given IIIF ID.
+     *
+     * @access private
+     *
+     * @param string $iiifId
+     *
+     * @return void
+     */
+    private function initializeManifestStructure(string $iiifId): void
+    {
+        $this->physicalStructureInfo[$iiifId] = [
+            'id' => $iiifId,
+            'dmdId' => $iiifId,
+            'label' => $this->iiif->getLabelForDisplay(),
+            'orderlabel' => $this->iiif->getLabelForDisplay(),
+            'type' => 'physSequence',
+            'contentIds' => null,
+        ];
+    }
+
+    /**
+     * Process given canvas to extract and set physical structure metadata, file information and annotation containers.
+     *
+     * @access private
+     *
+     * @param string $iiifId
+     * @param string $canvasId
+     * @param CanvasInterface $canvas
+     * @param mixed[] $fileUseThumbs
+     * @param mixed[] $fileUses
+     *
+     * @return void
+     */
+    private function processCanvas(string $iiifId, string $canvasId, CanvasInterface $canvas, array $fileUseThumbs, array $fileUses): void
+    {
+        $thumbnailUrl = $canvas->getThumbnailUrl();
+
+        // Put thumbnails in thumbnail filegroup if empty
+        if (!empty($thumbnailUrl) && empty($this->physicalStructureInfo[$iiifId]['files'][$fileUseThumbs[0]])) {
+            $this->physicalStructureInfo[$iiifId]['files'][$fileUseThumbs[0]] = $thumbnailUrl;
+        }
+
+        // Base structural metadata info
+        $this->physicalStructureInfo[$canvasId] = [
+            'id' => $canvasId,
+            'dmdId' => null,
+            'label'  => $canvas->getLabelForDisplay(),
+            'orderlabel' => $canvas->getLabelForDisplay(),
+            'type' => 'page',
+            'contentIds' => null,
+            'annotationContainers' => null,
+        ];
+
+        $this->processCanvasAnnotations($canvasId, $canvas);
+        $this->setFileUseFulltext($canvasId, $canvas);
+        $this->processCanvasImages($canvasId, $canvas, $fileUses);
+
+        if (!empty($thumbnailUrl)) {
+            $thumbKey = $fileUseThumbs[0] ?? $fileUseThumbs;
+            $this->physicalStructureInfo[$canvasId]['files'][$thumbKey] = $thumbnailUrl;
+        }
+
+        $this->setFileUseDownload($canvasId, $canvas);
+    }
+
+    /**
+     * Process canvas annotations.
+     *
+     * @access private
+     *
+     * @param string $canvasId
+     * @param CanvasInterface $canvas
+     *
+     * @return void
+     */
+    private function processCanvasAnnotations(string $canvasId, CanvasInterface $canvas): void
+    {
+        $containers = $canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING);
+        if (empty($containers)) {
+            return;
+        }
+
+        $this->physicalStructureInfo[$canvasId]['annotationContainers'] = [];
+        foreach ($containers as $annotationContainer) {
+            $this->physicalStructureInfo[$canvasId]['annotationContainers'][] = $annotationContainer->getId();
+
+            if ($this->getIndexAnnotations() === 1) {
+                $this->hasFulltext = true;
+                $this->hasFulltextSet = true;
+            }
+        }
+    }
+
+    /**
+     * Process canvas images.
+     *
+     * @access private
+     *
+     * @param string $canvasId
+     * @param CanvasInterface $canvas
+     * @param mixed[] $fileUses
+     *
+     * @return void
+     */
+    private function processCanvasImages(string $canvasId, CanvasInterface $canvas, array $fileUses): void
+    {
+        if (empty($fileUses)) {
+            return;
+        }
+
+        $imageAnnotations = $canvas->getImageAnnotations();
+        if (empty($imageAnnotations)) {
+            return;
+        }
+
+        $image = $imageAnnotations[0];
+        $body = $image->getBody();
+
+        if ($body instanceof ContentResourceInterface) {
+            foreach ($fileUses as $fileUse) {
+                $this->physicalStructureInfo[$canvasId]['files'][$fileUse] = $body->getId();
+            }
+        }
     }
 
     /**
