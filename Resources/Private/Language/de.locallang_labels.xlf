@@ -774,63 +774,71 @@
                 <source>Allow Solr Core Deletion?: If a Solr Core is deleted in the TYPO3 Backend, should it be deleted in Apache Solr as well? (default is "FALSE")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.id">
-                <target>Solr-Schema-Feld "id" : Unique identifier for the document in the id (Standard ist "id")</target>
+                <target>Solr-Schema-Feld "id" : Eindeutige Bezeichnung für das Dokument im Feld „id“ (Standard ist "id")</target>
                 <source>Solr Schema Field "id" : Unique identifier for the document in the id (default is "id")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.uid">
-                <target>Solr-Schema-Feld "uid" : Unique identifier for the document (or its top-level parent) in the TYPO3 database (Standard ist "uid")</target>
+                <target>Solr-Schema-Feld "uid" : Eindeutige Bezeichnung für das Dokument (oder dessen oberstes übergeordnetes Element) in der TYPO3-Datenbank (Standard ist "uid")</target>
                 <source>Solr Schema Field "uid" : Unique identifier for the document (or its top-level parent) in the TYPO3 database (default is "uid")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.pid">
-                <target>Solr-Schema-Feld "pid" : PageID for the document (or its top-level parent) in the TYPO3 database (Standard ist "pid")</target>
+                <target>Solr-Schema-Feld "pid" : Seiten-ID des Dokuments (oder seines obersten übergeordneten Elements) in der TYPO3-Datenbank (Standard ist "pid")</target>
                 <source>Solr Schema Field "pid" : PageID for the document (or its top-level parent) in the TYPO3 database (default is "pid")</source>
             </trans-unit>
             <trans-unit id="configsolr.fields.page">
-                <target>Solr-Schema-Feld "page" : Image number where this document starts (Standard ist "page")</target>
+                <target>Solr-Schema-Feld "page" : Bildnummer, bei der dieses Dokument beginnt (Standard ist "page")</target>
                 <source>Solr Schema Field "page" : Image number where this document starts (default is "page")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.partof">
-                <target>Solr-Schema-Feld "partof" : Unique identifier for the parent document in the TYPO3 database. Only if this is a multi-volume work! (Standard ist "partof")</target>
+                <target>Solr-Schema-Feld "partof" : Eindeutige Bezeichnung für das übergeordnete Dokument in der TYPO3-Datenbank. Nur wenn es sich um ein mehrbändiges Werk handelt! (Standard ist "partof")</target>
                 <source>Solr Schema Field "partof" : Unique identifier for the parent document in the TYPO3 database. Only if this is a multi-volume work! (default is "partof")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.root">
-                <target>Solr-Schema-Feld "root" : Unique identifier for the root document in the TYPO3 database. Only if this is a multi-volume work! (Standard ist "root")</target>
+                <target>Solr-Schema-Feld "root" : Eindeutige Bezeichnung für das Stammdokument in der TYPO3-Datenbank. Nur wenn es sich um ein mehrbändiges Werk handelt!  (Standard ist "root")</target>
                 <source>Solr Schema Field "root" : Unique identifier for the root document in the TYPO3 database. Only if this is a multi-volume work! (default is "root")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.sid">
-                <target>Solr-Schema-Feld "sid" : XML ID of this document in the METS file. This is only unique within the METS file! (Standard ist "sid")</target>
+                <target>Solr-Schema-Feld "sid" : XML-ID dieses Dokuments in der METS-Datei. Diese ist nur innerhalb der METS-Datei eindeutig! (Standard ist "sid")</target>
                 <source>Solr Schema Field "sid" : XML ID of this document in the METS file. This is only unique within the METS file! (default is "sid")</source>
             </trans-unit>
+            <trans-unit id="config.solr.fields.logicalId">
+                <target>Solr-Schema-Feld "logical_id" : Logische XML-ID dieses Dokuments in der METS-Datei. Diese ist nur innerhalb der METS-Datei eindeutig! (Standard ist "logical_id")</target>
+                <source>Solr Schema Field "logical_id" : Logical XML ID of this document in the METS file. This is only unique within the METS file! (default is "logical_id")</source>
+            </trans-unit>
+            <trans-unit id="config.solr.fields.physicalId">
+                <target>Solr-Schema-Feld "physical_id" : Physische XML-ID dieses Dokuments in der METS-Datei. Diese ist nur innerhalb der METS-Datei eindeutig! (Standard ist "physical_id")</target>
+                <source>Solr Schema Field "physical_id" : Physical XML ID of this document in the METS file. This is only unique within the METS file! (default is "physical_id")</source>
+            </trans-unit>
             <trans-unit id="config.solr.fields.toplevel">
-                <target>Solr-Schema-Feld "toplevel" : Information if it is a top-level document (Standard ist "toplevel")</target>
+                <target>Solr-Schema-Feld "toplevel" : Angabe, ob es sich um ein Dokument der obersten Ebene handelt (Standard ist "toplevel")</target>
                 <source>Solr Schema Field "toplevel" : Information if it is a top-level document (default is "toplevel")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.type">
-                <target>Solr-Schema-Feld "type" : Type of document (eg. monograph, chapter, etc.) (Standard ist "type")</target>
+                <target>Solr-Schema-Feld "type" : Art des Dokuments (z. B. Monografie, Kapitel usw.) (Standard ist "type")</target>
                 <source>Solr Schema Field "type" : Type of document (eg. monograph, chapter, etc.) (default is "type")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.title">
-                <target>Solr-Schema-Feld "title" : Title field is mandatory for identifying documents (Standard ist "title")</target>
+                <target>Solr-Schema-Feld "title" : Das Feld „title“ ist für die Identifizierung von Dokumenten obligatorisch. (Standard ist "title")</target>
                 <source>Solr Schema Field "title" : Title field is mandatory for identifying documents (default is "title")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.volume">
-                <target>Solr-Schema-Feld "volume" : Volume field is mandatory for identifying documents (Standard ist "volume")</target>
+                <target>Solr-Schema-Feld "volume" : Das Feld „volume“ ist für die Identifizierung von Dokumenten obligatorisch (Standard ist "volume")</target>
                 <source>Solr Schema Field "volume" : Volume field is mandatory for identifying documents (default is "volume")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.structurePath">
-                <target>Solr-Schema-Feld "structure_path" : Field providing context about the location of a resource in the structure map (Standard ist "structure_path")</target>
+                <target>Solr-Schema-Feld "structure_path" : Feld, das Informationen zum Standort einer Ressource in der Strukturübersicht liefert (Standard ist "structure_path")</target>
                 <source>Solr Schema Field "structure_path" : Field providing context about the location of a resource in the structure map (default is "structure_path")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.date">
-                <target>Solr Schema Field "date" : The date a resource was issued or created. Used for datesearch (Standard ist "date")</target>
+                <target>Solr-Schema-Feld "date" : Das Datum, an dem eine Ressource herausgegeben oder erstellt wurde. Wird für die Datumsuche verwendet (Standard ist "date")</target>
                 <source>Solr Schema Field "date" : The date a resource was issued or created. Used for datesearch (default is "date")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.thumbnail">
-                <target>Solr-Schema-Feld "thumbnail" : URL of thumbnail image for the document (Standard ist "thumbnail")</target>
+                <target>Solr-Schema-Feld "thumbnail" : URL des Miniaturbilds für das Dokument (Standard ist "thumbnail")</target>
                 <source>Solr Schema Field "thumbnail" : URL of thumbnail image for the document (default is "thumbnail")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.default">
-                <target>Solr-Schema-Feld "default" : CatchAll field (Standard ist "default")</target>
+                <target>Solr-Schema-Feld "default" : CatchAll Feld (Standard ist "default")</target>
                 <source>Solr Schema Field default" : CatchAll field (default is "default")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.timestamp">
@@ -838,47 +846,47 @@
                 <source>Solr Schema Field "timestamp" : (default is "timestamp")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.autocomplete">
-                <target>Solr-Schema-Feld "autocomplete" : Autocomplete field for search form (Standard ist "autocomplete")</target>
+                <target>Solr-Schema-Feld "autocomplete" : Automatische Vervollständigung für das Suchformular (Standard ist "autocomplete")</target>
                 <source>Solr Schema Field "autocomplete" : Autocomplete field for search form (default is "autocomplete")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.fulltext">
-                <target>Solr-Schema-Feld "fulltext" : Fulltext field for OCR results (Standard ist "fulltext")</target>
+                <target>Solr-Schema-Feld "fulltext" : Volltextfeld für OCR-Ergebnisse (Standard ist "fulltext")</target>
                 <source>Solr Schema Field "fulltext" : Fulltext field for OCR results (default is "fulltext")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.recordId">
-                <target>Solr-Schema-Feld "record_id" : Record ID of the document (required for OAI_DC output) (Standard ist "record_id")</target>
+                <target>Solr-Schema-Feld "record_id" : Aufzeichnungs-ID des Dokuments (required for OAI_DC output) (Standard ist "record_id")</target>
                 <source>Solr Schema Field "record_id" : Record ID of the document (required for OAI_DC output) (default is "record_id")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.purl">
-                <target>Solr-Schema-Feld "purl" : Permanent URL of the document (required for EPICUR output) (Standard ist "purl")</target>
+                <target>Solr-Schema-Feld "purl" :Permanente URL des Dokuments (required for EPICUR output) (Standard ist "purl")</target>
                 <source>Solr Schema Field "purl" : Permanent URL of the document (required for EPICUR output) (default is "purl")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.urn">
-                <target>Solr-Schema-Feld "urn" : URN of the Document (required for EPICUR output) (Standard ist "urn")</target>
+                <target>Solr-Schema-Feld "urn" : URN des Dokuments (erforderlich für die EPICUR-Ausgabe) (Standard ist "urn")</target>
                 <source>Solr Schema Field "urn" : URN of the Document (required for EPICUR output) (default is "urn")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.location">
-                <target>Solr-Schema-Feld "location" : Location of METS XML (required for METS output) (Standard ist "location")</target>
+                <target>Solr-Schema-Feld "location" : Speicherort der METS-XML-Datei (für die METS-Ausgabe erforderlich) (Standard ist "location")</target>
                 <source>Solr Schema Field "location" : Location of METS XML (required for METS output) (default is "location")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.collection">
-                <target>Solr-Schema-Feld "collection" : Associated collection(s) of the document (Standard ist "collection")</target>
+                <target>Solr-Schema-Feld "collection" : Zugehörige Sammlung(en) des Dokuments (Standard ist "collection")</target>
                 <source>Solr Schema Field "collection" : Associated collection(s) of the document (default is "collection")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.license">
-                <target>Solr-Schema-Feld "license" : License (should be URI) (Standard ist "license")</target>
+                <target>Solr-Schema-Feld "license" : Lizenz (sollte eine URI sein) (Standard ist "license")</target>
                 <source>Solr Schema Field "license" : License (should be URI) (default is "license")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.terms">
-                <target>Solr-Schema-Feld "terms" : Term of Use (should be URI) (Standard ist "terms")</target>
+                <target>Solr-Schema-Feld "terms" : Nutzungsbedingungen (sollte eine URI sein) (Standard ist "terms")</target>
                 <source>Solr Schema Field "terms" : Term of Use (should be URI) (default is "terms")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.restrictions">
-                <target>Solr-Schema-Feld "restrictions" : Access Restrictions (should be URI) (Standard ist "restrictions")</target>
+                <target>Solr-Schema-Feld "restrictions" : Zugriffsbeschränkungen (sollte eine URI sein) (Standard ist "restrictions")</target>
                 <source>Solr Schema Field "restrictions" : Access Restrictions (should be URI) (default is "restrictions")</source>
             </trans-unit>
             <trans-unit id="config.solr.fields.geom">
-                <target>Solr-Schema-Feld "geom" : GeoJSON geometry for spatial search (Standard ist "geom")</target>
+                <target>Solr-Schema-Feld "geom" : GeoJSON-Geometrie für die räumliche Suche (Standard ist "geom")</target>
                 <source>Solr Schema Field "geom" : GeoJSON geometry for spatial search (default is "geom")</source>
             </trans-unit>
             <trans-unit id="config.annotationServerUrl">
