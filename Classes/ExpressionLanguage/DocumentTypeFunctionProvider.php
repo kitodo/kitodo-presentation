@@ -83,7 +83,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     {
         $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute(
             'frontend.typoscript',
-            TypoScriptHelper::getFrontendTyposcript($this->pageId)
+            TypoScriptHelper::getFrontendTypoScript($this->pageId)
         );
 
         $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);

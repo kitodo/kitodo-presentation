@@ -68,7 +68,7 @@ class ItemsProcFunc implements LoggerAwareInterface
     public function loadStoragePid(array $params): void
     {
         $pid = $params['flexParentDatabaseRow']['pid'];
-        $config = TypoScriptHelper::getFrontendTyposcript($pid)->getSetupArray();
+        $config = TypoScriptHelper::getFrontendTypoScript($pid)->getSetupArray();
         $this->storagePid = $config['plugin.']['tx_dlf.']['persistence.']['storagePid'];
     }
 

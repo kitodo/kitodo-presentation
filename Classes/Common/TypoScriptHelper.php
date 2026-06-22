@@ -56,7 +56,7 @@ class TypoScriptHelper
      *
      * @return FrontendTypoScript
      */
-    public function getFrontendTyposcriptV13(int $pid): FrontendTypoScript
+    public function getFrontendTypoScriptV13(int $pid): FrontendTypoScript
     {
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         $site = $siteFinder->getSiteByPageId($pid);
@@ -102,7 +102,7 @@ class TypoScriptHelper
      *
      * @return FrontendTypoScript the frontend typoscript of the site root
      */
-    public static function getFrontendTyposcriptV12(int $pid): FrontendTypoScript
+    public static function getFrontendTypoScriptV12(int $pid): FrontendTypoScript
     {
         $siteFinder = GeneralUtility::makeInstance(SiteFinder::class);
         $site = $siteFinder->getSiteByPageId($pid);
@@ -137,12 +137,12 @@ class TypoScriptHelper
      *
      * @return FrontendTypoScript the frontend typoscript of the site root
      */
-    public static function getFrontendTyposcript(int $pid): FrontendTypoScript
+    public static function getFrontendTypoScript(int $pid): FrontendTypoScript
     {
         $typo3Version = (new Typo3Version())->getMajorVersion();
         if ($typo3Version === 13) {
-            return GeneralUtility::makeInstance(TypoScriptHelper::class)->getFrontendTyposcriptV13($pid);
+            return GeneralUtility::makeInstance(TypoScriptHelper::class)->getFrontendTypoScriptV13($pid);
         }
-        return TypoScriptHelper::getFrontendTyposcriptV12($pid);
+        return TypoScriptHelper::getFrontendTypoScriptV12($pid);
     }
 }
