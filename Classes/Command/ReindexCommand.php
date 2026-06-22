@@ -15,12 +15,12 @@ namespace Kitodo\Dlf\Command;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\DocumentCacheManager;
 use Kitodo\Dlf\Common\Indexer;
+use Kitodo\Dlf\Domain\Model\Document;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Kitodo\Dlf\Domain\Model\Document;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
@@ -151,21 +151,7 @@ class ReindexCommand extends BaseCommand
         $this->setOwner($input->getOption('owner'));
 
         if (!empty($input->getOption('all'))) {
-            if (
-                !empty($input->getOption('index-limit'))
-                && $input->getOption('index-begin') >= 0
-            ) {
-                // Get all documents for given limit and start.
-                $documents = $this->documentRepository->findAll() // @phpstan-ignore-line
-                    ->getQuery()
-                    ->setLimit((int) $input->getOption('index-limit'))
-                    ->setOffset((int) $input->getOption('index-begin'))
-                    ->execute();
-                $io->writeln($input->getOption('index-limit') . ' documents starting from ' . $input->getOption('index-begin') . ' will be indexed.');
-            } else {
-                // Get all documents.
-                $documents = $this->documentRepository->findAll();
-            }
+            $documents = $this->getAllDocuments($input, $io);
         } elseif (
             !empty($input->getOption('coll'))
             && !is_array($input->getOption('coll'))
@@ -177,17 +163,7 @@ class ReindexCommand extends BaseCommand
                 return Command::FAILURE;
             }
 
-            if (
-                !empty($input->getOption('index-limit'))
-                && $input->getOption('index-begin') >= 0
-            ) {
-                $documents = $this->documentRepository->findAllByCollectionsLimited($collections, (int) $input->getOption('index-limit'), (int) $input->getOption('index-begin'));
-
-                $io->writeln($input->getOption('index-limit') . ' documents starting from ' . $input->getOption('index-begin') . ' will be indexed.');
-            } else {
-                // Get all documents of given collections.
-                $documents = $this->documentRepository->findAllByCollectionsLimited($collections, 0);
-            }
+            $documents = $this->getCollectionsDocuments($input, $io, $collections);
         } else {
             $io->error('One of parameters --all|-a or --coll|-c must be given.');
             return Command::FAILURE;
@@ -223,5 +199,61 @@ class ReindexCommand extends BaseCommand
         $io->success('All done!');
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * Get all documents which should be reindexed.
+     *
+     * @param InputInterface $input
+     * @param SymfonyStyle $io
+     *
+     * @return array<Document>|QueryResultInterface<int, Document>
+     */
+    private function getAllDocuments(InputInterface $input, SymfonyStyle $io): array|QueryResultInterface
+    {
+        $indexLimit = $input->getOption('index-limit');
+        $indexBegin = $input->getOption('index-begin');
+
+        if (
+            !empty($indexLimit)
+            && $input->getOption('index-begin') >= 0
+        ) {
+            $io->writeln($indexLimit . ' documents starting from ' . $indexBegin . ' will be indexed.');
+            // Get all documents for given limit and start.
+            return $this->documentRepository->findAll() // @phpstan-ignore-line
+                ->getQuery()
+                ->setLimit((int) $indexLimit)
+                ->setOffset((int) $indexBegin)
+                ->execute();
+        } else {
+            // Get all documents.
+            return $this->documentRepository->findAll(); // @phpstan-ignore-line
+        }
+    }
+
+    /**
+     * Get all documents for given collections which should be reindexed.
+     *
+     * @param InputInterface $input
+     * @param SymfonyStyle $io
+     * @param mixed[] $collections
+     *
+     * @return array<Document>|QueryResultInterface<int, Document>
+     */
+    private function getCollectionsDocuments(InputInterface $input, SymfonyStyle $io, array $collections): array|QueryResultInterface
+    {
+        $indexLimit = $input->getOption('index-limit');
+        $indexBegin = $input->getOption('index-begin');
+
+        if (
+            !empty($indexLimit)
+            && $indexBegin >= 0
+        ) {
+            $io->writeln($indexLimit . ' documents starting from ' . $indexBegin . ' will be indexed.');
+            return $this->documentRepository->findAllByCollectionsLimited($collections, (int) $indexLimit, (int) $indexBegin);
+        } else {
+            // Get all documents of given collections.
+            return $this->documentRepository->findAllByCollectionsLimited($collections, 0);
+        }
     }
 }
