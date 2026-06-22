@@ -128,7 +128,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
 
         if (is_array($result)) {
             self::assertNotEmpty($result);
-            $uids = array_map(static fn($first) => $first->getUid(), $result);
+            $uids = array_map(static fn ($first) => $first->getUid(), $result);
             self::assertContains(1001, $uids);
         } else {
             // QueryResultInterface
@@ -147,7 +147,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
 
         if (is_array($result)) {
             self::assertNotEmpty($result);
-            $uids = array_map(static fn($first) => $first->getUid(), $result);
+            $uids = array_map(static fn ($first) => $first->getUid(), $result);
             self::assertContains(1002, $uids);
         } else {
             /** @var QueryResultInterface $result */
@@ -155,6 +155,29 @@ class DocumentRepositoryTest extends FunctionalTestCase
             self::assertInstanceOf(Document::class, $first);
             self::assertEquals(1002, $first->getUid());
         }
+    }
+
+    /**
+     * @test
+     */
+    public function canGetStatisticsForSelectedCollection(): void
+    {
+        // TODO: check why it returns 3 if statistics for both collections return 4
+        $result = $this->documentRepository->getStatisticsForSelectedCollection(['storagePid' => 20000]);
+        self::assertEquals(3, $result['titles']);
+        self::assertEquals(3, $result['volumes']);
+
+        $result = $this->documentRepository->getStatisticsForSelectedCollection(['collections' => '1101', 'storagePid' => 20000]);
+        self::assertEquals(3, $result['titles']);
+        self::assertEquals(3, $result['volumes']);
+
+        $result = $this->documentRepository->getStatisticsForSelectedCollection(['collections' => '1102', 'storagePid' => 20000]);
+        self::assertEquals(1, $result['titles']);
+        self::assertEquals(1, $result['volumes']);
+
+        $result = $this->documentRepository->getStatisticsForSelectedCollection(['collections' => '1101, 1102', 'storagePid' => 20000]);
+        self::assertEquals(4, $result['titles']);
+        self::assertEquals(4, $result['volumes']);
     }
 
     /**
