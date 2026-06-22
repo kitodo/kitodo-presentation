@@ -483,8 +483,10 @@ export default class SlubMediaPlayer extends DlfMediaPlayer {
         continue;
       }
 
-      setElementClass(link.parentElement, 'current',
-        Chapters.isEqual(link.dlfVideoLink, chapter));
+      const isCurrent = Chapters.isEqual(link.dlfVideoLink, chapter);
+
+      link.parentElement.classList.toggle('tx-dlf-tableofcontents-current', isCurrent);
+      link.parentElement.classList.toggle('tx-dlf-tableofcontents-no', !isCurrent);
     }
   }
 
