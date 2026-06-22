@@ -516,6 +516,7 @@ final class IiifManifest extends AbstractDocument
         $metadata = $this->initializeMetadata('IIIF');
 
         $allResults = $this->metadataRepository->findForIiif($this->configPid, $this->getIiifVersion());
+        /** @var IiifResourceInterface $iiifResource */
         $iiifResource = $this->iiif->getContainedResourceById($id);
         foreach ($allResults as $resArray) {
             // Set metadata field's value(s).
@@ -578,7 +579,7 @@ final class IiifManifest extends AbstractDocument
      *
      * @access private
      *
-     * @param array $metadata
+     * @param mixed[] $metadata
      * @param string $indexName
      * @param string $defaultValue
      *
@@ -596,9 +597,9 @@ final class IiifManifest extends AbstractDocument
      *
      * @access private
      *
-     * @param array $metadata
+     * @param mixed[] $metadata
      * @param IiifResourceInterface $iiifResource
-     * @param array $resArray
+     * @param mixed[] $resArray
      *
      * @return void
      */
