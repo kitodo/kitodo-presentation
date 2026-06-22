@@ -793,7 +793,7 @@ final class MetsDocument extends AbstractDocument
     {
         if (!empty($this->logicalUnits[$id])) {
             return [$this->logicalUnits[$id]['type']];
-        } else if ($this->mets !== null) {
+        } elseif ($this->mets !== null) {
             $struct = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@ID="' . $id . '"]/@TYPE');
             if (!empty($struct)) {
                 return [(string) $struct[0]];
