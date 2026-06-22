@@ -1077,7 +1077,7 @@ final class MetsDocument extends AbstractDocument
         if (!empty($this->logicalUnits[$id])) {
             $dmdIds = $this->logicalUnits[$id]['dmdId'] ?? '';
             $admIds = $this->logicalUnits[$id]['admId'] ?? '';
-        } else if ($this->mets !== null) {
+        } elseif ($this->mets !== null) {
             $mdSec = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@ID="' . $id . '"]')[0] ?? null;
             if ($mdSec) {
                 $dmdIds = (string) $mdSec->attributes()->DMDID;
