@@ -364,7 +364,7 @@ class Indexer
                 $solrDoc->setField('volume', $metadata['volume'][0] ?? '');
                 // extract structure path
                 self::$extractedStructurePathNodes[$logicalUnit['id']] = self::extractStructurePathNodes($doc->tableOfContents, $logicalUnit['id']);
-                $processedStructurePath = self::buildStructurePathData(self::$extractedStructurePathNodes[$logicalUnit['id']], $document->getCurrentDocument()->getToplevelId());
+                $processedStructurePath = self::buildStructurePathData(self::$extractedStructurePathNodes[$logicalUnit['id']], $doc->getToplevelId());
                 $solrDoc->setField('structure_path', json_encode($processedStructurePath, JSON_UNESCAPED_UNICODE));
                 // verify date formatting
                 if (strtotime($metadata['date'][0])) {
@@ -471,7 +471,7 @@ class Indexer
             $deepestPaths = self::filterDeepestStructurePaths($associatedPaths);
             $processedStructurePath = [];
             foreach ($deepestPaths as $path) {
-                $segments = self::buildStructurePathData($path, $document->getCurrentDocument()->getToplevelId());
+                $segments = self::buildStructurePathData($path, $doc->getToplevelId());
                 $processedStructurePath[] = json_encode($segments, JSON_UNESCAPED_UNICODE);
             }
             $solrDoc->setField('structure_path', $processedStructurePath);
