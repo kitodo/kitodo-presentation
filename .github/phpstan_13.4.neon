@@ -20,7 +20,6 @@ parameters:
       path: ../Classes/Task/BaseAdditionalFieldProvider.php
   level: 7
   paths:
-    - ../Classes/
+    - ../Classes
   excludePaths:
-    - ../Classes/Controller/OaiPmhController.php
   treatPhpDocTypesAsCertain: false
