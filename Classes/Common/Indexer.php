@@ -68,6 +68,15 @@ class Indexer
     /**
      * @access protected
      * @static
+     * @var string[] Array of Solr fields
+     *
+     * @see loadIndexConf()
+     */
+    protected static array $solrFields = [];
+
+    /**
+     * @access protected
+     * @static
      * @var bool Is the index configuration loaded?
      *
      * @see $fields
@@ -287,6 +296,8 @@ class Indexer
             $metadataRepository->useStoragePid($pid);
             $metadata = $metadataRepository->findAll();
 
+            self::$solrFields = Solr::getFields();
+
             /** @var Metadata $indexing */
             foreach ($metadata as $indexing) {
                 if ($indexing->getIndexTokenized()) {
@@ -350,42 +361,42 @@ class Indexer
                 // Create new Solr document.
                 $updateQuery = self::$solr->service->createUpdate();
                 $solrDoc = self::getSolrDocument($updateQuery, $document, $logicalUnit);
-                $solrDoc->setField('logical_id', $logicalUnit['id']);
-                $solrDoc->setField('physical_id', $doc->smLinks['l2p'][$logicalUnit['id']] ?? []);
+                $solrDoc->setField(self::$solrFields['logical_id'], $logicalUnit['id']);
+                $solrDoc->setField(self::$solrFields['physical_id'], $doc->smLinks['l2p'][$logicalUnit['id']] ?? []);
                 if (MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
-                    $solrDoc->setField('page', $logicalUnit['points']);
+                    $solrDoc->setField(self::$solrFields['page'], $logicalUnit['points']);
                 }
                 if ($logicalUnit['id'] == $doc->getToplevelId()) {
-                    $solrDoc->setField('thumbnail', $doc->thumbnail);
+                    $solrDoc->setField(self::$solrFields['thumbnail'], $doc->thumbnail);
                 } elseif (!empty($logicalUnit['thumbnailId'])) {
-                    $solrDoc->setField('thumbnail', $doc->getFileLocation($logicalUnit['thumbnailId']));
+                    $solrDoc->setField(self::$solrFields['thumbnail'], $doc->getFileLocation($logicalUnit['thumbnailId']));
                 }
                 // There can be only one toplevel unit per UID, independently of backend configuration
-                $solrDoc->setField('toplevel', $logicalUnit['id'] == $doc->getToplevelId());
-                $solrDoc->setField('title', $metadata['title'][0]);
-                $solrDoc->setField('volume', $metadata['volume'][0] ?? '');
+                $solrDoc->setField(self::$solrFields['toplevel'], $logicalUnit['id'] == $doc->getToplevelId());
+                $solrDoc->setField(self::$solrFields['title'], $metadata['title'][0]);
+                $solrDoc->setField(self::$solrFields['volume'], $metadata['volume'][0] ?? '');
                 // extract structure path
                 self::$extractedStructurePathNodes[$logicalUnit['id']] = self::extractStructurePathNodes($doc->tableOfContents, $logicalUnit['id']);
-                $processedStructurePath = self::buildStructurePathData(self::$extractedStructurePathNodes[$logicalUnit['id']], $doc->getToplevelId());
-                $solrDoc->setField('structure_path', json_encode($processedStructurePath, JSON_UNESCAPED_UNICODE));
+                $processedStructurePath = self::buildStructurePathData(self::$extractedStructurePathNodes[$logicalUnit['id']], $document->getCurrentDocument()->getToplevelId());
+                $solrDoc->setField(self::$solrFields['structure_path'], json_encode($processedStructurePath, JSON_UNESCAPED_UNICODE));
                 // verify date formatting
                 if (strtotime($metadata['date'][0])) {
                     $solrDoc->setField('date', self::getFormattedDate($metadata['date'][0]));
                 }
-                $solrDoc->setField('record_id', $metadata['record_id'][0] ?? '');
-                $solrDoc->setField('purl', $metadata['purl'][0] ?? '');
-                $solrDoc->setField('location', $document->getLocation());
-                $solrDoc->setField('urn', $metadata['urn']);
-                $solrDoc->setField('license', $metadata['license']);
-                $solrDoc->setField('terms', $metadata['terms']);
-                $solrDoc->setField('restrictions', $metadata['restrictions']);
+                $solrDoc->setField(self::$solrFields['record_id'], $metadata['record_id'][0] ?? '');
+                $solrDoc->setField(self::$solrFields['purl'], $metadata['purl'][0] ?? '');
+                $solrDoc->setField(self::$solrFields['location'], $document->getLocation());
+                $solrDoc->setField(self::$solrFields['urn'], $metadata['urn']);
+                $solrDoc->setField(self::$solrFields['license'], $metadata['license']);
+                $solrDoc->setField(self::$solrFields['terms'], $metadata['terms']);
+                $solrDoc->setField(self::$solrFields['restrictions'], $metadata['restrictions']);
                 $coordinates = json_decode($metadata['coordinates'][0] ?? '');
                 if (is_object($coordinates)) {
                     $feature = (array) $coordinates->features[0]; // @phpstan-ignore-line
                     $geometry = (array) $feature['geometry'];
                     krsort($geometry);
                     $feature['geometry'] = $geometry;
-                    $solrDoc->setField('geom', json_encode($feature));
+                    $solrDoc->setField(self::$solrFields['geom'], json_encode($feature));
                 }
                 $autocomplete = self::processMetadata($document, $metadata, $solrDoc);
                 // Add autocomplete values to index.
@@ -450,20 +461,20 @@ class Indexer
             // Create new Solr document.
             $updateQuery = self::$solr->service->createUpdate();
             $solrDoc = self::getSolrDocument($updateQuery, $document, $physicalUnit, $fullText);
-            $solrDoc->setField('physical_id', $physicalUnit['id']);
-            $solrDoc->setField('logical_id', $doc->smLinks['p2l'][$physicalUnit['id']] ?? []);
-            $solrDoc->setField('page', $page);
+            $solrDoc->setField(self::$solrFields['physical_id'], $physicalUnit['id']);
+            $solrDoc->setField(self::$solrFields['logical_id'], $doc->smLinks['p2l'][$physicalUnit['id']] ?? []);
+            $solrDoc->setField(self::$solrFields['page'], $page);
             $useGroupsThumbnail = GeneralUtility::trimExplode(',', $extConf['useGroupsThumbnail']);
             while ($useGroupThumbnail = array_shift($useGroupsThumbnail)) {
                 if (!empty($physicalUnit['files'][$useGroupThumbnail])) {
-                    $solrDoc->setField('thumbnail', $doc->getFileLocation($physicalUnit['files'][$useGroupThumbnail]));
+                    $solrDoc->setField(self::$solrFields['thumbnail'], $doc->getFileLocation($physicalUnit['files'][$useGroupThumbnail]));
                     break;
                 }
             }
-            $solrDoc->setField('toplevel', false);
-            $solrDoc->setField('type', $physicalUnit['type']);
-            $solrDoc->setField('collection', $doc->metadataArray[$doc->getToplevelId()]['collection']);
-            $solrDoc->setField('location', $document->getLocation());
+            $solrDoc->setField(self::$solrFields['toplevel'], false);
+            $solrDoc->setField(self::$solrFields['type'], $physicalUnit['type']);
+            $solrDoc->setField(self::$solrFields['collection'], $doc->metadataArray[$doc->getToplevelId()]['collection']);
+            $solrDoc->setField(self::$solrFields['location'], $document->getLocation());
             // pick only the deepest structure paths
             $associatedPaths = [];
             foreach ($doc->smLinks['p2l'][$physicalUnit['id']] as $logicalId) {
@@ -478,8 +489,8 @@ class Indexer
                 $segments = self::buildStructurePathData($path, $doc->getToplevelId());
                 $processedStructurePath[] = json_encode($segments, JSON_UNESCAPED_UNICODE);
             }
-            $solrDoc->setField('structure_path', $processedStructurePath);
-            $solrDoc->setField('fulltext', $fullText);
+            $solrDoc->setField(self::$solrFields['structure_path'], $processedStructurePath);
+            $solrDoc->setField(self::$solrFields['fulltext'], $fullText);
             if (is_array($doc->metadataArray[$doc->getToplevelId()])) {
                 self::addFaceting($doc, $solrDoc, $physicalUnit);
             }
@@ -675,15 +686,15 @@ class Indexer
         /** @var QueryDocument $solrDoc */
         $solrDoc = $updateQuery->createDocument();
         // Create unique identifier from document's UID and unit's XML ID.
-        $solrDoc->setField('id', $document->getUid() . $unit['id']);
-        $solrDoc->setField('uid', $document->getUid());
-        $solrDoc->setField('pid', $document->getPid());
-        $solrDoc->setField('partof', $document->getPartof());
-        $solrDoc->setField('root', $document->getCurrentDocument()->rootId);
-        $solrDoc->setField('sid', $unit['id']);
-        $solrDoc->setField('type', $unit['type']);
-        $solrDoc->setField('collection', $document->getCurrentDocument()->metadataArray[$document->getCurrentDocument()->getToplevelId()]['collection']);
-        $solrDoc->setField('fulltext', $fullText);
+        $solrDoc->setField(self::$solrFields['id'], $document->getUid() . $unit['id']);
+        $solrDoc->setField(self::$solrFields['uid'], $document->getUid());
+        $solrDoc->setField(self::$solrFields['pid'], $document->getPid());
+        $solrDoc->setField(self::$solrFields['partof'], $document->getPartof());
+        $solrDoc->setField(self::$solrFields['root'], $document->getCurrentDocument()->rootId);
+        $solrDoc->setField(self::$solrFields['sid'], $unit['id']);
+        $solrDoc->setField(self::$solrFields['type'], $unit['type']);
+        $solrDoc->setField(self::$solrFields['collection'], $document->getCurrentDocument()->metadataArray[$document->getCurrentDocument()->getToplevelId()]['collection']);
+        $solrDoc->setField(self::$solrFields['fulltext'], $fullText);
         return $solrDoc;
     }
 
