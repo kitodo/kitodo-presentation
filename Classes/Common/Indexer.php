@@ -486,7 +486,7 @@ class Indexer
             $deepestPaths = self::filterDeepestStructurePaths($associatedPaths);
             $processedStructurePath = [];
             foreach ($deepestPaths as $path) {
-                $segments = self::buildStructurePathData($path, $document->getCurrentDocument()->getToplevelId());
+                $segments = self::buildStructurePathData($path, $doc->getToplevelId());
                 $processedStructurePath[] = json_encode($segments, JSON_UNESCAPED_UNICODE);
             }
             $solrDoc->setField(self::$solrFields['structure_path'], $processedStructurePath);

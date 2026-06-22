@@ -83,6 +83,12 @@
             <trans-unit id="collection.feed.title">
                 <source><![CDATA[Subscribe to the RSS feed of this collection!]]></source>
             </trans-unit>
+            <trans-unit id="collection.solr.error">
+                <source><![CDATA[Solr Error]]></source>
+            </trans-unit>
+            <trans-unit id="collection.solr.errorDescription">
+                <source><![CDATA[Currently the Solr server is not available.]]></source>
+            </trans-unit>
             <trans-unit id="collection.title">
                 <source><![CDATA[title]]></source>
             </trans-unit>
