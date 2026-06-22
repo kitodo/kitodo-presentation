@@ -235,33 +235,24 @@ class Solr implements LoggerAwareInterface
         if (empty(self::$fields)) {
             $conf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'solr');
             $solrFields = $conf['fields'];
-            self::$fields['id'] = $solrFields['id'];
-            self::$fields['uid'] = $solrFields['uid'];
-            self::$fields['pid'] = $solrFields['pid'];
-            self::$fields['page'] = $solrFields['page'];
-            self::$fields['partof'] = $solrFields['partof'];
-            self::$fields['root'] = $solrFields['root'];
-            self::$fields['sid'] = $solrFields['sid'];
-            self::$fields['toplevel'] = $solrFields['toplevel'];
-            self::$fields['type'] = $solrFields['type'];
-            self::$fields['title'] = $solrFields['title'];
-            self::$fields['volume'] = $solrFields['volume'];
-            self::$fields['structure_path'] = $solrFields['structurePath'];
-            self::$fields['date'] = $solrFields['date'] ?? null;
-            self::$fields['thumbnail'] = $solrFields['thumbnail'];
-            self::$fields['default'] = $solrFields['default'];
-            self::$fields['timestamp'] = $solrFields['timestamp'];
-            self::$fields['autocomplete'] = $solrFields['autocomplete'];
-            self::$fields['fulltext'] = $solrFields['fulltext'];
-            self::$fields['record_id'] = $solrFields['recordId'];
-            self::$fields['purl'] = $solrFields['purl'];
-            self::$fields['urn'] = $solrFields['urn'];
-            self::$fields['location'] = $solrFields['location'];
-            self::$fields['collection'] = $solrFields['collection'];
-            self::$fields['license'] = $solrFields['license'];
-            self::$fields['terms'] = $solrFields['terms'];
-            self::$fields['restrictions'] = $solrFields['restrictions'];
-            self::$fields['geom'] = $solrFields['geom'];
+
+            // Define standard field mappings (config key → output key)
+            $fieldMap = [
+                'id', 'uid', 'pid', 'page', 'partof', 'root', 'sid', 'toplevel',
+                'type', 'title', 'volume', 'date', 'thumbnail', 'default',
+                'timestamp', 'autocomplete', 'fulltext', 'purl', 'urn',
+                'location', 'collection', 'license', 'terms', 'restrictions', 'geom'
+            ];
+
+            foreach ($fieldMap as $field) {
+                self::$fields[$field] = $solrFields[$field] ?? $field;
+            }
+
+            // Handle special mappings (camelCase → snake_case field name conversions)
+            self::$fields['logical_id'] = $solrFields['logicalId'] ?? 'logical_id';
+            self::$fields['physical_id'] = $solrFields['physicalId'] ?? 'physical_id';
+            self::$fields['structure_path'] = $solrFields['structurePath'] ?? 'structure_path';
+            self::$fields['record_id'] = $solrFields['recordId'] ?? 'record_id';
         }
 
         return self::$fields;

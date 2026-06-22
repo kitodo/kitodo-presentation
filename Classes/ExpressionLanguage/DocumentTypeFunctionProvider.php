@@ -39,6 +39,13 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
     use LoggerAwareTrait;
 
     /**
+     * @acess private
+     *
+     * @var int page id for frontend TS initialization
+     */
+    private int $pageId = 0;
+
+    /**
      * @access public
      *
      * @return ExpressionFunction[] An array of Function instances
@@ -74,6 +81,11 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      */
     protected function initializeRepositories(int $storagePid): void
     {
+        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute(
+            'frontend.typoscript',
+            TypoScriptHelper::getFrontendTypoScript($this->pageId)
+        );
+
         $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
         $this->documentRepository->useStoragePid(MathUtility::forceIntegerInRange($storagePid, 0));
 
@@ -148,6 +160,8 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
         if (!isset($queryParams['tx_dlf']['id'])) {
             return null;
         }
+
+        $this->pageId = $arguments['page']['pid'] ?? $arguments['page'];
 
         // Load document with current plugin parameters.
         $this->loadDocument($queryParams['tx_dlf'], $storagePid);
