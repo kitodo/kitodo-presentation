@@ -254,7 +254,7 @@ class OaiPmhController extends AbstractController
             // Get root element.
             $root = $xml->getElementsByTagNameNS($this->formats['mets']['namespace'], 'mets');
             if ($root->item(0) instanceof \DOMNode) {
-                $mets = (string)$xml->saveXML($root->item(0));
+                $mets = (string) $xml->saveXML($root->item(0));
             } else {
                 $this->logger->error('No METS part found in document with location "' . $record['location'] . '"');
             }
@@ -307,7 +307,7 @@ class OaiPmhController extends AbstractController
         // Here we could also choose `false` for a minimized XML.
         $dom->formatOutput = true;
         $dom->loadXML($xmlOutput);
-        $formattedXmlOutput = trim((string)$dom->saveXML());
+        $formattedXmlOutput = trim((string) $dom->saveXML());
 
         // Return the formatted XML.
         return $this->htmlResponse($formattedXmlOutput);
