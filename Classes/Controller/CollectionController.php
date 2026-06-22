@@ -21,7 +21,6 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Controller class for the plugin 'Collection'.
@@ -80,6 +79,7 @@ class CollectionController extends AbstractController
     {
         $solr = $this->getSolr();
         if (!$solr) {
+            $this->view->assign('solrError', true);
             return $this->htmlResponse();
         }
 
@@ -129,6 +129,7 @@ class CollectionController extends AbstractController
 
         $solr = $this->getSolr();
         if (!$solr) {
+            $this->view->assign('solrError', true);
             return $this->htmlResponse();
         }
 

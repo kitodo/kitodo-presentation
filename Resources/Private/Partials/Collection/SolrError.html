@@ -1,0 +1,19 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>
+    (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+
+    This file is part of the Kitodo and TYPO3 projects.
+
+    @license GNU General Public License version 3 or later.
+    For the full copyright and license information, please read the
+    LICENSE.txt file that was distributed with this source code.
+</f:comment>
+
+<f:if condition="{solrError}">
+    <div class="tx-dlf-listview">
+        <h2 class="tx-dlf-listview-label">{f:translate(key: 'collection.solr.error')}</h2>
+        <div class="tx-dlf-collection-description">{f:translate(key: 'collection.solr.errorDescription')}</div>
+    </div>
+</f:if>
