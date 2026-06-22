@@ -14,9 +14,15 @@ module.exports = (env, argv) => {
   return {
     devtool: "source-map",
     devServer: {
-      static: {
-        directory: path.resolve(__dirname, "Webpack/DevServer"),
-      },
+      static: [
+        {
+          directory: path.resolve(__dirname, 'Webpack/DevServer'),
+        },
+        {
+          directory: path.resolve(__dirname, '../Resources'),
+          publicPath: '/Resources',
+        },
+      ],
       compress: true,
       port: 9000,
       server: {
