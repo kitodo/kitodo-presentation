@@ -17,6 +17,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
+      - name: Fix git ownership (needed for php-actions/composer@v6)
+        run: git config --global --add safe.directory /app
+
       - name: Install dependencies
         uses: php-actions/composer@v6
         with:
