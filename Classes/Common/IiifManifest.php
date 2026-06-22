@@ -244,7 +244,7 @@ final class IiifManifest extends AbstractDocument
                         }
                     }
                     if (!empty($thumbnailUrl)) {
-                        $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseThumbs] = $thumbnailUrl;
+                        $this->physicalStructureInfo[$elements[$canvasOrder]]['files'][$fileUseThumbs[0]] = $thumbnailUrl;
                     }
 
                     $this->setFileUseDownload($elements[$canvasOrder], $canvas);
