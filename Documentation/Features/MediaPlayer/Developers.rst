@@ -133,7 +133,8 @@ The Dev Server is intended for developing and testing the media player in a well
 *  The server is configured in the ``devServer`` key in ``/Build/webpack.config.js``.
 
 *  Resources to be served are located in ``Build/Webpack/DevServer/``.
-   This contains a symlink to ``/Resources``, so that all resources can be accessed from a served page via a repository-relative path.
+   The Webpack Dev Server additionally serves ``/Resources`` directly from Kitodo.Presentation repository's ``Resources`` directory, 
+   allowing all resources to be accessed from a served page via repository-relative paths.
 
 Command Reference
 -----------------
