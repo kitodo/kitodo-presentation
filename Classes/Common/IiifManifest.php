@@ -432,7 +432,7 @@ final class IiifManifest extends AbstractDocument
                     $rootRanges[] = $range;
                 }
                 foreach ($rootRanges as $range) {
-                    if ((array_search($range->getId(), $processedStructures) == false)) {
+                    if (!array_search($range->getId(), $processedStructures)) {
                         $details['children'][] = $this->getLogicalStructureInfo($range, true, $processedStructures);
                     }
                 }
