@@ -136,11 +136,11 @@ class BaseCommand extends Command
     protected function getSolrCoreUid(array $solrCores, bool|string|null $inputSolrId): ?int
     {
         if (MathUtility::canBeInterpretedAsInteger($inputSolrId)) {
-            $solrCoreUid = MathUtility::forceIntegerInRange((int) $inputSolrId, 0);
-        } else {
-            $solrCoreUid = $solrCores[$inputSolrId];
+            return MathUtility::forceIntegerInRange((int) $inputSolrId, 0);
+        } else if (is_string($inputSolrId) && array_key_exists($inputSolrId, $solrCores)) {
+            return $solrCores[$inputSolrId];
         }
-        return $solrCoreUid;
+        return null;
     }
 
     /**
