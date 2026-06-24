@@ -1,0 +1,107 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+<div class="tx-dlf-default-viewer-shell">
+            <div class="tx-dlf-default-viewer-viewframe">
+                <aside class="tx-dlf-default-viewer-control-bar">
+                    <section class="tx-dlf-default-viewer-control-panel tx-dlf-default-viewer-control-panel-metadata">
+                        <div class="tx-dlf-default-viewer-control-header">
+                            <p class="tx-dlf-default-viewer-panel-kicker">Document</p>
+                            <h2>Metadata</h2>
+                        </div>
+                        <f:cObject typoscriptObjectPath="plugin.tx_dlf_metadata" />
+                    </section>
+
+                    <section class="tx-dlf-default-viewer-control-panel tx-dlf-default-viewer-control-panel-toc">
+                        <div class="tx-dlf-default-viewer-control-header">
+                            <p class="tx-dlf-default-viewer-panel-kicker">Structure</p>
+                            <h2>Contents</h2>
+                        </div>
+                        <f:cObject typoscriptObjectPath="plugin.tx_dlf_tableofcontents" />
+                    </section>
+                </aside>
+
+                <main class="tx-dlf-default-viewer-main">
+                    <div class="document-view tx-dlf-default-viewer-document-view">
+                        <div class="document-functions tx-dlf-default-viewer-document-functions">
+                            <div class="tx-dlf-default-viewer-provider">
+                                <div>
+                                    <p class="tx-dlf-default-viewer-kicker">Kitodo Presentation</p>
+                                    <h1>Viewer</h1>
+                                </div>
+                                <div class="tx-dlf-default-viewer-provider-actions">
+                                    <f:link.page pageUid="{rootPid}" class="tx-dlf-default-viewer-button tx-dlf-default-viewer-button-secondary">Back</f:link.page>
+                                </div>
+                            </div>
+
+                            <div class="tx-dlf-default-viewer-submenu">
+                                <f:cObject typoscriptObjectPath="plugin.tx_dlf_navigation" />
+                                <f:cObject typoscriptObjectPath="plugin.tx_dlf_toolbox" />
+                            </div>
+                        </div>
+
+                        <f:if condition="{documentId}">
+                            <f:then>
+                                <f:cObject typoscriptObjectPath="plugin.tx_dlf_pageview" />
+                            </f:then>
+                            <f:else>
+                                <div class="tx-dlf-default-viewer-empty-state">
+                                    <div class="tx-dlf-default-viewer-empty-notice">
+                                        <p class="tx-dlf-default-viewer-kicker">No Document</p>
+                                        <h2>No document selected</h2>
+                                        <p>Pass a document URL in <code>tx_dlf[id]</code> to open a METS or IIIF document.</p>
+                                    </div>
+                                </div>
+                            </f:else>
+                        </f:if>
+                    </div>
+                </main>
+            </div>
+
+            <script>
+                (function () {
+                    function updateViewerSize() {
+                        if (window.tx_dlf_viewer && typeof window.tx_dlf_viewer.updateLayerSize === 'function') {
+                            window.setTimeout(function () { window.tx_dlf_viewer.updateLayerSize(); }, 0);
+                            window.setTimeout(function () { window.tx_dlf_viewer.updateLayerSize(); }, 250);
+                        }
+                    }
+
+                    function enterFullscreen() {
+                        document.body.classList.add('fullscreen');
+                        var button = document.querySelector('li.tx-dlf-tools-fullscreen a');
+                        if (button) {
+                            button.classList.add('active');
+                        }
+                        updateViewerSize();
+                    }
+
+                    function exitFullscreen() {
+                        document.body.classList.remove('fullscreen');
+                        var button = document.querySelector('li.tx-dlf-tools-fullscreen a');
+                        if (button) {
+                            button.classList.remove('active');
+                        }
+                        updateViewerSize();
+                    }
+
+                    function toggleFullscreen(event) {
+                        event.preventDefault();
+                        if (document.body.classList.contains('fullscreen')) {
+                            exitFullscreen();
+                        } else {
+                            enterFullscreen();
+                        }
+                    }
+
+                    window.addEventListener('load', function () {
+                        updateViewerSize();
+                        var fullscreenButton = document.querySelector('li.tx-dlf-tools-fullscreen a');
+                        if (fullscreenButton) {
+                            fullscreenButton.addEventListener('click', toggleFullscreen);
+                            fullscreenButton.addEventListener('touchstart', toggleFullscreen, { passive: false });
+                        }
+                    });
+                })();
+            </script>
+</div>
+</html>
