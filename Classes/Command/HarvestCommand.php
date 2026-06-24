@@ -268,12 +268,12 @@ class HarvestCommand extends BaseCommand
      *
      * @access private
      *
-     * @param BaseoaipmhException $exception Instance of exception thrown
+     * @param BaseOaipmhException $exception Instance of exception thrown
      * @param SymfonyStyle $io
      *
      * @return void
      */
-    private function handleOaiError(BaseoaipmhException $exception, SymfonyStyle $io): void
+    private function handleOaiError(BaseOaipmhException $exception, SymfonyStyle $io): void
     {
         $io->error('Trying to retrieve data from OAI interface resulted in error:' . "\n    " . $exception->getMessage());
     }
