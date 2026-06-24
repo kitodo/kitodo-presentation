@@ -217,7 +217,7 @@ class BaseCommand extends Command
             $document->setPlace(implode('; ', $metadata['place'] ?? []));
             $document->setYear(implode('; ', $metadata['year'] ?? []));
             $document->setAuthor($this->getAuthors($metadata['author'] ?? []));
-            $document->setThumbnail($doc->thumbnail ?? '');
+            $document->setThumbnail($doc->thumbnail);
             $document->setMetsLabel($metadata['mets_label'][0] ?? '');
             $document->setMetsOrderlabel($metadata['mets_orderlabel'][0] ?? '');
 
