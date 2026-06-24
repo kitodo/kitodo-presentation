@@ -282,10 +282,7 @@ class Solr implements LoggerAwareInterface
         }
         if (!empty($core)) {
             // Check if there is an instance in the registry already.
-            if (
-                array_key_exists($core, self::$registry)
-                && self::$registry[$core] instanceof self
-            ) {
+            if (array_key_exists($core, self::$registry)) {
                 // Return singleton instance if available.
                 return self::$registry[$core];
             }
