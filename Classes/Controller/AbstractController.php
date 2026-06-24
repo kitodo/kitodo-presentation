@@ -197,7 +197,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     public function isMultiDocumentType(string $type): bool
     {
         $multiViewPluginConfig = $this->getMultiViewPluginConfig();
-        if (!$multiViewPluginConfig !== null
+        if ($multiViewPluginConfig !== null
             && !empty($multiViewPluginConfig['settings.'])
             && !empty($multiViewPluginConfig['settings.']['multiDocumentTypes'])
         ) {
