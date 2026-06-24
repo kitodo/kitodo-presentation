@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Updates;
 
 use Kitodo\Dlf\Common\Solr\Solr;
+use Kitodo\Dlf\Domain\Model\SolrCore;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Solarium\Core\Client\Request;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -150,7 +151,7 @@ class UpdateSolrSchema implements UpgradeWizardInterface
         $allSolrCores = $solrCoreRepository->findAll();
 
         $affectedSolrCores = [];
-
+        /** @var SolrCore $solrCore */
         foreach ($allSolrCores as $solrCore) {
             $solr = Solr::getInstance($solrCore->getUid());
             if (!$solr->ready) {

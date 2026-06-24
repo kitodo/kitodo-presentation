@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Domain\Model\ActionLog;
 use Kitodo\Dlf\Domain\Model\Basket;
 use Kitodo\Dlf\Domain\Model\Mail;
+use Kitodo\Dlf\Domain\Model\Printer;
 use Kitodo\Dlf\Domain\Repository\ActionLogRepository;
 use Kitodo\Dlf\Domain\Repository\MailRepository;
 use Kitodo\Dlf\Domain\Repository\BasketRepository;
@@ -208,6 +209,7 @@ class BasketController extends AbstractController
         $mailSelect = [];
         if (iterator_count($allMails) > 0) {
             $mailSelect[0] = htmlspecialchars(LocalizationUtility::translate('basket.chooseMail', 'dlf'));
+            /** @var Mail $mail */
             foreach ($allMails as $mail) {
                 $mailSelect[$mail->getUid()] = htmlspecialchars($mail->getName()) . ' (' . htmlspecialchars($mail->getMail()) . ')';
             }
@@ -219,6 +221,7 @@ class BasketController extends AbstractController
         $printSelect = [];
         if (iterator_count($allPrinter) > 0) {
             $printSelect[0] = htmlspecialchars(LocalizationUtility::translate('basket.choosePrinter', 'dlf'));
+            /** @var Printer $printer */
             foreach ($allPrinter as $printer) {
                 $printSelect[$printer->getUid()] = htmlspecialchars($printer->getLabel());
             }
