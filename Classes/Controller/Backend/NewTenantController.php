@@ -249,6 +249,7 @@ class NewTenantController extends AbstractController
         $insertedFormats = $this->formatRepository->findAll();
 
         $availableFormats = [];
+        /** @var Format $insertedFormat */
         foreach ($insertedFormats as $insertedFormat) {
             $availableFormats[$insertedFormat->getRoot()] = $insertedFormat->getUid();
         }
