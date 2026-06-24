@@ -217,7 +217,7 @@ class IndexCommand extends BaseCommand
     {
         $document = null;
 
-        if ($doc->recordId ?? false) {
+        if (!empty($doc->recordId)) {
             $document = $this->documentRepository->findOneBy(['recordId' => $doc->recordId]);
         } else {
             $document = $this->documentRepository->findOneBy(['location' => $url]);
