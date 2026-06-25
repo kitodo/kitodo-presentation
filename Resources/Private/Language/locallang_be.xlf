@@ -56,8 +56,14 @@
             <trans-unit id="collection.flexForm.randomize">
                 <source><![CDATA[Randomize sorting?]]></source>
             </trans-unit>
+            <trans-unit id="collection.flexForm.showDocuments">
+                <source><![CDATA[Show documents in the single collection view?]]></source>
+            </trans-unit>
+            <trans-unit id="collection.flexForm.showOverview">
+                <source><![CDATA[Show overview in the single collection view?]]></source>
+            </trans-unit>
             <trans-unit id="collection.flexForm.showSingle">
-                <source><![CDATA[Show single collection in overview?]]></source>
+                <source><![CDATA[Show the single collection in the single collection view?]]></source>
             </trans-unit>
             <trans-unit id="collection.flexForm.showUserDefined">
                 <source><![CDATA[Show user-defined collections?]]></source>
