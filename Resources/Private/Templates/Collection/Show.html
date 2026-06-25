@@ -15,13 +15,17 @@
     <f:debug title="all">{_all}</f:debug>
 </f:if>
 
-<div class="tx-dlf-listview">
-    <f:render partial="Collection/Overview" arguments="{_all}" />
+<div class="tx-dlf-listview">\
+    <f:if condition="{settings.showOverview}">
+        <f:render partial="Collection/Overview" arguments="{_all}" />
+    </f:if>
 
-    <f:variable name="action" value="showSorted" />
-    <f:variable name="controller" value="Collection" />
-    <f:render partial="ListView/SortingForm" arguments="{_all}" />
-    <f:render partial="ListView/Results" arguments="{_all}" />
+    <f:if condition="{settings.showDocuments}">
+        <f:variable name="action" value="showSorted" />
+        <f:variable name="controller" value="Collection" />
+        <f:render partial="ListView/SortingForm" arguments="{_all}" />
+        <f:render partial="ListView/Results" arguments="{_all}" />
+    </f:if>
 </div>
 
 </html>
