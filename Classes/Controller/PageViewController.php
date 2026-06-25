@@ -105,7 +105,6 @@ class PageViewController extends AbstractController
 
         $page = $this->requestData['page'] ?? 0;
 
-        $this->view->assign('viewData', $this->viewData);
         $this->view->assign('forceAbsoluteUrl', $this->extConf['general']['forceAbsoluteUrl'] ?? 0);
         $this->view->assign('docId', $this->requestData['id']);
         $this->view->assign('page', $page);

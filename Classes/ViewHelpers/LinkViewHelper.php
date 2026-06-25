@@ -33,7 +33,7 @@ final class LinkViewHelper extends AbstractTagBasedViewHelper
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-        $this->registerArgument('viewData', 'array', 'View data of the current controller.');
+        $this->registerArgument('requestData', 'array', 'Request data of the current controller.');
         $this->registerArgument('pageUid', 'int', 'Target page. See TypoLink destination');
         $this->registerArgument('section', 'string', 'The anchor to be added to the URI', false, '');
         $this->registerArgument('additionalParams', 'array', 'Additional dlf parameters', false, []);
@@ -46,10 +46,10 @@ final class LinkViewHelper extends AbstractTagBasedViewHelper
         $renderingContext = $this->renderingContext;
         $request = $renderingContext->getRequest();
 
-        $viewData = $this->arguments['viewData'];
+        $requestData= $this->arguments['requestData'];
 
         $dlfArguments = [];
-        foreach ($viewData['requestData'] as $key => $data) {
+        foreach ($requestData as $key => $data) {
             if (is_array($data)) {
                 $tempData = [];
                 foreach ($data as $dataKey => $dataValue) {

@@ -95,15 +95,15 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
     /**
      * @access protected
-     * @var mixed[] This holds some common data for the fluid view
+     * @var string This holds unique id for the fluid view
      */
-    protected array $viewData;
+    protected string $uniqueId;
 
     /**
      * @access protected
      * @var int This holds the current page UID (only in frontend context)
      */
-    protected int $pageUid;
+    protected int $pageUid = 0;
 
     /**
      * Holds the configured useGroups as array.
@@ -141,18 +141,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
 
-        $this->viewData = [
-            'pageUid' => $this->pageUid ?? 0,
-            'uniqueId' => uniqid(),
-            'requestData' => $this->requestData
-        ];
-
-        try {
-            $this->viewData['publicResourcePath'] = PathUtility::getPublicResourceWebPath('EXT:dlf/Resources/Public');
-        } catch (InvalidFileException) {
-            $this->logger->warning('Public resource path of the dlf extension could not be determined');
-        }
-
+        $this->uniqueId = uniqid();
     }
 
     /**
@@ -655,9 +644,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         }
 
         $this->requestData['page'] = MathUtility::forceIntegerInRange($this->requestData['page'], 1, $this->document->getCurrentDocument()->numPages, 1);
-
-        // reassign viewData to get correct page
-        $this->viewData['requestData'] = $this->requestData;
     }
 
     /**
