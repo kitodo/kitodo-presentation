@@ -14,6 +14,8 @@ namespace Kitodo\Dlf\Tests\Functional\Repository;
 
 use Kitodo\Dlf\Domain\Repository\TokenRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class TokenRepositoryTest extends FunctionalTestCase
 {
@@ -53,10 +55,8 @@ class TokenRepositoryTest extends FunctionalTestCase
         unlink(__DIR__ . '/../../Fixtures/Repository/tokenTemp.csv');
     }
 
-    /**
-     * @test
-     * @group delete
-     */
+    #[Test]
+    #[Group('delete')]
     public function deleteExpiredTokens(): void
     {
         $inputCsvFile = __DIR__ . '/../../Fixtures/Repository/token.csv';

@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Tests\Functional\Hooks;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Hooks\ItemsProcFunc;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class ItemsProcFuncTest extends FunctionalTestCase
 {
@@ -33,9 +34,7 @@ class ItemsProcFuncTest extends FunctionalTestCase
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canToolList()
     {
         $this->initLanguageService('default');
@@ -60,9 +59,7 @@ class ItemsProcFuncTest extends FunctionalTestCase
         $this->assertEquals($expected, $params);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canExtendedSearchList()
     {
         $itemsProcFunc = new ItemsProcFunc();
@@ -85,9 +82,7 @@ class ItemsProcFuncTest extends FunctionalTestCase
         $this->assertEquals($expected, $params);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetFacetList()
     {
         $itemsProcFunc = new ItemsProcFunc();

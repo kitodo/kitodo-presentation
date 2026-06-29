@@ -17,6 +17,7 @@ use Kitodo\Dlf\Common\Solr\SolrSearch;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class SolrSearchTest extends FunctionalTestCase
 {
@@ -45,9 +46,7 @@ class SolrSearchTest extends FunctionalTestCase
         $this->setUpSolr(5, 0, self::$solrFixtures);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canPrepareAndSubmit()
     {
         $documentRepository = $this->initializeRepository(DocumentRepository::class, 0);

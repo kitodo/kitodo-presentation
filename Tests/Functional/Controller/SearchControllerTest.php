@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\SearchController;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Session\UserSession;
 use TYPO3\CMS\Core\Session\UserSessionManager;
 use TYPO3\CMS\Core\Utility\StringUtility;
@@ -38,9 +39,7 @@ class SearchControllerTest extends AbstractControllerTestCase
         $this->setUpSolr(self::$solrCoreId, self::$storagePid, self::$solrFixtures);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canMainAction()
     {
         $queryParameters = [
@@ -108,9 +107,7 @@ class SearchControllerTest extends AbstractControllerTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canMakeFacetsMenuArray()
     {
         $queryParameters = [
@@ -183,9 +180,7 @@ class SearchControllerTest extends AbstractControllerTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSearchAction()
     {
         $settings = [

@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Tests\Functional\Hooks;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Hooks\DataHandler;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class DataHandlerTest extends FunctionalTestCase
 {
@@ -36,9 +37,7 @@ class DataHandlerTest extends FunctionalTestCase
         $this->setUpSolr(1, 20000, [ __DIR__ . '/../../Fixtures/Hooks/documents.solr.json' ]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canProcessDatamap_postProcessFieldArray()
     {
         $id = 0;
@@ -112,9 +111,7 @@ class DataHandlerTest extends FunctionalTestCase
         $this->assertEquals($expected, $fieldArray);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canProcessDatamap_afterDatabaseOperations()
     {
         $solrSettings = [
@@ -168,9 +165,7 @@ class DataHandlerTest extends FunctionalTestCase
         $this->assertTrue($elementFound);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canProcessCmdmap_postProcess()
     {
         $solrSettings = [
