@@ -105,7 +105,6 @@ class PageViewController extends AbstractController
 
         $page = $this->requestData['page'] ?? 0;
 
-        $this->view->assign('viewData', $this->viewData);
         $this->view->assign('forceAbsoluteUrl', $this->extConf['general']['forceAbsoluteUrl'] ?? 0);
         $this->view->assign('docId', $this->requestData['id']);
         $this->view->assign('page', $page);
@@ -242,7 +241,7 @@ class PageViewController extends AbstractController
                         // Configure @action URL for form.
                         $uri = $this->uriBuilder->reset()
                             ->setTargetPageUid($this->pageUid)
-                            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']) ? true : false)
+                            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']))
                             ->setArguments(
                                 [
                                     'eID' => 'tx_dlf_pageview_proxy',
