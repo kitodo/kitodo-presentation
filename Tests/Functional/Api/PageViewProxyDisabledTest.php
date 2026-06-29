@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Api;
 
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
@@ -40,9 +41,7 @@ class PageViewProxyDisabledTest extends FunctionalTestCase
         return $this->executeInternalRequest($request);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cannotAccessPageWhenProxyIsDisabled(): void
     {
         $targetUrl = 'http://web:8001/Tests/Fixtures/PageViewProxy/test.txt';

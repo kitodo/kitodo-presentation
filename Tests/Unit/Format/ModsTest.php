@@ -13,6 +13,8 @@
 namespace Kitodo\Dlf\Tests\Unit\Format;
 
 use Kitodo\Dlf\Format\Mods;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class ModsTest extends UnitTestCase
@@ -54,10 +56,8 @@ class ModsTest extends UnitTestCase
 
     }
 
-    /**
-     * @test
-     * @group extractMetadata
-     */
+    #[Test]
+    #[Group('extractMetadata')]
     public function extractAuthorsIfNoAutRoleTermAssigned(): void
     {
         $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsAuthorNoAutRoleTerm.xml');
@@ -74,10 +74,8 @@ class ModsTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @group extractMetadata
-     */
+    #[Test]
+    #[Group('extractMetadata')]
     public function extractAuthorsWithAutRoleTermAssigned(): void
     {
         $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsAuthorWithAutRoleTerm.xml');
@@ -96,10 +94,8 @@ class ModsTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @group extractMetadata
-     */
+    #[Test]
+    #[Group('extractMetadata')]
     public function extractPlaces(): void
     {
         $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsOriginInfo.xml');
@@ -125,10 +121,8 @@ class ModsTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @group extractMetadata
-     */
+    #[Test]
+    #[Group('extractMetadata')]
     public function extractYears(): void
     {
         $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsOriginInfo.xml');
@@ -154,10 +148,8 @@ class ModsTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @group extractMetadata
-     */
+    #[Test]
+    #[Group('extractMetadata')]
     public function extractPlacesWithElectronicEdInside(): void
     {
         $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsOriginInfoWithEditionElectronicEd.xml');
@@ -183,10 +175,8 @@ class ModsTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     * @group extractMetadata
-     */
+    #[Test]
+    #[Group('extractMetadata')]
     public function extractYearsWithElectronicEdInside(): void
     {
         $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsOriginInfoWithEditionElectronicEd.xml');

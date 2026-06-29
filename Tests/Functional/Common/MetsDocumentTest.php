@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Tests\Functional\Common;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class MetsDocumentTest extends FunctionalTestCase
 {
@@ -62,9 +63,7 @@ class MetsDocumentTest extends FunctionalTestCase
         return $doc;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canParseDmdAndAmdSec()
     {
         $doc = $this->doc('av_beispiel.xml');
@@ -81,9 +80,7 @@ class MetsDocumentTest extends FunctionalTestCase
         ], $doc->dmdSec);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canReadFileMetadata()
     {
         $doc = $this->doc('av_beispiel.xml');
@@ -97,9 +94,7 @@ class MetsDocumentTest extends FunctionalTestCase
         ], $videoMeta);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetLogicalStructure()
     {
         $doc = $this->doc('av_beispiel.xml');
@@ -154,9 +149,7 @@ class MetsDocumentTest extends FunctionalTestCase
         ], $toc, 'Expected TOC to contain the specified values');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canReadChapterArea()
     {
         $doc = $this->doc('av_beispiel.xml');
@@ -183,9 +176,7 @@ class MetsDocumentTest extends FunctionalTestCase
         ], $chapterThreePage['fileInfos']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function doesNotOverwriteFirstDmdSec()
     {
         $doc = $this->doc('two_dmdsec.xml');
@@ -197,9 +188,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEquals('Test Value in DMDLOG_0000', $toplevelMetadata['test_value'][0]);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function returnsEmptyMetadataWhenNoDmdSec()
     {
         $doc = $this->doc('two_dmdsec.xml');
@@ -217,9 +206,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEmpty($metadata);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetDownloadLocation()
     {
         $doc = $this->doc('two_dmdsec.xml');
@@ -232,9 +219,7 @@ class MetsDocumentTest extends FunctionalTestCase
     }
 
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetFileLocation()
     {
         $doc = $this->doc('two_dmdsec.xml');
@@ -246,9 +231,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEmpty($incorrect);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetFileMimeType()
     {
         $doc = $this->doc('two_dmdsec.xml');
@@ -261,9 +244,7 @@ class MetsDocumentTest extends FunctionalTestCase
     }
 
     // FIXME: Method getPhysicalPage does not work as expected
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetPhysicalPage()
     {
         $doc = $this->doc('mets_with_pages.xml');
@@ -273,9 +254,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEquals(1, $physicalPage);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetTitle()
     {
         $doc = $this->doc('mets_with_pages.xml');
@@ -287,9 +266,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEmpty($incorrect);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetFullText()
     {
         $doc = $this->doc('mets_with_pages.xml');
@@ -304,9 +281,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertEmpty('', $incorrect);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetStructureDepth()
     {
         $doc = $this->doc('mets_with_pages.xml');

@@ -13,6 +13,8 @@
 namespace Kitodo\Dlf\Tests\Unit\Common;
 
 use Kitodo\Dlf\Common\Helper;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -85,10 +87,8 @@ class HelperTest extends UnitTestCase
         self::assertFalse($result);
     }
 
-    /**
-     * @test
-     * @group getXmlFileAsString
-     */
+    #[Test]
+    #[Group('getXmlFileAsString')]
     public function invalidXmlYieldsFalse(): void
     {
         self::assertInvalidXml(false);
@@ -101,10 +101,8 @@ class HelperTest extends UnitTestCase
         self::assertInvalidXml('<tag-not-closed>');
     }
 
-    /**
-     * @test
-     * @group getXmlFileAsString
-     */
+    #[Test]
+    #[Group('getXmlFileAsString')]
     public function validXmlIsAccepted(): void
     {
         $xml = <<<XML
@@ -118,10 +116,8 @@ XML;
         self::assertEquals('root', $node->getName());
     }
 
-    /**
-     * @test
-     * @group timeCodeToSeconds
-     */
+    #[Test]
+    #[Group('timeCodeToSeconds')]
     public function canConvertTimeCode()
     {
         $this->assertEquals(20, Helper::timeCodeToSeconds('20'));
@@ -129,10 +125,8 @@ XML;
         $this->assertEquals(80.5, Helper::timeCodeToSeconds('1:20.5'));
     }
 
-    /**
-     * @test
-     * @group filterFilesByMimeType
-     */
+    #[Test]
+    #[Group('filterFilesByMimeType')]
     public function filterFilesByMimeTypeHandlesInvalidInput(): void
     {
         // Empty categories and types
@@ -154,10 +148,8 @@ XML;
         ));
     }
 
-    /**
-     * @test
-     * @group filterFilesByMimeType
-     */
+    #[Test]
+    #[Group('filterFilesByMimeType')]
     public function filterFilesByMimeTypeAcceptsStandardMimeTypes(): void
     {
         $file = ['mimetype' => 'image/jpeg'];
@@ -179,10 +171,8 @@ XML;
         ));
     }
 
-    /**
-     * @test
-     * @group filterFilesByMimeType
-     */
+    #[Test]
+    #[Group('filterFilesByMimeType')]
     public function filterFilesByMimeTypeHandlesCustomDlfTypes(): void
     {
         $testCases = [
@@ -222,10 +212,8 @@ XML;
         ));
     }
 
-    /**
-     * @test
-     * @group filterFilesByMimeType
-     */
+    #[Test]
+    #[Group('filterFilesByMimeType')]
     public function filterFilesByMimeTypeHandlesCustomMimeTypeKey(): void
     {
         $file = ['customKey' => 'image/jpeg'];
@@ -243,10 +231,8 @@ XML;
         ));
     }
 
-    /**
-     * @test
-     * @group filterFilesByMimeType
-     */
+    #[Test]
+    #[Group('filterFilesByMimeType')]
     public function filterFilesByMimeTypeHandlesMixedScenarios(): void
     {
         // Standard mime type with DLF types enabled
@@ -271,10 +257,8 @@ XML;
         ));
     }
 
-    /**
-     * @test
-     * @group filterFilesByMimeType
-     */
+    #[Test]
+    #[Group('filterFilesByMimeType')]
     public function filterFilesByMimeTypeHandlesWrongJpg(): void
     {
         $wrongJpg = ['mimetype' => 'image/jpg'];
@@ -301,10 +285,8 @@ XML;
         ));
     }
 
-    /**
-     * @test
-     * @group filterFilesByMimeType
-     */
+    #[Test]
+    #[Group('filterFilesByMimeType')]
     public function filterFilesByMimeTypeHandlesDifferentDlfModeTypes(): void
     {
         // Test-Setup

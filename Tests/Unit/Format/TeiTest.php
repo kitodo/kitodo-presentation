@@ -13,14 +13,14 @@
 namespace Kitodo\Dlf\Tests\Unit\Format;
 
 use Kitodo\Dlf\Format\Tei;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class TeiTest extends UnitTestCase
 {
-    /**
-     * @test
-     * @group extract data
-     */
+    #[Test]
+    #[Group('extract data')]
     public function getRawData(): void
     {
         $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/tei.xml');
@@ -31,10 +31,8 @@ class TeiTest extends UnitTestCase
         self::assertEquals('Lorem ipsum dolor sit amet, consectetuer adipiscing elit.', $rawText);
     }
 
-    /**
-     * @test
-     * @group extract data
-     */
+    #[Test]
+    #[Group('extract data')]
     public function getTextAsMiniOcr(): void
     {
         $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/tei.xml');

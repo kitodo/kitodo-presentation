@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Api;
 
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
@@ -61,9 +62,7 @@ class PageViewProxyTest extends FunctionalTestCase
         return $this->executeInternalRequest($request);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cannotAccessFileUrl(): void
     {
         $response = $this->queryProxy([
@@ -73,9 +72,7 @@ class PageViewProxyTest extends FunctionalTestCase
         self::assertEquals(400, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cannotAccessUrlWithoutUrlHash(): void
     {
         $response = $this->queryProxy([
@@ -85,9 +82,7 @@ class PageViewProxyTest extends FunctionalTestCase
         self::assertEquals(401, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cannotAccessUrlWithInvalidUrlHash(): void
     {
         $response = $this->queryProxy([
@@ -98,9 +93,7 @@ class PageViewProxyTest extends FunctionalTestCase
         self::assertEquals(401, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canAccessPageWithUrlHash(): void
     {
         $targetUrl = 'http://web:8001/Tests/Fixtures/PageViewProxy/test.txt';
@@ -115,9 +108,7 @@ class PageViewProxyTest extends FunctionalTestCase
         self::assertEquals('This is some plain text test file.' . "\n", (string) $response->getBody());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function cannotSendPostRequest(): void
     {
         $targetUrl = 'http://web:8001/Tests/Fixtures/PageViewProxy/test.txt';
@@ -131,9 +122,7 @@ class PageViewProxyTest extends FunctionalTestCase
         self::assertEquals(405, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function sendsUserAgentToTarget(): void
     {
         $targetUrl = 'http://web:8001/Tests/Fixtures/PageViewProxy/echo_user_agent.php';
@@ -148,9 +137,7 @@ class PageViewProxyTest extends FunctionalTestCase
         self::assertEquals('Kitodo.Presentation', (string) $response->getBody());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canQueryOptions(): void
     {
         $response = $this->queryProxy([], 'OPTIONS');

@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\CollectionController;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 
 class CollectionControllerTest extends AbstractControllerTestCase
@@ -33,9 +34,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
         $this->setUpSolr(self::$solrCoreId, self::$storagePid, self::$solrFixtures);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canListAction()
     {
         $settings = [
@@ -56,9 +55,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canListActionForwardToShow()
     {
         $settings = [
@@ -75,9 +72,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
         $this->assertEquals(303, $response->getStatusCode());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canShowAction()
     {
         $settings = [
@@ -102,9 +97,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
 
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canShowSortedAction()
     {
         $settings = [
