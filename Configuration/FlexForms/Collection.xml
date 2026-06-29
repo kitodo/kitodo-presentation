@@ -82,6 +82,22 @@
                             <default>0</default>
                         </config>
                     </settings.showSingle>
+                    <settings.showOverview>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:collection.flexForm.showOverview</label>
+                        <config>
+                            <type>check</type>
+                            <default>1</default>
+                        </config>
+                    </settings.showOverview>
+                    <settings.showDocuments>
+                        <exclude>1</exclude>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:collection.flexForm.showDocuments</label>
+                        <config>
+                            <type>check</type>
+                            <default>1</default>
+                        </config>
+                    </settings.showDocuments>
                     <settings.randomize>
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:collection.flexForm.randomize</label>

@@ -15,27 +15,17 @@
     <f:debug title="all">{_all}</f:debug>
 </f:if>
 
-<div class="tx-dlf-listview">
-    <h2 class="tx-dlf-listview-label">{collection.label}</h2>
-
-    <f:if condition="{collection.thumbnail}">
-        <div class="tx-dlf-collection-thumbnail">
-            <f:if condition="{collection.thumbnail}">
-                <f:image image="{collection.thumbnail}" alt="{f:translate(key: 'general.thumbnail')} {collection.label}" title="{collection.label}" maxWidth="250" />
-            </f:if>
-        </div>
+<div class="tx-dlf-listview">\
+    <f:if condition="{settings.showOverview}">
+        <f:render partial="Collection/Overview" arguments="{_all}" />
     </f:if>
 
-    <f:if condition="{collection.description}">
-        <div class="tx-dlf-collection-description">
-            <f:format.html>{collection.description}</f:format.html>
-        </div>
+    <f:if condition="{settings.showDocuments}">
+        <f:variable name="action" value="showSorted" />
+        <f:variable name="controller" value="Collection" />
+        <f:render partial="ListView/SortingForm" arguments="{_all}" />
+        <f:render partial="ListView/Results" arguments="{_all}" />
     </f:if>
-
-    <f:variable name="action" value="showSorted" />
-    <f:variable name="controller" value="Collection" />
-    <f:render partial="ListView/SortingForm" arguments="{_all}" />
-    <f:render partial="ListView/Results" arguments="{_all}" />
 </div>
 
 </html>
