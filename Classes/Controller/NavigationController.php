@@ -80,8 +80,6 @@ class NavigationController extends AbstractController
         } else {
             $this->requestData['page'] = 0;
             $this->requestData['double'] = 0;
-            // reassign requestData to viewData after assigning default values
-            $this->viewData['requestData'] = $this->requestData;
         }
 
         if ($this->document->getUid() !== null) {
@@ -105,7 +103,8 @@ class NavigationController extends AbstractController
         $this->view->assign('pageStepForwardActive', $this->isPageStepForwardActive());
         $this->view->assign('pageSteps', $this->getPageSteps());
         $this->view->assign('numPages', $currentDocument->numPages);
-        $this->view->assign('viewData', $this->viewData);
+        $this->view->assign('requestData', $this->requestData);
+        $this->view->assign('uniqueId', $this->uniqueId);
 
         $searchSessionParameters = $this->request->getAttribute('frontend.user')->getKey('ses', 'search');
         if ($searchSessionParameters) {
