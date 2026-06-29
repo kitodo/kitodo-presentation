@@ -19,7 +19,7 @@
             <f:variable name="actionUrl" value="{settings.searchUrl}" />
         </f:then>
         <f:else>
-            <f:variable name="actionUrl" value="{f:uri.page(pageUid='{viewData.pageUid}')}" />
+            <f:variable name="actionUrl" value="{f:uri.page(pageUid='{pageUid}')}" />
         </f:else>
     </f:if>
     <form class="tx-dlf-search-form" id="{id}-form" action="{actionUrl}" method="get" enctype="multipart/form-data">
@@ -32,7 +32,7 @@
             <input type="submit" id="{id}-input-button" value="{f:translate(key: 'search.submit')}" onclick="resetStart();" />
             <input type="hidden" id="{id}-input-start" name="{searchInDocument.labelStart}" value="0" />
             <input type="hidden" id="{id}-input-id" name="{searchInDocument.labelId}" value="{searchInDocument.documentId}" />
-            <input type="hidden" id="{id}-input-pid" name="{searchInDocument.labelPid}" value="{viewData.pageUid}" />
+            <input type="hidden" id="{id}-input-pid" name="{searchInDocument.labelPid}" value="{pageUid}" />
             <input type="hidden" id="{id}-input-page" name="{searchInDocument.labelPageUrl}" />
             <input type="hidden" id="{id}-input-highlight-word" name="{searchInDocument.labelHighlightWord}" />
             <input type="hidden" id="{id}-input-encrypted" name="{searchInDocument.labelEncrypted}" value="{searchInDocument.solrEncrypted}" />

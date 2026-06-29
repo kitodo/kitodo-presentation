@@ -157,7 +157,12 @@ class NewTenantController extends AbstractController
 
         $moduleTemplateFactory = GeneralUtility::makeInstance(ModuleTemplateFactory::class);
         $moduleTemplate = $moduleTemplateFactory->create($this->request);
-        $moduleTemplate->assignMultiple($this->viewData);
+        $this->view->assignMultiple(
+            [
+                'requestData' => $this->requestData,
+                'uniqueId' => $this->uniqueId
+            ]
+        );
         $moduleTemplate->assignMultiple($extraData);
         $moduleTemplate->setFlashMessageQueue($messageQueue);
         $template = $isError ? 'Backend/NewTenant/Error' : 'Backend/NewTenant/Index';

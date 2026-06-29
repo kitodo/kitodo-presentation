@@ -13,24 +13,24 @@
 
 <li class="tx-dlf-navigation-pages">
     <f:form method="post" action="pageSelect" controller="Navigation" name="pageSelectForm" object="{pageSelectForm}" addQueryString="untrusted">
-        <f:if condition="{viewData.requestData.id}">
-            <f:form.hidden property="id" value="{viewData.requestData.id}"/>
+        <f:if condition="{requestData.id}">
+            <f:form.hidden property="id" value="{requestData.id}"/>
         </f:if>
-        <f:if condition="{viewData.requestData.recordId}">
-            <f:form.hidden property="recordId" value="{viewData.requestData.recordId}"/>
+        <f:if condition="{requestData.recordId}">
+            <f:form.hidden property="recordId" value="{requestData.recordId}"/>
         </f:if>
-        <f:if condition="{viewData.requestData.double}">
-            <f:form.hidden property="double" value="{viewData.requestData.double}"/>
+        <f:if condition="{requestData.double}">
+            <f:form.hidden property="double" value="{requestData.double}"/>
         </f:if>
-        <f:if condition="{viewData.requestData.multiviewembedded} == 1">
-            <f:form.hidden name="tx_dlf[multiviewembedded]" value="{viewData.requestData.multiviewembedded}"/>
+        <f:if condition="{requestData.multiviewembedded} == 1">
+            <f:form.hidden name="tx_dlf[multiviewembedded]" value="{requestData.multiviewembedded}"/>
         </f:if>
-        <label for="tx-dlf-page-{viewData.uniqueId}">
+        <label for="tx-dlf-page-{uniqueId}">
             <f:translate key="navigation.page.selectPage"/>
         </label>
-        <f:form.select id="tx-dlf-page-{viewData.uniqueId}" property="page"
+        <f:form.select id="tx-dlf-page-{uniqueId}" property="page"
                        options="{pageOptions}"
-                       value="{viewData.requestData.page}"
+                       value="{requestData.page}"
                        additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
         </f:form.select>
     </f:form>

@@ -217,7 +217,8 @@ class SearchController extends AbstractController
             $this->view->assign('currentDocument', $currentDocument);
         }
 
-        $this->view->assign('viewData', $this->viewData);
+        $this->view->assign('requestData', $this->requestData);
+        $this->view->assign('uniqueId', $this->uniqueId);
 
         return $this->htmlResponse();
     }

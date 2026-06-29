@@ -42,7 +42,7 @@
         </f:then>
         <f:else>
             <kitodo:link
-                viewData="{viewData}"
+                requestData="{requestData}"
                 pageUid="{settings.targetPid}"
                 additionalParams="{f:if(condition:'{child.id}', then:'{\'id\':child.id, \'page\':child.page}', else: '{\'page\':child.page}')}"
                 excludedParams="{0: 'measure', 1: 'multiview'}"
@@ -68,7 +68,7 @@
 
     <f:if condition="{child._SUB_MENU} && ({child.ITEM_STATE} == 'IFSUB' || {child.ITEM_STATE} == 'ACTIFSUB' || {child.ITEM_STATE} == 'CURIFSUB')">
         <ul>
-            <f:render partial="TableOfContents/Children" arguments="{children: child._SUB_MENU, viewData: viewData}"/>
+            <f:render partial="TableOfContents/Children" arguments="{children: child._SUB_MENU, requestData: requestData}"/>
         </ul>
     </f:if>
 

@@ -56,7 +56,8 @@ class TableOfContentsController extends AbstractController
             $this->view->assign('toc', $this->makeMenuArray());
         }
 
-        $this->view->assign('viewData', $this->viewData);
+        $this->view->assign('requestData', $this->requestData);
+
         return $this->htmlResponse();
     }
 

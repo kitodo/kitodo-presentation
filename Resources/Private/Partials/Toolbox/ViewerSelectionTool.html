@@ -12,17 +12,17 @@
 </f:comment>
 
 <li class="tx-dlf-tools-viewerselection">
-    <form method="get" action="{f:uri.page(pageUid='{viewData.pageUid}')}">
-        <f:if condition="{viewData.requestData.id}">
-            <f:form.hidden name="tx_dlf[id]" value="{viewData.requestData.id}"/>
+    <form method="get" action="{f:uri.page(pageUid='{pageUid}')}">
+        <f:if condition="{requestData.id}">
+            <f:form.hidden name="tx_dlf[id]" value="{requestData.id}"/>
         </f:if>
-        <f:if condition="{viewData.requestData.model}">
-            <f:form.hidden name="tx_dlf[model]" value="{viewData.requestData.model}"/>
+        <f:if condition="{requestData.model}">
+            <f:form.hidden name="tx_dlf[model]" value="{requestData.model}"/>
         </f:if>
-        <f:if condition="{viewData.requestData.modelFormat}">
-            <f:form.hidden name="tx_dlf[modelFormat]" value="{viewData.requestData.modelFormat}"/>
+        <f:if condition="{requestData.modelFormat}">
+            <f:form.hidden name="tx_dlf[modelFormat]" value="{requestData.modelFormat}"/>
         </f:if>
-        <f:form.select id="tx-dlf-tools-viewer-{viewData.uniqueId}" name="tx_dlf[viewer]" options="{viewers}" optionValueField="id" optionLabelField="name" value="{viewData.requestData.viewer}" additionalAttributes="{'onchange': 'javascript:this.form.submit();'}" prependOptionLabel="{f:translate(key: 'toolbox.viewerSelection.default', extensionName: 'dlf')}"/>
+        <f:form.select id="tx-dlf-tools-viewer-{uniqueId}" name="tx_dlf[viewer]" options="{viewers}" optionValueField="id" optionLabelField="name" value="{requestData.viewer}" additionalAttributes="{'onchange': 'javascript:this.form.submit();'}" prependOptionLabel="{f:translate(key: 'toolbox.viewerSelection.default', extensionName: 'dlf')}"/>
     </form>
 </li>
 

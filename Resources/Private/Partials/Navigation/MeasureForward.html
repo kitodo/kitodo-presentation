@@ -20,10 +20,10 @@
                     <f:if condition="{currentMeasure} > 0">
                         <f:then>
                             <f:variable name="nextMeasure" value="{currentMeasure + 1}" />
-                            <kitodo:link viewData="{viewData}" additionalParams="{'measure':'{nextMeasure}', 'page':'{measurePages.{nextMeasure}}'}"><f:translate key="nextMeasure"/></kitodo:link>
+                            <kitodo:link requestData="{requestData}" additionalParams="{'measure':'{nextMeasure}', 'page':'{measurePages.{nextMeasure}}'}"><f:translate key="nextMeasure"/></kitodo:link>
                         </f:then>
                         <f:else>
-                            <kitodo:link viewData="{viewData}" additionalParams="{'measure':'1', 'page':'{measurePages.1}'}"><f:translate key="nextMeasure"/></kitodo:link>
+                            <kitodo:link requestData="{requestData}" additionalParams="{'measure':'1', 'page':'{measurePages.1}'}"><f:translate key="nextMeasure"/></kitodo:link>
                         </f:else>
                     </f:if>
                 </f:then>

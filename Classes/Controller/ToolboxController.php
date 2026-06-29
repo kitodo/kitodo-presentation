@@ -57,7 +57,13 @@ class ToolboxController extends AbstractController
         }
 
         $this->renderTools();
-        $this->view->assign('viewData', $this->viewData);
+        $this->view->assignMultiple(
+            [
+                'pageUid' => $this->pageUid,
+                'requestData' => $this->requestData,
+                'uniqueId' => $this->uniqueId,
+            ]
+        );
 
         return $this->htmlResponse();
     }

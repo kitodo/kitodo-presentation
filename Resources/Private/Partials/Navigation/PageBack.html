@@ -11,8 +11,8 @@
     LICENSE.txt file that was distributed with this source code.
 </f:comment>
 
-<f:variable name="navigationPage" value="{viewData.requestData.page - 1 - viewData.requestData.double}" />
+<f:variable name="navigationPage" value="{requestData.page - 1 - requestData.double}" />
 
-<f:render partial="Navigation/Page" arguments="{class: 'tx-dlf-navigation-prev', condition: pageBackActive, navigationPage: navigationPage, value: 'navigation.page.prevPage', viewData: viewData}" />
+<f:render partial="Navigation/Page" arguments="{class: 'tx-dlf-navigation-prev', condition: pageBackActive, navigationPage: navigationPage, value: 'navigation.page.prevPage', requestData: requestData}" />
 
 </html>

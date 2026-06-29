@@ -118,13 +118,14 @@ class ListViewController extends AbstractController
             $this->view->assignMultiple([ 'pagination' => $pagination, 'paginator' => $solrPaginator ]);
         }
 
-        $this->view->assign('viewData', $this->viewData);
         $this->view->assign('documents', $solrResults);
         $this->view->assign('numResults', $numResults);
         $this->view->assign('page', $currentPage);
         $this->view->assign('lastSearch', $this->search);
         $this->view->assign('sortableMetadata', $sortableMetadata);
         $this->view->assign('listedMetadata', $listedMetadata);
+        $this->view->assign('requestData', $this->requestData);
+        $this->view->assign('uniqueId', $this->uniqueId);
 
         return $this->htmlResponse();
     }

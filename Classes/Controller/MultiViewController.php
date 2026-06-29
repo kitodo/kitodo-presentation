@@ -48,13 +48,14 @@ class MultiViewController extends AbstractController
 
         $page = $this->requestData['page'] ?? 0;
 
-        $this->view->assign('viewData', $this->viewData);
         $this->view->assign('forceAbsoluteUrl', $this->extConf['general']['forceAbsoluteUrl'] ?? 0);
         $this->view->assign('docId', $this->requestData['id']);
         $this->view->assign('page', $page);
 
         $this->view->assign('multiview', 1);
         $this->view->assign('multiViewDocuments', $this->multiViewDocuments);
+
+        $this->view->assign('requestData', $this->requestData);
 
         return $this->htmlResponse();
     }
