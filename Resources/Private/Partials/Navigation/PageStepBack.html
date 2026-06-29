@@ -11,11 +11,11 @@
     LICENSE.txt file that was distributed with this source code.
 </f:comment>
 
-<f:variable name="navigationPage" value="{viewData.requestData.page - pageSteps}" />
+<f:variable name="navigationPage" value="{requestData.page - pageSteps}" />
 <f:if condition="{navigationPage} < 1">
     <f:variable name="navigationPage" value="1" />
 </f:if>
 
-<f:render partial="Navigation/PageStep" arguments="{class: 'tx-dlf-navigation-back', condition: pageStepBackActive, navigationPage: navigationPage, pageSteps: pageSteps, value: 'navigation.page.backXPages', viewData: viewData}" />
+<f:render partial="Navigation/PageStep" arguments="{class: 'tx-dlf-navigation-back', condition: pageStepBackActive, navigationPage: navigationPage, pageSteps: pageSteps, value: 'navigation.page.backXPages', requestData: requestData}" />
 
 </html>

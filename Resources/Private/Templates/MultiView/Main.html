@@ -49,7 +49,7 @@
                 <div class="gridstack-dragging-handle" title="{f:translate(key: 'multiview.dragging_label', extensionName: 'dfgviewer')}"></div>
                 <f:if condition="{document.sourceKey} >= 0">
                     <div class="removeDocument">
-                        <kitodo:link viewData="{viewData}" excludedParams="{0: 'multiViewSource[{document.sourceKey}]', 1: 'multiview'}">
+                        <kitodo:link requestData="{requestData}" excludedParams="{0: 'multiViewSource[{document.sourceKey}]', 1: 'multiview'}">
                             <f:translate key="multiview.remove_document" extensionName="dfgviewer" />
                         </kitodo:link>
                     </div>

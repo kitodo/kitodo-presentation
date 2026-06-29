@@ -26,8 +26,8 @@
 
     <f:form section="showResults" action="search" controller="Search" name="search" method="post" class="tx-dlf-search-form">
         <div>
-            <label for="form-orderBy-{viewData.uniqueId}"><f:translate key="listView.form.orderBy"/></label>
-            <f:form.select id="form-orderBy-{viewData.uniqueId}" property="orderBy" value="{lastSearch.orderBy}" additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
+            <label for="form-orderBy-{uniqueId}"><f:translate key="listView.form.orderBy"/></label>
+            <f:form.select id="form-orderBy-{uniqueId}" property="orderBy" value="{lastSearch.orderBy}" additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
                 <f:form.select.option value="score"><f:translate key="listView.form.relevance" /></f:form.select.option>
                 <f:for each="{sortableMetadata}" as="meta">
                     <f:form.select.option value="{meta.indexName}_sorting">
@@ -35,8 +35,8 @@
                     </f:form.select.option>
                 </f:for>
             </f:form.select>
-            <label for="form-order-{viewData.uniqueId}"><f:translate key="listView.form.order"/></label>
-            <f:form.select id="form-order-{viewData.uniqueId}" property="order" value="{lastSearch.order}" additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
+            <label for="form-order-{uniqueId}"><f:translate key="listView.form.order"/></label>
+            <f:form.select id="form-order-{uniqueId}" property="order" value="{lastSearch.order}" additionalAttributes="{'onchange': 'javascript:this.form.submit();'}">
                 <f:form.select.option value="asc"><f:translate key='listView.form.order.asc' extensionName='dlf' /></f:form.select.option>
                 <f:form.select.option value="desc"><f:translate key='listView.form.order.desc' extensionName='dlf' />
                 </f:form.select.option>

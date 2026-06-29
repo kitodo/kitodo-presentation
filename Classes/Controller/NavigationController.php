@@ -72,14 +72,14 @@ class NavigationController extends AbstractController
             return $this->htmlResponse();
         }
 
+        $currentDocument = $this->document->getCurrentDocument();
+
         // Set default values if not set.
-        if ($this->document->getCurrentDocument()->numPages > 0) {
+        if ($currentDocument->numPages > 0) {
             $this->setPage();
         } else {
             $this->requestData['page'] = 0;
             $this->requestData['double'] = 0;
-            // reassign requestData to viewData after assigning default values
-            $this->viewData['requestData'] = $this->requestData;
         }
 
         if ($this->document->getUid() !== null) {
@@ -102,8 +102,9 @@ class NavigationController extends AbstractController
         $this->view->assign('pageStepBackActive', $this->isPageStepBackActive());
         $this->view->assign('pageStepForwardActive', $this->isPageStepForwardActive());
         $this->view->assign('pageSteps', $this->getPageSteps());
-        $this->view->assign('numPages', $this->document->getCurrentDocument()->numPages);
-        $this->view->assign('viewData', $this->viewData);
+        $this->view->assign('numPages', $currentDocument->numPages);
+        $this->view->assign('requestData', $this->requestData);
+        $this->view->assign('uniqueId', $this->uniqueId);
 
         $searchSessionParameters = $this->request->getAttribute('frontend.user')->getKey('ses', 'search');
         if ($searchSessionParameters) {
@@ -118,8 +119,8 @@ class NavigationController extends AbstractController
         }
 
         $pageOptions = [];
-        for ($i = 1; $i <= $this->document->getCurrentDocument()->numPages; $i++) {
-            $orderLabel = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$i]]['orderlabel'];
+        for ($i = 1; $i <= $currentDocument->numPages; $i++) {
+            $orderLabel = $currentDocument->physicalStructureInfo[$currentDocument->physicalStructure[$i]]['orderlabel'];
             $pageOptions[$i] = '[' . $i . ']' . ($orderLabel ? ' - ' . htmlspecialchars($orderLabel) : '');
         }
 
@@ -132,13 +133,13 @@ class NavigationController extends AbstractController
         }
         $this->view->assign('features', $features);
 
-        if ($this->document->getCurrentDocument() instanceof MetsDocument) {
-            if ($this->document->getCurrentDocument()->numMeasures > 0) {
+        if ($currentDocument instanceof MetsDocument) {
+            if ($currentDocument->numMeasures > 0) {
                 $measureOptions = [];
                 $measurePages = [];
-                $musicalStructure = $this->document->getCurrentDocument()->musicalStructure;
-                $musicalStructureInfo = $this->document->getCurrentDocument()->musicalStructureInfo;
-                for ($i = 1; $i <= $this->document->getCurrentDocument()->numMeasures; $i++) {
+                $musicalStructure = $currentDocument->musicalStructure;
+                $musicalStructureInfo = $currentDocument->musicalStructureInfo;
+                for ($i = 1; $i <= $currentDocument->numMeasures; $i++) {
                     if (isset($musicalStructure[$i]['measureid'])
                         && isset($musicalStructureInfo[$musicalStructure[$i]['measureid']]['orderlabel'])) {
                         $measureOptions[$i] = '[' . $i . ']' . (!empty($musicalStructureInfo[$musicalStructure[$i]['measureid']]['orderlabel']) ? ' - ' . htmlspecialchars($musicalStructureInfo[$musicalStructure[$i]['measureid']]['orderlabel']) : '');
@@ -154,7 +155,7 @@ class NavigationController extends AbstractController
 
                 $this->view->assign('currentMeasure', $currentMeasure);
                 $this->view->assign('double', $this->requestData['double']);
-                $this->view->assign('numMeasures', $this->document->getCurrentDocument()->numMeasures);
+                $this->view->assign('numMeasures', $currentDocument->numMeasures);
                 $this->view->assign('measureOptions', $measureOptions);
                 $this->view->assign('measurePages', $measurePages);
             }
