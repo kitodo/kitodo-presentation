@@ -355,9 +355,10 @@ class PageViewController extends AbstractController
      */
     protected function getAnnotationContainers(int $page): array
     {
-        if ($this->document->getCurrentDocument() instanceof IiifManifest) {
-            $canvasId = $this->document->getCurrentDocument()->physicalStructure[$page];
-            $iiif = $this->document->getCurrentDocument()->getIiif();
+        $currentDocument = $this->document->getCurrentDocument();
+        if ($currentDocument instanceof IiifManifest) {
+            $canvasId = $currentDocument->physicalStructure[$page];
+            $iiif = $currentDocument->getIiif();
             if ($iiif instanceof ManifestInterface) {
                 $canvas = $iiif->getContainedResourceById($canvasId);
                 /** @var CanvasInterface $canvas */
@@ -454,12 +455,13 @@ class PageViewController extends AbstractController
      */
     private function fetchFileInfo(int $page, string $fileGrpImages, ?MetsDocument $specificDoc): ?array
     {
+        $currentDocument = $this->document->getCurrentDocument();
         // Get the physical structure info for the specified page
         if ($specificDoc) {
             $physicalStructureInfo = $specificDoc->physicalStructureInfo[$specificDoc->physicalStructure[$page]];
         } else {
-            if (array_key_exists($page, $this->document->getCurrentDocument()->physicalStructure)) {
-                $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
+            if (array_key_exists($page, $currentDocument->physicalStructure)) {
+                $physicalStructureInfo = $currentDocument->physicalStructureInfo[$currentDocument->physicalStructure[$page]];
             }
         }
 
@@ -470,7 +472,7 @@ class PageViewController extends AbstractController
             if ($specificDoc) {
                 return $specificDoc->getFileInfo($files[$fileGrpImages]);
             } else {
-                return $this->document->getCurrentDocument()->getFileInfo($files[$fileGrpImages]);
+                return $currentDocument->getFileInfo($files[$fileGrpImages]);
             }
         }
 
