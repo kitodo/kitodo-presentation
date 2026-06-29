@@ -309,7 +309,8 @@ class CollectionController extends AbstractController
                 'lastSearch' => $search,
                 'listedMetadata' => $listedMetadata,
                 'sortableMetadata' => $sortableMetadata,
-                'viewData' => $this->viewData
+                'requestData' => $this->requestData,
+                'uniqueId' => $this->uniqueId
             ]
         );
     }
