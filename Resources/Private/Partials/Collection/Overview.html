@@ -1,0 +1,34 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>
+    (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+
+    This file is part of the Kitodo and TYPO3 projects.
+
+    @license GNU General Public License version 3 or later.
+    For the full copyright and license information, please read the
+    LICENSE.txt file that was distributed with this source code.
+</f:comment>
+
+<f:if condition="{debugActive}">
+    <f:debug title="all">{_all}</f:debug>
+</f:if>
+
+<h2 class="tx-dlf-listview-label">{collection.label}</h2>
+
+<f:if condition="{collection.thumbnail}">
+    <div class="tx-dlf-collection-thumbnail">
+        <f:if condition="{collection.thumbnail}">
+            <f:image image="{collection.thumbnail}" alt="{f:translate(key: 'general.thumbnail')} {collection.label}" title="{collection.label}" maxWidth="250" />
+        </f:if>
+    </div>
+</f:if>
+
+<f:if condition="{collection.description}">
+    <div class="tx-dlf-collection-description">
+        <f:format.html>{collection.description}</f:format.html>
+    </div>
+</f:if>
+
+</html>

@@ -282,6 +282,20 @@ FlexForm Configuration
       0
 
  - :Property:
+      showOverview
+   :Data Type:
+      :ref:`t3tsref:data-type-boolean`
+   :Default:
+      1
+
+ - :Property:
+      showDocuments
+   :Data Type:
+      :ref:`t3tsref:data-type-boolean`
+   :Default:
+      1
+
+ - :Property:
       randomize
    :Data Type:
       :ref:`t3tsref:data-type-boolean`

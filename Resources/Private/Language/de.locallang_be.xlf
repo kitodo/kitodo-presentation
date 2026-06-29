@@ -73,9 +73,17 @@
                 <source><![CDATA[Randomize sorting?]]></source>
                 <target><![CDATA[Zufällige Sortierung?]]></target>
             </trans-unit>
+            <trans-unit id="collection.flexForm.showDocuments" approved="yes">
+                <source><![CDATA[Show documents in the single collection view?]]></source>
+                <target><![CDATA[Dokumente in der Einzelansicht der Sammlung anzeigen?]]></target>
+            </trans-unit>
+            <trans-unit id="collection.flexForm.showOverview" approved="yes">
+                <source><![CDATA[Show overview in the single collection view?]]></source>
+                <target><![CDATA[Übersicht in der Einzelansicht der Sammlung anzeigen?]]></target>
+            </trans-unit>
             <trans-unit id="collection.flexForm.showSingle" approved="yes">
-                <source><![CDATA[Show single collection in overview?]]></source>
-                <target><![CDATA[Einzelne Kollektion in Übersicht anzeigen?]]></target>
+                <source><![CDATA[Show the single collection view?]]></source>
+                <target><![CDATA[Die Einzelansicht der Sammlung anzeigen?]]></target>
             </trans-unit>
             <trans-unit id="collection.flexForm.showUserDefined" approved="yes">
                 <source><![CDATA[Show user-defined collections?]]></source>
