@@ -95,7 +95,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
 
     /**
      * @access protected
-     * @var string This holds unique id for the fluid view
+     * @var string This holds the unique id for the fluid view
      */
     protected string $uniqueId;
 
