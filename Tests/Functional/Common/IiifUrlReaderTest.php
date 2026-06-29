@@ -14,13 +14,11 @@ namespace Kitodo\Dlf\Tests\Functional\Common;
 
 use Kitodo\Dlf\Common\IiifUrlReader;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class IiifUrlReaderTest extends FunctionalTestCase
 {
-    /**
-     * @test
-     * @group getContent
-     */
+    #[Test]
     public function getContentCheck()
     {
         $iiifUrlReader = new IiifUrlReader();

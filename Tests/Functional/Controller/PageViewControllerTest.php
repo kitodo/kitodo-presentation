@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\PageViewController;
+use PHPUnit\Framework\Attributes\Test;
 
 class PageViewControllerTest extends AbstractControllerTestCase
 {
@@ -31,9 +32,8 @@ class PageViewControllerTest extends AbstractControllerTestCase
     /**
      * This test hard-codes the URL that is used to load the METS of document 2001 (see documents_local.csv).
      * It will fail unless the docker test environment is used with the proxy hosted at "web:8001".
-     *
-     * @test
      */
+    #[Test]
     public function canMainAction()
     {
         $settings = [

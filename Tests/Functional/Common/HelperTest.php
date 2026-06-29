@@ -14,6 +14,8 @@ namespace Kitodo\Dlf\Tests\Functional\Common;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class HelperTest extends FunctionalTestCase
 {
@@ -35,9 +37,7 @@ class HelperTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/metadata.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetIndexNameFromUid()
     {
         // Repeat to make sure caching isn't broken
@@ -84,10 +84,8 @@ class HelperTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     * @group getLanguageName
-     */
+    #[Test]
+    #[Group('getLanguageName')]
     public function canTranslateLanguageNameToEnglish()
     {
         // NOTE: This only tests in BE mode
@@ -99,10 +97,8 @@ class HelperTest extends FunctionalTestCase
         self::assertEquals('abc', Helper::getLanguageName('abc')); // matches ISO code regex, but not an ISO code
     }
 
-    /**
-     * @test
-     * @group getLanguageName
-     */
+    #[Test]
+    #[Group('getLanguageName')]
     public function canTranslateLanguageNameToGerman()
     {
         // NOTE: This only tests in BE mode

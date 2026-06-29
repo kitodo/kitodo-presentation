@@ -13,6 +13,8 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\ListViewController;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class ListViewControllerTest extends AbstractControllerTestCase
 {
@@ -32,10 +34,8 @@ class ListViewControllerTest extends AbstractControllerTestCase
         $this->setUpSolr(self::$solrCoreId, self::$storagePid, self::$solrFixtures);
     }
 
-    /**
-     * @test
-     * @group action
-     */
+    #[Test]
+    #[Group('action')]
     public function canMainAction(): void
     {
         $arguments = [

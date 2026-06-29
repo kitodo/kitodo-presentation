@@ -16,6 +16,7 @@ use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class SolrTest extends FunctionalTestCase
 {
@@ -29,18 +30,14 @@ class SolrTest extends FunctionalTestCase
         __DIR__ . '/../../Fixtures/Common/documents_1.solr.json'
     ];
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canCreateCore()
     {
         self::assertEquals('newCoreName', Solr::createCore('newCoreName'));
         self::assertEquals('newCoreName', Solr::getInstance('newCoreName')->core);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canEscapeQuery()
     {
         $query1 = Solr::escapeQuery('"custom query with special characters: "testvalue"\n"');
@@ -50,18 +47,14 @@ class SolrTest extends FunctionalTestCase
         self::assertEquals('+ - && || ! ( ) \{ \} \[ \] ^ " ~ * ? \: \\\ \/', $query2);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canEscapeQueryKeepField()
     {
         $query1 = Solr::escapeQueryKeepField('abc_uui:(abc)', 0);
         self::assertEquals('abc_uui\:(abc)', $query1);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetNextCoreNumber()
     {
         $currentCoreNumber = Solr::getNextCoreNumber();
@@ -70,9 +63,7 @@ class SolrTest extends FunctionalTestCase
         self::assertEquals($currentCoreNumber + 1, Solr::getNextCoreNumber());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canSearchRaw()
     {
         $this->setUpData(self::$databaseFixtures);

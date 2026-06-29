@@ -14,6 +14,8 @@ namespace Kitodo\Dlf\Tests\Functional\Repository;
 
 use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 
 class FormatRepositoryTest extends FunctionalTestCase
@@ -42,10 +44,8 @@ class FormatRepositoryTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Repository/metadata.csv');
     }
 
-    /**
-     * @test
-     * @group find
-     */
+    #[Test]
+    #[Group('find')]
     public function canFindAll(): void
     {
         $formats = $this->formatRepository->findAll();

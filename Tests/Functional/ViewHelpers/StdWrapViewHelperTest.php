@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Unit\ViewHelpers;
 
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
@@ -28,9 +29,7 @@ class StdWrapViewHelperTest extends FunctionalTestCase
      */
     protected bool $initializeDatabase = false;
 
-    /**
-     * @test
-     */
+    #[Test]
     public function renderWithStdWrap(): void
     {
         $cObj = GeneralUtility::makeInstance(ContentObjectRenderer::class);
