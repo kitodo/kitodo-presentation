@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Unit\Common;
 
 use Kitodo\Dlf\Validation\DocumentValidator;
+use PHPUnit\Framework\Attributes\Test;
 use SimpleXMLElement;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -32,9 +33,7 @@ class DocumentValidatorTest extends UnitTestCase
         $this->resetSingletonInstances = true;
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function passesHasAllMandatoryMetadataFields()
     {
         $metadata = [
@@ -52,9 +51,7 @@ class DocumentValidatorTest extends UnitTestCase
         self::assertTrue($documentValidator->hasAllMandatoryMetadataFields());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function passesHasNotMandatoryMetadataFieldsButType()
     {
         $metadata = [
@@ -69,9 +66,7 @@ class DocumentValidatorTest extends UnitTestCase
         self::assertTrue($documentValidator->hasAllMandatoryMetadataFields());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function notPassesHasAllMandatoryMetadataFields()
     {
         $metadata = [
@@ -89,9 +84,7 @@ class DocumentValidatorTest extends UnitTestCase
         self::assertFalse($documentValidator->hasAllMandatoryMetadataFields());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function passesHasCorrectLogicalStructure()
     {
         $xml = $this->getXml('av_beispiel.xml');
@@ -100,9 +93,7 @@ class DocumentValidatorTest extends UnitTestCase
         self::assertTrue($documentValidator->hasCorrectLogicalStructure('advertisement'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function notPassesHasCorrectLogicalStructure()
     {
         $xml = $this->getXml('av_beispiel.xml');
@@ -111,9 +102,7 @@ class DocumentValidatorTest extends UnitTestCase
         self::assertFalse($documentValidator->hasCorrectLogicalStructure('newspaper'));
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function passesHasCorrectPhysicalStructure()
     {
         $xml = $this->getXml('av_beispiel.xml');
@@ -122,9 +111,7 @@ class DocumentValidatorTest extends UnitTestCase
         self::assertTrue($documentValidator->hasCorrectPhysicalStructure());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function notPassesHasCorrectPhysicalStructure()
     {
         $xml = $this->getXml('two_dmdsec.xml');

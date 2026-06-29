@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\TableOfContentsController;
+use PHPUnit\Framework\Attributes\Test;
 
 class TableOfContentsControllerTest extends AbstractControllerTestCase
 {
@@ -28,9 +29,7 @@ class TableOfContentsControllerTest extends AbstractControllerTestCase
         $this->setUpData(self::$databaseFixtures);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canMainAction()
     {
         $settings = [

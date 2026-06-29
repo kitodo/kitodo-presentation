@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\NavigationController;
 use Kitodo\Dlf\Domain\Model\PageSelectForm;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\TestingFramework\Core\SystemEnvironmentBuilder;
 
@@ -31,9 +32,7 @@ class NavigationControllerTest extends AbstractControllerTestCase
         $this->setUpData(self::$databaseFixtures);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canMainAction()
     {
         $settings = [
@@ -62,9 +61,7 @@ class NavigationControllerTest extends AbstractControllerTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canPageSelectAction()
     {
         $settings = [
