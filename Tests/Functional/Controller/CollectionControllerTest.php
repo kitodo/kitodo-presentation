@@ -41,7 +41,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
             'storagePid' => self::$storagePid,
             'solrcore' => self::$solrCoreId,
             'collections' => '1',
-            'showSingle' => '1',
+            'showSingle' => '0',
             'randomize' => ''
         ];
         $templateHtml = '<html><f:for each="{collections}" as="item">{item.collection.indexName}</f:for></html>';
@@ -62,6 +62,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
             'storagePid' => self::$storagePid,
             'solrcore' => self::$solrCoreId,
             'collections' => '1',
+            'showSingle' => '1',
             'randomize' => ''
         ];
         $controller = $this->setUpController(CollectionController::class, $settings);
