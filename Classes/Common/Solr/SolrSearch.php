@@ -124,7 +124,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         $this->indexedMetadata = $indexedMetadata;
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
 
-        $this->documentRepository->useStoragePid($this->settings['storagePid']);
+        $this->documentRepository->useStoragePid((int) $this->settings['storagePid']);
     }
 
     /**
