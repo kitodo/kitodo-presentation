@@ -83,6 +83,8 @@ class CollectionController extends AbstractController
             return $this->htmlResponse();
         }
 
+        $this->sanitizeSettings();
+
         $this->collectionRepository->useStoragePid($this->settings['storagePid']);
         $this->metadataRepository->useStoragePid($this->settings['storagePid']);
 
