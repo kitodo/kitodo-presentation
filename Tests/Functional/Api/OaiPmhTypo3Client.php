@@ -53,7 +53,7 @@ class OaiPmhTypo3Client implements ClientInterface
      *
      * @param string $baseUrl the base url of the Typo3 server used for functional tests
      * @param int $pageId the Typo3 page id of the OAI endpoint
-     * @param FunctionalTestCase $funtionalTestCase reference to the functional test case in order to issue internal requests
+     * @param FunctionalTestCase $functionalTestCase reference to the functional test case in order to issue internal requests
      * @param bool $throwError whether to throw an OaiPmhException if the OAI response contains error information
      */
     public function __construct(
@@ -71,10 +71,12 @@ class OaiPmhTypo3Client implements ClientInterface
     /**
      * Issue a OaiPmh request for a given verb and options.
      *
-     * @param $verb the verb as string
+     * @param string $verb the verb to request
      * @param array $params additional options
+     *
      * @throws OaipmhException if there is an OaiPmh error and $throwError is true
      * @throws MalformedResponseException if the XML response cannot be parsed
+     *
      * @return SimpleXMLElement the parsed response as XML element
      */
     public function request($verb, array $params = [])
