@@ -366,11 +366,11 @@ class BaseAdditionalFieldProvider implements AdditionalFieldProviderInterface
     {
         $typo3Version = (new Typo3Version())->getMajorVersion();
         if ($typo3Version == 12) {
-            /** @var \TYPO3\CMS\Scheduler\Task\Enumeration\Action $action */
+            /** @var Action $action */
             $action = $schedulerModule->getCurrentAction();
             return $action->equals(Action::EDIT);
         } else {
-            /** @var \TYPO3\CMS\Scheduler\SchedulerManagementAction $action */
+            /** @var SchedulerManagementAction $action */
             $action = $schedulerModule->getCurrentAction();
             return $action === SchedulerManagementAction::EDIT;
         }
