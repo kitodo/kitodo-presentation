@@ -86,7 +86,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access private
      * @var mixed[]|null
      */
-    private ?array $result;
+    private ?array $result = null;
 
     /**
      * @access private
@@ -163,7 +163,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @return mixed[]
      */
-    public function current(): array
+    public function current(): array // @phpstan-ignore-line
     {
         return $this[$this->position];
     }
@@ -280,7 +280,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @throws \Exception
      */
-    public function offsetSet($offset, $value): void
+    public function offsetSet($offset, $value): void // @phpstan-ignore-line
     {
         throw new \Exception("SolrSearch: Modifying result list is not supported");
     }
