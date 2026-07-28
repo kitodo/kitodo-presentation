@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Command;
 
-use Kitodo\Dlf\Command\DbDocs\Generator;
+use Kitodo\Dlf\Command\DatabaseDocs\Generator;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,7 +31,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @access public
  */
-class DbDocsCommand extends Command
+class DatabaseDocsGenerateCommand extends Command
 {
     protected Generator $generator;
 

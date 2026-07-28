@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Command\DbDocs;
+namespace Kitodo\Dlf\Command\DatabaseDocs;
 
 /**
  * Simple utility to write .rst (reStructuredText).
@@ -36,6 +36,8 @@ class RstSection
      *
      * @access public
      *
+     * @static
+     *
      * @param string $text
      * @param array<string, bool> $format
      *
@@ -59,15 +61,19 @@ class RstSection
      *
      * @access public
      *
+     * @static
+     *
      * @param mixed[] $paragraphs
      *
      * @return string
      */
     public static function paragraphs(array $paragraphs): string
     {
-        $paragraphs = array_values(array_filter($paragraphs, function ($entry) {
-            return !empty($entry);
-        }));
+        $paragraphs = array_values(
+            array_filter($paragraphs, function ($entry) {
+                return !empty($entry);
+            })
+        );
 
         return implode("\n\n", $paragraphs);
     }
@@ -117,7 +123,7 @@ class RstSection
     }
 
     /**
-     * Add a field list table to section.
+     * Add a field list table to the section.
      *
      * @access public
      *
@@ -196,13 +202,13 @@ RST;
     /**
      * Render header of given level.
      *
-     * @access protected
+     * @access private
      *
      * @param int $level
      *
      * @return string
      */
-    protected function renderHeader(int $level): string
+    private function renderHeader(int $level): string
     {
         $result = '';
 
