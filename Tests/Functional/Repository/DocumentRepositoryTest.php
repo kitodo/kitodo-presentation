@@ -18,6 +18,8 @@ use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Model\Structure;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
@@ -48,9 +50,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Common/libraries.csv');
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canRetrieveDocument(): void
     {
         $document = $this->documentRepository->findByUid(1001);
@@ -63,9 +63,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
         self::assertInstanceOf(MetsDocument::class, $doc);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFindOneByParametersWithIdReturnsDocument(): void
     {
         $result = $this->documentRepository->findOneByParameters(['id' => '1001']);
@@ -73,9 +71,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
         self::assertEquals(1001, $result->getUid());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFindOneByParametersWithRecordIdReturnsDocument(): void
     {
         $result = $this->documentRepository->findOneByParameters(['recordId' => 'oai:de:slub-dresden:db:id-476251419']);
@@ -83,9 +79,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
         self::assertEquals('oai:de:slub-dresden:db:id-476251419', $result->getRecordId());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFindOneByParametersWithLocationReturnsDocumentWithLocation(): void
     {
         $location = 'https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_mets.xml';
@@ -94,9 +88,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
         self::assertEquals($location, $result->getLocation());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetChildrenOfYearAnchor(): void
     {
         // Create an empty Structure instance; repository should return a QueryResultInterface (possibly empty)
@@ -108,9 +100,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
         self::assertTrue(is_array($result) || $result instanceof QueryResultInterface);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFindByUid(): void
     {
         $document = $this->documentRepository->findByUid(1001);
@@ -118,9 +108,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
         self::assertEquals(1001, $document->getUid());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFindDocumentsBySettings(): void
     {
         $settings = ['documentSets' => '1001,1002'];
@@ -138,9 +126,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFindAllByCollectionsLimited(): void
     {
         $result = $this->documentRepository->findAllByCollectionsLimited([1101], 1, 2);
@@ -157,32 +143,33 @@ class DocumentRepositoryTest extends FunctionalTestCase
         }
     }
 
-    /**
-     * @test
-     */
-    public function canGetStatisticsForSelectedCollection(): void
+    #[Test]
+    #[Group('getStatistics')]
+    public function canGetStatistics(): void
     {
         // TODO: check why it returns 3 if statistics for both collections return 4
-        $result = $this->documentRepository->getStatisticsForSelectedCollection(['storagePid' => 20000]);
+        $result = $this->documentRepository->getStatistics(['storagePid' => 20000]);
         self::assertEquals(3, $result['titles']);
         self::assertEquals(3, $result['volumes']);
 
-        $result = $this->documentRepository->getStatisticsForSelectedCollection(['collections' => '1101', 'storagePid' => 20000]);
+        $result = $this->documentRepository->getStatistics(['collections' => '', 'storagePid' => 20000]);
         self::assertEquals(3, $result['titles']);
         self::assertEquals(3, $result['volumes']);
 
-        $result = $this->documentRepository->getStatisticsForSelectedCollection(['collections' => '1102', 'storagePid' => 20000]);
+        $result = $this->documentRepository->getStatistics(['collections' => '1101', 'storagePid' => 20000]);
+        self::assertEquals(3, $result['titles']);
+        self::assertEquals(3, $result['volumes']);
+
+        $result = $this->documentRepository->getStatistics(['collections' => '1102', 'storagePid' => 20000]);
         self::assertEquals(1, $result['titles']);
         self::assertEquals(1, $result['volumes']);
 
-        $result = $this->documentRepository->getStatisticsForSelectedCollection(['collections' => '1101, 1102', 'storagePid' => 20000]);
+        $result = $this->documentRepository->getStatistics(['collections' => '1101, 1102', 'storagePid' => 20000]);
         self::assertEquals(4, $result['titles']);
         self::assertEquals(4, $result['volumes']);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canFindOldestDocument(): void
     {
         $document = $this->documentRepository->findOldestDocument();
@@ -190,9 +177,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
         self::assertEquals(1002, $document->getUid());
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetOaiRecord(): void
     {
         $settings = ['showUserDefined' => false, 'storagePid' => 20000];
@@ -210,9 +195,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
         self::assertContains('collection-with-single-document', $collections);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetOaiDocumentList(): void
     {
         $documents = $this->documentRepository->getOaiDocumentList([1001, 1002]);
@@ -230,9 +213,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
         self::assertContains('music', $collections);
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function canGetCollectionsOfDocument(): void
     {
         $document = $this->documentRepository->findByUid(1001);

@@ -269,9 +269,9 @@ class DocumentRepository extends AbstractRepository
      *
      * @return array<string, int>
      */
-    public function getStatisticsForSelectedCollection(array $settings): array
+    public function getStatistics(array $settings): array
     {
-        if (array_key_exists('collections', $settings)) {
+        if (array_key_exists('collections', $settings) && !empty($settings['collections'])) {
             return $this->getStatisticsForSelectedCollections($settings);
         } else {
             return $this->getStatisticsForAllCollections($settings);
