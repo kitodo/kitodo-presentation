@@ -177,10 +177,10 @@ final class MetsDocument extends AbstractDocument
     protected bool $fileGrpsLoaded = false;
 
     /**
-     * @access protected
+     * @access public
      * @var SimpleXMLElement|null This holds the XML file's METS part as SimpleXMLElement object
      */
-    protected ?SimpleXMLElement $mets = null;
+    public ?SimpleXMLElement $mets = null;
 
     /**
      * @access protected
