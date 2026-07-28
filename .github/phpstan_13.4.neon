@@ -4,6 +4,9 @@ parameters:
     - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\ManifestInterface::getOriginalJsonArray\(\)\.#'
     - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\RangeInterface::getMemberRangesAndRanges\(\)\.#'
     -
+      message: '#Method TYPO3\\CMS\\Core\\Database\\Schema\\Parser\\Parser::parse\(\) invoked with 0 parameters, 1 required\.#'
+      path: ../Classes/Command/DatabaseDocs/Generator.php
+    -
       message: '#Call to an undefined method TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController::getFromCache\(\)\.#'
       path: ../Classes/Common/TypoScriptHelper.php
     -

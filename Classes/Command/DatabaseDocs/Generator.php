@@ -10,12 +10,11 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Command\DbDocs;
+namespace Kitodo\Dlf\Command\DatabaseDocs;
 
 use Doctrine\DBAL\Schema\Table;
 use ReflectionClass;
 use ReflectionProperty;
-use RuntimeException;
 use TYPO3\CMS\Core\Database\Schema\Parser\Lexer;
 use TYPO3\CMS\Core\Database\Schema\Parser\Parser;
 use TYPO3\CMS\Core\Database\Schema\SqlReader;
@@ -91,7 +90,9 @@ class Generator
      * Collect information about relevant tables from `ext_tables.sql` and the
      * Extbase classmap.
      *
-     * @return mixed[] Array of objects with table information
+     * @access public
+     *
+     * @return mixed[] An array of objects with table information
      */
     public function collectTables(): array
     {
@@ -103,8 +104,14 @@ class Generator
         $result = [];
 
         foreach ($createTableStatements as $statement) {
-            $parser = new Parser(new Lexer());
-            list($table) = $parser->parse($statement);
+            $typo3Version = (new Typo3Version())->getMajorVersion();
+            if ($typo3Version >= 13) {
+                $parser = new Parser(new Lexer());
+                list($table) = $parser->parse($statement);
+            } else {
+                $parser = new Parser($statement);
+                list($table) = $parser->parse();
+            }
 
             $tableName = $table->getName();
             if (!str_starts_with($tableName, 'tx_dlf_')) {
@@ -121,6 +128,8 @@ class Generator
 
     /**
      * Get a map from database table names to their domain model class names.
+     *
+     * @access public
      *
      * @return mixed[] Map from table name to fully qualified class name
      */
@@ -151,14 +160,15 @@ class Generator
      * @param Table $table The table to be analyzed
      * @param string|null $className Fully qualified name of the domain model class
      *
-     * @return object Object with table information
+     * @return object An object with table information
      */
     protected function getTableInfo(Table $table, ?string $className): object
     {
         $tableName = $table->getName();
 
         $isPrimary = [];
-        if (!is_null($primaryKey = $table->getPrimaryKey())) {
+        $primaryKey = $table->getPrimaryKey();
+        if ($primaryKey != null) {
             foreach ($primaryKey->getUnquotedColumns() as $primaryColumn) {
                 $isPrimary[$primaryColumn] = true;
             }
@@ -216,6 +226,15 @@ class Generator
         return $result;
     }
 
+    /**
+     * Extract description from a property doc-comment.
+     *
+     * @access public
+     *
+     * @param string $docComment The doc-comment to be parsed
+     *
+     * @return string The extracted description
+     */
     protected function parsePropertyDocComment(string $docComment): string
     {
         $lines = explode("\n", $docComment);
@@ -230,6 +249,15 @@ class Generator
         return '';
     }
 
+    /**
+     * Extract description from a class doc-comment
+     *
+     * @access protected
+     *
+     * @param string $docComment The doc-comment to be parsed
+     *
+     * @return string The extracted description
+     */
     protected function parseDocComment(string $docComment): string
     {
         // TODO: Consider using phpDocumentor (though that splits the docblock into summary and description)
@@ -255,7 +283,9 @@ class Generator
     /**
      * Transform table structure into .rst page.
      *
-     * @param mixed[] $tables Array of table information objects
+     * @access public
+     *
+     * @param mixed[] $tables An array of table information objects
      *
      * @return RstSection The generated .rst page
      */
@@ -270,9 +300,11 @@ This is a reference of all database tables defined by Kitodo.Presentation.
 RST);
 
         // Sort tables alphabetically
-        usort($tables, function ($lhs, $rhs) {
-            return $lhs->name <=> $rhs->name;
-        });
+        usort(
+            $tables, function ($lhs, $rhs) {
+                return $lhs->name <=> $rhs->name;
+            }
+        );
 
         foreach ($tables as $tableInfo) {
             $section = $page->subsection();
@@ -297,21 +329,25 @@ RST);
                 'description' => 'Description',
             ]];
 
-            $rows = array_map(function ($column) use ($page) {
-                return [
-                    'field' => (
-                        $page->format($column->name, ['bold' => $column->isPrimary])
-                        . "\u{00a0}\u{00a0}"
-                        . $page->format($column->type->getName(), ['italic' => true])
-                    ),
+            $rows = array_map(
+                function ($column) use ($page) {
+                    return [
+                        'field' => (
+                            $page->format($column->name, ['bold' => $column->isPrimary])
+                            . "\u{00a0}\u{00a0}"
+                            . $page->format($column->type->getName(), ['italic' => true])
+                        ),
 
-                    'description' => $page->paragraphs([
-                        $page->format($column->feComment, ['italic' => true]),
-                        $column->fieldComment,
-                        $column->sqlComment,
-                    ]),
-                ];
-            }, $tableInfo->columns);
+                        'description' => $page->paragraphs(
+                            [
+                                $page->format($column->feComment, ['italic' => true]),
+                                $column->fieldComment,
+                                $column->sqlComment,
+                            ]
+                        ),
+                    ];
+                }, $tableInfo->columns
+            );
 
             $section->addTable($rows, $header);
         }
