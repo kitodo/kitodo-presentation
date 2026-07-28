@@ -55,12 +55,12 @@ class CollectionControllerTest extends AbstractControllerTestCase
 
     #[Test]
     #[Group("listAction")]
-    public function canListActionForwardToShow()
+    public function canListActionForwardToShowEvenIfMoreCollectionsAreFound()
     {
         $settings = [
             'storagePid' => self::$storagePid,
             'solrcore' => self::$solrCoreId,
-            'collections' => '1',
+            'collections' => '1,2',
             'showSingle' => '1',
             'randomize' => ''
         ];
@@ -74,7 +74,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
 
     #[Test]
     #[Group("listAction")]
-    public function canNotListActionForwardToShow()
+    public function canListActionForwardToShowIfOnlyOneCollectionIsFound()
     {
         $settings = [
             'storagePid' => self::$storagePid,
@@ -83,11 +83,12 @@ class CollectionControllerTest extends AbstractControllerTestCase
             'showSingle' => '0',
             'randomize' => ''
         ];
-        $templateHtml = '<html><f:for each="{collections}" as="item">{item.collection.indexName}</f:for></html>';
+        $controller = $this->setUpController(CollectionController::class, $settings);
+        $request = $this->setUpRequest('list', ['tx_dlf' => ['id' => 1] ]);
+        $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
 
-        $actual = $this->getContentsList($settings, $templateHtml);
-        $expected = '<html>test-collection</html>';
-        $this->assertEquals($expected, $actual);
+        $response = $controller->processRequest($request);
+        $this->assertEquals(303, $response->getStatusCode());
     }
 
     #[Test]
