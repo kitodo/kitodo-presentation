@@ -229,6 +229,34 @@ class DocumentRepository extends AbstractRepository
     }
 
     /**
+     * Finds all documents for the given range.
+     *
+     * @access public
+     *
+     * @param int $limit
+     * @param int $offset
+     *
+     * @return array<Document>|QueryResultInterface<int, Document>
+     */
+    public function findAllInRange(int $limit = 50, int $offset = 0): array|QueryResultInterface
+    {
+        $query = $this->createQuery();
+
+        $query->setOrderings(
+            ['uid' => QueryInterface::ORDER_ASCENDING]
+        );
+
+        if ($limit > 0) {
+            $query->setLimit($limit);
+            $query->setOffset($offset);
+        }
+
+        $this->debugQuery($query);
+
+        return $query->execute();
+    }
+
+    /**
      * Count the titles and volumes for statistics
      *
      * Volumes are documents that are both
@@ -241,9 +269,9 @@ class DocumentRepository extends AbstractRepository
      *
      * @return array<string, int>
      */
-    public function getStatisticsForSelectedCollection(array $settings): array
+    public function getStatistics(array $settings): array
     {
-        if (array_key_exists('collections', $settings)) {
+        if (array_key_exists('collections', $settings) && !empty($settings['collections'])) {
             return $this->getStatisticsForSelectedCollections($settings);
         } else {
             return $this->getStatisticsForAllCollections($settings);
