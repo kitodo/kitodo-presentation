@@ -35,6 +35,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @access public
  *
+ * @method array<Document>|QueryResultInterface<int, Document> findAll() Get all documents
  * @method Document|null findByUid(int|null $uid) Get a document by its UID
  * @method Document|null findOneBy(array $criteria) Get a document by criteria
  *
@@ -216,6 +217,34 @@ class DocumentRepository extends AbstractRepository
                 $query->logicalAnd(...$constraints)
             );
         }
+
+        if ($limit > 0) {
+            $query->setLimit($limit);
+            $query->setOffset($offset);
+        }
+
+        $this->debugQuery($query);
+
+        return $query->execute();
+    }
+
+    /**
+     * Finds all documents for the given range.
+     *
+     * @access public
+     *
+     * @param int $limit
+     * @param int $offset
+     *
+     * @return array<Document>|QueryResultInterface<int, Document>
+     */
+    public function findAllInRange(int $limit = 50, int $offset = 0): array|QueryResultInterface
+    {
+        $query = $this->createQuery();
+
+        $query->setOrderings(
+            ['uid' => QueryInterface::ORDER_ASCENDING]
+        );
 
         if ($limit > 0) {
             $query->setLimit($limit);
