@@ -223,7 +223,7 @@ class ReindexCommand extends BaseCommand
             return $this->documentRepository->findAllInRange((int) $indexLimit, (int) $indexBegin);
         } else {
             // Get all documents.
-            return $this->documentRepository->findAll(); // @phpstan-ignore-line
+            return $this->documentRepository->findAll();
         }
     }
 

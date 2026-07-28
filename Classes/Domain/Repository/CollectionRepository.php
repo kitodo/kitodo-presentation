@@ -25,6 +25,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @access public
  *
+ * @method array<Collection>|QueryResultInterface<int,Collection> findAll() Returns all objects of this repository.
  * @method Collection|null findOneBy(array $criteria) Get a collection by criteria
  *
  * @extends AbstractRepository<Collection>

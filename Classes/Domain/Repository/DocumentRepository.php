@@ -35,6 +35,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @access public
  *
+ * @method array<Document>|QueryResultInterface<int, Document> findAll() Get all documents
  * @method Document|null findByUid(int|null $uid) Get a document by its UID
  * @method Document|null findOneBy(array $criteria) Get a document by criteria
  *
