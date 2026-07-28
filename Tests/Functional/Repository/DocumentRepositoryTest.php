@@ -160,22 +160,22 @@ class DocumentRepositoryTest extends FunctionalTestCase
     /**
      * @test
      */
-    public function canGetStatisticsForSelectedCollection(): void
+    public function canGetStatistics(): void
     {
         // TODO: check why it returns 3 if statistics for both collections return 4
-        $result = $this->documentRepository->getStatisticsForSelectedCollection(['storagePid' => 20000]);
+        $result = $this->documentRepository->getStatistics(['storagePid' => 20000]);
         self::assertEquals(3, $result['titles']);
         self::assertEquals(3, $result['volumes']);
 
-        $result = $this->documentRepository->getStatisticsForSelectedCollection(['collections' => '1101', 'storagePid' => 20000]);
+        $result = $this->documentRepository->getStatistics(['collections' => '1101', 'storagePid' => 20000]);
         self::assertEquals(3, $result['titles']);
         self::assertEquals(3, $result['volumes']);
 
-        $result = $this->documentRepository->getStatisticsForSelectedCollection(['collections' => '1102', 'storagePid' => 20000]);
+        $result = $this->documentRepository->getStatistics(['collections' => '1102', 'storagePid' => 20000]);
         self::assertEquals(1, $result['titles']);
         self::assertEquals(1, $result['volumes']);
 
-        $result = $this->documentRepository->getStatisticsForSelectedCollection(['collections' => '1101, 1102', 'storagePid' => 20000]);
+        $result = $this->documentRepository->getStatistics(['collections' => '1101, 1102', 'storagePid' => 20000]);
         self::assertEquals(4, $result['titles']);
         self::assertEquals(4, $result['volumes']);
     }
