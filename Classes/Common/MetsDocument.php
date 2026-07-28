@@ -177,10 +177,10 @@ final class MetsDocument extends AbstractDocument
     protected bool $fileGrpsLoaded = false;
 
     /**
-     * @access public
+     * @access protected
      * @var SimpleXMLElement|null This holds the XML file's METS part as SimpleXMLElement object
      */
-    public ?SimpleXMLElement $mets = null;
+    protected ?SimpleXMLElement $mets = null;
 
     /**
      * @access protected
@@ -323,6 +323,18 @@ final class MetsDocument extends AbstractDocument
             $this->logger->warning('There is no file node with @ID "' . $id . '"');
             return '';
         }
+    }
+
+    /**
+     * Return clone of METS for external uage.
+     *
+     * @access public
+     *
+     * @return SimpleXMLElement|null
+     */
+    public function getMets(): ?SimpleXMLElement
+    {
+        return clone $this->mets;
     }
 
     /**
