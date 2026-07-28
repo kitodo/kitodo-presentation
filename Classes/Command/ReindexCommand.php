@@ -227,7 +227,7 @@ class ReindexCommand extends BaseCommand
                 ->execute();
         } else {
             // Get all documents.
-            return $this->documentRepository->findAll(); // @phpstan-ignore-line
+            return $this->documentRepository->findAll();
         }
     }
 

@@ -18,6 +18,9 @@ parameters:
     -
       message: '#Access to constant EDIT on an unknown class TYPO3\\CMS\\Scheduler\\SchedulerManagementAction\.#'
       path: ../Classes/Task/BaseAdditionalFieldProvider.php
+    -
+      message: '#Cannot call method getFirst\(\) on iterable<Kitodo\\Dlf\\Domain\\Model\\SolrCore>|TYPO3\\CMS\\Extbase\\Persistence\\QueryResultInterface\.#'
+      path: ../Classes/Controller/Backend/NewTenantController.php
   level: 7
   paths:
     - ../Classes/
