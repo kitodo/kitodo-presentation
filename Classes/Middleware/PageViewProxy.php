@@ -82,10 +82,8 @@ class PageViewProxy implements MiddlewareInterface
         $uriQuery = $request->getUri()->getQuery();
         if ((empty($parameters) || !isset($parameters['middleware'])) && $uriQuery !== '') {
             parse_str($uriQuery, $parsedQuery);
-            if (is_array($parsedQuery)) {
-                // merge with existing parameters taking precedence from $parameters
-                $parameters = array_merge($parsedQuery, $parameters);
-            }
+            // merge with existing parameters taking precedence from $parameters
+            $parameters = array_merge($parsedQuery, $parameters);
         }
 
         // Ensure downstream handlers can read the parsed query params

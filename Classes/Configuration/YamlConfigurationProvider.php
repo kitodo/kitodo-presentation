@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Configuration;
 
+use TYPO3\CMS\Core\Configuration\Loader\Exception\YamlParseException;
 use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Log\LogManager;
@@ -29,31 +30,28 @@ class YamlConfigurationProvider
 
     /**
      * @access private
-     * @var ?PackageManager This holds the package manager
+     * @var PackageManager This holds the package manager
      */
-    private ?PackageManager $packageManager;
+    private PackageManager $packageManager;
 
     /**
      * @access private
-     * @var ?YamlFileLoader This holds the YAML file loader
+     * @var YamlFileLoader This holds the YAML file loader
      */
-    private ?YamlFileLoader $yamlFileLoader;
+    private YamlFileLoader $yamlFileLoader;
 
     /**
      * Constructs the Reader instance
      *
      * @access public
      *
-     * @param ?PackageManager $packageManager The package manager
-     * @param ?YamlFileLoader $yamlFileLoader The YAML file loader
-     *
      * @return void
      */
-    public function __construct(?PackageManager $packageManager = null, ?YamlFileLoader $yamlFileLoader = null)
+    public function __construct()
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
-        $this->packageManager = $packageManager ?? GeneralUtility::makeInstance(PackageManager::class);
-        $this->yamlFileLoader = $yamlFileLoader ?? GeneralUtility::makeInstance(YamlFileLoader::class);
+        $this->packageManager = GeneralUtility::makeInstance(PackageManager::class);
+        $this->yamlFileLoader = GeneralUtility::makeInstance(YamlFileLoader::class);
     }
 
     /**
@@ -99,11 +97,11 @@ class YamlConfigurationProvider
             $packagePath = rtrim($package->getPackagePath(), '/');
             $configurationFile = $packagePath . $path . $type . '.yaml';
             if (is_file($configurationFile)) {
-                $configuration = $this->yamlFileLoader->load($configurationFile);
-                if (is_array($configuration)) {
-                    return $configuration;
-                } else {
-                    $this->logger->error('Invalid configuration file: ' . $configurationFile);
+                try {
+                    return $this->yamlFileLoader->load($configurationFile);
+                } catch (YamlParseException $e) {
+                    $this->logger->error('Invalid configuration file: ' . $configurationFile . ' - ' . $e->getMessage());
+                    continue;
                 }
             }
         }
