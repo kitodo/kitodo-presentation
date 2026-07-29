@@ -34,7 +34,7 @@ class StatisticsController extends AbstractController
      */
     public function mainAction(): ResponseInterface
     {
-        $foundNumbers = $this->documentRepository->getStatisticsForSelectedCollection($this->settings);
+        $foundNumbers = $this->documentRepository->getStatistics($this->settings);
 
         // Set replacements.
         $args['###TITLES###'] = $foundNumbers['titles'] . ' ' . htmlspecialchars(
