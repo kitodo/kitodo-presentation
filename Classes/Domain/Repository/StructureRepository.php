@@ -26,7 +26,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * @access public
  *
- * @method Structure|null findOneBy(array $criteria) Get a structure by criteria
+ * @method Structure|null findOneBy(array<string,int|string> $criteria) Get a structure by criteria
  *
  * @extends AbstractRepository<Structure>
  */

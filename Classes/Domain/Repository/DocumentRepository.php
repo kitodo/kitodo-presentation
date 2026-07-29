@@ -36,8 +36,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  * @access public
  *
  * @method array<Document>|QueryResultInterface<int, Document> findAll() Get all documents
- * @method Document|null findByUid(int|null $uid) Get a document by its UID
- * @method Document|null findOneBy(array $criteria) Get a document by criteria
+ * @method Document|null findByUid(int $uid) Get a document by its UID
+ * @method Document|null findOneBy(array<string,int|string> $criteria) Get a document by criteria
  *
  * @extends AbstractRepository<Document>
  */
@@ -73,7 +73,7 @@ class DocumentRepository extends AbstractRepository
 
         if (isset($parameters['id']) && MathUtility::canBeInterpretedAsInteger($parameters['id'])) {
 
-            $document = $this->findByUid($parameters['id']);
+            $document = $this->findByUid((int) $parameters['id']);
 
         } elseif (isset($parameters['recordId'])) {
 
@@ -723,7 +723,7 @@ class DocumentRepository extends AbstractRepository
      */
     public function getPreviousDocumentUid(int $uid): ?int
     {
-        $currentDocument = $this->findOneBy(['uid' => $uid]);
+        $currentDocument = $this->findByUid($uid);
         if ($currentDocument) {
             $parentId = $currentDocument->getPartof();
 
@@ -771,7 +771,7 @@ class DocumentRepository extends AbstractRepository
      */
     public function getNextDocumentUid(int $uid): ?int
     {
-        $currentDocument = $this->findOneBy(['uid' => $uid]);
+        $currentDocument = $this->findByUid($uid);
         if ($currentDocument) {
             $parentId = $currentDocument->getPartof();
 
