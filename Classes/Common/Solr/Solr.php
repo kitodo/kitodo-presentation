@@ -33,12 +33,12 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  *
  * @access public
  *
- * @property array $config this holds the Solr configuration
+ * @property mixed[] $config this holds the Solr configuration
  * @property-read string|null $core this holds the core name for the current instance
  * @property-write int $configPid this holds the PID for the configuration
  * @property int $limit this holds the max results
  * @property-read int $numberOfHits this holds the number of hits for last search
- * @property-write array $params this holds the additional query parameters
+ * @property-write mixed[] $params this holds the additional query parameters
  * @property-read bool $ready flag if the Solr service is instantiated successfully
  * @property-read Client $service this holds the Solr service object
  */
@@ -123,7 +123,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return string The name of the new core
      */
-    public static function createCore($core = ''): string
+    public static function createCore(string $core = ''): string
     {
         // Get next available core name if none given.
         if (empty($core)) {
@@ -263,16 +263,17 @@ class Solr implements LoggerAwareInterface
      *
      * @access public
      *
-     * @param mixed $core Name or UID of the core to load or null to get core admin endpoint
+     * @param string|int|null $core Name or UID of the core to load or null to get core admin endpoint
      *
      * @return Solr Instance of this class
      */
-    public static function getInstance($core = null): Solr
+    public static function getInstance(mixed $core = null): Solr
     {
         // Get core name if UID is given.
         if (MathUtility::canBeInterpretedAsInteger($core)) {
-            $core = Helper::getIndexNameFromUid($core, 'tx_dlf_solrcores');
+            $core = Helper::getIndexNameFromUid((int) $core, 'tx_dlf_solrcores');
         }
+        /** @var ?string $core */
         // Check if core is set or null.
         if (
             empty($core)
@@ -535,7 +536,7 @@ class Solr implements LoggerAwareInterface
      *
      * @return void
      */
-    public function __set(string $var, $value): void
+    public function __set(string $var, mixed $value): void
     {
         $method = 'magicSet' . ucfirst($var);
         if (
