@@ -326,7 +326,7 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * Return clone of METS for external uage.
+     * Return clone of METS for external usage.
      *
      * @access public
      *
