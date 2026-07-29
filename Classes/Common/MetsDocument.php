@@ -334,7 +334,10 @@ final class MetsDocument extends AbstractDocument
      */
     public function getMets(): ?SimpleXMLElement
     {
-        return clone $this->mets;
+        if ($this->mets !== null) {
+            return clone $this->mets;
+        }
+        return null;
     }
 
     /**
