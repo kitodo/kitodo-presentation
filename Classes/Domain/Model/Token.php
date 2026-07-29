@@ -63,7 +63,11 @@ class Token extends AbstractEntity
      */
     public function getOptions(): array
     {
-        return unserialize($this->options);
+        $options = unserialize($this->options);
+        if (!is_array($options)) {
+            return [];
+        }
+        return $options;
     }
 
     /**
