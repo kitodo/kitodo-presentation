@@ -269,31 +269,27 @@ class Solr implements LoggerAwareInterface
      */
     public static function getInstance(mixed $core = null): Solr
     {
-        // Get core name if UID is given.
+        // Resolve a numeric core UID to its configured index name.
         if (MathUtility::canBeInterpretedAsInteger($core)) {
             $core = Helper::getIndexNameFromUid((int) $core, 'tx_dlf_solrcores');
         }
+
+        // Reject empty string values while still allowing null to mean "no core".
         /** @var ?string $core */
-        // Check if core is set or null.
-        if (
-            empty($core)
-            && $core !== null
-        ) {
+        if ($core !== null && empty($core)) {
             Helper::error('Invalid core UID or name given for Apache Solr');
         }
-        if (!empty($core)) {
-            // Check if there is an instance in the registry already.
-            if (array_key_exists($core, self::$registry)) {
-                // Return singleton instance if available.
-                return self::$registry[$core];
-            }
+
+        if (!empty($core) && array_key_exists($core, self::$registry)) {
+            return self::$registry[$core];
         }
-        // Create new instance...
+
         $instance = new self($core);
-        // ...and save it to registry.
+
         if (!empty($instance->core)) {
             self::$registry[$instance->core] = $instance;
         }
+
         return $instance;
     }
 
