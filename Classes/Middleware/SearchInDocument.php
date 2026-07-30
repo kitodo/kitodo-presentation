@@ -82,7 +82,7 @@ class SearchInDocument implements MiddlewareInterface
         $core = Helper::decrypt($encrypted);
 
         // Perform Solr query.
-        $this->solr = Solr::getInstance($core);
+        $this->solr = Solr::getInstance($core !== false ? $core : null);
         $this->fields = Solr::getFields();
 
         if ($this->solr->ready) {
