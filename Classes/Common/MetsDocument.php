@@ -1430,18 +1430,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * This returns $this->mets via __get()
-     *
-     * @access protected
-     *
-     * @return SimpleXMLElement|null The XML's METS part as SimpleXMLElement object or null if not found
-     */
-    protected function magicGetMets(): ?SimpleXMLElement
-    {
-        return $this->mets;
-    }
-
-    /**
      * @see AbstractDocument::magicGetPhysicalStructure()
      */
     protected function magicGetPhysicalStructure(): array
