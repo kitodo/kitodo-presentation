@@ -779,7 +779,7 @@ final class IiifManifest extends AbstractDocument
      */
     protected function magicGetSmLinks(): array
     {
-        if (!$this->smLinksLoaded && isset($this->iiif) && $this->iiif instanceof ManifestInterface) {
+        if (!$this->smLinksLoaded && $this->iiif instanceof ManifestInterface) {
             if (!empty($this->iiif->getDefaultCanvases())) {
                 foreach ($this->iiif->getDefaultCanvases() as $canvas) {
                     $this->smLinkCanvasToResource($canvas, $this->iiif);
