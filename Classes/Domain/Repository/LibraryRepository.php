@@ -22,8 +22,8 @@ use Kitodo\Dlf\Domain\Model\Library;
  *
  * @access public
  *
- * @method Library|null findByUid(int|null $uid) Get a library by its UID
- * @method Library|null findOneBy(array $criteria) Get a library by criteria
+ * @method Library|null findByUid(int $uid) Get a library by its UID
+ * @method Library|null findOneBy(array<string,int|string> $criteria) Get a library by criteria
  *
  * @extends AbstractRepository<Library>
  */
