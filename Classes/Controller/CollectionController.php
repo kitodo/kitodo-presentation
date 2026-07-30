@@ -21,6 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
 /**
  * Controller class for the plugin 'Collection'.
@@ -83,21 +84,19 @@ class CollectionController extends AbstractController
             return $this->htmlResponse();
         }
 
+        $this->sanitizeSettings();
+
         $this->collectionRepository->useStoragePid($this->settings['storagePid']);
         $this->metadataRepository->useStoragePid($this->settings['storagePid']);
 
-        // Sort collections according to order in plugin flexform configuration
-        if ($this->settings['collections']) {
-            $sortedCollections = [];
-            foreach (GeneralUtility::intExplode(',', $this->settings['collections']) as $uid) {
-                $sortedCollections[$uid] = $this->collectionRepository->findByUid($uid);
-            }
-            $collections = $sortedCollections;
-        } else {
-            $collections = $this->collectionRepository->findAll();
+        if ($this->settings['showSingle']) {
+            $uid = GeneralUtility::intExplode(',', $this->settings['collections']);
+            return $this->redirect('show', null, null, ['collection' => $this->collectionRepository->findByUid($uid[0])]);
         }
 
-        if (iterator_count($collections) == 1 && $this->settings['showSingle'] && is_array($collections)) {
+        $collections = $this->getCollections();
+
+        if (iterator_count($collections) == 1 && is_array($collections)) {
             return $this->redirect('show', null, null, ['collection' => array_pop($collections)]);
         }
 
@@ -194,6 +193,27 @@ class CollectionController extends AbstractController
                 'collection' => $collection
             ]
         );
+    }
+
+    /**
+     * Get collections.
+     *
+     * @access private
+     *
+     * @return array<int, Collection>|QueryResultInterface<int, Collection>
+     */
+    private function getCollections(): array|QueryResultInterface
+    {
+        // Sort collections according to order in plugin FlexForm configuration
+        if ($this->settings['collections']) {
+            $sortedCollections = [];
+            foreach (GeneralUtility::intExplode(',', $this->settings['collections']) as $uid) {
+                $sortedCollections[$uid] = $this->collectionRepository->findByUid($uid);
+            }
+            return $sortedCollections;
+        }
+
+        return $this->collectionRepository->findAll();
     }
 
     /**

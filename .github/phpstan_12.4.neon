@@ -4,6 +4,15 @@ parameters:
     - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\ManifestInterface::getOriginalJsonArray\(\)\.#'
     - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\RangeInterface::getMemberRangesAndRanges\(\)\.#'
     -
+      message: '#Class TYPO3\\CMS\\Core\\Database\\Schema\\Parser\\Lexer constructor invoked with 0 parameters, 1 required\.#'
+      path: ../Classes/Command/DatabaseDocs/Generator.php
+    -
+      message: '#Parameter \#1 \$statement of class TYPO3\\CMS\\Core\\Database\\Schema\\Parser\\Parser constructor expects string, TYPO3\\CMS\\Core\\Database\\Schema\\Parser\\Lexer given\.#'
+      path: ../Classes/Command/DatabaseDocs/Generator.php
+    -
+      message: '#Method TYPO3\\CMS\\Core\\Database\\Schema\\Parser\\Parser::parse\(\) invoked with 1 parameter, 0 required\.#'
+      path: ../Classes/Command/DatabaseDocs/Generator.php
+    -
       message: '#Class TYPO3\\CMS\\Core\\TypoScript\\FrontendTypoScriptFactory not found\.#'
       path: ../Classes/Common/TypoScriptHelper.php
     -
@@ -18,6 +27,9 @@ parameters:
     -
       message: '#Access to constant EDIT on an unknown class TYPO3\\CMS\\Scheduler\\SchedulerManagementAction\.#'
       path: ../Classes/Task/BaseAdditionalFieldProvider.php
+    -
+      message: '#Cannot call method getFirst\(\) on iterable<Kitodo\\Dlf\\Domain\\Model\\SolrCore>|TYPO3\\CMS\\Extbase\\Persistence\\QueryResultInterface\.#'
+      path: ../Classes/Controller/Backend/NewTenantController.php
   level: 7
   paths:
     - ../Classes/
