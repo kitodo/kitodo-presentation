@@ -759,7 +759,7 @@ final class IiifManifest extends AbstractDocument
             }
 
             if (is_string($values)) {
-                $metadata[$resArray['index_name'] . '_sorting'][0] = [trim((string) $values)];
+                $metadata[$resArray['index_name'] . '_sorting'][0] = [trim($values)];
             } elseif ($values instanceof JSONPath && is_array($values->getData()) && count($values->getData()) > 1) {
                 // preserve original behavior where an empty array was set in this branch
                 $metadata[$resArray['index_name']] = [];
@@ -780,13 +780,15 @@ final class IiifManifest extends AbstractDocument
     protected function magicGetSmLinks(): array
     {
         if (!$this->smLinksLoaded && $this->iiif instanceof ManifestInterface) {
-            if (!empty($this->iiif->getDefaultCanvases())) {
-                foreach ($this->iiif->getDefaultCanvases() as $canvas) {
+            $canvases = $this->iiif->getDefaultCanvases();
+            if (!empty($canvases)) {
+                foreach ($canvases as $canvas) {
                     $this->smLinkCanvasToResource($canvas, $this->iiif);
                 }
             }
-            if (!empty($this->iiif->getStructures())) {
-                foreach ($this->iiif->getStructures() as $range) {
+            $structures = $this->iiif->getStructures();
+            if (!empty($structures)) {
+                foreach ($structures as $range) {
                     $this->smLinkRangeCanvasesRecursively($range);
                 }
             }
@@ -813,8 +815,9 @@ final class IiifManifest extends AbstractDocument
             }
         }
         // recursive call for all ranges
-        if (!empty($range->getAllRanges())) {
-            foreach ($range->getAllRanges() as $childRange) {
+        $allRanges = $range->getAllRanges();
+        if (!empty($allRanges)) {
+            foreach ($allRanges as $childRange) {
                 $this->smLinkRangeCanvasesRecursively($childRange);
             }
         }
@@ -904,7 +907,7 @@ final class IiifManifest extends AbstractDocument
      */
     protected function init(string $location, array $settings = []): void
     {
-        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(IiifManifest::class);
         $this->metadataRepository = GeneralUtility::makeInstance(MetadataRepository::class);
         $this->metadataRepository->useStoragePid($this->configPid);
     }
@@ -955,15 +958,17 @@ final class IiifManifest extends AbstractDocument
                     return;
                 }
 
-                if ($this->getIndexAnnotations() == 1 && !empty($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING))) {
-                    foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
+                $annotationContainers = $canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING);
+                if ($this->getIndexAnnotations() == 1 && !empty($annotationContainers)) {
+                    foreach ($annotationContainers as $annotationContainer) {
                         $textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING);
                         if ($textAnnotations != null) {
                             foreach ($textAnnotations as $annotation) {
+                                $body = $annotation->getBody();
                                 if (
-                                    $annotation->getBody() != null &&
-                                    $annotation->getBody()->getFormat() == "text/plain" &&
-                                    $annotation->getBody()->getChars() != null
+                                    $body != null &&
+                                    $body->getFormat() == "text/plain" &&
+                                    $body->getChars() != null
                                 ) {
                                     $this->hasFulltextSet = true;
                                     $this->hasFulltext = true;
@@ -1016,11 +1021,12 @@ final class IiifManifest extends AbstractDocument
             /** @var AnnotationContainerInterface $annotationContainer */
             $annotationContainer = $this->iiif->getContainedResourceById($annotationListId);
             foreach ($annotationContainer->getTextAnnotations(Motivation::PAINTING) as $annotation) {
+                $body = $annotation->getBody();
                 if (
                     $annotation->getTargetResourceId() == $iiifId &&
-                    $annotation->getBody() != null && $annotation->getBody()->getChars() != null
+                    $body != null && $body->getChars() != null
                 ) {
-                    $annotationTexts[] = $annotation->getBody()->getChars();
+                    $annotationTexts[] = $body->getChars();
                 }
             }
         }
