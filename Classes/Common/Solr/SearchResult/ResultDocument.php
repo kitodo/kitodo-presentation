@@ -44,9 +44,9 @@ class ResultDocument
 
     /**
      * @access private
-     * @var string|null All snippets imploded to one string
+     * @var string All snippets imploded to one string
      */
-    private ?string $snippets;
+    private string $snippets;
 
     /**
      * @access private
@@ -64,7 +64,7 @@ class ResultDocument
      * @access private
      * @var bool It's a toplevel element?
      */
-    private bool $toplevel = false;
+    private bool $toplevel;
 
     /**
      * @access private
@@ -76,7 +76,7 @@ class ResultDocument
      * @access private
      * @var array<string> The JSON encoded structure path(s)
      */
-    private array $structurePath = [];
+    private array $structurePath;
 
     /**
      * @access private
@@ -176,9 +176,9 @@ class ResultDocument
      *
      * @access public
      *
-     * @return string|null All result's record snippets imploded to one string
+     * @return string All result's record snippets imploded to one string
      */
-    public function getSnippets(): ?string
+    public function getSnippets(): string
     {
         return $this->snippets;
     }
