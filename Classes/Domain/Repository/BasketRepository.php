@@ -22,7 +22,7 @@ use Kitodo\Dlf\Domain\Model\Basket;
  *
  * @access public
  *
- * @method Basket|null findOneBy(array $criteria) Get a basket by criteria
+ * @method Basket|null findOneBy(array<string,int|string> $criteria) Get a basket by criteria
  *
  * @extends AbstractRepository<Basket>
  */
