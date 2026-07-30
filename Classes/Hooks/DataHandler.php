@@ -44,7 +44,7 @@ class DataHandler implements LoggerAwareInterface
      * @param string $status 'new' or 'update'
      * @param string $table The destination table
      * @param int|string $id The uid of the record
-     * @param array<string, string> &$fieldArray Array of field values
+     * @param array<string, int|string> &$fieldArray Array of field values
      *
      * @return void
      */
@@ -100,7 +100,7 @@ class DataHandler implements LoggerAwareInterface
                     // Field post-processing for table "tx_dlf_solrcores".
                 case 'tx_dlf_solrcores':
                     // Create new Solr core.
-                    $fieldArray['index_name'] = Solr::createCore($fieldArray['index_name']);
+                    $fieldArray['index_name'] = Solr::createCore((string) $fieldArray['index_name']);
                     if (empty($fieldArray['index_name'])) {
                         $this->logger->error('Could not create new Apache Solr core');
                         // Unset all fields to prevent new database record if Solr core creation failed.
