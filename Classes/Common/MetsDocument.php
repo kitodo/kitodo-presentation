@@ -326,6 +326,21 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
+     * Return clone of METS for external usage.
+     *
+     * @access public
+     *
+     * @return SimpleXMLElement|null
+     */
+    public function getMets(): ?SimpleXMLElement
+    {
+        if ($this->mets !== null) {
+            return clone $this->mets;
+        }
+        return null;
+    }
+
+    /**
      * This gets the measure beginning of a page
      *
      * @access public

@@ -765,7 +765,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
             $edismax = $selectQuery->getEDisMax();
 
-            $queryFields = '';
+            $queryFields = 'default ';
 
             if ($this->indexedMetadata) {
                 foreach ($this->indexedMetadata as $metadata) {
