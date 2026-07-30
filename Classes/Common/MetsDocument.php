@@ -1768,7 +1768,6 @@ final class MetsDocument extends AbstractDocument
             if ($this->mets !== null) {
                 $elementNodes = $this->mets->xpath('./mets:structMap[@TYPE="MUSICAL"]/mets:div[@TYPE="measures"]/mets:div');
                 if (!empty($elementNodes)) {
-                    $musicalSeq = [];
                     // Get file groups.
                     $fileUse = $this->magicGetFileGrps();
 
@@ -1777,7 +1776,6 @@ final class MetsDocument extends AbstractDocument
                     if (!empty($musicalNodes)) {
                         $musicalNode = $musicalNodes[0];
                         $id = (string) $musicalNode['ID'];
-                        $musicalSeq[0] = $id;
                         $this->assignMusicalStructureInfo($id, $musicalNode);
 
                         // Get the file representations from fileSec node.
