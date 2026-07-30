@@ -1459,17 +1459,8 @@ final class MetsDocument extends AbstractDocument
                     if (!empty($physicalNodes)) {
                         $firstNode = $physicalNodes[0];
                         $id = (string) $firstNode['ID'];
-                        $this->physicalStructureInfo[$id]['id'] = $id;
-                        $this->physicalStructureInfo[$id]['dmdId'] = $this->getAttribute($firstNode['DMDID']);
-                        $this->physicalStructureInfo[$id]['admId'] = $this->getAttribute($firstNode['ADMID']);
-                        $this->physicalStructureInfo[$id]['order'] = $this->getAttribute($firstNode['ORDER']);
-                        $this->physicalStructureInfo[$id]['label'] = $this->getAttribute($firstNode['LABEL']);
-                        $this->physicalStructureInfo[$id]['orderlabel'] = $this->getAttribute($firstNode['ORDERLABEL']);
-                        $this->physicalStructureInfo[$id]['type'] = (string) $firstNode['TYPE'];
-                        $this->physicalStructureInfo[$id]['contentIds'] = $this->getAttribute($firstNode['CONTENTIDS']);
-
+                        $this->assignPhysicalStructureInfo($id, $firstNode);
                         $this->getFileRepresentation($id, $firstNode);
-
                         $this->physicalStructure = array_merge([$id], $this->getPhysicalElements($elementNodes, $fileUse));
                     }
                 }
@@ -1527,14 +1518,8 @@ final class MetsDocument extends AbstractDocument
             $id = (string) $elementNode['ID'];
             $order = (int) $elementNode['ORDER'];
             $elements[$order] = $id;
-            $this->physicalStructureInfo[$id]['id'] = $id;
-            $this->physicalStructureInfo[$id]['dmdId'] = $this->getAttribute($elementNode['DMDID']);
-            $this->physicalStructureInfo[$id]['admId'] = $this->getAttribute($elementNode['ADMID']);
-            $this->physicalStructureInfo[$id]['order'] = $this->getAttribute($elementNode['ORDER']);
-            $this->physicalStructureInfo[$id]['label'] = $this->getAttribute($elementNode['LABEL']);
-            $this->physicalStructureInfo[$id]['orderlabel'] = $this->getAttribute($elementNode['ORDERLABEL']);
-            $this->physicalStructureInfo[$id]['type'] = (string) $elementNode['TYPE'];
-            $this->physicalStructureInfo[$id]['contentIds'] = $this->getAttribute($elementNode['CONTENTIDS']);
+            $this->assignPhysicalStructureInfo($id, $elementNode);
+
             // Get the file representations from fileSec node.
             foreach ($elementNode->children(self::METS_NAMESPACE)->fptr as $fptr) {
                 // @fschoelzel: The following lines dont work for the Media Player, because the elseif part is never reached.
@@ -1800,20 +1785,16 @@ final class MetsDocument extends AbstractDocument
                     $fileUse = $this->magicGetFileGrps();
 
                     // Get the musical sequence's metadata.
-                    $musicalNode = $this->mets->xpath('./mets:structMap[@TYPE="MUSICAL"]/mets:div[@TYPE="measures"]');
-                    if (!empty($musicalNode)) {
-                        $id = (string) $musicalNode[0]['ID'];
+                    $musicalNodes = $this->mets->xpath('./mets:structMap[@TYPE="MUSICAL"]/mets:div[@TYPE="measures"]');
+                    if (!empty($musicalNodes)) {
+                        $musicalNode = $musicalNodes[0];
+                        $id = (string) $musicalNode['ID'];
                         $musicalSeq[0] = $id;
-                        $this->musicalStructureInfo[$id]['id'] = $id;
-                        $this->musicalStructureInfo[$id]['dmdId'] = $this->getAttribute($musicalNode[0]['DMDID']);
-                        $this->musicalStructureInfo[$id]['order'] = $this->getAttribute($musicalNode[0]['ORDER']);
-                        $this->musicalStructureInfo[$id]['label'] = $this->getAttribute($musicalNode[0]['LABEL']);
-                        $this->musicalStructureInfo[$id]['orderlabel'] = $this->getAttribute($musicalNode[0]['ORDERLABEL']);
-                        $this->musicalStructureInfo[$id]['type'] = (string) $musicalNode[0]['TYPE'];
-                        $this->musicalStructureInfo[$id]['contentIds'] = $this->getAttribute($musicalNode[0]['CONTENTIDS']);
+                        $this->assignMusicalStructureInfo($id, $musicalNode);
+
                         // Get the file representations from fileSec node.
                         // TODO: Do we need this for the measurement container element? Can it have any files?
-                        foreach ($musicalNode[0]->children(self::METS_NAMESPACE)->fptr as $fptr) {
+                        foreach ($musicalNode->children(self::METS_NAMESPACE)->fptr as $fptr) {
                             // Check if file has valid @USE attribute.
                             if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
                                 $this->musicalStructureInfo[$id]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = [
@@ -1839,15 +1820,9 @@ final class MetsDocument extends AbstractDocument
                             $id = (string) $elementNode['ID'];
                             $order = (int) $elementNode['ORDER'];
                             $elements[$order] = $id;
-                            $this->musicalStructureInfo[$id]['id'] = $id;
-                            $this->musicalStructureInfo[$id]['dmdId'] = $this->getAttribute($elementNode['DMDID']);
-                            $this->musicalStructureInfo[$id]['order'] = $this->getAttribute($elementNode['ORDER']);
-                            $this->musicalStructureInfo[$id]['label'] = $this->getAttribute($elementNode['LABEL']);
-                            $this->musicalStructureInfo[$id]['orderlabel'] = $this->getAttribute($elementNode['ORDERLABEL']);
-                            $this->musicalStructureInfo[$id]['type'] = (string) $elementNode['TYPE'];
-                            $this->musicalStructureInfo[$id]['contentIds'] = $this->getAttribute($elementNode['CONTENTIDS']);
-                            // Get the file representations from fileSec node.
+                            $this->assignMusicalStructureInfo($id, $elementNode);
 
+                            // Get the file representations from fileSec node.
                             foreach ($elementNode->children(self::METS_NAMESPACE)->fptr as $fptr) {
                                 // Check if file has valid @USE attribute.
                                 $fieldId = (string) $fptr->area->attributes()->FILEID;
@@ -1931,6 +1906,53 @@ final class MetsDocument extends AbstractDocument
     {
         $this->magicGetMusicalStructure();
         return $this->numMeasures;
+    }
+
+    /**
+     * Assign musical structure info.
+     *
+     * @access private
+     *
+     * @param string $id
+     * @param SimpleXMLElement $node
+     *
+     * @return void
+     */
+    private function assignMusicalStructureInfo(string $id, SimpleXMLElement $node): void
+    {
+        $this->musicalStructureInfo[$id] = [
+            'id' => $id,
+            'dmdId' => $this->getAttribute($node['DMDID']),
+            'order' => $this->getAttribute($node['ORDER']),
+            'label' => $this->getAttribute($node['LABEL']),
+            'orderlabel' => $this->getAttribute($node['ORDERLABEL']),
+            'type' => (string) $node['TYPE'],
+            'contentIds' => $this->getAttribute($node['CONTENTIDS'])
+        ];
+    }
+
+    /**
+     * Assign physical structure info.
+     *
+     * @access private
+     *
+     * @param string $id
+     * @param SimpleXMLElement $node
+     *
+     * @return void
+     */
+    private function assignPhysicalStructureInfo(string $id, SimpleXMLElement $node): void
+    {
+        $this->physicalStructureInfo[$id] = [
+            'id' => $id,
+            'dmdId' => $this->getAttribute($node['DMDID']),
+            'admId' => $this->getAttribute($node['ADMID']),
+            'order' => $this->getAttribute($node['ORDER']),
+            'label' => $this->getAttribute($node['LABEL']),
+            'orderlabel' => $this->getAttribute($node['ORDERLABEL']),
+            'type' => (string) $node['TYPE'],
+            'contentIds' => $this->getAttribute($node['CONTENTIDS'])
+        ];
     }
 
     /**
