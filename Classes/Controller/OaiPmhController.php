@@ -326,7 +326,7 @@ class OaiPmhController extends AbstractController
 
         if ($token) {
             $options = $token->getOptions();
-            if (is_array($options)) {
+            if (!empty($options)) {
                 return $options;
             }
         }
