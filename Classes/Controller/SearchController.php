@@ -137,8 +137,6 @@ class SearchController extends AbstractController
             $this->request->getAttribute('frontend.user')->setKey('ses', 'search', $this->search);
         }
 
-        $this->search = is_array($this->search) ? $this->search : [];
-
         // sanitize date search input
         $dateFrom = $this->search['dateFrom'] ?? false;
         $dateTo = $this->search['dateTo'] ?? false;
