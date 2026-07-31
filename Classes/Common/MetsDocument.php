@@ -330,6 +330,8 @@ final class MetsDocument extends AbstractDocument
      *
      * @access public
      *
+     * @api
+     *
      * @return SimpleXMLElement|null
      */
     public function getMets(): ?SimpleXMLElement
