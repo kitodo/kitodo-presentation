@@ -166,50 +166,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::magicGetPhysicalStructure()
-     */
-    protected function magicGetPhysicalStructure(): array
-    {
-        if ($this->physicalStructureLoaded) {
-            return $this->physicalStructure;
-        }
-
-        if (!($this->iiif instanceof ManifestInterface)) {
-            return [];
-        }
-
-        $iiifId = $this->iiif->getId();
-        $this->initializeManifestStructure($iiifId);
-
-        $this->setFileUseDownload($iiifId, $this->iiif);
-        $this->setFileUseFulltext($iiifId, $this->iiif);
-
-        $canvases = $this->iiif->getDefaultCanvases();
-        if (!empty($canvases)) {
-            $elements = [];
-            $canvasOrder = 0;
-
-            $fileUseThumbs = $this->useGroupsConfiguration->getThumbnail();
-            $fileUses = $this->useGroupsConfiguration->getImage();
-
-            foreach ($canvases as $canvas) {
-                $canvasOrder++;
-                $canvasId = $canvas->getId();
-                $elements[$canvasOrder] = $canvasId;
-
-                $this->processCanvas($iiifId, $canvasId, $canvas, $fileUseThumbs, $fileUses);
-            }
-
-            $this->numPages = $canvasOrder;
-            array_unshift($elements, $iiifId);
-            $this->physicalStructure = $elements;
-        }
-
-        $this->physicalStructureLoaded = true;
-        return $this->physicalStructure;
-    }
-
-    /**
      * Initializes the manifest structure for a given IIIF ID.
      *
      * @access private
@@ -766,29 +722,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::magicGetSmLinks()
-     */
-    protected function magicGetSmLinks(): array
-    {
-        if (!$this->smLinksLoaded && $this->iiif instanceof ManifestInterface) {
-            $canvases = $this->iiif->getDefaultCanvases();
-            if (!empty($canvases)) {
-                foreach ($canvases as $canvas) {
-                    $this->smLinkCanvasToResource($canvas, $this->iiif);
-                }
-            }
-            $structures = $this->iiif->getStructures();
-            if (!empty($structures)) {
-                foreach ($structures as $range) {
-                    $this->smLinkRangeCanvasesRecursively($range);
-                }
-            }
-            $this->smLinksLoaded = true;
-        }
-        return $this->smLinks;
-    }
-
-    /**
      * Construct a link between a range and it's sub ranges and all contained canvases.
      *
      * @access private
@@ -975,14 +908,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::magicGetThumbnail()
-     */
-    protected function magicGetThumbnail(): string
-    {
-        return $this->iiif->getThumbnailUrl();
-    }
-
-    /**
      * @see AbstractDocument::getToplevelId()
      */
     public function getToplevelId(): string
@@ -1118,5 +1043,82 @@ final class IiifManifest extends AbstractDocument
         $jsonArray = $this->iiif->getOriginalJsonArray();
         $this->asJson = json_encode($jsonArray) ?: '';
         return ['configPid', 'recordId', 'parentId', 'useGroupsConfiguration', 'asJson'];
+    }
+
+    // magic methods inherited from AbstractDocument
+
+    /**
+     * @see AbstractDocument::magicGetPhysicalStructure()
+     */
+    protected function magicGetPhysicalStructure(): array
+    {
+        if ($this->physicalStructureLoaded) {
+            return $this->physicalStructure;
+        }
+
+        if (!($this->iiif instanceof ManifestInterface)) {
+            return [];
+        }
+
+        $iiifId = $this->iiif->getId();
+        $this->initializeManifestStructure($iiifId);
+
+        $this->setFileUseDownload($iiifId, $this->iiif);
+        $this->setFileUseFulltext($iiifId, $this->iiif);
+
+        $canvases = $this->iiif->getDefaultCanvases();
+        if (!empty($canvases)) {
+            $elements = [];
+            $canvasOrder = 0;
+
+            $fileUseThumbs = $this->useGroupsConfiguration->getThumbnail();
+            $fileUses = $this->useGroupsConfiguration->getImage();
+
+            foreach ($canvases as $canvas) {
+                $canvasOrder++;
+                $canvasId = $canvas->getId();
+                $elements[$canvasOrder] = $canvasId;
+
+                $this->processCanvas($iiifId, $canvasId, $canvas, $fileUseThumbs, $fileUses);
+            }
+
+            $this->numPages = $canvasOrder;
+            array_unshift($elements, $iiifId);
+            $this->physicalStructure = $elements;
+        }
+
+        $this->physicalStructureLoaded = true;
+        return $this->physicalStructure;
+    }
+
+    /**
+     * @see AbstractDocument::magicGetSmLinks()
+     */
+    protected function magicGetSmLinks(): array
+    {
+        if (!$this->smLinksLoaded && $this->iiif instanceof ManifestInterface) {
+            $canvases = $this->iiif->getDefaultCanvases();
+            if (!empty($canvases)) {
+                foreach ($canvases as $canvas) {
+                    $this->smLinkCanvasToResource($canvas, $this->iiif);
+                }
+            }
+            $structures = $this->iiif->getStructures();
+            if (!empty($structures)) {
+                foreach ($structures as $range) {
+                    $this->smLinkRangeCanvasesRecursively($range);
+                }
+            }
+            $this->smLinksLoaded = true;
+        }
+        return $this->smLinks;
+    }
+
+    /**
+     * @see AbstractDocument::magicGetThumbnail()
+     */
+    protected function magicGetThumbnail(): string
+    {
+        return $this->iiif->getThumbnailUrl();
     }
 }
