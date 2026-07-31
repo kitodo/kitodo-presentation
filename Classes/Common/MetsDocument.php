@@ -1250,14 +1250,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::getDocument()
-     */
-    protected function getDocument(): ?SimpleXMLElement
-    {
-        return $this->mets;
-    }
-
-    /**
      * This builds an array of the document's metadata sections
      *
      * @access protected
