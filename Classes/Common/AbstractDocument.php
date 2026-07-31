@@ -48,7 +48,6 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property-read array $physicalStructureInfo this holds the physical structure metadata
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
  * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
- * @property-read bool $ready Is the document instantiated successfully?
  * @property-read string $recordId the METS file's / IIIF manifest's record identifier
  * @property-read int $rootId this holds the UID of the root document or zero if not multi-volumed
  * @property-read array $smLinks this holds the smLinks between logical and physical structMap
@@ -209,12 +208,6 @@ abstract class AbstractDocument
      * @var array<string, string>
      */
     protected array $rawTextArray = [];
-
-    /**
-     * @access protected
-     * @var bool Is the document instantiated successfully?
-     */
-    protected bool $ready = false;
 
     /**
      * @access protected
@@ -422,18 +415,6 @@ abstract class AbstractDocument
      * @return void
      */
     abstract protected function establishRecordId(int $pid): void;
-
-    /**
-     * Source document PHP object which is represented by a Document instance
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @return \SimpleXMLElement|IiifResourceInterface A PHP object representation of
-     * the current document. SimpleXMLElement for METS, IiifResourceInterface for IIIF
-     */
-    abstract protected function getDocument();
 
     /**
      * This builds an array of the document's physical structure
@@ -930,18 +911,6 @@ abstract class AbstractDocument
             $this->magicGetPhysicalStructure();
         }
         return $this->physicalStructureInfo;
-    }
-
-    /**
-     * This returns $this->ready via __get()
-     *
-     * @access protected
-     *
-     * @return bool Is the document instantiated successfully?
-     */
-    protected function magicGetReady(): bool
-    {
-        return $this->ready;
     }
 
     /**
