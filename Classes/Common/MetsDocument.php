@@ -1252,77 +1252,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * This builds an array of the document's metadata sections
-     *
-     * @access protected
-     *
-     * @return mixed[] Array of metadata sections with their IDs as array key
-     */
-    protected function magicGetMdSec(): array
-    {
-        if (!$this->mdSecLoaded) {
-            $this->loadFormats();
-
-            if ($this->mets !== null) {
-                $dmdSecXml = $this->mets->xpath('./mets:dmdSec');
-                if (!empty($dmdSecXml)) {
-                    foreach ($dmdSecXml as $dmdSecTag) {
-                        $dmdSec = $this->processMdSec($dmdSecTag);
-
-                        if ($dmdSec !== null) {
-                            $this->mdSec[$dmdSec['id']] = $dmdSec;
-                            $this->dmdSec[$dmdSec['id']] = $dmdSec;
-                        }
-                    }
-                }
-
-                $amdSecXml = $this->mets->xpath('./mets:amdSec');
-                if (!empty($amdSecXml)) {
-                    foreach ($amdSecXml as $amdSecTag) {
-                        $childIds = [];
-
-                        foreach ($amdSecTag->children(self::METS_NAMESPACE) as $mdSecTag) {
-                            if (!in_array($mdSecTag->getName(), self::ALLOWED_AMD_SEC)) {
-                                continue;
-                            }
-
-                            // TODO: Should we check that the format may occur within this type (e.g., to ignore VIDEOMD within rightsMD)?
-                            $mdSec = $this->processMdSec($mdSecTag);
-
-                            if ($mdSec !== null) {
-                                $this->mdSec[$mdSec['id']] = $mdSec;
-
-                                $childIds[] = $mdSec['id'];
-                            }
-                        }
-
-                        $amdSecId = (string)$amdSecTag->attributes()->ID;
-                        if (!empty($amdSecId)) {
-                            $this->amdSecChildIds[$amdSecId] = $childIds;
-                        }
-                    }
-                }
-            }
-
-            $this->mdSecLoaded = true;
-        }
-        return $this->mdSec;
-    }
-
-    /**
-     * Gets the document's metadata sections
-     *
-     * @access protected
-     *
-     * @return mixed[] Array of metadata sections with their IDs as array key
-     */
-    protected function magicGetDmdSec(): array
-    {
-        $this->magicGetMdSec();
-        return $this->dmdSec;
-    }
-
-    /**
      * Processes an element of METS `mdSecType`.
      *
      * @access protected
@@ -1367,45 +1296,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * This builds the file ID -> USE concordance
-     *
-     * @access protected
-     *
-     * @return mixed[] Array of file use groups with file IDs
-     */
-    protected function magicGetFileGrps(): array
-    {
-        if (!$this->fileGrpsLoaded) {
-            if ($this->mets !== null) {
-                foreach ($this->useGroupsConfiguration->get() as $useGroups) {
-                    foreach ($useGroups as $useGroup) {
-                        // Perform XPath query for each configured USE attribute
-                        $fileGrps = $this->mets->xpath("./mets:fileSec/mets:fileGrp[@USE='$useGroup']");
-                        if (!empty($fileGrps)) {
-                            foreach ($fileGrps as $fileGrp) {
-                                foreach ($fileGrp->children(self::METS_NAMESPACE)->file as $file) {
-                                    $fLocat = $file->children(self::METS_NAMESPACE)->FLocat;
-                                    $fileId = (string) $file->attributes()->ID;
-                                    $this->fileGrps[$fileId] = $useGroup;
-                                    $this->fileInfos[$fileId] = [
-                                        'fileGrp' => $useGroup,
-                                        'admId' => (string) $file->attributes()->ADMID,
-                                        'dmdId' => (string) $file->attributes()->DMDID,
-                                        'mimeType' => (string) $file->attributes()->MIMETYPE,
-                                        'location' => (string) $fLocat->attributes(self::XLINK_NAMESPACE)->href,
-                                    ];
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            $this->fileGrpsLoaded = true;
-        }
-        return $this->fileGrps;
-    }
-
-    /**
      * @see AbstractDocument::prepareMetadataArray()
      */
     protected function prepareMetadataArray(): void
@@ -1419,38 +1309,6 @@ final class MetsDocument extends AbstractDocument
                 }
             }
         }
-        // Set current PID for metadata definitions.
-    }
-
-    /**
-     * @see AbstractDocument::magicGetPhysicalStructure()
-     */
-    protected function magicGetPhysicalStructure(): array
-    {
-        // Is there no physical structure array yet?
-        if (!$this->physicalStructureLoaded) {
-            if ($this->mets !== null) {
-                // Does the document have a structMap node of type "PHYSICAL"?
-                $elementNodes = $this->mets->xpath(self::STRUCTURE_MAP_PHYSICAL . '[@TYPE="physSequence"]/mets:div');
-                if (!empty($elementNodes)) {
-                    // Get file groups.
-                    $fileUse = $this->magicGetFileGrps();
-                    // Get the physical sequence's metadata.
-                    $physicalNodes = $this->mets->xpath(self::STRUCTURE_MAP_PHYSICAL . '[@TYPE="physSequence"]');
-                    if (!empty($physicalNodes)) {
-                        $firstNode = $physicalNodes[0];
-                        $id = (string) $firstNode['ID'];
-                        $this->assignPhysicalStructureInfo($id, $firstNode);
-                        $this->getFileRepresentation($id, $firstNode);
-                        $this->physicalStructure = array_merge([$id], $this->getPhysicalElements($elementNodes, $fileUse));
-                    }
-                }
-            }
-            $this->physicalStructureLoaded = true;
-
-        }
-
-        return $this->physicalStructure;
     }
 
     /**
@@ -1561,6 +1419,182 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
+     * @see AbstractDocument::getToplevelId()
+     */
+    public function getToplevelId(): string
+    {
+        if (empty($this->toplevelId)) {
+            if ($this->mets !== null) {
+                // Get all logical structure nodes with metadata, but without associated METS-Pointers.
+                $divs = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@DMDID and not(./mets:mptr)]');
+                if (!empty($divs)) {
+                    // Load smLinks.
+                    $this->magicGetSmLinks();
+                    foreach ($divs as $div) {
+                        $id = (string) $div['ID'];
+                        // Are there physical structure nodes for this logical structure?
+                        if (array_key_exists($id, $this->smLinks['l2p'])) {
+                            // Yes. That's what we're looking for.
+                            $this->toplevelId = $id;
+                            break;
+                        } elseif (empty($this->toplevelId)) {
+                            // No. Remember this anyway, but keep looking for a better one.
+                            $this->toplevelId = $id;
+                        }
+                    }
+                }
+            }
+        }
+        return $this->toplevelId;
+    }
+
+    /**
+     * This magic method is executed prior to any serialization of the object
+     * @see __wakeup()
+     *
+     * @access public
+     *
+     * @return array Properties to be serialized
+     */
+    public function __sleep(): array
+    {
+        // SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
+        $this->asXML = $this->xml->asXML() ?: '';
+        return ['configPid', 'recordId', 'parentId', 'useGroupsConfiguration', 'asXML'];
+    }
+
+    /**
+     * This magic method is used for setting a string value for the object
+     *
+     * @access public
+     *
+     * @return string String representing the METS object
+     */
+    public function __toString(): string
+    {
+        $xml = new DOMDocument('1.0', 'utf-8');
+        $xml->appendChild($xml->importNode(dom_import_simplexml($this->mets), true));
+        $xml->formatOutput = true;
+        return $xml->saveXML() ?: '';
+    }
+
+    /**
+     * This magic method is executed after the object is deserialized
+     * @see __sleep()
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function __wakeup(): void
+    {
+        $xml = Helper::getXmlFileAsString($this->asXML);
+        if ($xml !== false) {
+            $this->asXML = '';
+            $this->xml = $xml;
+            // Rebuild the unserializable properties.
+            $this->init('', $this->settings);
+        } else {
+            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
+            $this->logger->error('Could not load XML after deserialization');
+        }
+    }
+
+    /**
+     * Assign musical structure info.
+     *
+     * @access private
+     *
+     * @param string $id
+     * @param SimpleXMLElement $node
+     *
+     * @return void
+     */
+    private function assignMusicalStructureInfo(string $id, SimpleXMLElement $node): void
+    {
+        $this->musicalStructureInfo[$id] = [
+            'id' => $id,
+            'dmdId' => $this->getAttribute($node['DMDID']),
+            'order' => $this->getAttribute($node['ORDER']),
+            'label' => $this->getAttribute($node['LABEL']),
+            'orderlabel' => $this->getAttribute($node['ORDERLABEL']),
+            'type' => (string) $node['TYPE'],
+            'contentIds' => $this->getAttribute($node['CONTENTIDS'])
+        ];
+    }
+
+    /**
+     * Assign physical structure info.
+     *
+     * @access private
+     *
+     * @param string $id
+     * @param SimpleXMLElement $node
+     *
+     * @return void
+     */
+    private function assignPhysicalStructureInfo(string $id, SimpleXMLElement $node): void
+    {
+        $this->physicalStructureInfo[$id] = [
+            'id' => $id,
+            'dmdId' => $this->getAttribute($node['DMDID']),
+            'admId' => $this->getAttribute($node['ADMID']),
+            'order' => $this->getAttribute($node['ORDER']),
+            'label' => $this->getAttribute($node['LABEL']),
+            'orderlabel' => $this->getAttribute($node['ORDERLABEL']),
+            'type' => (string) $node['TYPE'],
+            'contentIds' => $this->getAttribute($node['CONTENTIDS'])
+        ];
+    }
+
+    /**
+     * Get node attribute as string.
+     *
+     * @access private
+     *
+     * @param mixed $attribute
+     *
+     * @return string
+     */
+    private function getAttribute($attribute): string
+    {
+        return isset($attribute) ? (string) $attribute : '';
+    }
+
+    // magic methods inherited from AbstractDocument
+
+    /**
+     * @see AbstractDocument::magicGetPhysicalStructure()
+     */
+    protected function magicGetPhysicalStructure(): array
+    {
+        // Is there no physical structure array yet?
+        if (!$this->physicalStructureLoaded) {
+            if ($this->mets !== null) {
+                // Does the document have a structMap node of type "PHYSICAL"?
+                $elementNodes = $this->mets->xpath(self::STRUCTURE_MAP_PHYSICAL . '[@TYPE="physSequence"]/mets:div');
+                if (!empty($elementNodes)) {
+                    // Get file groups.
+                    $fileUse = $this->magicGetFileGrps();
+                    // Get the physical sequence's metadata.
+                    $physicalNodes = $this->mets->xpath(self::STRUCTURE_MAP_PHYSICAL . '[@TYPE="physSequence"]');
+                    if (!empty($physicalNodes)) {
+                        $firstNode = $physicalNodes[0];
+                        $id = (string) $firstNode['ID'];
+                        $this->assignPhysicalStructureInfo($id, $firstNode);
+                        $this->getFileRepresentation($id, $firstNode);
+                        $this->physicalStructure = array_merge([$id], $this->getPhysicalElements($elementNodes, $fileUse));
+                    }
+                }
+            }
+            $this->physicalStructureLoaded = true;
+
+        }
+
+        return $this->physicalStructure;
+    }
+
+    /**
      * @see AbstractDocument::magicGetSmLinks()
      */
     protected function magicGetSmLinks(): array
@@ -1640,108 +1674,116 @@ final class MetsDocument extends AbstractDocument
         return $this->thumbnail;
     }
 
+    // magic methods
+
     /**
-     * @see AbstractDocument::getToplevelId()
+     * Gets the document's metadata sections
+     *
+     * @access protected
+     *
+     * @return mixed[] Array of metadata sections with their IDs as array key
      */
-    public function getToplevelId(): string
+    protected function magicGetDmdSec(): array
     {
-        if (empty($this->toplevelId)) {
+        $this->magicGetMdSec();
+        return $this->dmdSec;
+    }
+
+    /**
+     * This builds the file ID -> USE concordance
+     *
+     * @access protected
+     *
+     * @return mixed[] Array of file use groups with file IDs
+     */
+    protected function magicGetFileGrps(): array
+    {
+        if (!$this->fileGrpsLoaded) {
             if ($this->mets !== null) {
-                // Get all logical structure nodes with metadata, but without associated METS-Pointers.
-                $divs = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@DMDID and not(./mets:mptr)]');
-                if (!empty($divs)) {
-                    // Load smLinks.
-                    $this->magicGetSmLinks();
-                    foreach ($divs as $div) {
-                        $id = (string) $div['ID'];
-                        // Are there physical structure nodes for this logical structure?
-                        if (array_key_exists($id, $this->smLinks['l2p'])) {
-                            // Yes. That's what we're looking for.
-                            $this->toplevelId = $id;
-                            break;
-                        } elseif (empty($this->toplevelId)) {
-                            // No. Remember this anyway, but keep looking for a better one.
-                            $this->toplevelId = $id;
+                foreach ($this->useGroupsConfiguration->get() as $useGroups) {
+                    foreach ($useGroups as $useGroup) {
+                        // Perform XPath query for each configured USE attribute
+                        $fileGrps = $this->mets->xpath("./mets:fileSec/mets:fileGrp[@USE='$useGroup']");
+                        if (!empty($fileGrps)) {
+                            foreach ($fileGrps as $fileGrp) {
+                                foreach ($fileGrp->children(self::METS_NAMESPACE)->file as $file) {
+                                    $fLocat = $file->children(self::METS_NAMESPACE)->FLocat;
+                                    $fileId = (string) $file->attributes()->ID;
+                                    $this->fileGrps[$fileId] = $useGroup;
+                                    $this->fileInfos[$fileId] = [
+                                        'fileGrp' => $useGroup,
+                                        'admId' => (string) $file->attributes()->ADMID,
+                                        'dmdId' => (string) $file->attributes()->DMDID,
+                                        'mimeType' => (string) $file->attributes()->MIMETYPE,
+                                        'location' => (string) $fLocat->attributes(self::XLINK_NAMESPACE)->href,
+                                    ];
+                                }
+                            }
                         }
                     }
                 }
             }
+            $this->fileGrpsLoaded = true;
         }
-        return $this->toplevelId;
+        return $this->fileGrps;
     }
 
     /**
-     * Try to determine URL of parent document.
+     * This builds an array of the document's metadata sections
      *
-     * @access public
+     * @access protected
      *
-     * @return string
+     * @return mixed[] Array of metadata sections with their IDs as array key
      */
-    public function magicGetParentHref(): string
+    protected function magicGetMdSec(): array
     {
-        if (empty($this->parentHref)) {
+        if (!$this->mdSecLoaded) {
+            $this->loadFormats();
+
             if ($this->mets !== null) {
-                // Get the closest ancestor of the current document which has a MPTR child.
-                $parentMptr = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@ID="' . $this->getToplevelId() . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
-                if (!empty($parentMptr)) {
-                    $this->parentHref = (string) $parentMptr[0]->attributes(self::XLINK_NAMESPACE)->href;
+                $dmdSecXml = $this->mets->xpath('./mets:dmdSec');
+                if (!empty($dmdSecXml)) {
+                    foreach ($dmdSecXml as $dmdSecTag) {
+                        $dmdSec = $this->processMdSec($dmdSecTag);
+
+                        if ($dmdSec !== null) {
+                            $this->mdSec[$dmdSec['id']] = $dmdSec;
+                            $this->dmdSec[$dmdSec['id']] = $dmdSec;
+                        }
+                    }
+                }
+
+                $amdSecXml = $this->mets->xpath('./mets:amdSec');
+                if (!empty($amdSecXml)) {
+                    foreach ($amdSecXml as $amdSecTag) {
+                        $childIds = [];
+
+                        foreach ($amdSecTag->children(self::METS_NAMESPACE) as $mdSecTag) {
+                            if (!in_array($mdSecTag->getName(), self::ALLOWED_AMD_SEC)) {
+                                continue;
+                            }
+
+                            // TODO: Should we check that the format may occur within this type (e.g., to ignore VIDEOMD within rightsMD)?
+                            $mdSec = $this->processMdSec($mdSecTag);
+
+                            if ($mdSec !== null) {
+                                $this->mdSec[$mdSec['id']] = $mdSec;
+
+                                $childIds[] = $mdSec['id'];
+                            }
+                        }
+
+                        $amdSecId = (string)$amdSecTag->attributes()->ID;
+                        if (!empty($amdSecId)) {
+                            $this->amdSecChildIds[$amdSecId] = $childIds;
+                        }
+                    }
                 }
             }
+
+            $this->mdSecLoaded = true;
         }
-
-        return $this->parentHref;
-    }
-
-    /**
-     * This magic method is executed prior to any serialization of the object
-     * @see __wakeup()
-     *
-     * @access public
-     *
-     * @return array Properties to be serialized
-     */
-    public function __sleep(): array
-    {
-        // SimpleXMLElement objects can't be serialized, thus save the XML as string for serialization
-        $this->asXML = $this->xml->asXML() ?: '';
-        return ['configPid', 'recordId', 'parentId', 'useGroupsConfiguration', 'asXML'];
-    }
-
-    /**
-     * This magic method is used for setting a string value for the object
-     *
-     * @access public
-     *
-     * @return string String representing the METS object
-     */
-    public function __toString(): string
-    {
-        $xml = new DOMDocument('1.0', 'utf-8');
-        $xml->appendChild($xml->importNode(dom_import_simplexml($this->mets), true));
-        $xml->formatOutput = true;
-        return $xml->saveXML() ?: '';
-    }
-
-    /**
-     * This magic method is executed after the object is deserialized
-     * @see __sleep()
-     *
-     * @access public
-     *
-     * @return void
-     */
-    public function __wakeup(): void
-    {
-        $xml = Helper::getXmlFileAsString($this->asXML);
-        if ($xml !== false) {
-            $this->asXML = '';
-            $this->xml = $xml;
-            // Rebuild the unserializable properties.
-            $this->init('', $this->settings);
-        } else {
-            $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
-            $this->logger->error('Could not load XML after deserialization');
-        }
+        return $this->mdSec;
     }
 
     /**
@@ -1879,7 +1921,7 @@ final class MetsDocument extends AbstractDocument
      *
      * @access protected
      *
-     * @return int The total number of measres
+     * @return int The total number of measures
      */
     protected function magicGetNumMeasures(): int
     {
@@ -1888,63 +1930,24 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * Assign musical structure info.
+     * Try to determine URL of parent document and return it via __get()
      *
-     * @access private
-     *
-     * @param string $id
-     * @param SimpleXMLElement $node
-     *
-     * @return void
-     */
-    private function assignMusicalStructureInfo(string $id, SimpleXMLElement $node): void
-    {
-        $this->musicalStructureInfo[$id] = [
-            'id' => $id,
-            'dmdId' => $this->getAttribute($node['DMDID']),
-            'order' => $this->getAttribute($node['ORDER']),
-            'label' => $this->getAttribute($node['LABEL']),
-            'orderlabel' => $this->getAttribute($node['ORDERLABEL']),
-            'type' => (string) $node['TYPE'],
-            'contentIds' => $this->getAttribute($node['CONTENTIDS'])
-        ];
-    }
-
-    /**
-     * Assign physical structure info.
-     *
-     * @access private
-     *
-     * @param string $id
-     * @param SimpleXMLElement $node
-     *
-     * @return void
-     */
-    private function assignPhysicalStructureInfo(string $id, SimpleXMLElement $node): void
-    {
-        $this->physicalStructureInfo[$id] = [
-            'id' => $id,
-            'dmdId' => $this->getAttribute($node['DMDID']),
-            'admId' => $this->getAttribute($node['ADMID']),
-            'order' => $this->getAttribute($node['ORDER']),
-            'label' => $this->getAttribute($node['LABEL']),
-            'orderlabel' => $this->getAttribute($node['ORDERLABEL']),
-            'type' => (string) $node['TYPE'],
-            'contentIds' => $this->getAttribute($node['CONTENTIDS'])
-        ];
-    }
-
-    /**
-     * Get node attribute as string.
-     *
-     * @access private
-     *
-     * @param mixed $attribute
+     * @access protected
      *
      * @return string
      */
-    private function getAttribute($attribute): string
+    protected function magicGetParentHref(): string
     {
-        return isset($attribute) ? (string) $attribute : '';
+        if (empty($this->parentHref)) {
+            if ($this->mets !== null) {
+                // Get the closest ancestor of the current document which has a MPTR child.
+                $parentMptr = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@ID="' . $this->getToplevelId() . '"]/ancestor::mets:div[./mets:mptr][1]/mets:mptr');
+                if (!empty($parentMptr)) {
+                    $this->parentHref = (string) $parentMptr[0]->attributes(self::XLINK_NAMESPACE)->href;
+                }
+            }
+        }
+
+        return $this->parentHref;
     }
 }
