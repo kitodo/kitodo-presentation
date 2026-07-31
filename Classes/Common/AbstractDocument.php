@@ -336,7 +336,7 @@ abstract class AbstractDocument
     abstract public function getFileLocation(string $id): string;
 
     /**
-     * This gets the MIME type of a file representing a physical page or track
+     * This gets the MIME type of file representing a physical page or track
      *
      * @access public
      *
@@ -393,6 +393,17 @@ abstract class AbstractDocument
     abstract public function getMetadata(string $id): array;
 
     /**
+     * This returns the ID of the toplevel logical structure node
+     *
+     * @access public
+     *
+     * @abstract
+     *
+     * @return string The logical structure node's ID
+     */
+    abstract public function getToplevelId(): string;
+
+    /**
      * Analyze the document if it contains any fulltext that needs to be indexed.
      *
      * @access protected
@@ -415,52 +426,6 @@ abstract class AbstractDocument
      * @return void
      */
     abstract protected function establishRecordId(int $pid): void;
-
-    /**
-     * This builds an array of the document's physical structure
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @return mixed[] Array of physical elements' id, type, label and file representations ordered
-     * by "@ORDER" attribute / IIIF Sequence's Canvases
-     */
-    abstract protected function magicGetPhysicalStructure(): array;
-
-    /**
-     * This returns the smLinks between logical and physical structMap (METS) and models the
-     * relation between IIIF Canvases and Manifests / Ranges in the same way
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @return mixed[] The links between logical and physical nodes / Range, Manifest and Canvas
-     */
-    abstract protected function magicGetSmLinks(): array;
-
-    /**
-     * This returns the document's thumbnail location
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @return string The document's thumbnail location
-     */
-    abstract protected function magicGetThumbnail(): string;
-
-    /**
-     * This returns the ID of the toplevel logical structure node
-     *
-     * @access public
-     *
-     * @abstract
-     *
-     * @return string The logical structure node's ID
-     */
-    abstract public function getToplevelId(): string;
 
     /**
      * This sets some basic class properties
@@ -499,6 +464,41 @@ abstract class AbstractDocument
      * @return bool true if $preloadedDocument can actually be reused, false if it has to be loaded again
      */
     abstract protected function setPreloadedDocument($preloadedDocument): bool;
+
+    /**
+     * This builds an array of the document's physical structure
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @return mixed[] Array of physical elements' id, type, label and file representations ordered
+     * by "@ORDER" attribute / IIIF Sequence's Canvases
+     */
+    abstract protected function magicGetPhysicalStructure(): array;
+
+    /**
+     * This returns the smLinks between logical and physical structMap (METS) and models the
+     * relation between IIIF Canvases and Manifests / Ranges in the same way
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @return mixed[] The links between logical and physical nodes / Range, Manifest and Canvas
+     */
+    abstract protected function magicGetSmLinks(): array;
+
+    /**
+     * This returns the document's thumbnail location
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @return string The document's thumbnail location
+     */
+    abstract protected function magicGetThumbnail(): string;
 
     /**
      * This is a singleton class, thus an instance must be created by this method
@@ -752,15 +752,14 @@ abstract class AbstractDocument
     /**
      * Register all available namespaces for a \SimpleXMLElement object
      *
-     * @access public
+     * @access protected
      *
      * @param \SimpleXMLElement|\DOMXPath &$obj \SimpleXMLElement or \DOMXPath object
      *
      * @return void
      */
-    public function registerNamespaces(&$obj): void
+    protected function registerNamespaces(&$obj): void
     {
-        // TODO Check usage. XML specific method does not seem to be used anywhere outside this class within the project, but it is public and may be used by extensions.
         $this->loadFormats();
         // Do we have a \SimpleXMLElement or \DOMXPath object?
         if ($obj instanceof \SimpleXMLElement) {
@@ -1052,7 +1051,7 @@ abstract class AbstractDocument
      *
      * @return void
      */
-    public function __set(string $var, $value): void
+    public function __set(string $var, mixed $value): void
     {
         $method = '_set' . ucfirst($var);
         if (
