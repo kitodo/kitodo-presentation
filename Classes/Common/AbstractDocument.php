@@ -424,18 +424,6 @@ abstract class AbstractDocument
     abstract protected function establishRecordId(int $pid): void;
 
     /**
-     * Source document PHP object which is represented by a Document instance
-     *
-     * @access protected
-     *
-     * @abstract
-     *
-     * @return \SimpleXMLElement|IiifResourceInterface A PHP object representation of
-     * the current document. SimpleXMLElement for METS, IiifResourceInterface for IIIF
-     */
-    abstract protected function getDocument();
-
-    /**
      * This builds an array of the document's physical structure
      *
      * @access protected
