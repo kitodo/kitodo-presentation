@@ -143,14 +143,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::getDocument()
-     */
-    protected function getDocument(): IiifResourceInterface
-    {
-        return $this->iiif;
-    }
-
-    /**
      * Returns a string representing the Metadata / Presentation API version which the IIIF resource
      * conforms to. This is used for example to extract metadata according to configured patterns.
      *
