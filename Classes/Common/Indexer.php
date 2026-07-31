@@ -378,7 +378,6 @@ class Indexer
                 // extract structure path
                 self::$extractedStructurePathNodes[$logicalUnit['id']] = self::extractStructurePathNodes($doc->tableOfContents, $logicalUnit['id']);
                 $processedStructurePath = self::buildStructurePathData(self::$extractedStructurePathNodes[$logicalUnit['id']], $doc->getToplevelId());
-                
                 $solrDoc->setField(self::$solrFields['structure_path'], json_encode($processedStructurePath, JSON_UNESCAPED_UNICODE));
                 // verify date formatting
                 if (strtotime($metadata['date'][0])) {
