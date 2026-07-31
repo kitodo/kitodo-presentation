@@ -1679,11 +1679,11 @@ final class MetsDocument extends AbstractDocument
     /**
      * Gets the document's metadata sections
      *
-     * @access private
+     * @access protected
      *
      * @return mixed[] Array of metadata sections with their IDs as array key
      */
-    private function magicGetDmdSec(): array
+    protected function magicGetDmdSec(): array
     {
         $this->magicGetMdSec();
         return $this->dmdSec;
@@ -1692,11 +1692,11 @@ final class MetsDocument extends AbstractDocument
     /**
      * This builds the file ID -> USE concordance
      *
-     * @access private
+     * @access protected
      *
      * @return mixed[] Array of file use groups with file IDs
      */
-    private function magicGetFileGrps(): array
+    protected function magicGetFileGrps(): array
     {
         if (!$this->fileGrpsLoaded) {
             if ($this->mets !== null) {
@@ -1731,11 +1731,11 @@ final class MetsDocument extends AbstractDocument
     /**
      * This builds an array of the document's metadata sections
      *
-     * @access private
+     * @access protected
      *
      * @return mixed[] Array of metadata sections with their IDs as array key
      */
-    private function magicGetMdSec(): array
+    protected function magicGetMdSec(): array
     {
         if (!$this->mdSecLoaded) {
             $this->loadFormats();
@@ -1789,12 +1789,12 @@ final class MetsDocument extends AbstractDocument
     /**
      * This builds an array of the document's musical structure
      *
-     * @access private
+     * @access protected
      *
      * @return mixed[] Array of musical elements' id, type, label and file representations ordered
      * by "@ORDER" attribute
      */
-    private function magicGetMusicalStructure(): array
+    protected function magicGetMusicalStructure(): array
     {
         // Is there no musical structure array yet?
         if (!$this->musicalStructureLoaded) {
@@ -1902,11 +1902,11 @@ final class MetsDocument extends AbstractDocument
     /**
      * This gives an array of the document's musical structure metadata
      *
-     * @access private
+     * @access protected
      *
      * @return mixed[] Array of elements' type, label and file representations ordered by "@ID" attribute
      */
-    private function magicGetMusicalStructureInfo(): array
+    protected function magicGetMusicalStructureInfo(): array
     {
         // Is there no musical structure array yet?
         if (!$this->musicalStructureLoaded) {
@@ -1919,24 +1919,24 @@ final class MetsDocument extends AbstractDocument
     /**
      * This returns $this->numMeasures via __get()
      *
-     * @access private
+     * @access protected
      *
-     * @return int The total number of measres
+     * @return int The total number of measures
      */
-    private function magicGetNumMeasures(): int
+    protected function magicGetNumMeasures(): int
     {
         $this->magicGetMusicalStructure();
         return $this->numMeasures;
     }
 
     /**
-     * Try to determine URL of parent document.
+     * Try to determine URL of parent document and return it via __get()
      *
-     * @access private
+     * @access protected
      *
      * @return string
      */
-    private function magicGetParentHref(): string
+    protected function magicGetParentHref(): string
     {
         if (empty($this->parentHref)) {
             if ($this->mets !== null) {
