@@ -136,7 +136,7 @@ final class IiifManifest extends AbstractDocument
                 }
             }
             // For now, it's a hardcoded ID, not only as a fallback
-            if (!isset($this->recordId)) {
+            if (empty($this->recordId)) {
                 $this->recordId = $this->iiif->getId();
             }
         }
