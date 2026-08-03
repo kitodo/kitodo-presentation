@@ -819,11 +819,16 @@ final class IiifManifest extends AbstractDocument
      *
      * @access public
      *
-     * @return IiifResourceInterface
+     * @api
+     *
+     * @return IiifResourceInterface|null
      */
-    public function getIiif(): IiifResourceInterface
+    public function getIiif(): ?IiifResourceInterface
     {
-        return $this->iiif;
+        if ($this->iiif !== null) {
+            return clone $this->iiif;
+        }
+        return null;
     }
 
     /**
