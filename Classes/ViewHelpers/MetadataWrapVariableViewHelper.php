@@ -69,7 +69,8 @@ class MetadataWrapVariableViewHelper extends AbstractViewHelper
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ): void {
+    ): void
+    {
         $factory = GeneralUtility::makeInstance(TypoScriptStringFactory::class);
         $rootNode = $factory->parseFromString($renderChildrenClosure(), new AstBuilder(new NoopEventDispatcher()));
         $setup = $rootNode->toArray();
