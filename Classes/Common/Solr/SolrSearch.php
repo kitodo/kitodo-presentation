@@ -765,19 +765,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
             $edismax = $selectQuery->getEDisMax();
 
-            $queryFields = 'default ';
-
-            if ($this->indexedMetadata) {
-                foreach ($this->indexedMetadata as $metadata) {
-                    /** @var Metadata $metadata */
-                    if ($metadata->getIndexIndexed()) {
-                        $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . 'i';
-                        $queryFields .= $listMetadataRecord . '^' . $metadata->getIndexBoost() . ' ';
-                    }
-                }
-            }
-
-            $edismax->setQueryFields($queryFields);
+            $edismax->setQueryFields($this->getQueryFields());
 
             $grouping = $selectQuery->getGrouping();
             $grouping->addField('uid');
@@ -886,6 +874,31 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     }
 
     /**
+     * Get query fields from indexed metadata
+     * or return "defualt" if indexed metadata is empty.
+     *
+     * @access private
+     *
+     * @return string
+     */
+    private function getQueryFields(): string
+    {
+        $queryFields = 'default ';
+
+        if ($this->indexedMetadata) {
+            foreach ($this->indexedMetadata as $metadata) {
+                /** @var Metadata $metadata */
+                if ($metadata->getIndexIndexed()) {
+                    $listMetadataRecord = $metadata->getIndexName() . '_' . ($metadata->getIndexTokenized() ? 't' : 'u') . ($metadata->getIndexStored() ? 's' : 'u') . 'i';
+                    $queryFields .= $listMetadataRecord . '^' . $metadata->getIndexBoost() . ' ';
+                }
+            }
+        }
+
+        return $queryFields;
+    }
+
+    /**
      * Filter collections to avoid null values.
      *
      * @access private
@@ -895,7 +908,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     private function filterCollections(): void
     {
         if (is_array($this->collections)) {
-            array_filter($this->collections, fn ($value) => $value !== null);
+            $this->collections = array_filter($this->collections, fn ($value) => $value !== null);
         }
     }
 
