@@ -1559,6 +1559,37 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
+     * Assign file information for given file group.
+     *
+     * @access private
+     *
+     * @param string $useGroup
+     *
+     * @return void
+     */
+    private function assignFiles(string $useGroup): void
+    {
+        // Perform XPath query for each configured USE attribute
+        $fileGrps = $this->mets->xpath("./mets:fileSec/mets:fileGrp[@USE='$useGroup']");
+        if (!empty($fileGrps)) {
+            foreach ($fileGrps as $fileGrp) {
+                foreach ($fileGrp->children(self::METS_NAMESPACE)->file as $file) {
+                    $fileLocation = $file->children(self::METS_NAMESPACE)->FLocat;
+                    $fileId = (string) $file->attributes()->ID;
+                    $this->fileGrps[$fileId] = $useGroup;
+                    $this->fileInfos[$fileId] = [
+                        'fileGrp' => $useGroup,
+                        'admId' => (string) $file->attributes()->ADMID,
+                        'dmdId' => (string) $file->attributes()->DMDID,
+                        'mimeType' => (string) $file->attributes()->MIMETYPE,
+                        'location' => (string) $fileLocation->attributes(self::XLINK_NAMESPACE)->href,
+                    ];
+                }
+            }
+        }
+    }
+
+    /**
      * Assign musical structure info.
      *
      * @access private
@@ -1760,24 +1791,7 @@ final class MetsDocument extends AbstractDocument
             if ($this->mets !== null) {
                 foreach ($this->useGroupsConfiguration->get() as $useGroups) {
                     foreach ($useGroups as $useGroup) {
-                        // Perform XPath query for each configured USE attribute
-                        $fileGrps = $this->mets->xpath("./mets:fileSec/mets:fileGrp[@USE='$useGroup']");
-                        if (!empty($fileGrps)) {
-                            foreach ($fileGrps as $fileGrp) {
-                                foreach ($fileGrp->children(self::METS_NAMESPACE)->file as $file) {
-                                    $fLocat = $file->children(self::METS_NAMESPACE)->FLocat;
-                                    $fileId = (string) $file->attributes()->ID;
-                                    $this->fileGrps[$fileId] = $useGroup;
-                                    $this->fileInfos[$fileId] = [
-                                        'fileGrp' => $useGroup,
-                                        'admId' => (string) $file->attributes()->ADMID,
-                                        'dmdId' => (string) $file->attributes()->DMDID,
-                                        'mimeType' => (string) $file->attributes()->MIMETYPE,
-                                        'location' => (string) $fLocat->attributes(self::XLINK_NAMESPACE)->href,
-                                    ];
-                                }
-                            }
-                        }
+                        $this->assignFiles($useGroup);
                     }
                 }
             }
