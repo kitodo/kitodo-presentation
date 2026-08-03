@@ -1501,6 +1501,64 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
+     * Assign administrative metada sections.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function assignAdministrativeMetadataSections(): void
+    {
+        $amdSecXml = $this->mets->xpath('./mets:amdSec');
+        if (!empty($amdSecXml)) {
+            foreach ($amdSecXml as $amdSecTag) {
+                $childIds = [];
+
+                foreach ($amdSecTag->children(self::METS_NAMESPACE) as $mdSecTag) {
+                    if (!in_array($mdSecTag->getName(), self::ALLOWED_AMD_SEC)) {
+                        continue;
+                    }
+
+                    // TODO: Should we check that the format may occur within this type (e.g., to ignore VIDEOMD within rightsMD)?
+                    $mdSec = $this->processMdSec($mdSecTag);
+
+                    if ($mdSec !== null) {
+                        $this->mdSec[$mdSec['id']] = $mdSec;
+                        $childIds[] = $mdSec['id'];
+                    }
+                }
+
+                $amdSecId = (string) $amdSecTag->attributes()->ID;
+                if (!empty($amdSecId)) {
+                    $this->amdSecChildIds[$amdSecId] = $childIds;
+                }
+            }
+        }
+    }
+
+    /**
+     * Assign descriptive metada sections.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function assignDescriptiveMetadataSections(): void
+    {
+        $dmdSecXml = $this->mets->xpath('./mets:dmdSec');
+        if (!empty($dmdSecXml)) {
+            foreach ($dmdSecXml as $dmdSecTag) {
+                $dmdSec = $this->processMdSec($dmdSecTag);
+
+                if ($dmdSec !== null) {
+                    $this->mdSec[$dmdSec['id']] = $dmdSec;
+                    $this->dmdSec[$dmdSec['id']] = $dmdSec;
+                }
+            }
+        }
+    }
+
+    /**
      * Assign musical structure info.
      *
      * @access private
@@ -1741,44 +1799,8 @@ final class MetsDocument extends AbstractDocument
             $this->loadFormats();
 
             if ($this->mets !== null) {
-                $dmdSecXml = $this->mets->xpath('./mets:dmdSec');
-                if (!empty($dmdSecXml)) {
-                    foreach ($dmdSecXml as $dmdSecTag) {
-                        $dmdSec = $this->processMdSec($dmdSecTag);
-
-                        if ($dmdSec !== null) {
-                            $this->mdSec[$dmdSec['id']] = $dmdSec;
-                            $this->dmdSec[$dmdSec['id']] = $dmdSec;
-                        }
-                    }
-                }
-
-                $amdSecXml = $this->mets->xpath('./mets:amdSec');
-                if (!empty($amdSecXml)) {
-                    foreach ($amdSecXml as $amdSecTag) {
-                        $childIds = [];
-
-                        foreach ($amdSecTag->children(self::METS_NAMESPACE) as $mdSecTag) {
-                            if (!in_array($mdSecTag->getName(), self::ALLOWED_AMD_SEC)) {
-                                continue;
-                            }
-
-                            // TODO: Should we check that the format may occur within this type (e.g., to ignore VIDEOMD within rightsMD)?
-                            $mdSec = $this->processMdSec($mdSecTag);
-
-                            if ($mdSec !== null) {
-                                $this->mdSec[$mdSec['id']] = $mdSec;
-
-                                $childIds[] = $mdSec['id'];
-                            }
-                        }
-
-                        $amdSecId = (string)$amdSecTag->attributes()->ID;
-                        if (!empty($amdSecId)) {
-                            $this->amdSecChildIds[$amdSecId] = $childIds;
-                        }
-                    }
-                }
+                $this->assignDescriptiveMetadataSections();
+                $this->assignAdministrativeMetadataSections();
             }
 
             $this->mdSecLoaded = true;
