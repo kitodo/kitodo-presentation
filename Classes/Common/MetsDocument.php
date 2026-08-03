@@ -1501,6 +1501,95 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
+     * Assign administrative metada sections.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function assignAdministrativeMetadataSections(): void
+    {
+        $amdSecXml = $this->mets->xpath('./mets:amdSec');
+        if (!empty($amdSecXml)) {
+            foreach ($amdSecXml as $amdSecTag) {
+                $childIds = [];
+
+                foreach ($amdSecTag->children(self::METS_NAMESPACE) as $mdSecTag) {
+                    if (!in_array($mdSecTag->getName(), self::ALLOWED_AMD_SEC)) {
+                        continue;
+                    }
+
+                    // TODO: Should we check that the format may occur within this type (e.g., to ignore VIDEOMD within rightsMD)?
+                    $mdSec = $this->processMdSec($mdSecTag);
+
+                    if ($mdSec !== null) {
+                        $this->mdSec[$mdSec['id']] = $mdSec;
+                        $childIds[] = $mdSec['id'];
+                    }
+                }
+
+                $amdSecId = (string) $amdSecTag->attributes()->ID;
+                if (!empty($amdSecId)) {
+                    $this->amdSecChildIds[$amdSecId] = $childIds;
+                }
+            }
+        }
+    }
+
+    /**
+     * Assign descriptive metada sections.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function assignDescriptiveMetadataSections(): void
+    {
+        $dmdSecXml = $this->mets->xpath('./mets:dmdSec');
+        if (!empty($dmdSecXml)) {
+            foreach ($dmdSecXml as $dmdSecTag) {
+                $dmdSec = $this->processMdSec($dmdSecTag);
+
+                if ($dmdSec !== null) {
+                    $this->mdSec[$dmdSec['id']] = $dmdSec;
+                    $this->dmdSec[$dmdSec['id']] = $dmdSec;
+                }
+            }
+        }
+    }
+
+    /**
+     * Assign file information for given file group.
+     *
+     * @access private
+     *
+     * @param string $useGroup
+     *
+     * @return void
+     */
+    private function assignFiles(string $useGroup): void
+    {
+        // Perform XPath query for each configured USE attribute
+        $fileGrps = $this->mets->xpath("./mets:fileSec/mets:fileGrp[@USE='$useGroup']");
+        if (!empty($fileGrps)) {
+            foreach ($fileGrps as $fileGrp) {
+                foreach ($fileGrp->children(self::METS_NAMESPACE)->file as $file) {
+                    $fileLocation = $file->children(self::METS_NAMESPACE)->FLocat;
+                    $fileId = (string) $file->attributes()->ID;
+                    $this->fileGrps[$fileId] = $useGroup;
+                    $this->fileInfos[$fileId] = [
+                        'fileGrp' => $useGroup,
+                        'admId' => (string) $file->attributes()->ADMID,
+                        'dmdId' => (string) $file->attributes()->DMDID,
+                        'mimeType' => (string) $file->attributes()->MIMETYPE,
+                        'location' => (string) $fileLocation->attributes(self::XLINK_NAMESPACE)->href,
+                    ];
+                }
+            }
+        }
+    }
+
+    /**
      * Assign musical structure info.
      *
      * @access private
@@ -1521,6 +1610,38 @@ final class MetsDocument extends AbstractDocument
             'type' => (string) $node['TYPE'],
             'contentIds' => $this->getAttribute($node['CONTENTIDS'])
         ];
+    }
+
+    /**
+     * Assign musical structure file information.
+     *
+     * @access private
+     *
+     * @param string $id
+     * @param string $fileId
+     * @param string[] $fileUse
+     * @param SimpleXMLElement $attributes
+     *
+     * @return void
+     */
+    private function assignMusicalStructureInfoFiles(string $id, string $fileId, array $fileUse, SimpleXMLElement $attributes): void
+    {
+        // Check if file has valid @USE attribute.
+        if (!empty($fileUse[$fileId])) {
+            $this->musicalStructureInfo[$id]['files'][$fileUse[$fileId]] = [
+                'fileid' => $fileId,
+                'begin' => (string) $attributes->BEGIN,
+                'end' => (string) $attributes->END,
+                'type' => (string) $attributes->BETYPE,
+                'shape' => (string) $attributes->SHAPE,
+                'coords' => (string) $attributes->COORDS
+            ];
+        }
+
+        if ((string) $attributes->BETYPE === 'TIME') {
+            $this->musicalStructureInfo[$id]['begin'] = (string) $attributes->BEGIN;
+            $this->musicalStructureInfo[$id]['end'] = (string) $attributes->END;
+        }
     }
 
     /**
@@ -1702,24 +1823,7 @@ final class MetsDocument extends AbstractDocument
             if ($this->mets !== null) {
                 foreach ($this->useGroupsConfiguration->get() as $useGroups) {
                     foreach ($useGroups as $useGroup) {
-                        // Perform XPath query for each configured USE attribute
-                        $fileGrps = $this->mets->xpath("./mets:fileSec/mets:fileGrp[@USE='$useGroup']");
-                        if (!empty($fileGrps)) {
-                            foreach ($fileGrps as $fileGrp) {
-                                foreach ($fileGrp->children(self::METS_NAMESPACE)->file as $file) {
-                                    $fLocat = $file->children(self::METS_NAMESPACE)->FLocat;
-                                    $fileId = (string) $file->attributes()->ID;
-                                    $this->fileGrps[$fileId] = $useGroup;
-                                    $this->fileInfos[$fileId] = [
-                                        'fileGrp' => $useGroup,
-                                        'admId' => (string) $file->attributes()->ADMID,
-                                        'dmdId' => (string) $file->attributes()->DMDID,
-                                        'mimeType' => (string) $file->attributes()->MIMETYPE,
-                                        'location' => (string) $fLocat->attributes(self::XLINK_NAMESPACE)->href,
-                                    ];
-                                }
-                            }
-                        }
+                        $this->assignFiles($useGroup);
                     }
                 }
             }
@@ -1741,44 +1845,8 @@ final class MetsDocument extends AbstractDocument
             $this->loadFormats();
 
             if ($this->mets !== null) {
-                $dmdSecXml = $this->mets->xpath('./mets:dmdSec');
-                if (!empty($dmdSecXml)) {
-                    foreach ($dmdSecXml as $dmdSecTag) {
-                        $dmdSec = $this->processMdSec($dmdSecTag);
-
-                        if ($dmdSec !== null) {
-                            $this->mdSec[$dmdSec['id']] = $dmdSec;
-                            $this->dmdSec[$dmdSec['id']] = $dmdSec;
-                        }
-                    }
-                }
-
-                $amdSecXml = $this->mets->xpath('./mets:amdSec');
-                if (!empty($amdSecXml)) {
-                    foreach ($amdSecXml as $amdSecTag) {
-                        $childIds = [];
-
-                        foreach ($amdSecTag->children(self::METS_NAMESPACE) as $mdSecTag) {
-                            if (!in_array($mdSecTag->getName(), self::ALLOWED_AMD_SEC)) {
-                                continue;
-                            }
-
-                            // TODO: Should we check that the format may occur within this type (e.g., to ignore VIDEOMD within rightsMD)?
-                            $mdSec = $this->processMdSec($mdSecTag);
-
-                            if ($mdSec !== null) {
-                                $this->mdSec[$mdSec['id']] = $mdSec;
-
-                                $childIds[] = $mdSec['id'];
-                            }
-                        }
-
-                        $amdSecId = (string)$amdSecTag->attributes()->ID;
-                        if (!empty($amdSecId)) {
-                            $this->amdSecChildIds[$amdSecId] = $childIds;
-                        }
-                    }
-                }
+                $this->assignDescriptiveMetadataSections();
+                $this->assignAdministrativeMetadataSections();
             }
 
             $this->mdSecLoaded = true;
@@ -1816,22 +1884,7 @@ final class MetsDocument extends AbstractDocument
                         // Get the file representations from fileSec node.
                         // TODO: Do we need this for the measurement container element? Can it have any files?
                         foreach ($musicalNode->children(self::METS_NAMESPACE)->fptr as $fptr) {
-                            // Check if file has valid @USE attribute.
-                            if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                                $this->musicalStructureInfo[$id]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = [
-                                    'fileid' => (string) $fptr->area->attributes()->FILEID,
-                                    'begin' => (string) $fptr->area->attributes()->BEGIN,
-                                    'end' => (string) $fptr->area->attributes()->END,
-                                    'type' => (string) $fptr->area->attributes()->BETYPE,
-                                    'shape' => (string) $fptr->area->attributes()->SHAPE,
-                                    'coords' => (string) $fptr->area->attributes()->COORDS
-                                ];
-                            }
-
-                            if ((string) $fptr->area->attributes()->BETYPE === 'TIME') {
-                                $this->musicalStructureInfo[$id]['begin'] = (string) $fptr->area->attributes()->BEGIN;
-                                $this->musicalStructureInfo[$id]['end'] = (string) $fptr->area->attributes()->END;
-                            }
+                            $this->assignMusicalStructureInfoFiles($id, (string) $fptr->attributes()->FILEID, $fileUse, $fptr->area->attributes());
                         }
 
                         $elements = [];
@@ -1845,23 +1898,7 @@ final class MetsDocument extends AbstractDocument
 
                             // Get the file representations from fileSec node.
                             foreach ($elementNode->children(self::METS_NAMESPACE)->fptr as $fptr) {
-                                // Check if file has valid @USE attribute.
-                                $fieldId = (string) $fptr->area->attributes()->FILEID;
-                                if (!empty($fileUse[$fieldId])) {
-                                    $this->musicalStructureInfo[$id]['files'][$fileUse[$fieldId]] = [
-                                        'fileid' => $fieldId,
-                                        'begin' => (string) $fptr->area->attributes()->BEGIN,
-                                        'end' => (string) $fptr->area->attributes()->END,
-                                        'type' => (string) $fptr->area->attributes()->BETYPE,
-                                        'shape' => (string) $fptr->area->attributes()->SHAPE,
-                                        'coords' => (string) $fptr->area->attributes()->COORDS
-                                    ];
-                                }
-
-                                if ((string) $fptr->area->attributes()->BETYPE === 'TIME') {
-                                    $this->musicalStructureInfo[$id]['begin'] = (string) $fptr->area->attributes()->BEGIN;
-                                    $this->musicalStructureInfo[$id]['end'] = (string) $fptr->area->attributes()->END;
-                                }
+                                $this->assignMusicalStructureInfoFiles($id, (string) $fptr->area->attributes()->FILEID, $fileUse, $fptr->area->attributes());
                             }
                         }
 
