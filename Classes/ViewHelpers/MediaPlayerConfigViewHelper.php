@@ -50,7 +50,8 @@ class MediaPlayerConfigViewHelper extends AbstractViewHelper
         array $arguments,
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ): string {
+    ): string
+    {
         $id = $arguments['id'];
         $inputSettings = $arguments['settings'];
 
