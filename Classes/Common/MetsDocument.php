@@ -1613,6 +1613,38 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
+     * Assign musical structure file information.
+     *
+     * @access private
+     *
+     * @param string $id
+     * @param string $fileId
+     * @param string[] $fileUse
+     * @param SimpleXMLElement $attributes
+     *
+     * @return void
+     */
+    private function assignMusicalStructureInfoFiles(string $id, string $fileId, array $fileUse, SimpleXMLElement $attributes): void
+    {
+        // Check if file has valid @USE attribute.
+        if (!empty($fileUse[$fileId])) {
+            $this->musicalStructureInfo[$id]['files'][$fileUse[$fileId]] = [
+                'fileid' => $fileId,
+                'begin' => (string) $attributes->BEGIN,
+                'end' => (string) $attributes->END,
+                'type' => (string) $attributes->BETYPE,
+                'shape' => (string) $attributes->SHAPE,
+                'coords' => (string) $attributes->COORDS
+            ];
+        }
+
+        if ((string) $attributes->BETYPE === 'TIME') {
+            $this->musicalStructureInfo[$id]['begin'] = (string) $attributes->BEGIN;
+            $this->musicalStructureInfo[$id]['end'] = (string) $attributes->END;
+        }
+    }
+
+    /**
      * Assign physical structure info.
      *
      * @access private
@@ -1852,22 +1884,7 @@ final class MetsDocument extends AbstractDocument
                         // Get the file representations from fileSec node.
                         // TODO: Do we need this for the measurement container element? Can it have any files?
                         foreach ($musicalNode->children(self::METS_NAMESPACE)->fptr as $fptr) {
-                            // Check if file has valid @USE attribute.
-                            if (!empty($fileUse[(string) $fptr->attributes()->FILEID])) {
-                                $this->musicalStructureInfo[$id]['files'][$fileUse[(string) $fptr->attributes()->FILEID]] = [
-                                    'fileid' => (string) $fptr->area->attributes()->FILEID,
-                                    'begin' => (string) $fptr->area->attributes()->BEGIN,
-                                    'end' => (string) $fptr->area->attributes()->END,
-                                    'type' => (string) $fptr->area->attributes()->BETYPE,
-                                    'shape' => (string) $fptr->area->attributes()->SHAPE,
-                                    'coords' => (string) $fptr->area->attributes()->COORDS
-                                ];
-                            }
-
-                            if ((string) $fptr->area->attributes()->BETYPE === 'TIME') {
-                                $this->musicalStructureInfo[$id]['begin'] = (string) $fptr->area->attributes()->BEGIN;
-                                $this->musicalStructureInfo[$id]['end'] = (string) $fptr->area->attributes()->END;
-                            }
+                            $this->assignMusicalStructureInfoFiles($id, (string) $fptr->attributes()->FILEID, $fileUse, $fptr->area->attributes());
                         }
 
                         $elements = [];
@@ -1881,23 +1898,7 @@ final class MetsDocument extends AbstractDocument
 
                             // Get the file representations from fileSec node.
                             foreach ($elementNode->children(self::METS_NAMESPACE)->fptr as $fptr) {
-                                // Check if file has valid @USE attribute.
-                                $fieldId = (string) $fptr->area->attributes()->FILEID;
-                                if (!empty($fileUse[$fieldId])) {
-                                    $this->musicalStructureInfo[$id]['files'][$fileUse[$fieldId]] = [
-                                        'fileid' => $fieldId,
-                                        'begin' => (string) $fptr->area->attributes()->BEGIN,
-                                        'end' => (string) $fptr->area->attributes()->END,
-                                        'type' => (string) $fptr->area->attributes()->BETYPE,
-                                        'shape' => (string) $fptr->area->attributes()->SHAPE,
-                                        'coords' => (string) $fptr->area->attributes()->COORDS
-                                    ];
-                                }
-
-                                if ((string) $fptr->area->attributes()->BETYPE === 'TIME') {
-                                    $this->musicalStructureInfo[$id]['begin'] = (string) $fptr->area->attributes()->BEGIN;
-                                    $this->musicalStructureInfo[$id]['end'] = (string) $fptr->area->attributes()->END;
-                                }
+                                $this->assignMusicalStructureInfoFiles($id, (string) $fptr->area->attributes()->FILEID, $fileUse, $fptr->area->attributes());
                             }
                         }
 
