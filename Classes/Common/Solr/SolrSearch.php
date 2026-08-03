@@ -908,7 +908,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     private function filterCollections(): void
     {
         if (is_array($this->collections)) {
-            array_filter($this->collections, fn ($value) => $value !== null);
+            $this->collections = array_filter($this->collections, fn ($value) => $value !== null);
         }
     }
 
