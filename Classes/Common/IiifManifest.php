@@ -815,6 +815,19 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
+     * @see AbstractDocument::getToplevelId()
+     */
+    public function getToplevelId(): string
+    {
+        if (empty($this->toplevelId)) {
+            if (isset($this->iiif)) {
+                $this->toplevelId = $this->iiif->getId();
+            }
+        }
+        return $this->toplevelId;
+    }
+
+    /**
      * Returns the underlying IiifResourceInterface.
      *
      * @access public
@@ -873,34 +886,10 @@ final class IiifManifest extends AbstractDocument
             $manifest = $this->iiif;
             $canvases = $manifest->getDefaultCanvases();
             foreach ($canvases as $canvas) {
-                if (
-                    !empty($canvas->getSeeAlsoUrlsForFormat("application/alto+xml")) ||
-                    !empty($canvas->getSeeAlsoUrlsForProfile("http://www.loc.gov/standards/alto/"))
-                ) {
+                if ($this->canvasHasAlto($canvas) || $this->canvasHasTextAnnotations($canvas)) {
                     $this->hasFulltextSet = true;
                     $this->hasFulltext = true;
                     return;
-                }
-
-                $annotationContainers = $canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING);
-                if ($this->getIndexAnnotations() == 1 && !empty($annotationContainers)) {
-                    foreach ($annotationContainers as $annotationContainer) {
-                        $textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING);
-                        if ($textAnnotations != null) {
-                            foreach ($textAnnotations as $annotation) {
-                                $body = $annotation->getBody();
-                                if (
-                                    $body != null &&
-                                    $body->getFormat() == "text/plain" &&
-                                    $body->getChars() != null
-                                ) {
-                                    $this->hasFulltextSet = true;
-                                    $this->hasFulltext = true;
-                                    return;
-                                }
-                            }
-                        }
-                    }
                 }
             }
             $this->hasFulltextSet = true;
@@ -908,16 +897,60 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::getToplevelId()
+     * Check whether a canvas links to ALTO fulltext (seeAlso entries).
+     *
+     * @access private
+     *
+     * @param CanvasInterface $canvas
+     *
+     * @return bool
      */
-    public function getToplevelId(): string
+    private function canvasHasAlto(CanvasInterface $canvas): bool
     {
-        if (empty($this->toplevelId)) {
-            if (isset($this->iiif)) {
-                $this->toplevelId = $this->iiif->getId();
+        if (!empty($canvas->getSeeAlsoUrlsForFormat("application/alto+xml"))) {
+            return true;
+        }
+
+        if (!empty($canvas->getSeeAlsoUrlsForProfile("http://www.loc.gov/standards/alto/"))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check whether a canvas contains suitable text/plain annotations.
+     *
+     * @access private
+     *
+     * @param CanvasInterface $canvas
+     *
+     * @return bool
+     */
+    private function canvasHasTextAnnotations(CanvasInterface $canvas): bool
+    {
+        $annotationContainers = $canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING);
+        if ($this->getIndexAnnotations() != 1 || empty($annotationContainers)) {
+            return false;
+        }
+
+        foreach ($annotationContainers as $annotationContainer) {
+            $textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING);
+            if ($textAnnotations != null) {
+                foreach ($textAnnotations as $annotation) {
+                    $body = $annotation->getBody();
+                    if (
+                        $body != null &&
+                        $body->getFormat() == "text/plain" &&
+                        $body->getChars() != null
+                    ) {
+                        return true;
+                    }
+                }
             }
         }
-        return $this->toplevelId;
+
+        return false;
     }
 
     /**
