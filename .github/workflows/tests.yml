@@ -2,9 +2,9 @@ name: Unit and Functional Testing
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "7.x" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "7.x" ]
   workflow_dispatch:
 
 jobs:
