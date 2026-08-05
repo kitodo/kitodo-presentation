@@ -828,7 +828,7 @@ final class MetsDocument extends AbstractDocument
      * @param mixed[] $metadata
      * @param mixed[] $metadataSections
      *
-     * @return boolean
+     * @return bool
      */
     private function extractAndProcessMetadata(string $dmdId, string $mdSectionType, array &$metadata, array $metadataSections): bool
     {
@@ -862,7 +862,7 @@ final class MetsDocument extends AbstractDocument
      * @param string $currentMetadataSection
      * @param string $searchedMetadataSection
      *
-     * @return boolean
+     * @return bool
      */
     private function hasMetadataSection(array $metadataSections, string $currentMetadataSection, string $searchedMetadataSection): bool
     {
