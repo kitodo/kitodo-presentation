@@ -17,7 +17,6 @@ use Kitodo\Dlf\Domain\Model\Format;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Presentation\Common\Model\AbstractIiifEntity;
@@ -35,24 +34,24 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @abstract
  *
  * @property int $configPid this holds the PID for the configuration
- * @property-read array $formats this holds the configuration for all supported metadata encodings
+ * @property-read array<string, array<string, string>> $formats this holds the configuration for all supported metadata encodings
  * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
  * @property-read bool $hasFulltext flag with information if there are any fulltext files available
- * @property array $lastSearchedPhysicalPage the last searched logical and physical page
- * @property array $logicalUnits this holds the logical units
- * @property-read array $metadataArray this holds the documents' parsed metadata array
+ * @property array<string, mixed> $lastSearchedPhysicalPage the last searched logical and physical page
+ * @property mixed[] $logicalUnits this holds the logical units
+ * @property-read mixed[] $metadataArray this holds the documents' parsed metadata array
  * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
  * @property-read int $numPages the holds the total number of pages
  * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
- * @property-read array $physicalStructure this holds the physical structure
- * @property-read array $physicalStructureInfo this holds the physical structure metadata
+ * @property-read mixed[] $physicalStructure this holds the physical structure
+ * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
- * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
+ * @property array<string, string> $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read string $recordId the METS file's / IIIF manifest's record identifier
  * @property-read int $rootId this holds the UID of the root document or zero if not multi-volumed
- * @property-read array $smLinks this holds the smLinks between logical and physical structMap
+ * @property-read array<string, mixed[]> $smLinks this holds the smLinks between logical and physical structMap
  * @property bool $smLinksLoaded flag with information if the smLinks are loaded
- * @property-read array $tableOfContents this holds the logical structure
+ * @property-read array<int, mixed[]> $tableOfContents this holds the logical structure
  * @property bool $tableOfContentsLoaded flag with information if the table of contents is loaded
  * @property-read string $thumbnail this holds the document's thumbnail location
  * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
@@ -87,7 +86,7 @@ abstract class AbstractDocument
 
     /**
      * @access protected
-     * @var mixed[] Additional information about files (e.g., ADMID), indexed by ID.
+     * @var array<string, array<string, string>> Additional information about files (e.g., ADMID), indexed by ID.
      */
     protected array $fileInfos = [];
 
@@ -318,7 +317,7 @@ abstract class AbstractDocument
      *
      * @param string $id The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
      *
-     * @return mixed[]|null The set of file information
+     * @return array<string, string>|null The set of file information
      */
     abstract public function getFileInfo(string $id): ?array;
 
@@ -851,7 +850,7 @@ abstract class AbstractDocument
      *
      * @access protected
      *
-     * @return array<mixed, array<string, mixed[]>> Array of metadata with their corresponding logical structure node ID as key
+     * @return array<array<string, array<mixed>>|int> Array of metadata with their corresponding logical structure node ID as key
      */
     protected function magicGetMetadataArray(): array
     {

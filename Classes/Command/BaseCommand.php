@@ -151,7 +151,7 @@ class BaseCommand extends Command
     {
         if (MathUtility::canBeInterpretedAsInteger($inputSolrId)) {
             return MathUtility::forceIntegerInRange((int) $inputSolrId, 0);
-        } elseif (is_string($inputSolrId) && array_key_exists($inputSolrId, $solrCores)) {
+        } else if (is_string($inputSolrId) && array_key_exists($inputSolrId, $solrCores)) {
             return $solrCores[$inputSolrId];
         }
         return null;
