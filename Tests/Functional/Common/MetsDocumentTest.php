@@ -51,6 +51,7 @@ class MetsDocumentTest extends FunctionalTestCase
         $url = 'http://web:8001/Tests/Fixtures/MetsDocument/' . $file;
         $doc = AbstractDocument::getInstance(
             $url,
+            0,
             [
                 'general' => [
                     'useExternalApisForMetadata' => 0
