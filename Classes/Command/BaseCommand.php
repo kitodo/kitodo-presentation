@@ -294,7 +294,7 @@ class BaseCommand extends Command
 
         if ($doc !== null && !empty($doc->parentHref)) {
             // find document object by record_id of parent
-            $parent = AbstractDocument::getInstance($doc->parentHref, ['storagePid' => $this->storagePid], true);
+            $parent = AbstractDocument::getInstance($doc->parentHref, 0, ['storagePid' => $this->storagePid], true);
 
             if ($parent->recordId) {
                 $parentDocument = $this->documentRepository->findOneByRecordId($parent->recordId);
@@ -326,7 +326,7 @@ class BaseCommand extends Command
      * Add collections.
      *
      * @access private
-     * 
+     *
      * @param Document &$document
      * @param array $collections
      *
@@ -378,7 +378,7 @@ class BaseCommand extends Command
      * more than 255 characters.
      *
      * @access private
-     * 
+     *
      * @param array $metadataAuthor
      *
      * @return string
