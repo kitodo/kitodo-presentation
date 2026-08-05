@@ -71,9 +71,9 @@ services:
           set -x
         fi
         if [ -z ${TYPO3_VERSION} ]; then
-          composer install --no-progress --no-interaction;
+          composer install --no-progress --no-blocking --no-interaction;
         else
-          composer update --with=typo3/cms-core:^${TYPO3_VERSION} --no-progress --no-interaction;
+          composer update --with=typo3/cms-core:^${TYPO3_VERSION} --no-progress --no-blocking --no-interaction;
         fi
       "
 

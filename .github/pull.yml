@@ -27,3 +27,6 @@ rules:
   - base: 6.x
     upstream: kitodo:6.x
     mergeMethod: hardreset
+  - base: 7.x
+    upstream: kitodo:7.x
+    mergeMethod: hardreset
