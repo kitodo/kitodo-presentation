@@ -455,7 +455,8 @@ class Indexer
     {
         $doc = $document->getCurrentDocument();
         $doc->configPid = $document->getPid();
-        if ($doc->hasFulltext && $fullText = $doc->getFullText($physicalUnit['id'])) {
+        $fullText = $doc->getFullText($physicalUnit['id']);
+        if (!empty($fullText)) {
             // Read extension configuration.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
             // Create new Solr document.
