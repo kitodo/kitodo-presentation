@@ -554,7 +554,7 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * Get timecode and file IDs that link to first matching fileGrpVideo/USE.
+     * Get timecode and file IDs that link to first matching Audio and Video UseGroupsConfiguration.
      *
      * Returns either `null` or an array with the following keys:
      * - `fileIds`: Array of linked file IDs
@@ -571,15 +571,15 @@ final class MetsDocument extends AbstractDocument
     protected function getTimecode(array $logInfo): ?array
     {
         // Load plugin configuration.
-        $useGroupsVideo = $this->mediaPlayerService->getMediaplayerUseGroups();
+        $mediaplayerUseGroups = $this->mediaPlayerService->getMediaplayerUseGroups();
 
-        foreach ($useGroupsVideo as $useGroupVideo) {
+        foreach ($mediaplayerUseGroups as $mediaplayerUseGroup) {
             if (!isset($this->smLinks['l2p'][$logInfo['id']][0])) {
                 continue;
             }
 
             $physInfo = $this->physicalStructureInfo[$this->smLinks['l2p'][$logInfo['id']][0]];
-            $fileIds = $physInfo['all_files'][$useGroupVideo] ?? [];
+            $fileIds = $physInfo['all_files'][$mediaplayerUseGroup] ?? [];
 
             $chapter = null;
 
