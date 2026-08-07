@@ -60,9 +60,22 @@ class MediaPlayerService
     }
 
     /**
+     * Get the combined list of audio and video use groups for the mediaplayer.
+     * 
+     * Combines configured audio and video use groups (without duplicates).
+     * 
+     * @return string[] An array of unique use group identifiers for audio and video.
+     */
+    public function getMediaplayerUseGroups(): array
+    {
+        $audioUseGroups = $this->useGroupsConfiguration->getAudio();
+        $videoUseGroups = $this->useGroupsConfiguration->getVideo();
+
+        return array_unique([...$audioUseGroups, ...$videoUseGroups]);
+    }
+
+    /**
      * Returns playable media sources (audio and video) for a given document page.
-     *
-     * Combines configured audio and video use groups (without duplicates)
      *
      * @param AbstractDocument $doc The document object.
      * @param int $pageNo The page number.
@@ -71,11 +84,7 @@ class MediaPlayerService
      */
     public function getMediaplayerSources(AbstractDocument $doc, int $pageNo): array
     {
-        $audioUseGroups = $this->useGroupsConfiguration->getAudio();
-        $videoUseGroups = $this->useGroupsConfiguration->getVideo();
-        $mediaplayerUseGroups = array_unique([...$audioUseGroups, ...$videoUseGroups]);
-
-        return $this->collectMediaSources($doc, $pageNo, $mediaplayerUseGroups);
+        return $this->collectMediaSources($doc, $pageNo, $this->getMediaplayerUseGroups());
     }
 
     /**
