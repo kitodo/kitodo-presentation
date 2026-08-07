@@ -61,9 +61,9 @@ class MediaPlayerService
 
     /**
      * Get the combined list of audio and video use groups for the mediaplayer.
-     * 
+     *
      * Combines configured audio and video use groups (without duplicates).
-     * 
+     *
      * @return string[] An array of unique use group identifiers for audio and video.
      */
     public function getMediaplayerUseGroups(): array
