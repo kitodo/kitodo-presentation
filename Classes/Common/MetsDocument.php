@@ -198,7 +198,7 @@ final class MetsDocument extends AbstractDocument
      * @access protected
      * @var MediaPlayerService the media player service
      */
-    protected readonly MediaPlayerService $mediaPlayerService;
+    protected MediaPlayerService $mediaPlayerService;
 
     /**
      * This holds the musical structure
