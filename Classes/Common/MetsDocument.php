@@ -21,6 +21,7 @@ use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Hooks\KitodoProductionHacks;
+use Kitodo\Dlf\Service\MediaPlayerService;
 use SimpleXMLElement;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Log\LogManager;
@@ -192,6 +193,12 @@ final class MetsDocument extends AbstractDocument
      * @var mixed[] the extension settings
      */
     protected array $settings = [];
+
+    /**
+     * @access protected
+     * @var MediaPlayerService the media player service
+     */
+    protected readonly MediaPlayerService $mediaPlayerService;
 
     /**
      * This holds the musical structure
@@ -564,7 +571,7 @@ final class MetsDocument extends AbstractDocument
     protected function getTimecode(array $logInfo): ?array
     {
         // Load plugin configuration.
-        $useGroupsVideo = $this->useGroupsConfiguration->getVideo();
+        $useGroupsVideo = $this->mediaPlayerService->getMediaplayerUseGroups();
 
         foreach ($useGroupsVideo as $useGroupVideo) {
             if (!isset($this->smLinks['l2p'][$logInfo['id']][0])) {
@@ -1201,6 +1208,7 @@ final class MetsDocument extends AbstractDocument
         $this->formatRepository = GeneralUtility::makeInstance(FormatRepository::class);
         $this->metadataRepository = GeneralUtility::makeInstance(MetadataRepository::class);
         $this->structureRepository = GeneralUtility::makeInstance(StructureRepository::class);
+        $this->mediaPlayerService = GeneralUtility::makeInstance(MediaPlayerService::class);
         $this->formatRepository->useStoragePid($this->configPid);
         $this->metadataRepository->useStoragePid($this->configPid);
         $this->structureRepository->useStoragePid($this->configPid);
