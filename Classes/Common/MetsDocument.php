@@ -1206,9 +1206,9 @@ final class MetsDocument extends AbstractDocument
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($this));
         $this->formatRepository = GeneralUtility::makeInstance(FormatRepository::class);
+        $this->mediaPlayerService = GeneralUtility::makeInstance(MediaPlayerService::class);
         $this->metadataRepository = GeneralUtility::makeInstance(MetadataRepository::class);
         $this->structureRepository = GeneralUtility::makeInstance(StructureRepository::class);
-        $this->mediaPlayerService = GeneralUtility::makeInstance(MediaPlayerService::class);
         $this->formatRepository->useStoragePid($this->configPid);
         $this->metadataRepository->useStoragePid($this->configPid);
         $this->structureRepository->useStoragePid($this->configPid);
