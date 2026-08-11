@@ -60,7 +60,7 @@ class ValidationFormController extends AbstractController
             }
         }
 
-        $this->view->assign("url", $siteLanguage->getBase()->getPath() . '?middleware=dlf/domDocumentValidation');
+        $this->view->assign("url", $siteLanguage->getBase()->getPath() . '?middleware=dlf/dom-document-validation');
         $this->view->assign("disabledValidators", $disabledValidators);
         return $this->htmlResponse();
     }
