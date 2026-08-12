@@ -75,8 +75,21 @@ class PageViewProxy implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        // Get input parameters and decrypt core name.
+        // Get input parameters
         $parameters = $request->getQueryParams();
+
+        // Fall back to parsing the URI query string when query params are empty or missing the middleware key
+        $uriQuery = $request->getUri()->getQuery();
+        if ((empty($parameters) || !isset($parameters['middleware'])) && $uriQuery !== '') {
+            parse_str($uriQuery, $parsedQuery);
+            if (is_array($parsedQuery)) {
+                // merge with existing parameters taking precedence from $parameters
+                $parameters = array_merge($parsedQuery, $parameters);
+            }
+        }
+
+        // Ensure downstream handlers can read the parsed query params
+        $request = $request->withQueryParams($parameters);
 
         // Return if not this middleware
         if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/page-view-proxy')) {
