@@ -21,6 +21,7 @@ use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Hooks\KitodoProductionHacks;
+use Kitodo\Dlf\Service\MediaPlayerService;
 use SimpleXMLElement;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Log\LogManager;
@@ -192,6 +193,12 @@ final class MetsDocument extends AbstractDocument
      * @var mixed[] the extension settings
      */
     protected array $settings = [];
+
+    /**
+     * @access protected
+     * @var MediaPlayerService the media player service
+     */
+    protected MediaPlayerService $mediaPlayerService;
 
     /**
      * This holds the musical structure
@@ -535,7 +542,7 @@ final class MetsDocument extends AbstractDocument
             $details['thumbnailId'] = $this->getThumbnail($details['id']);
             // Get page/track number of the first page/track related to this structure element.
             $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
-            $details['videoChapter'] = $this->getTimecode($details);
+            $details['mediaChapter'] = $this->getTimecode($details);
         } elseif ($details['id'] == $this->getToplevelId()) {
             // Point to self if this is the toplevel structure.
             $details['points'] = 1;
@@ -547,7 +554,7 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * Get timecode and file IDs that link to first matching fileGrpVideo/USE.
+     * Get timecode and file IDs that link to first matching Audio and Video UseGroupsConfiguration.
      *
      * Returns either `null` or an array with the following keys:
      * - `fileIds`: Array of linked file IDs
@@ -564,15 +571,15 @@ final class MetsDocument extends AbstractDocument
     protected function getTimecode(array $logInfo): ?array
     {
         // Load plugin configuration.
-        $useGroupsVideo = $this->useGroupsConfiguration->getVideo();
+        $mediaplayerUseGroups = $this->mediaPlayerService->getMediaplayerUseGroups();
 
-        foreach ($useGroupsVideo as $useGroupVideo) {
+        foreach ($mediaplayerUseGroups as $mediaplayerUseGroup) {
             if (!isset($this->smLinks['l2p'][$logInfo['id']][0])) {
                 continue;
             }
 
             $physInfo = $this->physicalStructureInfo[$this->smLinks['l2p'][$logInfo['id']][0]];
-            $fileIds = $physInfo['all_files'][$useGroupVideo] ?? [];
+            $fileIds = $physInfo['all_files'][$mediaplayerUseGroup] ?? [];
 
             $chapter = null;
 
@@ -828,7 +835,7 @@ final class MetsDocument extends AbstractDocument
      * @param mixed[] $metadata
      * @param mixed[] $metadataSections
      *
-     * @return boolean
+     * @return bool
      */
     private function extractAndProcessMetadata(string $dmdId, string $mdSectionType, array &$metadata, array $metadataSections): bool
     {
@@ -862,7 +869,7 @@ final class MetsDocument extends AbstractDocument
      * @param string $currentMetadataSection
      * @param string $searchedMetadataSection
      *
-     * @return boolean
+     * @return bool
      */
     private function hasMetadataSection(array $metadataSections, string $currentMetadataSection, string $searchedMetadataSection): bool
     {
@@ -1199,6 +1206,7 @@ final class MetsDocument extends AbstractDocument
     {
         $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(get_class($this));
         $this->formatRepository = GeneralUtility::makeInstance(FormatRepository::class);
+        $this->mediaPlayerService = GeneralUtility::makeInstance(MediaPlayerService::class);
         $this->metadataRepository = GeneralUtility::makeInstance(MetadataRepository::class);
         $this->structureRepository = GeneralUtility::makeInstance(StructureRepository::class);
         $this->formatRepository->useStoragePid($this->configPid);
