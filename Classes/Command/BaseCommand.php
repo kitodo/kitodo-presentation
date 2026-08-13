@@ -29,7 +29,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 
 /**
  * Base class for CLI Command classes.
@@ -73,12 +72,6 @@ class BaseCommand extends Command
 
     /**
      * @access protected
-     * @var ConfigurationManager
-     */
-    protected ConfigurationManager $configurationManager;
-
-    /**
-     * @access protected
      * @var int
      */
     protected int $storagePid;
@@ -100,8 +93,7 @@ class BaseCommand extends Command
         DocumentRepository $documentRepository,
         LibraryRepository $libraryRepository,
         SolrCoreRepository $solrCoreRepository,
-        StructureRepository $structureRepository,
-        ConfigurationManager $configurationManager
+        StructureRepository $structureRepository
     )
     {
         parent::__construct();
@@ -111,7 +103,6 @@ class BaseCommand extends Command
         $this->libraryRepository = $libraryRepository;
         $this->solrCoreRepository = $solrCoreRepository;
         $this->structureRepository = $structureRepository;
-        $this->configurationManager = $configurationManager;
     }
 
     /**
@@ -131,10 +122,6 @@ class BaseCommand extends Command
         $this->documentRepository->useStoragePid($this->storagePid);
         $this->libraryRepository->useStoragePid($this->storagePid);
         $this->structureRepository->useStoragePid($this->storagePid);
-
-        $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
-        $frameworkConfiguration['persistence']['storagePid'] = $this->storagePid;
-        $this->configurationManager->setConfiguration($frameworkConfiguration);
     }
 
     /**
