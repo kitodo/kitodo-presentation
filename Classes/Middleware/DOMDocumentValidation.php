@@ -70,7 +70,7 @@ class DOMDocumentValidation implements MiddlewareInterface
         $parameters = $request->getQueryParams();
 
         // Return if not this middleware
-        if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/domDocumentValidation')) {
+        if (!isset($parameters['middleware']) || ($parameters['middleware'] != 'dlf/dom-document-validation')) {
             return $handler->handle($request);
         }
 
