@@ -104,7 +104,7 @@ class MetsDocumentTest extends FunctionalTestCase
         self::assertArrayMatches([
             'dmdId' => 'DMDLOG_0000',
             'admId' => 'AMD',
-            'videoChapter' => [
+            'mediaChapter' => [
                 'fileIds' => ['FILE_0000_DEFAULT_MOV', 'FILE_0000_DEFAULT_MP4'],
                 'timecode' => 0,
             ],
@@ -113,7 +113,7 @@ class MetsDocumentTest extends FunctionalTestCase
                     'id' => 'LOG_0001',
                     'dmdId' => '',
                     'admId' => '',
-                    'videoChapter' => [
+                    'mediaChapter' => [
                         'fileIds' => ['FILE_0000_DEFAULT_MOV', 'FILE_0000_DEFAULT_MP4'],
                         'timecode' => 0,
                     ],
@@ -122,7 +122,7 @@ class MetsDocumentTest extends FunctionalTestCase
                     'id' => 'LOG_0002',
                     'dmdId' => '',
                     'admId' => '',
-                    'videoChapter' => [
+                    'mediaChapter' => [
                         'fileIds' => ['FILE_0000_DEFAULT_MOV', 'FILE_0000_DEFAULT_MP4'],
                         'timecode' => 20.5,
                     ],
@@ -131,7 +131,7 @@ class MetsDocumentTest extends FunctionalTestCase
                     'id' => 'LOG_0003',
                     'dmdId' => '',
                     'admId' => '',
-                    'videoChapter' => [
+                    'mediaChapter' => [
                         'fileIds' => ['FILE_0000_DEFAULT_MOV', 'FILE_0000_DEFAULT_MP4'],
                         'timecode' => 40,
                     ],
@@ -140,7 +140,7 @@ class MetsDocumentTest extends FunctionalTestCase
                     'id' => 'LOG_0004',
                     'dmdId' => '',
                     'admId' => '',
-                    'videoChapter' => [
+                    'mediaChapter' => [
                         'fileIds' => ['FILE_0000_DEFAULT_MOV', 'FILE_0000_DEFAULT_MP4'],
                         'timecode' => 60,
                     ],
