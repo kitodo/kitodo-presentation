@@ -71,7 +71,7 @@ To use the validator, the XSL Schematron must be available alongside the XSL pro
 DOMDocumentValidation Middleware
 =======
 
-``Kitodo\Dlf\Validation\DOMDocumentValidation`` middleware must be used by setting the ``middleware`` parameter to ``dlf/domDocumentValidation``. Additionally, the ``url`` parameter must contain the URL of the DOMDocument content to be validated, and the ``type`` parameter must specify the corresponding validation configuration type.
+``Kitodo\Dlf\Validation\DOMDocumentValidation`` middleware must be used by setting the ``middleware`` parameter to ``dlf/dom-document-validation``. Additionally, the ``url`` parameter must contain the URL of the DOMDocument content to be validated, and the ``type`` parameter must specify the corresponding validation configuration type.
 
 .. _DOMDocumentValidation Middleware Configuration:
 
