@@ -46,7 +46,8 @@ class KitodoProductionHacks
                     $links = [];
 
                     foreach ($smLinks as $smLink) {
-                        $links[(string) $smLink->attributes('http://www.w3.org/1999/xlink')->from][] = (string) $smLink->attributes('http://www.w3.org/1999/xlink')->to;
+                        $link = $smLink->attributes('http://www.w3.org/1999/xlink');
+                        $links[(string) $link->from][] = (string) $link->to;
                     }
 
                     foreach ($divs as $div) {
