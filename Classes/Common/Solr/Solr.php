@@ -122,6 +122,8 @@ class Solr implements LoggerAwareInterface
      * @param string $core The name of the new core. If empty, the next available core name is used.
      *
      * @return string The name of the new core
+     *
+     * @throws \Exception If the core could not be created
      */
     public static function createCore(string $core = ''): string
     {
