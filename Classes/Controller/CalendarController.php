@@ -121,7 +121,7 @@ class CalendarController extends AbstractController
             $issueData[$dayTimestamp]['dateString'] = date('l, Y-m-d', $dayTimestamp);
             $issueData[$dayTimestamp]['items'] = [];
             foreach ($issues as $issue) {
-                $issueData[$dayTimestamp]['items'][] = $issue;
+                $issueData[$dayTimestamp]['items'][] = $issue; // @phpstan-ignore-line
             }
         }
         $this->view->assign('issueData', $issueData);

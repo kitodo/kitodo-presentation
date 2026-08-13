@@ -42,24 +42,24 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @access public
  *
  * @property int $configPid this holds the PID for the configuration
- * @property-read array $formats this holds the configuration for all supported metadata encodings
+ * @property-read array<string, array<string, string>> $formats this holds the configuration for all supported metadata encodings
  * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
  * @property-read bool $hasFulltext flag with information if there are any fulltext files available
- * @property array $lastSearchedPhysicalPage the last searched logical and physical page
- * @property array $logicalUnits this holds the logical units
- * @property-read array $metadataArray this holds the documents' parsed metadata array
+ * @property array<string, mixed> $lastSearchedPhysicalPage the last searched logical and physical page
+ * @property mixed[] $logicalUnits this holds the logical units
+ * @property-read mixed[] $metadataArray this holds the documents' parsed metadata array
  * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
  * @property-read int $numPages the holds the total number of pages
  * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
- * @property-read array $physicalStructure this holds the physical structure
- * @property-read array $physicalStructureInfo this holds the physical structure metadata
+ * @property-read mixed[] $physicalStructure this holds the physical structure
+ * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
- * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
+ * @property array<string, string> $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read string $recordId the METS file's / IIIF manifest's record identifier
  * @property-read int $rootId this holds the UID of the root document or zero if not multi-volumed
- * @property-read array $smLinks this holds the smLinks between logical and physical structMap
+ * @property-read array<string, mixed[]> $smLinks this holds the smLinks between logical and physical structMap
  * @property bool $smLinksLoaded flag with information if the smLinks are loaded
- * @property-read array $tableOfContents this holds the logical structure
+ * @property-read array<int, mixed[]> $tableOfContents this holds the logical structure
  * @property bool $tableOfContentsLoaded flag with information if the table of contents is loaded
  * @property-read string $thumbnail this holds the document's thumbnail location
  * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
@@ -68,8 +68,8 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property ManifestInterface $iiif a PHP object representation of a IIIF manifest
  * @property string $iiifVersion 'IIIF1', 'IIIF2' or 'IIIF3', depending on the API $this->iiif conforms to
  * @property bool $hasFulltextSet flag if document has already been analyzed for presence of the fulltext for the Solr index
- * @property array $originalMetadataArray this holds the original manifest's parsed metadata array with their corresponding resource (Manifest / Sequence / Range) ID as array key
- * @property array $mimeTypes this holds the mime types of linked resources in the manifest (extracted during parsing) for later us
+ * @property mixed[] $originalMetadataArray this holds the original manifest's parsed metadata array with their corresponding resource (Manifest / Sequence / Range) ID as array key
+ * @property mixed[] $mimeTypes this holds the mime types of linked resources in the manifest (extracted during parsing) for later us
  *
  */
 final class IiifManifest extends AbstractDocument
@@ -385,14 +385,15 @@ final class IiifManifest extends AbstractDocument
         }
 
         if (!empty($logUnits[0])) {
+            /** @var IiifResourceInterface[] $logUnits */
             if (!$recursive) {
-                $details = $this->getLogicalStructureInfo($logUnits[0]); // @phpstan-ignore-line
+                $details = $this->getLogicalStructureInfo($logUnits[0]);
             } else {
                 // cache the ranges - they might occur multiple times in the structures "tree" - with full data as well as referenced as id
                 $processedStructures = [];
                 foreach ($logUnits as $logUnit) {
-                    if (!array_search($logUnit->getId(), $processedStructures)) { // @phpstan-ignore-line
-                        $this->tableOfContents[] = $this->getLogicalStructureInfo($logUnit, true, $processedStructures); // @phpstan-ignore-line
+                    if (!array_search($logUnit->getId(), $processedStructures)) {
+                        $this->tableOfContents[] = $this->getLogicalStructureInfo($logUnit, true, $processedStructures);
                     }
                 }
             }
@@ -409,7 +410,7 @@ final class IiifManifest extends AbstractDocument
      * @param bool $recursive Whether to include the child elements
      * @param mixed[] $processedStructures IIIF resources that already have been processed
      *
-     * @return array<string, string> Logical structure array
+     * @return array<string, array|string> Logical structure array
      */
     protected function getLogicalStructureInfo(IiifResourceInterface $resource, bool $recursive = false, array &$processedStructures = []): array
     {
@@ -462,7 +463,7 @@ final class IiifManifest extends AbstractDocument
      *
      * @access private
      *
-     * @param array<string, string> $details Logical structure array to which the start canvas info should be applied
+     * @param array<string, mixed> $details Logical structure array to which the start canvas info should be applied
      * @param IiifResourceInterface $resource IIIF resource, either a manifest or range, for which the start canvas info should be applied
      *
      * @return void
@@ -486,7 +487,7 @@ final class IiifManifest extends AbstractDocument
      *
      * @access private
      *
-     * @param array<string, string> $details Logical structure array to which the children should be added
+     * @param array<string, mixed> $details Logical structure array to which the children should be added
      * @param ManifestInterface $resource IIIF manifest resource for which the children should be added
      * @param mixed[] $processedStructures IIIF resources that already have been processed
      *
@@ -520,7 +521,7 @@ final class IiifManifest extends AbstractDocument
      *
      * @access private
      *
-     * @param array<string, string> $details Logical structure array to which the children should be added
+     * @param array<string, mixed> $details Logical structure array to which the children should be added
      * @param RangeInterface $resource IIIF range resource for which the children should be added
      * @param mixed[] $processedStructures IIIF resources that already have been processed
      *
