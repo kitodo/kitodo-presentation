@@ -37,8 +37,6 @@ class Alto implements FulltextInterface
      */
     public function getRawText(\SimpleXMLElement $xml): string
     {
-        $rawText = '';
-
         // register ALTO namespace depending on document
         $this->registerAltoNamespace($xml);
 
@@ -46,7 +44,8 @@ class Alto implements FulltextInterface
         $strings = $xml->xpath('./alto:Layout/alto:Page/alto:PrintSpace//alto:TextBlock/alto:TextLine/alto:String');
         $words = [];
         if (!empty($strings)) {
-            for ($i = 0; $i < count($strings); $i++) {
+            $stringCount = count($strings);
+            for ($i = 0; $i < $stringCount; $i++) {
                 $attributes = $strings[$i]->attributes();
                 if (isset($attributes['SUBS_TYPE'])) {
                     if ($attributes['SUBS_TYPE'] == 'HypPart1') {
@@ -57,9 +56,9 @@ class Alto implements FulltextInterface
                     $words[] = $attributes['CONTENT'];
                 }
             }
-            $rawText = implode(' ', $words);
+            return implode(' ', $words);
         }
-        return $rawText;
+        return '';
     }
 
     /**
