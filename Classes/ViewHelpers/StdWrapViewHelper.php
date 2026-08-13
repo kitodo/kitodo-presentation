@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\ViewHelpers;
 
 use RuntimeException;
+use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -42,7 +43,7 @@ class StdWrapViewHelper extends AbstractViewHelper
     {
         parent::initializeArguments();
         $this->registerArgument('wrap', 'string', 'The wrap information', true);
-        $this->registerArgument('data', 'array', 'Data for the content object', false);
+        $this->registerArgument('data', 'array', 'Data for the content object');
     }
 
     /**
@@ -50,15 +51,16 @@ class StdWrapViewHelper extends AbstractViewHelper
      *
      * @access public
      *
-     * @thorws RuntimeException if view helper is used outside of request context
      * @return string
+     *
+     * @throws RuntimeException if view helper is used outside of request context
      */
     public function render(): string
     {
         $wrap = $this->arguments['wrap'];
         $data = $this->arguments['data'] ?? [];
 
-        /** @var \TYPO3\CMS\Fluid\Core\Rendering\RenderingContext $renderingContext */
+        /** @var RenderingContext $renderingContext */
         $renderingContext = $this->renderingContext;
         if (!$renderingContext->getRequest()) {
             throw new RuntimeException('Required request not found in RenderingContext');
