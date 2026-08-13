@@ -97,7 +97,7 @@ class CollectionRepository extends AbstractRepository
 
         // order by oai_name
         $query->setOrderings(
-            array('oai_name' => QueryInterface::ORDER_ASCENDING)
+            ['oai_name' => QueryInterface::ORDER_ASCENDING]
         );
 
         $this->debugQuery($query);
