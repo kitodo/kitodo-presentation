@@ -59,6 +59,8 @@ class SearchInDocument implements MiddlewareInterface
      * @param RequestHandlerInterface $handler
      *
      * @return ResponseInterface JSON response of search suggestions
+     *
+     * @throws \InvalidArgumentException if no valid parameter passed
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -71,7 +73,7 @@ class SearchInDocument implements MiddlewareInterface
 
         $encrypted = (string) $parameters['encrypted'];
         if (empty($encrypted)) {
-            throw new \InvalidArgumentException('No valid parameter passed: ' . $parameters['middleware'] . '  ' . $parameters['encrypted'] . '!', 1580585079);
+            throw new \InvalidArgumentException('No valid parameter passed in middleware: ' . $parameters['middleware'] . '!', 1580585079);
         }
 
         $output = [

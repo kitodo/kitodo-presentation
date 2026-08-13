@@ -992,7 +992,7 @@ final class IiifManifest extends AbstractDocument
      *
      * @access private
      *
-     * @return integer value 0 or 1
+     * @return int value 0 or 1
      */
     private function getIndexAnnotations(): int
     {
