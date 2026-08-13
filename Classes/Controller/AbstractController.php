@@ -397,7 +397,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
-     * Safely gets integer parameters from request if they exist, otherwise returns 0.
+     * Safely gets array parameters from request if they exist, otherwise returns empty array.
      *
      * @access protected
      *

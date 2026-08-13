@@ -26,27 +26,27 @@ class PageSelectForm extends AbstractEntity
 {
     /**
      * @access protected
-     * @var integer
+     * @var int
      */
-    protected $id;
+    protected int $id;
 
     /**
      * @access protected
      * @var string
      */
-    protected $recordId;
+    protected string $recordId;
 
     /**
      * @access protected
      * @var string
      */
-    protected $double;
+    protected string $double;
 
     /**
      * @access protected
-     * @var integer
+     * @var int
      */
-    protected $page;
+    protected int $page;
 
     /**
      * @return int
@@ -83,7 +83,7 @@ class PageSelectForm extends AbstractEntity
     /**
      * @return string
      */
-    public function getDouble(): ?string
+    public function getDouble(): string
     {
         return $this->double;
     }
@@ -111,7 +111,4 @@ class PageSelectForm extends AbstractEntity
     {
         $this->page = $page;
     }
-
-
-
 }

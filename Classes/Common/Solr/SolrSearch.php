@@ -727,7 +727,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access protected
      *
      * @param mixed[] $parameters Additional search parameters
-     * @param boolean $enableCache Enable caching of Solr requests
+     * @param bool $enableCache Enable caching of Solr requests
      *
      * @return mixed[] The Apache Solr Documents that were fetched
      */
