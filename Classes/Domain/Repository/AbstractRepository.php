@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Domain\Repository;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
+use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
 use TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 use TYPO3\CMS\Extbase\Persistence\Generic\QuerySettingsInterface;
@@ -41,6 +42,33 @@ class AbstractRepository extends Repository
     protected bool $debug = false;
 
     /**
+     * @access protected
+     * @var int
+     */
+    protected int $storagePid = 0;
+
+    /**
+     * Add storage pid to object if repository has a storage pid set.
+     * @see Repository::add()
+     *
+     * @access public
+     *
+     * @param object $object
+     * @phpstan-param T $object
+     *
+     * @return void
+     *
+     * @throws IllegalObjectTypeException
+     */
+    public function add($object): void
+    {
+        if ($this->storagePid > 0) {
+            $object->setPid($this->storagePid);
+        }
+        parent::add($object);
+    }
+
+    /**
      * Activate debug mode for the repository,
      * which allows to output the generated SQL queries in the debug log.
      *
@@ -48,7 +76,6 @@ class AbstractRepository extends Repository
      *
      * @return void
      */
-
     public function activateDebugMode(): void
     {
         $this->debug = true;
@@ -91,6 +118,7 @@ class AbstractRepository extends Repository
      */
     public function ignoreStoragePid(): void
     {
+        $this->storagePid = 0;
         $querySettings = $this->getDefaultQuerySettings();
         $querySettings->setRespectStoragePage(false);
         $this->setDefaultQuerySettings($querySettings);
@@ -107,6 +135,7 @@ class AbstractRepository extends Repository
      */
     public function useStoragePid(int $storagePid): void
     {
+        $this->storagePid = $storagePid;
         $querySettings = $this->getDefaultQuerySettings();
         $querySettings->setRespectStoragePage(true);
         $querySettings->setStoragePageIds([$storagePid]);
@@ -138,6 +167,40 @@ class AbstractRepository extends Repository
     {
         $querySettings = $this->getDefaultQuerySettings();
         $querySettings->setIgnoreEnableFields(true);
+        $this->setDefaultQuerySettings($querySettings);
+    }
+
+    /**
+     * Persist objects.
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function persistAll(): void
+    {
+        $this->persistenceManager->persistAll();
+    }
+
+    /**
+     * Sets settings for queries in the repository.
+     *
+     * @access public
+     *
+     * @param int $storagePid
+     * @param bool $showHidden
+     * @param bool $showDeleted
+     * @param bool $useStoragePid
+     *
+     * @return void
+     */
+    public function setSettings(int $storagePid, bool $showHidden = false, bool $showDeleted = false, bool $useStoragePid = true): void
+    {
+        $querySettings = $this->getDefaultQuerySettings();
+        $querySettings->setIgnoreEnableFields($showHidden);
+        $querySettings->setIncludeDeleted($showDeleted);
+        $querySettings->setRespectStoragePage($useStoragePid);
+        $querySettings->setStoragePageIds([$storagePid]);
         $this->setDefaultQuerySettings($querySettings);
     }
 
@@ -175,40 +238,6 @@ class AbstractRepository extends Repository
             DebuggerUtility::var_dump($queryBuilder->getSQL());
             DebuggerUtility::var_dump($queryBuilder->getParameters());
         }
-    }
-
-    /**
-     * Persist objects.
-     *
-     * @access public
-     *
-     * @return void
-     */
-    public function persistAll(): void
-    {
-        $this->persistenceManager->persistAll();
-    }
-
-    /**
-     * Sets settings for queries in the repository.
-     *
-     * @access public
-     *
-     * @param int $storagePid
-     * @param bool $showHidden
-     * @param bool $showDeleted
-     * @param bool $useStoragePid
-     *
-     * @return void
-     */
-    public function setSettings(int $storagePid, bool $showHidden = false, bool $showDeleted = false, bool $useStoragePid = true): void
-    {
-        $querySettings = $this->getDefaultQuerySettings();
-        $querySettings->setIgnoreEnableFields($showHidden);
-        $querySettings->setIncludeDeleted($showDeleted);
-        $querySettings->setRespectStoragePage($useStoragePid);
-        $querySettings->setStoragePageIds([$storagePid]);
-        $this->setDefaultQuerySettings($querySettings);
     }
 
     /**
