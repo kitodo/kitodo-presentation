@@ -20,6 +20,7 @@ use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use Ubl\Iiif\Presentation\Common\Model\AbstractIiifEntity;
 use Ubl\Iiif\Presentation\Common\Model\Resources\IiifResourceInterface;
 use Ubl\Iiif\Tools\IiifHelper;
@@ -995,6 +996,16 @@ abstract class AbstractDocument
         // Note: Any change here might require an update in function __sleep
         // of class MetsDocument and class IiifManifest, too.
         $storagePid = array_key_exists('storagePid', $settings) ? max((int) $settings['storagePid'], 0) : 0;
+        if ($storagePid == 0) {
+            try {
+                $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+                $typoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+                $storagePid = (int) ($typoScript['plugin.']['tx_dlf.']['settings.']['storagePid'] ?? 0);
+                $settings['storagePid'] = $storagePid;
+            } catch (\Exception $e) {
+                // If the configuration manager is not available, we cannot determine the storagePid from TypoScript.
+            }
+        }
         $this->configPid = $storagePid;
         $this->useGroupsConfiguration = UseGroupsConfiguration::getInstance();
         $this->formatRepository = GeneralUtility::makeInstance(FormatRepository::class);

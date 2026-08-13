@@ -12,6 +12,16 @@
 
 return [
     'frontend' => [
+        'dlf/page-view-proxy' => [
+            'target' => \Kitodo\Dlf\Middleware\PageViewProxy::class,
+            // Ensure this runs before the router/dispatcher so it can handle the request
+            'before' => [
+                // replace with the actual TYPO3 router middleware id if known
+                'typo3/cms-frontend/router'
+            ],
+            //'after' => [],
+            'priority' => 50,
+        ],
         'dlf/search-in-document' => [
             'target' => \Kitodo\Dlf\Middleware\SearchInDocument::class,
             'after' => [
@@ -24,13 +34,13 @@ return [
                 'typo3/cms-frontend/prepare-tsfe-rendering'
             ]
         ],
-        'dlf/embedded3DViewer' => [
+        'dlf/embedded-3D-viewer' => [
             'target' => \Kitodo\Dlf\Middleware\Embedded3dViewer::class,
             'after' => [
                 'typo3/cms-frontend/prepare-tsfe-rendering'
             ]
         ],
-        'dlf/domDocumentValidation' => [
+        'dlf/dom-document-validation' => [
             'target' => \Kitodo\Dlf\Middleware\DOMDocumentValidation::class,
             'after' => [
                 'typo3/cms-frontend/prepare-tsfe-rendering'
