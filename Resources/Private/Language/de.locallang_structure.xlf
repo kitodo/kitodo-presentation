@@ -185,6 +185,10 @@
                 <source><![CDATA[Issue]]></source>
                 <target><![CDATA[Ausgabe]]></target>
             </trans-unit>
+            <trans-unit id="structure.journal" approved="yes">
+                <source><![CDATA[Journal]]></source>
+                <target><![CDATA[Zeitschrift]]></target>
+            </trans-unit>
             <trans-unit id="structure.judgement" approved="yes">
                 <source><![CDATA[Judgement]]></source>
                 <target><![CDATA[Urteil]]></target>
