@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Controller;
 
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\CanvasInterface;
 use Ubl\Iiif\Presentation\Common\Model\Resources\ManifestInterface;
 use Ubl\Iiif\Presentation\Common\Vocabulary\Motivation;
@@ -47,6 +48,12 @@ class MultiViewController extends AbstractController
         $this->setPage();
 
         $page = $this->requestData['page'] ?? 0;
+
+        $currentUrl = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
+        $parts = parse_url($currentUrl);
+        $currentPath = $parts['path'] ?? '/';
+
+        $this->view->assign('path', $currentPath);
 
         $this->view->assign('forceAbsoluteUrl', $this->extConf['general']['forceAbsoluteUrl'] ?? 0);
         $this->view->assign('docId', $this->requestData['id']);
