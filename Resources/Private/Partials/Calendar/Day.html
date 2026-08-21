@@ -1,4 +1,5 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:comment>
@@ -26,7 +27,7 @@
                 <ul>
                     <f:for each="{day.issues}" as="item">
                         <li>
-                            <f:link.page pageUid="{settings.targetPid}" additionalParams="{'tx_dlf[id]': item.documentId}">{item.text}</f:link.page>
+                            <kitodo:link requestData="{requestData}" pageUid="{settings.targetPid}" additionalParams="{'id': item.documentId}" excludedParams="{0: 'measure', 1: 'multiview'}" title="{item.text}">{item.text}</kitodo:link>
                         </li>
                     </f:for>
                 </ul>
