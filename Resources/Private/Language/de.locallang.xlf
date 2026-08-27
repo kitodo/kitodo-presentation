@@ -101,6 +101,114 @@
                 <source><![CDATA[List View]]></source>
                 <target><![CDATA[Listenansicht]]></target>
             </trans-unit>
+            <trans-unit id="calendar.shortdate_format" approved="yes">
+                <source><![CDATA[%1$s-%2$s-%3$s]]></source>
+                <target><![CDATA[%3$s.%2$s.%1$s]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.shortday.Mon" approved="yes">
+                <source><![CDATA[Mon]]></source>
+                <target><![CDATA[Mo]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.shortday.Tue" approved="yes">
+                <source><![CDATA[Tue]]></source>
+                <target><![CDATA[Di]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.shortday.Wed" approved="yes">
+                <source><![CDATA[Wed]]></source>
+                <target><![CDATA[Mi]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.shortday.Thu" approved="yes">
+                <source><![CDATA[Thu]]></source>
+                <target><![CDATA[Do]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.shortday.Fri" approved="yes">
+                <source><![CDATA[Fri]]></source>
+                <target><![CDATA[Fr]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.shortday.Sat" approved="yes">
+                <source><![CDATA[Sat]]></source>
+                <target><![CDATA[Sa]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.shortday.Sun" approved="yes">
+                <source><![CDATA[Sun]]></source>
+                <target><![CDATA[So]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.longday.Monday" approved="yes">
+                <source><![CDATA[Monday]]></source>
+                <target><![CDATA[Montag]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.longday.Tuesday" approved="yes">
+                <source><![CDATA[Tuesday]]></source>
+                <target><![CDATA[Dienstag]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.longday.Wednesday" approved="yes">
+                <source><![CDATA[Wednesday]]></source>
+                <target><![CDATA[Mittwoch]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.longday.Thursday" approved="yes">
+                <source><![CDATA[Thursday]]></source>
+                <target><![CDATA[Donnerstag]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.longday.Friday" approved="yes">
+                <source><![CDATA[Friday]]></source>
+                <target><![CDATA[Freitag]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.longday.Saturday" approved="yes">
+                <source><![CDATA[Saturday]]></source>
+                <target><![CDATA[Samstag]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.longday.Sunday" approved="yes">
+                <source><![CDATA[Sunday]]></source>
+                <target><![CDATA[Sonntag]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.month.January" approved="yes">
+                <source><![CDATA[January]]></source>
+                <target><![CDATA[Januar]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.month.February" approved="yes">
+                <source><![CDATA[February]]></source>
+                <target><![CDATA[Februar]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.month.March" approved="yes">
+                <source><![CDATA[March]]></source>
+                <target><![CDATA[März]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.month.April" approved="yes">
+                <source><![CDATA[April]]></source>
+                <target><![CDATA[April]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.month.May" approved="yes">
+                <source><![CDATA[May]]></source>
+                <target><![CDATA[Mai]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.month.June" approved="yes">
+                <source><![CDATA[June]]></source>
+                <target><![CDATA[Juni]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.month.July" approved="yes">
+                <source><![CDATA[July]]></source>
+                <target><![CDATA[Juli]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.month.August" approved="yes">
+                <source><![CDATA[August]]></source>
+                <target><![CDATA[August]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.month.September" approved="yes">
+                <source><![CDATA[September]]></source>
+                <target><![CDATA[September]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.month.October" approved="yes">
+                <source><![CDATA[October]]></source>
+                <target><![CDATA[Oktober]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.month.November" approved="yes">
+                <source><![CDATA[November]]></source>
+                <target><![CDATA[November]]></target>
+            </trans-unit>
+            <trans-unit id="calendar.month.December" approved="yes">
+                <source><![CDATA[December]]></source>
+                <target><![CDATA[Dezember]]></target>
+            </trans-unit>
             <trans-unit id="collection.feed.alt" approved="yes">
                 <source><![CDATA[RSS feed]]></source>
                 <target><![CDATA[RSS-Feed]]></target>

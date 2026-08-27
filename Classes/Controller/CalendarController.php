@@ -118,7 +118,8 @@ class CalendarController extends AbstractController
         // Prepare list as alternative view.
         $issueData = [];
         foreach ($this->allIssues as $dayTimestamp => $issues) {
-            $issueData[$dayTimestamp]['dateString'] = date('l, Y-m-d', $dayTimestamp);
+            $issueData[$dayTimestamp]['dateString']['day'] = date('l', $dayTimestamp);
+            $issueData[$dayTimestamp]['dateString']['date'] = date('Y-m-d', $dayTimestamp);
             $issueData[$dayTimestamp]['items'] = [];
             foreach ($issues as $issue) {
                 $issueData[$dayTimestamp]['items'][] = $issue;
@@ -257,8 +258,8 @@ class CalendarController extends AbstractController
                 'DAYFRI_NAME' => date('D', strtotime('last Friday')),
                 'DAYSAT_NAME' => date('D', strtotime('last Saturday')),
                 'DAYSUN_NAME' => date('D', strtotime('last Sunday')),
-                'MONTHNAME'  => date('F', strtotime($year . '-' . $i . '-1') ?: null) . ' ' . $year,
-                'CALYEAR' => ($i == $firstMonth) ? $year : ''
+                'MONTHNAME'   => date('F', strtotime($year . '-' . $i . '-1') ?: null),
+                'CALYEAR'     => $year
             ];
 
             $firstOfMonth = strtotime($year . '-' . $i . '-1');

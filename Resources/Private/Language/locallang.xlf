@@ -77,6 +77,87 @@
             <trans-unit id="calendar.view.list">
                 <source><![CDATA[List View]]></source>
             </trans-unit>
+            <trans-unit id="calendar.shortdate_format">
+                <source><![CDATA[%1$s-%2$s-%3$s]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.shortday.Mon">
+                <source><![CDATA[Mon]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.shortday.Tue">
+                <source><![CDATA[Tue]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.shortday.Wed">
+                <source><![CDATA[Wed]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.shortday.Thu">
+                <source><![CDATA[Thu]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.shortday.Fri">
+                <source><![CDATA[Fri]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.shortday.Sat">
+                <source><![CDATA[Sat]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.shortday.Sun">
+                <source><![CDATA[Sun]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.longday.Monday">
+                <source><![CDATA[Monday]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.longday.Tuesday">
+                <source><![CDATA[Tuesday]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.longday.Wednesday">
+                <source><![CDATA[Wednesday]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.longday.Thursday">
+                <source><![CDATA[Thursday]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.longday.Friday">
+                <source><![CDATA[Friday]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.longday.Saturday">
+                <source><![CDATA[Saturday]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.longday.Sunday">
+                <source><![CDATA[Sunday]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.month.January">
+                <source><![CDATA[January]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.month.February">
+                <source><![CDATA[February]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.month.March">
+                <source><![CDATA[March]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.month.April">
+                <source><![CDATA[April]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.month.May">
+                <source><![CDATA[May]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.month.June">
+                <source><![CDATA[June]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.month.July">
+                <source><![CDATA[July]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.month.August">
+                <source><![CDATA[August]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.month.September">
+                <source><![CDATA[September]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.month.October">
+                <source><![CDATA[October]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.month.November">
+                <source><![CDATA[November]]></source>
+            </trans-unit>
+            <trans-unit id="calendar.month.December">
+                <source><![CDATA[December]]></source>
+            </trans-unit>
             <trans-unit id="collection.feed.alt">
                 <source><![CDATA[RSS feed]]></source>
             </trans-unit>
