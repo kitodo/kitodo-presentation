@@ -25,7 +25,8 @@ use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
  *
  * @access public
  *
- * @method Collection|null findOneBy(array $criteria) Get a collection by criteria
+ * @method array<Collection>|QueryResultInterface<int,Collection> findAll() Returns all objects of this repository.
+ * @method Collection|null findOneBy(array<string,int|string> $criteria) Get a collection by criteria
  *
  * @extends AbstractRepository<Collection>
  */
@@ -96,7 +97,7 @@ class CollectionRepository extends AbstractRepository
 
         // order by oai_name
         $query->setOrderings(
-            array('oai_name' => QueryInterface::ORDER_ASCENDING)
+            ['oai_name' => QueryInterface::ORDER_ASCENDING]
         );
 
         $this->debugQuery($query);

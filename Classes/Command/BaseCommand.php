@@ -93,8 +93,9 @@ class BaseCommand extends Command
         DocumentRepository $documentRepository,
         LibraryRepository $libraryRepository,
         SolrCoreRepository $solrCoreRepository,
-        StructureRepository $structureRepository,
-    ) {
+        StructureRepository $structureRepository
+    )
+    {
         parent::__construct();
 
         $this->collectionRepository = $collectionRepository;

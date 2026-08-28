@@ -178,16 +178,12 @@ class NewTenantController extends AbstractController
      */
     protected function initializeAction(): void
     {
-        $this->pid = (int) ($this->request->getQueryParams()['id'] ?? null);
+        $this->pid = (int) ($this->request->getQueryParams()['id'] ?? 0);
 
         $this->formatRepository->useStoragePid($this->pid);
         $this->metadataRepository->useStoragePid($this->pid);
         $this->solrCoreRepository->useStoragePid($this->pid);
         $this->structureRepository->useStoragePid($this->pid);
-
-        $frameworkConfiguration = $this->configurationManager->getConfiguration($this->configurationManager::CONFIGURATION_TYPE_FRAMEWORK);
-        $frameworkConfiguration['persistence']['storagePid'] = $this->pid;
-        $this->configurationManager->setConfiguration($frameworkConfiguration);
 
         $this->languageFactory = GeneralUtility::makeInstance(LocalizationFactory::class);
 
@@ -198,7 +194,6 @@ class NewTenantController extends AbstractController
         }
         $this->siteLanguages = $site->getLanguages();
     }
-
 
     /**
      * Action adding formats records
@@ -339,7 +334,6 @@ class NewTenantController extends AbstractController
         // load language file in own array
         $beLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_be.xlf', $this->siteLanguages[0]->getLocale()->getLanguageCode());
 
-        // @phpstan-ignore-next-line findAll() returns QueryResultInterface and there is function getFirst()
         if ($this->solrCoreRepository->findAll()->getFirst() === null) {
             $newRecord = GeneralUtility::makeInstance(SolrCore::class);
             $newRecord->setLabel($this->getLLL('flexform.solrcore', $this->siteLanguages[0]->getLocale()->getLanguageCode(), $beLabels). ' (PID ' . $this->pid . ')');

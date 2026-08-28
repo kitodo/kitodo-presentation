@@ -220,14 +220,10 @@ class ReindexCommand extends BaseCommand
         ) {
             $io->writeln($indexLimit . ' documents starting from ' . $indexBegin . ' will be indexed.');
             // Get all documents for given limit and start.
-            return $this->documentRepository->findAll() // @phpstan-ignore-line
-                ->getQuery()
-                ->setLimit((int) $indexLimit)
-                ->setOffset((int) $indexBegin)
-                ->execute();
+            return $this->documentRepository->findAllInRange((int) $indexLimit, (int) $indexBegin);
         } else {
             // Get all documents.
-            return $this->documentRepository->findAll(); // @phpstan-ignore-line
+            return $this->documentRepository->findAll();
         }
     }
 

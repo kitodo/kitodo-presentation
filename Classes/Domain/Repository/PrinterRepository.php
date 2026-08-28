@@ -22,7 +22,8 @@ use Kitodo\Dlf\Domain\Model\Printer;
  *
  * @access public
  *
- * @method Printer|null findOneBy(array $criteria) Get a printer by criteria
+ * @method Printer|null findByUid(int $uid) Get a printer by its UID
+ * @method Printer|null findOneBy(array<string,int|string> $criteria) Get a printer by criteria
  *
  * @extends AbstractRepository<Printer>
  */

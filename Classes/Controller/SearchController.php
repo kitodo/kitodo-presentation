@@ -137,21 +137,7 @@ class SearchController extends AbstractController
             $this->request->getAttribute('frontend.user')->setKey('ses', 'search', $this->search);
         }
 
-        $this->search = is_array($this->search) ? $this->search : [];
-
-        // sanitize date search input
-        $dateFrom = $this->search['dateFrom'] ?? false;
-        $dateTo = $this->search['dateTo'] ?? false;
-        if ($dateFrom || $dateTo) {
-            if (!$dateFrom && $dateTo) {
-                $this->search['dateFrom'] = '*';
-            } elseif ($dateFrom && !$dateTo) {
-                $this->search['dateTo'] = '*';
-            } elseif ($dateFrom > $dateTo) {
-                $this->search['dateFrom'] = $dateTo;
-                $this->search['dateTo'] = $dateFrom;
-            }
-        }
+        $this->sanitizeDates();
 
         // Pagination of Results: Pass the currentPage to the fluid template to calculate current index of search result.
         $currentPage = $this->getIntParameterSafely('page');
@@ -207,15 +193,10 @@ class SearchController extends AbstractController
             $this->view->assign('listedMetadata', $listedMetadata);
             $this->view->assign('sortableMetadata', $sortableMetadata);
 
-            // Add the facets menu
             $this->addFacetsMenu();
         }
 
-        // Add the current document if present to fluid. This way, we can limit further searches to this document.
-        if (isset($this->requestData['id'])) {
-            $currentDocument = $this->documentRepository->findByUid($this->requestData['id']);
-            $this->view->assign('currentDocument', $currentDocument);
-        }
+        $this->addCurrentDocument();
 
         $this->view->assign('requestData', $this->requestData);
         $this->view->assign('uniqueId', $this->uniqueId);
@@ -224,11 +205,28 @@ class SearchController extends AbstractController
     }
 
     /**
+     * Add the current document if present to fluid. It limits further searches to this document.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function addCurrentDocument(): void
+    {
+        if (isset($this->requestData['id'])) {
+            $currentDocument = $this->documentRepository->findByUid($this->requestData['id']);
+            $this->view->assign('currentDocument', $currentDocument);
+        }
+    }
+
+    /**
      * Adds the facets menu to the search form
      *
-     * @access protected
+     * @access private
+     *
+     * @return void
      */
-    protected function addFacetsMenu(): void
+    private function addFacetsMenu(): void
     {
         // Quit without doing anything if no facets are configured.
         if (empty($this->settings['facets']) && empty($this->settings['facetCollections'])) {
@@ -527,6 +525,33 @@ class SearchController extends AbstractController
             }
         }
         return $menuArray;
+    }
+
+    /**
+     * Sanitize date search input.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private function sanitizeDates(): void
+    {
+        $dateFrom = $this->search['dateFrom'] ?? false;
+        $dateTo = $this->search['dateTo'] ?? false;
+        if ($dateFrom || $dateTo) {
+            if (!$dateFrom && $dateTo) {
+                $this->search['dateFrom'] = '*';
+            }
+
+            if ($dateFrom && !$dateTo) {
+                $this->search['dateTo'] = '*';
+            }
+
+            if ($dateFrom && $dateTo && $dateFrom > $dateTo) {
+                $this->search['dateFrom'] = $dateTo;
+                $this->search['dateTo'] = $dateFrom;
+            }
+        }
     }
 
     /**

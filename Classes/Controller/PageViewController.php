@@ -372,16 +372,18 @@ class PageViewController extends AbstractController
                      *  On the other hand, server connections are potentially better than client connections. Downloading annotation lists
                      */
                     foreach ($canvas->getPossibleTextAnnotationContainers(Motivation::PAINTING) as $annotationContainer) {
-                        if (($textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING)) != null) {
+                        $textAnnotations = $annotationContainer->getTextAnnotations(Motivation::PAINTING);
+                        if ($textAnnotations != null) {
                             foreach ($textAnnotations as $annotation) {
+                                $body  = $annotation->getBody();
                                 if (
-                                    $annotation->getBody()->getFormat() == 'text/plain'
-                                    && $annotation->getBody()->getChars() != null
+                                    $body->getFormat() == 'text/plain'
+                                    && $body->getChars() != null
                                 ) {
-                                    $annotationListData = [];
-                                    $annotationListData['uri'] = $annotationContainer->getId();
-                                    $annotationListData['label'] = $annotationContainer->getLabelForDisplay();
-                                    $annotationContainers[] = $annotationListData;
+                                    $annotationContainers[] = [
+                                        'uri' => $annotationContainer->getId(),
+                                        'label' => $annotationContainer->getLabelForDisplay(),
+                                    ];
                                     break;
                                 }
                             }

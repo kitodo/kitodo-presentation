@@ -377,7 +377,7 @@ class Indexer
                 $solrDoc->setField(self::$solrFields['volume'], $metadata['volume'][0] ?? '');
                 // extract structure path
                 self::$extractedStructurePathNodes[$logicalUnit['id']] = self::extractStructurePathNodes($doc->tableOfContents, $logicalUnit['id']);
-                $processedStructurePath = self::buildStructurePathData(self::$extractedStructurePathNodes[$logicalUnit['id']], $document->getCurrentDocument()->getToplevelId());
+                $processedStructurePath = self::buildStructurePathData(self::$extractedStructurePathNodes[$logicalUnit['id']], $doc->getToplevelId());
                 $solrDoc->setField(self::$solrFields['structure_path'], json_encode($processedStructurePath, JSON_UNESCAPED_UNICODE));
                 // verify date formatting
                 if (strtotime($metadata['date'][0])) {
@@ -455,7 +455,8 @@ class Indexer
     {
         $doc = $document->getCurrentDocument();
         $doc->configPid = $document->getPid();
-        if ($doc->hasFulltext && $fullText = $doc->getFullText($physicalUnit['id'])) {
+        $fullText = $doc->getFullText($physicalUnit['id']);
+        if (!empty($fullText)) {
             // Read extension configuration.
             $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get(self::$extKey, 'files');
             // Create new Solr document.
