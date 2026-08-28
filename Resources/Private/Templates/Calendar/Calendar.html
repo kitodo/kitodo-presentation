@@ -38,12 +38,12 @@
     </div>
     <div class="tx-dlf-calendar-calendar-view">
         <f:for each="{calendarData}" as="month" iteration="monthIterator">
-            <f:if condition="{monthIterator.isFirst}">
+            <f:if condition="{month.CALYEAR}">
                 <div class="tx-dlf-calendar-year">{month.CALYEAR}</div>
             </f:if>
             <div class="tx-dlf-calendar-month">
                 <table>
-                    <caption><f:translate key="calendar.month.{month.MONTHNAME}" default="{month.MONTHNAME}" /> {month.CALYEAR}</caption>
+                    <caption><f:translate key="calendar.month.{month.MONTHNAME}" default="{month.MONTHNAME}" /> {month.YEAR}</caption>
                     <tr>
                         <th class=""><f:translate key="calendar.shortday.{month.DAYMON_NAME}" default="{month.DAYMON_NAME}" /></th>
                         <th class=""><f:translate key="calendar.shortday.{month.DAYTUE_NAME}" default="{month.DAYTUE_NAME}" /></th>
@@ -88,10 +88,10 @@
         <ul>
             <f:for each="{issueData}" as="issueDay">
                 <li>
-                    <span class="tx-dlf-calendar-list-view-date"><f:translate key="calendar.longday.{issueDay.dateString.day}" default="{issueDay.dateString.day}" />, <f:translate key="calendar.shortdate_format" arguments="{f:split(value:'{issueDay.dateString.date}', separator:'-')}" default="{issueDay.dateString.date}" /></span>
+                    <span class="tx-dlf-calendar-list-view-date"><f:translate key="calendar.longday.{issueDay.dateString.day}" default="{issueDay.dateString.day}" />, <f:format.date format="{f:translate(key: 'calendar.shortdate_format', default: 'Y-m-d')}">{issueDay.dateString.date}</f:format.date></span>
                     <f:for each="{issueDay.items}" as="item">
                         <f:link.page pageUid="{settings.targetPid}" additionalParams="{'tx_dlf[id]': item.documentId}">
-                            <f:translate key="calendar.shortdate_format" arguments="{f:split(value:'{item.text}', separator:'-')}" default="{item.text}" />
+                            {item.text}
                         </f:link.page>
                     </f:for>
                 </li>

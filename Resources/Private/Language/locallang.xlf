@@ -78,7 +78,7 @@
                 <source><![CDATA[List View]]></source>
             </trans-unit>
             <trans-unit id="calendar.shortdate_format">
-                <source><![CDATA[%1$s-%2$s-%3$s]]></source>
+                <source><![CDATA[Y-m-d]]></source>
             </trans-unit>
             <trans-unit id="calendar.shortday.Mon">
                 <source><![CDATA[Mon]]></source>

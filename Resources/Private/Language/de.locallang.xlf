@@ -102,8 +102,8 @@
                 <target><![CDATA[Listenansicht]]></target>
             </trans-unit>
             <trans-unit id="calendar.shortdate_format" approved="yes">
-                <source><![CDATA[%1$s-%2$s-%3$s]]></source>
-                <target><![CDATA[%3$s.%2$s.%1$s]]></target>
+                <source><![CDATA[Y-m-d]]></source>
+                <target><![CDATA[d.m.Y]]></target>
             </trans-unit>
             <trans-unit id="calendar.shortday.Mon" approved="yes">
                 <source><![CDATA[Mon]]></source>

@@ -259,7 +259,8 @@ class CalendarController extends AbstractController
                 'DAYSAT_NAME' => date('D', strtotime('last Saturday')),
                 'DAYSUN_NAME' => date('D', strtotime('last Sunday')),
                 'MONTHNAME'   => date('F', strtotime($year . '-' . $i . '-1') ?: null),
-                'CALYEAR'     => $year
+                'CALYEAR'     => ($i == $firstMonth) ? $year : '',
+                'YEAR'        => $year
             ];
 
             $firstOfMonth = strtotime($year . '-' . $i . '-1');
