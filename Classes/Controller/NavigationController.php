@@ -72,6 +72,12 @@ class NavigationController extends AbstractController
             return $this->htmlResponse();
         }
 
+        $uri = $this->getUriForPageSelectFormSubmission();
+
+        if (!empty($uri)) {
+            return $this->redirectToUri($uri);
+        }
+
         $currentDocument = $this->document->getCurrentDocument();
 
         // Set default values if not set.
@@ -255,5 +261,39 @@ class NavigationController extends AbstractController
     private function isPageStepForwardActive(): bool
     {
         return $this->requestData['page'] <= ($this->document->getCurrentDocument()->numPages - $this->getPageSteps());
+    }
+
+    /**
+     * Returns the URI for submitting the page select form.
+     * Form submit logic should be reconsidered,
+     * as it is not possible to use the form action for the current page.
+     *
+     * @access private
+     *
+     * @return string
+     */
+    private function getUriForPageSelectFormSubmission(): string
+    {
+        $body = $this->request->getParsedBody();
+
+        if (is_array($body)) {
+            $navigationData = $body['tx_dlf_navigation'] ?? [];
+            if (array_key_exists('pageSelectForm', $navigationData)) {
+                $this->requestData['page'] = (int) $navigationData['pageSelectForm']['page'];
+
+                return $this->uriBuilder->reset()
+                    ->setArguments(
+                        [
+                            'tx_dlf' => [
+                                'id' => $navigationData['pageSelectForm']['id'],
+                                'page' => $navigationData['pageSelectForm']['page'],
+                                'double' => 0
+                            ]
+                        ]
+                    )
+                    ->uriFor('main');
+            }
+        }
+        return '';
     }
 }
