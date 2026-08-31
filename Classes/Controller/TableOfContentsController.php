@@ -87,24 +87,22 @@ class TableOfContentsController extends AbstractController
                 $menuArray[] = $this->getMenuEntry($entry, false);
             }
             // Build table of contents from database.
-            $result = $this->documentRepository->getTableOfContentsFromDb($this->document->getUid(), $this->document->getPid(), $this->settings);
+            $results = $this->documentRepository->getTableOfContents($this->document->getUid(), $this->document->getPid(), $this->settings);
 
-            $allResults = $result->fetchAllAssociative();
-
-            if (count($allResults) > 0) {
+            if (count($results) > 0) {
                 $menuArray[0]['ITEM_STATE'] = 'CURIFSUB';
                 $menuArray[0]['_SUB_MENU'] = [];
-                foreach ($allResults as $resArray) {
+                foreach ($results as $result) {
                     $entry = [
-                        'label' => !empty($resArray['mets_label']) ? $resArray['mets_label'] : $resArray['title'],
-                        'type' => $resArray['type'],
-                        'volume' => $resArray['volume'],
-                        'year' => $resArray['year'],
-                        'orderlabel' => $resArray['mets_orderlabel'],
+                        'label' => !empty($result['mets_label']) ? $result['mets_label'] : $result['title'],
+                        'type' => $result['type'],
+                        'volume' => $result['volume'],
+                        'year' => $result['year'],
+                        'orderlabel' => $result['mets_orderlabel'],
                         'pagination' => '',
-                        'targetUid' => $resArray['uid']
+                        'targetUid' => $result['uid']
                     ];
-                    $menuArray[0]['_SUB_MENU'][] = $this->getMenuEntry($entry, false);
+                    $menuArray[0]['_SUB_MENU'][] = $this->getMenuEntry($entry);
                 }
             }
         }
