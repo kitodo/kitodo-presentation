@@ -1,4 +1,5 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:comment>
@@ -18,14 +19,11 @@
 <div class="tx-dlf-calendar">
     <div class="tx-dlf-calendar-meta-header">
         <div class="tx-dlf-calendar-year-anchor">
-            <f:link.page additionalParams="{'tx_dlf[id]': parentDocumentId}">
-                <f:translate key="calendar.allYears" /> {allYearDocTitle}
-            </f:link.page>
+            <f:variable name="yearLinkText"><f:translate key="calendar.allYears" extensionName="dlf" /> {allYearDocTitle}</f:variable>
+            <kitodo:link requestData="{requestData}" pageUid="{settings.targetPid}" additionalParams="{'id': parentDocumentId}" excludedParams="{0: 'measure', 1: 'multiview'}" title="{yearLinkText}">{yearLinkText}</kitodo:link>
         </div>
         <div class="tx-dlf-calendar-year">
-            <f:link.page additionalParams="{'tx_dlf[id]': documentId}">
-                {yearLinkTitle}
-            </f:link.page>
+            <kitodo:link requestData="{requestData}" pageUid="{settings.targetPid}" additionalParams="{'id': documentId}" excludedParams="{0: 'measure', 1: 'multiview'}" title="{yearLinkTitle}">{yearLinkTitle}</kitodo:link>
         </div>
         <div class="tx-dlf-calendar-list-selection">
             <a class="tx-dlf-calendar-select-calendar-view {f:if(condition:'calendarData->f:count() > 5', then : 'active')}">
@@ -37,7 +35,6 @@
         </div>
     </div>
     <div class="tx-dlf-calendar-calendar-view">
-
         <f:for each="{calendarData}" as="month">
             <f:if condition="{month.CALYEAR}">
                 <div class="tx-dlf-calendar-year">{month.CALYEAR}</div>
@@ -58,25 +55,25 @@
                     <f:for each="{month.week}" as="week">
                         <tr>
                             <td class="">
-                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYMON}'}"></f:render>
+                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYMON}', 'requestData': '{requestData}'}"></f:render>
                             </td>
                             <td class="">
-                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYTUE}'}"></f:render>
+                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYTUE}', 'requestData': '{requestData}'}"></f:render>
                             </td>
                             <td class="">
-                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYWED}'}"></f:render>
+                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYWED}', 'requestData': '{requestData}'}"></f:render>
                             </td>
                             <td class="">
-                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYTHU}'}"></f:render>
+                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYTHU}', 'requestData': '{requestData}'}"></f:render>
                             </td>
                             <td class="">
-                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYFRI}'}"></f:render>
+                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYFRI}', 'requestData': '{requestData}'}"></f:render>
                             </td>
                             <td class="">
-                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYSAT}'}"></f:render>
+                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYSAT}', 'requestData': '{requestData}'}"></f:render>
                             </td>
                             <td class="">
-                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYSUN}'}"></f:render>
+                                <f:render partial="Calendar/Day" arguments="{'day': '{week.DAYSUN}', 'requestData': '{requestData}'}"></f:render>
                             </td>
                         </tr>
                     </f:for>
@@ -91,9 +88,7 @@
                 <li>
                     <span class="tx-dlf-calendar-list-view-date">{issueDay.dateString}</span>
                     <f:for each="{issueDay.items}" as="item">
-                        <f:link.page pageUid="{settings.targetPid}" additionalParams="{'tx_dlf[id]': item.documentId}">
-                            {item.text}
-                        </f:link.page>
+                        <kitodo:link requestData="{requestData}" pageUid="{settings.targetPid}" additionalParams="{'id': item.documentId}" excludedParams="{0: 'measure', 1: 'multiview'}" title="{item.text}">{item.text}</kitodo:link>
                     </f:for>
                 </li>
             </f:for>
