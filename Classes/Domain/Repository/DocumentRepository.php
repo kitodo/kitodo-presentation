@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Domain\Repository;
 
-use Doctrine\DBAL\Result;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\SolrSearch;
@@ -429,9 +428,9 @@ class DocumentRepository extends AbstractRepository
      * @param int $pid
      * @param array<string, mixed> $settings
      *
-     * @return Result
+     * @return list<array<string,mixed>>
      */
-    public function getTableOfContentsFromDb(int $uid, int $pid, array $settings): Result
+    public function getTableOfContents(int $uid, int $pid, array $settings): array
     {
         // Build table of contents from database.
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
@@ -473,7 +472,12 @@ class DocumentRepository extends AbstractRepository
 
         $this->debugQueryBuilder($queryBuilder);
 
-        return $queryBuilder->executeQuery();
+        try {
+            return $queryBuilder->executeQuery()->fetchAllAssociative();
+        } catch (\Exception $e) {
+            $this->logger->warning('Could not fetch table of contents for document uid "' . $uid . '". Error: ' . $e->getMessage() . '.');
+            return [];
+        }
     }
 
     /**
@@ -508,9 +512,14 @@ class DocumentRepository extends AbstractRepository
 
         $qb->getConcreteQueryBuilder()->setMaxResults(1);
 
-        $this->debugQueryBuilder($queryBuilder);
+        $this->debugQueryBuilder($qb);
 
-        return $qb->executeQuery()->fetchAssociative();
+        try {
+            return $qb->executeQuery()->fetchAssociative();
+        } catch (\Exception $e) {
+            $this->logger->warning('Could not fetch OAI record for identifier "' . $parameters['identifier'] . '". Error: ' . $e->getMessage() . '.');
+            return false;
+        }
     }
 
     /**
@@ -539,9 +548,14 @@ class DocumentRepository extends AbstractRepository
             ->andWhere($queryBuilder->expr()->eq('tx_dlf_collections_join.deleted', 0))
             ->groupBy('tx_dlf_documents.uid');
 
-        $this->debugQueryBuilder($queryBuilder);
+        $this->debugQueryBuilder($qb);
 
-        return $qb->executeQuery()->fetchAllAssociative();
+        try {
+            return $qb->executeQuery()->fetchAllAssociative();
+        } catch (\Exception $e) {
+            $this->logger->warning('Could not fetch OAI document list for documents "' . implode(',', $documentsToProcess) . '". Error: ' . $e->getMessage() . '.');
+            return [];
+        }
     }
 
     /**
