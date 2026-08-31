@@ -277,6 +277,10 @@
                 <source><![CDATA[Plan]]></source>
                 <target><![CDATA[Plan]]></target>
             </trans-unit>
+            <trans-unit id="structure.postcard" approved="yes">
+                <source><![CDATA[Postcard]]></source>
+                <target><![CDATA[Postkarte]]></target>
+            </trans-unit>
             <trans-unit id="structure.poster" approved="yes">
                 <source><![CDATA[Poster]]></source>
                 <target><![CDATA[Plakat]]></target>
