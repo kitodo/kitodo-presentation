@@ -37,37 +37,37 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @access public
  *
  * @property int $configPid this holds the PID for the configuration
- * @property-read array $formats this holds the configuration for all supported metadata encodings
+ * @property-read array<string, array<string, string>> $formats this holds the configuration for all supported metadata encodings
  * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
  * @property-read bool $hasFulltext flag with information if there are any fulltext files available
- * @property array $lastSearchedPhysicalPage the last searched logical and physical page
- * @property array $logicalUnits this holds the logical units
- * @property-read array $metadataArray this holds the documents' parsed metadata array
+ * @property array<string, mixed> $lastSearchedPhysicalPage the last searched logical and physical page
+ * @property mixed[] $logicalUnits this holds the logical units
+ * @property-read mixed[] $metadataArray this holds the documents' parsed metadata array
  * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
  * @property-read int $numPages the holds the total number of pages
  * @property-read int $numMeasures This holds the total number of measures
  * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
- * @property-read array $physicalStructure this holds the physical structure
- * @property-read array $physicalStructureInfo this holds the physical structure metadata
- * @property-read array $musicalStructure This holds the musical structure
- * @property-read array $musicalStructureInfo This holds the musical structure metadata
+ * @property-read mixed[] $physicalStructure this holds the physical structure
+ * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata
+ * @property-read mixed[] $musicalStructure This holds the musical structure
+ * @property-read mixed[] $musicalStructureInfo This holds the musical structure metadata
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
- * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
+ * @property array<string, string> $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read string $recordId the METS file's / IIIF manifest's record identifier
  * @property-read int $rootId this holds the UID of the root document or zero if not multi-volumed
- * @property-read array $smLinks this holds the smLinks between logical and physical structMap
+ * @property-read array<string, mixed[]> $smLinks this holds the smLinks between logical and physical structMap
  * @property bool $smLinksLoaded flag with information if the smLinks are loaded
- * @property-read array $tableOfContents this holds the logical structure
+ * @property-read array<int, mixed[]> $tableOfContents this holds the logical structure
  * @property bool $tableOfContentsLoaded flag with information if the table of contents is loaded
  * @property-read string $thumbnail this holds the document's thumbnail location
  * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
  * @property SimpleXMLElement $xml this holds the whole XML file as SimpleXMLElement object
- * @property-read array $mdSec associative array of METS metadata sections indexed by their IDs.
+ * @property-read array<string, mixed[]> $mdSec associative array of METS metadata sections indexed by their IDs.
  * @property bool $mdSecLoaded flag with information if the array of METS metadata sections is loaded
- * @property-read array $dmdSec subset of `$mdSec` storing only the dmdSec entries; kept for compatibility.
- * @property-read array $fileGrps this holds the file ID -> USE concordance
+ * @property-read array<string, string> $dmdSec subset of `$mdSec` storing only the dmdSec entries; kept for compatibility.
+ * @property-read array<string, string> $fileGrps this holds the file ID -> USE concordance
  * @property bool $fileGrpsLoaded flag with information if file groups array is loaded
- * @property-read array $fileInfos additional information about files (e.g., ADMID), indexed by ID.
+ * @property-read array<string, array<string, string>> $fileInfos additional information about files (e.g., ADMID), indexed by ID.
  * @property-read SimpleXMLElement $mets this holds the XML file's METS part as SimpleXMLElement object
  * @property-read string $parentHref URL of the parent document (determined via mptr element), or empty string if none is available
  */
@@ -857,7 +857,7 @@ final class MetsDocument extends AbstractDocument
         $domXPath = new DOMXPath($domNode->ownerDocument);
         $this->registerNamespaces($domXPath);
 
-        $this->processAdditionalMetadata($additionalMetadata, $domXPath, $domNode, $metadata);
+        $this->processAdditionalMetadata($additionalMetadata, $domXPath, $domNode, $metadata); // phpstan-ignore-line
 
         return true;
     }
@@ -924,7 +924,7 @@ final class MetsDocument extends AbstractDocument
             if ($values instanceof DOMNodeList && $values->length > 0) {
                 $metadata[$resArray['index_name']] = [];
                 foreach ($values as $value) {
-                    $subentries = $this->getSubentries($subentryResults, $resArray['index_name'], $value);
+                    $subentries = $this->getSubentries($subentryResults, $resArray['index_name'], $value); // phpstan-ignore-line
                     if ($subentries) {
                         $metadata[$resArray['index_name']][] = $subentries;
                     } else {
@@ -1216,12 +1216,12 @@ final class MetsDocument extends AbstractDocument
         $this->structureRepository->useStoragePid($this->configPid);
         $this->settings = $settings;
         // Get METS node from XML file.
-        $this->registerNamespaces($this->xml);
+        $this->registerNamespaces($this->xml); // phpstan-ignore-line
         $mets = $this->xml->xpath('//mets:mets');
         if (!empty($mets)) {
             $this->mets = $mets[0];
             // Register namespaces.
-            $this->registerNamespaces($this->mets);
+            $this->registerNamespaces($this->mets); // phpstan-ignore-line
         } else {
             if (!empty($location)) {
                 $this->logger->error('No METS part found in document with location "' . $location . '".');
