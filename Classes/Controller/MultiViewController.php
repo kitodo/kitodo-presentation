@@ -50,10 +50,13 @@ class MultiViewController extends AbstractController
         $page = $this->requestData['page'] ?? 0;
 
         $currentUrl = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
-        $parts = parse_url($currentUrl);
-        $currentPath = $parts['path'] ?? '/';
-
-        $this->view->assign('path', $currentPath);
+        if (is_string($currentUrl)) {
+            $parts = parse_url($currentUrl);
+            $currentPath = $parts['path'] ?? '/';
+            $this->view->assign('path', $currentPath);
+        } else {
+            $this->view->assign('path', '/');
+        }
 
         $this->view->assign('forceAbsoluteUrl', $this->extConf['general']['forceAbsoluteUrl'] ?? 0);
         $this->view->assign('docId', $this->requestData['id']);
