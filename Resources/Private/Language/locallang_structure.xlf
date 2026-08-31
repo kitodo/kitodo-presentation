@@ -209,6 +209,9 @@
             <trans-unit id="structure.plan">
                 <source><![CDATA[Plan]]></source>
             </trans-unit>
+            <trans-unit id="structure.postcard">
+                <source><![CDATA[Postcard]]></source>
+            </trans-unit>
             <trans-unit id="structure.poster">
                 <source><![CDATA[Poster]]></source>
             </trans-unit>
