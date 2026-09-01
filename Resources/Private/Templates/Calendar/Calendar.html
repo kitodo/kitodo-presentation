@@ -87,10 +87,15 @@
 
     <div class="tx-dlf-calendar-list-view">
         <ul>
-            <f:for each="{issueData}" as="issueDay">
+            <f:for each="{issueData}" as="issues" key="dayTimestamp">
                 <li>
-                    <span class="tx-dlf-calendar-list-view-date">{issueDay.dateString}</span>
-                    <f:for each="{issueDay.items}" as="item">
+                    <span class="tx-dlf-calendar-list-view-date">
+                        <f:if condition="{language} == 'de'">
+                            <f:then><f:format.date format="%A, %d.%m.%Y">{dayTimestamp}</f:format.date></f:then>
+                            <f:else><f:format.date format="%A, %Y-%m-%d">{dayTimestamp}</f:format.date></f:else>
+                        </f:if>
+                    </span>
+                    <f:for each="{issues}" as="item">
                         <f:link.page pageUid="{settings.targetPid}" additionalParams="{'tx_dlf[id]': item.documentId}">
                             {item.text}
                         </f:link.page>
