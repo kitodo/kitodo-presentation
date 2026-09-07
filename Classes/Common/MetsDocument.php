@@ -1765,13 +1765,12 @@ final class MetsDocument extends AbstractDocument
             $strctId = $this->getToplevelId();
             $metadata = $this->getToplevelMetadata();
 
-            $allResults = $this->structureRepository->findThumbnail($this->configPid, $metadata['type'][0]);
+            $structure = $this->structureRepository->findThumbnail($this->configPid, $metadata['type'][0]);
 
-            if (count($allResults) == 1) {
-                $resArray = $allResults[0];
+            if ($structure !== false) {
                 // Get desired thumbnail structure if not the toplevel structure itself.
-                if (!empty($resArray['thumbnail'])) {
-                    $strctType = Helper::getIndexNameFromUid($resArray['thumbnail'], 'tx_dlf_structures', $this->configPid);
+                if (!empty($structure['thumbnail'])) {
+                    $strctType = Helper::getIndexNameFromUid($structure['thumbnail'], 'tx_dlf_structures', $this->configPid);
                     // Check if this document has a structure element of the desired type.
                     if ($this->mets !== null) {
                         $strctIds = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@TYPE="' . $strctType . '"]/@ID');
