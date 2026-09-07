@@ -233,6 +233,9 @@
             <trans-unit id="error.playback-not-supported">
                 <source><![CDATA[This media file cannot be played back in your browser.]]></source>
             </trans-unit>
+            <trans-unit id="error.waveform-load-failed">
+                <source><![CDATA[The waveform file could not be loaded.]]></source>
+            </trans-unit>
             <trans-unit id="error.qrcode">
                 <source><![CDATA[Failed to generate QR code.]]></source>
             </trans-unit>
