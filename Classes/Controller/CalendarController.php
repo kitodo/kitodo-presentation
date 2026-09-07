@@ -84,7 +84,7 @@ class CalendarController extends AbstractController
         }
 
         return match ($type) {
-            'newspaper', 'ephemera' => new ForwardResponse('years'),
+            'newspaper', 'ephemera', 'journal' => new ForwardResponse('years'),
             'year' => new ForwardResponse('calendar'),
             default => $this->htmlResponse()
         };
@@ -128,6 +128,8 @@ class CalendarController extends AbstractController
         $this->view->assign('yearLinkTitle', $yearLinkTitle);
         $this->view->assign('parentDocumentId', $this->document->getPartof() ?: $this->document->getCurrentDocument()->tableOfContents[0]['points']);
         $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle($this->document->getPartof()) ?: $this->document->getCurrentDocument()->tableOfContents[0]['label']);
+
+        $this->view->assign('requestData', $this->requestData);
 
         return $this->htmlResponse();
     }
@@ -220,6 +222,8 @@ class CalendarController extends AbstractController
 
         $this->view->assign('documentId', $this->document->getUid());
         $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle((int) $this->document->getUid()) ?: $this->document->getCurrentDocument()->tableOfContents[0]['label']);
+
+        $this->view->assign('requestData', $this->requestData);
 
         return $this->htmlResponse();
     }
