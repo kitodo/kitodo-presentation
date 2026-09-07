@@ -221,6 +221,14 @@
                 <source><![CDATA[Nothing found.]]></source>
                 <target><![CDATA[Keine Treffer.]]></target>
             </trans-unit>
+            <trans-unit id="multiview.dragging_label"  approved="yes">
+                <source><![CDATA[Drag Document]]></source>
+                <target><![CDATA[Dokument verschieben]]></target>
+            </trans-unit>
+            <trans-unit id="multiview.remove_document" approved="yes">
+                <source><![CDATA[Remove Document]]></source>
+                <target><![CDATA[Dokument entfernen]]></target>
+            </trans-unit>
             <trans-unit id="navigation.document.back" approved="yes">
                 <source><![CDATA[Previous document]]></source>
                 <target><![CDATA[Vorheriges Dokument]]></target>
