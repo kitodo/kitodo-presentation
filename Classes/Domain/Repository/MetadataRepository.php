@@ -122,7 +122,14 @@ class MetadataRepository extends AbstractRepository
             )
             ->orderBy('tx_dlf_subentries_joins.sorting');
 
-        return $query->executeQuery()->fetchAllAssociative();
+        $this->debugQueryBuilder($query);
+
+        try {
+            return $query->executeQuery()->fetchAllAssociative();
+        } catch (\Exception $e) {
+            $this->logger->warning('Error while fetching metadata subentries: ' . $e->getMessage());
+            return [];
+        }
     }
 
     /**
@@ -132,8 +139,6 @@ class MetadataRepository extends AbstractRepository
      * @param string $type
      *
      * @return list<array<string,mixed>>
-     *
-     * @throws Exception
      */
     public function findWithFormat(int $pid, string $type): array
     {
@@ -175,15 +180,18 @@ class MetadataRepository extends AbstractRepository
 
         $this->debugQueryBuilder($query);
 
-        return $query->executeQuery()->fetchAllAssociative();
+        try {
+            return $query->executeQuery()->fetchAllAssociative();
+        } catch (\Exception $e) {
+            $this->logger->warning('Error while fetching metadata with format: ' . $e->getMessage());
+            return [];
+        }
     }
 
     /**
      * Finds all metadata without a format, but with a default value.
      *
      * @return list<array<string,mixed>>
-     *
-     * @throws Exception
      */
     public function findWithoutFormat(): array
     {
@@ -219,8 +227,6 @@ class MetadataRepository extends AbstractRepository
      * @param string $iiifVersion
      *
      * @return list<array<string,mixed>>
-     *
-     * @throws Exception
      */
     public function findQueryPath(int $pid, string $iiifVersion): array
     {
@@ -245,7 +251,14 @@ class MetadataRepository extends AbstractRepository
                 )
             );
 
-        return $query->executeQuery()->fetchAllAssociative();
+        $this->debugQueryBuilder($query);
+
+        try {
+            return $query->executeQuery()->fetchAllAssociative();
+        } catch (\Exception $e) {
+            $this->logger->warning('Error while fetching query path for IIIF: ' . $e->getMessage());
+            return [];
+        }
     }
 
     /**
@@ -255,8 +268,6 @@ class MetadataRepository extends AbstractRepository
      * @param string $iiifVersion
      *
      * @return list<array<string,mixed>>
-     *
-     * @throws Exception
      */
     public function findForIiif(int $pid, string $iiifVersion): array
     {
@@ -286,7 +297,14 @@ class MetadataRepository extends AbstractRepository
                 )
             );
 
-        return $query->executeQuery()->fetchAllAssociative();
+        $this->debugQueryBuilder($query);
+
+        try {
+            return $query->executeQuery()->fetchAllAssociative();
+        } catch (\Exception $e) {
+            $this->logger->warning('Error while fetching metadata for IIIF: ' . $e->getMessage());
+            return [];
+        }
     }
 
     /**

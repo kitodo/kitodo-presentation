@@ -118,7 +118,7 @@ class CalendarController extends AbstractController
         // Prepare list as alternative view.
         $issueData = [];
         foreach ($this->allIssues as $dayTimestamp => $issues) {
-            $issueData[$dayTimestamp]['dateString'] = date('l, Y-m-d', $dayTimestamp);
+            $issueData[$dayTimestamp]['dateString'] = $this->getLocalizedDateString('%A, %Y-%m-%d', $dayTimestamp);
             $issueData[$dayTimestamp]['items'] = [];
             foreach ($issues as $issue) {
                 $issueData[$dayTimestamp]['items'][] = $issue;
@@ -250,14 +250,14 @@ class CalendarController extends AbstractController
             $key = $year . '-' . $i;
 
             $calendarData[$key] = [
-                'DAYMON_NAME' => date('D', strtotime('last Monday')),
-                'DAYTUE_NAME' => date('D', strtotime('last Tuesday')),
-                'DAYWED_NAME' => date('D', strtotime('last Wednesday')),
-                'DAYTHU_NAME' => date('D', strtotime('last Thursday')),
-                'DAYFRI_NAME' => date('D', strtotime('last Friday')),
-                'DAYSAT_NAME' => date('D', strtotime('last Saturday')),
-                'DAYSUN_NAME' => date('D', strtotime('last Sunday')),
-                'MONTHNAME'  => date('F', strtotime($year . '-' . $i . '-1') ?: null) . ' ' . $year,
+                'DAYMON_NAME' => $this->getLocalizedDateString('%a', strtotime('last Monday')),
+                'DAYTUE_NAME' => $this->getLocalizedDateString('%a', strtotime('last Tuesday')),
+                'DAYWED_NAME' => $this->getLocalizedDateString('%a', strtotime('last Wednesday')),
+                'DAYTHU_NAME' => $this->getLocalizedDateString('%a', strtotime('last Thursday')),
+                'DAYFRI_NAME' => $this->getLocalizedDateString('%a', strtotime('last Friday')),
+                'DAYSAT_NAME' => $this->getLocalizedDateString('%a', strtotime('last Saturday')),
+                'DAYSUN_NAME' => $this->getLocalizedDateString('%a', strtotime('last Sunday')),
+                'MONTHNAME'  => $this->getLocalizedDateString('%B', strtotime($year . '-' . $i . '-1') ?: null) . ' ' . $year,
                 'CALYEAR' => ($i == $firstMonth) ? $year : ''
             ];
 
@@ -526,6 +526,25 @@ class CalendarController extends AbstractController
                 'year' => $document->getYear()
             ];
         }
+    }
+
+    /**
+     * Return a localized date string using the current TYPO3 frontend language.
+     *
+     * @access private
+     *
+     * @param string $format
+     * @param int|null $timestamp
+     *
+     * @return string
+     */
+    private function getLocalizedDateString(string $format, ?int $timestamp): string
+    {
+        $dateFormatter = new DateFormatter();
+        $localized = $dateFormatter->strftime($format, $timestamp ?? time());
+        $normalized = preg_replace('/[\p{P}\p{S}]\s*$/u', '', $localized);
+
+        return $normalized !== null ? $normalized : $localized;
     }
 
     /**
