@@ -17,6 +17,7 @@ use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Localization\DateFormatter;
+use TYPO3\CMS\Core\Localization\Locale;
 use TYPO3\CMS\Extbase\Http\ForwardResponse;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 
@@ -83,7 +84,7 @@ class CalendarController extends AbstractController
         }
 
         return match ($type) {
-            'newspaper', 'ephemera' => new ForwardResponse('years'),
+            'newspaper', 'ephemera', 'journal' => new ForwardResponse('years'),
             'year' => new ForwardResponse('calendar'),
             default => $this->htmlResponse()
         };
@@ -115,26 +116,20 @@ class CalendarController extends AbstractController
 
         $calendarData = $this->buildCalendar();
 
-        // Prepare list as alternative view.
-        $issueData = [];
-        foreach ($this->allIssues as $dayTimestamp => $issues) {
-            $issueData[$dayTimestamp]['dateString'] = date('l, Y-m-d', $dayTimestamp);
-            $issueData[$dayTimestamp]['items'] = [];
-            foreach ($issues as $issue) {
-                $issueData[$dayTimestamp]['items'][] = $issue;
-            }
-        }
-        $this->view->assign('issueData', $issueData);
+        $this->view->assign('issueData', $this->allIssues);
 
         // Link to current year.
         $linkTitleData = $this->document->getCurrentDocument()->getToplevelMetadata();
         $yearLinkTitle = !empty($linkTitleData['mets_orderlabel'][0]) ? $linkTitleData['mets_orderlabel'][0] : $linkTitleData['mets_label'][0];
 
+        $this->view->assign('language', $this->getLocale()?->getLanguageCode());
         $this->view->assign('calendarData', $calendarData);
         $this->view->assign('documentId', $this->document->getUid());
         $this->view->assign('yearLinkTitle', $yearLinkTitle);
         $this->view->assign('parentDocumentId', $this->document->getPartof() ?: $this->document->getCurrentDocument()->tableOfContents[0]['points']);
         $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle($this->document->getPartof()) ?: $this->document->getCurrentDocument()->tableOfContents[0]['label']);
+
+        $this->view->assign('requestData', $this->requestData);
 
         return $this->htmlResponse();
     }
@@ -228,6 +223,8 @@ class CalendarController extends AbstractController
         $this->view->assign('documentId', $this->document->getUid());
         $this->view->assign('allYearDocTitle', $this->document->getCurrentDocument()->getTitle((int) $this->document->getUid()) ?: $this->document->getCurrentDocument()->tableOfContents[0]['label']);
 
+        $this->view->assign('requestData', $this->requestData);
+
         return $this->htmlResponse();
     }
 
@@ -250,14 +247,14 @@ class CalendarController extends AbstractController
             $key = $year . '-' . $i;
 
             $calendarData[$key] = [
-                'DAYMON_NAME' => date('D', strtotime('last Monday')),
-                'DAYTUE_NAME' => date('D', strtotime('last Tuesday')),
-                'DAYWED_NAME' => date('D', strtotime('last Wednesday')),
-                'DAYTHU_NAME' => date('D', strtotime('last Thursday')),
-                'DAYFRI_NAME' => date('D', strtotime('last Friday')),
-                'DAYSAT_NAME' => date('D', strtotime('last Saturday')),
-                'DAYSUN_NAME' => date('D', strtotime('last Sunday')),
-                'MONTHNAME'  => date('F', strtotime($year . '-' . $i . '-1') ?: null) . ' ' . $year,
+                'DAYMON_NAME' => $this->getLocalizedDateString('%a', strtotime('last Monday')),
+                'DAYTUE_NAME' => $this->getLocalizedDateString('%a', strtotime('last Tuesday')),
+                'DAYWED_NAME' => $this->getLocalizedDateString('%a', strtotime('last Wednesday')),
+                'DAYTHU_NAME' => $this->getLocalizedDateString('%a', strtotime('last Thursday')),
+                'DAYFRI_NAME' => $this->getLocalizedDateString('%a', strtotime('last Friday')),
+                'DAYSAT_NAME' => $this->getLocalizedDateString('%a', strtotime('last Saturday')),
+                'DAYSUN_NAME' => $this->getLocalizedDateString('%a', strtotime('last Sunday')),
+                'MONTHNAME'  => $this->getLocalizedDateString('%B', strtotime($year . '-' . $i . '-1') ?: null) . ' ' . $year,
                 'CALYEAR' => ($i == $firstMonth) ? $year : ''
             ];
 
@@ -318,7 +315,11 @@ class CalendarController extends AbstractController
     {
         $dayLinksText = [];
         foreach ($day as $issue) {
-            $dayLinkLabel = empty($issue['title']) ? date('Y-m-d', $currentDayTime) : $issue['title'];
+            if ($this->getLocale()?->getLanguageCode() === 'de') {
+                $dayLinkLabel = empty($issue['title']) ? $this->getLocalizedDateString('%d.%m.%Y', $currentDayTime) : $issue['title'];
+            } else {
+                $dayLinkLabel = empty($issue['title']) ? $this->getLocalizedDateString('%Y-%m-%d', $currentDayTime) : $issue['title'];
+            }
 
             $dayLinksText[] = [
                 'documentId' => $issue['uid'],
@@ -529,6 +530,25 @@ class CalendarController extends AbstractController
     }
 
     /**
+     * Return a localized date string using the current TYPO3 frontend language.
+     *
+     * @access private
+     *
+     * @param string $format
+     * @param int|null $timestamp
+     *
+     * @return string
+     */
+    private function getLocalizedDateString(string $format, ?int $timestamp): string
+    {
+        $dateFormatter = new DateFormatter();
+        $localized = $dateFormatter->strftime($format, $timestamp ?? time());
+        $normalized = preg_replace('/[\p{P}\p{S}]\s*$/u', '', $localized);
+
+        return $normalized !== null ? $normalized : $localized;
+    }
+
+    /**
      * Get title from label or orderlabel, format date if applicable.
      *
      * @access private
@@ -543,9 +563,24 @@ class CalendarController extends AbstractController
         $title = $label ?: $orderLabel;
         $date = strtotime($title);
         if ($date !== false) {
-            $dateFormatter = new DateFormatter();
-            $title = $dateFormatter->strftime('%x', $date);
+            $title = $this->getLocalizedDateString('%x', $date);
         }
         return $title;
+    }
+
+    /**
+     * Get locale from request.
+     *
+     * @access private
+     *
+     * @return Locale|null
+     */
+    private function getLocale(): ?Locale
+    {
+        $attributes = $this->request->getAttributes();
+        if (isset($attributes['language'])) {
+            return $attributes['language']->getLocale() ?? null;
+        }
+        return null;
     }
 }

@@ -13,6 +13,8 @@
 namespace Kitodo\Dlf\Domain\Repository;
 
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
+use TYPO3\CMS\Core\Log\Logger;
+use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
 use TYPO3\CMS\Extbase\Persistence\Exception\IllegalObjectTypeException;
@@ -43,9 +45,26 @@ class AbstractRepository extends Repository
 
     /**
      * @access protected
+     * @var Logger This holds the logger
+     */
+    protected Logger $logger;
+
+    /**
+     * @access protected
      * @var int
      */
     protected int $storagePid = 0;
+
+    /**
+     * Constructor for the repository,
+     * initializes the logger.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(static::class);
+    }
 
     /**
      * Add storage pid to object if repository has a storage pid set.
