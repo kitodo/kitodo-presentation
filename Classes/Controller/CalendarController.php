@@ -83,7 +83,7 @@ class CalendarController extends AbstractController
         }
 
         return match ($type) {
-            'newspaper', 'ephemera' => new ForwardResponse('years'),
+            'newspaper', 'ephemera', 'journal' => new ForwardResponse('years'),
             'year' => new ForwardResponse('calendar'),
             default => $this->htmlResponse()
         };
