@@ -164,6 +164,12 @@
             <trans-unit id="listView.results.noHits">
                 <source><![CDATA[Nothing found.]]></source>
             </trans-unit>
+            <trans-unit id="multiview.dragging_label">
+                <source><![CDATA[Drag Document]]></source>
+            </trans-unit>
+            <trans-unit id="multiview.remove_document">
+                <source><![CDATA[Remove Document]]></source>
+            </trans-unit>
             <trans-unit id="navigation.document.back">
                 <source><![CDATA[Previous document]]></source>
             </trans-unit>
