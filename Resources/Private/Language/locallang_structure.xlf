@@ -140,6 +140,9 @@
             <trans-unit id="structure.issue">
                 <source><![CDATA[Issue]]></source>
             </trans-unit>
+            <trans-unit id="structure.journal">
+                <source><![CDATA[Journal]]></source>
+            </trans-unit>
             <trans-unit id="structure.judgement">
                 <source><![CDATA[Judgement]]></source>
             </trans-unit>

@@ -44,6 +44,12 @@ export default class WaveForm extends DlfMediaPlugin {
         height: 100%;
         background-color: rgba(255, 255, 255, 0.3);
       }
+      .waveform-error {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
     `]);
 
     this.$container = e('div', { className: "container" }, [
@@ -245,7 +251,13 @@ export default class WaveForm extends DlfMediaPlugin {
     player.media.addEventListener('loadedmetadata', (_e) => {
       this.updateZoom(this.maxSamplesPerPixel);
     });
-    this.load(src);
+
+    try {
+      await this.load(src);
+    } catch (e) {
+      console.error(this.env.t('error.waveform-load-failed'), e);
+      this.showWaveformError();
+    }
   }
 
   /**
@@ -257,6 +269,11 @@ export default class WaveForm extends DlfMediaPlugin {
     this.nextUrl = url;
 
     const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Waveform request failed: HTTP ${response.status}`);
+    }
+
     const data = await response.arrayBuffer();
 
     // If loadWaveform is called again before the previous call has finished,
@@ -414,6 +431,11 @@ export default class WaveForm extends DlfMediaPlugin {
     if (this.zoomview !== null) {
       this.zoomview.setZoom({ scale: this.samplesPerPixel });
     }
+  }
+
+  showWaveformError() {
+    this.$waveOverview.textContent = this.env.t('error.waveform-load-failed');
+    this.$waveOverview.classList.add('waveform-error');
   }
 }
 

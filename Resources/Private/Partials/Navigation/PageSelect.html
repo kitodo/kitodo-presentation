@@ -20,10 +20,15 @@
             <f:form.hidden property="recordId" value="{requestData.recordId}"/>
         </f:if>
         <f:if condition="{requestData.double}">
-            <f:form.hidden property="double" value="{requestData.double}"/>
+            <f:then>
+                <f:form.hidden property="double" value="{requestData.double}"/>
+            </f:then>
+            <f:else>
+                <f:form.hidden property="double" value="0"/>
+            </f:else>
         </f:if>
         <f:if condition="{requestData.multiviewembedded} == 1">
-            <f:form.hidden name="tx_dlf[multiviewembedded]" value="{requestData.multiviewembedded}"/>
+            <f:form.hidden name="multiviewembedded" value="{requestData.multiviewembedded}"/>
         </f:if>
         <label for="tx-dlf-page-{uniqueId}">
             <f:translate key="navigation.page.selectPage"/>
