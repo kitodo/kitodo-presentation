@@ -66,6 +66,21 @@ dlfFulltextSegments.prototype.coordinateToFeature = function (coordinate) {
 };
 
 /**
+ * Returns the feature with the given {@link id}, or `undefined` if no such feature is found.
+ *
+ * @param {string} id
+ * @returns {ol.Feature | undefined}
+ */
+dlfFulltextSegments.prototype.getFeatureById = function (id) {
+    for (let segment of this.segments_) {
+        if (String(segment.feature.getId()) === String(id)) {
+            return segment.feature;
+        }
+    }
+    return undefined;
+};
+
+/**
  * Encapsulates especially the fulltext behavior
  * @class
  * @param {ol.Map} map
@@ -241,6 +256,20 @@ var dlfViewerFullTextControl = function(map) {
 
                 this.handleTextBlockElements(textblockFeature, selectSource_, hoverSourceTextblock_);
                 this.handleTextLineElements(textlineFeature, hoverSourceTextline_);
+            },
+        this),
+        fulltextHover: $.proxy(function(event) {
+                // hover on the fulltext: highlight the corresponding textline in the image
+                let textlineEl = $(event.target).closest('.textline');
+                let textlineFeature = textlineEl.length > 0 ?
+                    this.textlines_.getFeatureById(textlineEl.attr('id')) :
+                    undefined;
+                this.handleFulltextHoverElements(textlineFeature, textlineEl);
+            },
+        this),
+        fulltextMouseLeave: $.proxy(function() {
+                // leave of the fulltext: remove the textline highlight from the image
+                this.handleFulltextHoverElements(undefined, undefined);
             },
         this)
     };
@@ -447,6 +476,38 @@ dlfViewerFullTextControl.prototype.handleTextLineElements = function(textlineFea
 };
 
 /**
+ * Handle TextLine elements for hover in the fulltext view:
+ * highlight the corresponding textline in the image
+ * @param {ol.Feature|undefined} textlineFeature
+ * @param {JQuery|undefined} textlineElement
+ */
+dlfViewerFullTextControl.prototype.handleFulltextHoverElements = function(textlineFeature, textlineElement) {
+    let hoverSourceTextline_ = this.layers_.hoverTextline.getSource(),
+        activeHoverTextlineEl_ = dlfFullTextUtils.getFeature(hoverSourceTextline_),
+        isFeatureEqualToOldHoverFeature_ = dlfFullTextUtils.isFeatureEqual(activeHoverTextlineEl_, textlineFeature);
+
+    if (!isFeatureEqualToOldHoverFeature_) {
+        // remove old textline hover features
+        if (activeHoverTextlineEl_) {
+            let oldTargetElem = $('#' + activeHoverTextlineEl_.getId());
+
+            if (oldTargetElem.hasClass('highlight')) {
+                oldTargetElem.removeClass('highlight');
+            }
+            hoverSourceTextline_.clear();
+        }
+
+        if (textlineFeature) {
+            hoverSourceTextline_.addFeature(textlineFeature);
+
+            if (textlineElement && !textlineElement.hasClass('highlight')) {
+                textlineElement.addClass('highlight');
+            }
+        }
+    }
+};
+
+/**
  * Remove highlight effect from full text view
  * @param {ol.Feature|undefined} activeHoverTextBlockEl_
  * @param {any} hoverSourceTextline_
@@ -541,6 +602,8 @@ dlfViewerFullTextControl.prototype.disableFulltextSelect = function() {
     // register event listeners
     this.map.un('click', this.handlers_.mapClick);
     this.map.un('pointermove', this.handlers_.mapHover);
+    $(this.fullTextScrollElement).off('mouseover', '.textline', this.handlers_.fulltextHover);
+    $(this.fullTextScrollElement).off('mouseleave', this.handlers_.fulltextMouseLeave);
 
     // remove layers
     for (let key in this.layers_) {
@@ -570,6 +633,8 @@ dlfViewerFullTextControl.prototype.enableFulltextSelect = function() {
     // register event listeners
     this.map.on('click', this.handlers_.mapClick);
     this.map.on('pointermove', this.handlers_.mapHover);
+    $(this.fullTextScrollElement).on('mouseover', '.textline', this.handlers_.fulltextHover);
+    $(this.fullTextScrollElement).on('mouseleave', this.handlers_.fulltextMouseLeave);
 
     // add layers to map
     for (let key in this.layers_) {
