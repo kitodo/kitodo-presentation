@@ -561,6 +561,12 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
                     $documents[$doc['uid']] = $allDocuments[$doc['uid']];
                 }
                 if (isset($documents[$doc['uid']])) {
+                    // get title of parent/grandparent/... if empty
+                    if (empty($documents[$doc['uid']]['title']) && $documents[$doc['uid']]['partOf'] > 0) {
+                        $doc['title'] = $this->getTitleFromPartOf($documents[$doc['uid']]['partOf']);
+                        $documents[$doc['uid']]['title'] = $doc['title'];
+                    }
+
                     $this->translateLanguageCode($doc);
                     if ($doc['toplevel'] === false) {
                         // this maybe a chapter, article, ..., year
@@ -991,4 +997,24 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
         }
     }
+
+    /**
+     * Gets the title of the superior document (parent/grandparent/...) enclosed in square brackets.
+     *
+     * @access private
+     *
+     * @param int $partOf UID of the superior document
+     *
+     * @return string The bracketed superior title or an empty string if none was found
+     */
+    private function getTitleFromPartOf(int $partOf): string
+    {
+        $title = '';
+        $superiorTitle = AbstractDocument::getTitle($partOf, true);
+        if (!empty($superiorTitle)) {
+            $title = '[' . $superiorTitle . ']';
+        }
+        return $title;
+    }
+
 }
