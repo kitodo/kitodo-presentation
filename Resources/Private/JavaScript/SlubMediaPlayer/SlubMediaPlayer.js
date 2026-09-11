@@ -243,13 +243,12 @@ export default class SlubMediaPlayer extends DlfMediaPlayer {
 
   /**
    * @override
-   *
-   * Timecode priority:
-   * 1. Explicit query timecode from a shared link
-   * 2. Implicit start point from media.start
-   * 3. No value - the player starts default at 0 (Note timecode=0 gets also be accepted as a valid value.)
    */
   getTimeRange() {
+    // Timecode priority:
+    // 1. Explicit query timecode from a shared link
+    // 2. Implicit start point from media.start
+    // 3. No value - the player starts default at 0 (Note timecode=0 gets also be accepted as a valid value.)
     const sharedTimeRange = this.getSharedTimeRange();
 
     return sharedTimeRange ?? super.getTimeRange();
