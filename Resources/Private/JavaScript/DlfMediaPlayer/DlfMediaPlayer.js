@@ -215,11 +215,13 @@ export default class DlfMediaPlayer extends HTMLElement {
     this.autoplay_ = autoplay !== null && autoplay !== "false";
 
     this.timeRange = this.getTimeRange();
-    if (this.timeRange !== null) {
+
+    const sharedTimeRange = this.getSharedTimeRange();
+    if (sharedTimeRange !== null) {
       this.markers_.add({
         id: 'dlf.segment_shared',
-        startTime: this.timeRange.startTime,
-        endTime: this.timeRange.endTime ?? undefined,
+        startTime: sharedTimeRange.startTime,
+        endTime: sharedTimeRange.endTime ?? undefined,
         labelText: this.env.t('share.shared_timecode'),
         editable: false,
       });
@@ -742,6 +744,16 @@ export default class DlfMediaPlayer extends HTMLElement {
 
     // Choose default panel and active tool according to current mode/availability
     this.setDefaultPanel();
+  }
+
+  /**
+   * Returns the explicitly shared time range.
+   *
+   * @protected
+   * @returns {dlf.media.TimeRange | null}
+   */
+  getSharedTimeRange() {
+    return null;
   }
 
   /**

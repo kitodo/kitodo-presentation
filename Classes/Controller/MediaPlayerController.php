@@ -103,14 +103,21 @@ class MediaPlayerController extends AbstractController
         // Get additional audio/video-media URLs
         $mediaUrl = $this->collectAdditionalMediaUrls($doc, $pageNo, $thumbnailUseGroups, $waveformUseGroups, $imageUseGroups);
 
-        return [
-            'start' => $mediaChapters[$pageNo - 1]['timecode'] ?? '',
+        $media = [
             'mode' => $this->mediaPlayerService->determineInitialMode($mediaplayerSources, $mainVideoUseGroup),
             'chapters' => $mediaChapters,
             'metadata' => $doc->getToplevelMetadata(),
             'sources' => $mediaplayerSources,
             'url' => $mediaUrl,
         ];
+
+        // Determine the start timecode for the current page, if available
+        $startTimecode = $mediaChapters[$pageNo - 1]['timecode'] ?? null;
+        if ($startTimecode !== null && $startTimecode !== '') {
+            $media['start'] = $startTimecode;
+        }
+
+        return $media;
     }
 
 

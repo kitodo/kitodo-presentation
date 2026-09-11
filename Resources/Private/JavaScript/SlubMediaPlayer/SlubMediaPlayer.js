@@ -230,12 +230,7 @@ export default class SlubMediaPlayer extends DlfMediaPlayer {
   /**
    * @override
    */
-  getTimeRange() {
-    const baseValue = super.getTimeRange();
-    if (baseValue !== null) {
-      return baseValue;
-    }
-
+  getSharedTimeRange() {
     // TODO: Also from hash?
     const searchTimecode = this.env.getLocation().searchParams.get('timecode');
     if (searchTimecode) {
@@ -244,6 +239,19 @@ export default class SlubMediaPlayer extends DlfMediaPlayer {
     }
 
     return null;
+  }
+
+  /**
+   * @override
+   */
+  getTimeRange() {
+    // Timecode priority:
+    // 1. Explicit query timecode from a shared link
+    // 2. Implicit start point from media.start
+    // 3. No value - the player starts default at 0 (Note timecode=0 gets also be accepted as a valid value.)
+    const sharedTimeRange = this.getSharedTimeRange();
+
+    return sharedTimeRange ?? super.getTimeRange();
   }
 
   /**
