@@ -180,10 +180,13 @@ class OaiPmhTest extends FunctionalTestCase
     public function getRecordGivesErrorForUnknownIdentifier()
     {
         $client = new OaiPmhTypo3Client($this->baseUrl, $this->oaiPage, $this, false);
-        $xml = $client->request('GetRecord', [
-            'identifier' => 'oai:de:slub-dresden:db:id-doesnotexist',
-            'metadataPrefix' => 'mets',
-        ]);
+        $xml = $client->request(
+            'GetRecord',
+            [
+                'identifier' => 'oai:de:slub-dresden:db:id-doesnotexist',
+                'metadataPrefix' => 'mets',
+            ]
+        );
 
         self::assertEquals('idDoesNotExist', (string) $xml->error['code']);
         self::assertFalse(isset($xml->GetRecord));
