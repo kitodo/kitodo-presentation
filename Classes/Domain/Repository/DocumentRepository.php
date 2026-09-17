@@ -495,7 +495,7 @@ class DocumentRepository extends AbstractRepository
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 
-        $select = 'tx_dlf_documents.crdate AS crdate, tx_dlf_documents.tstamp AS tstamp, tx_dlf_documents.deleted AS deleted, tx_dlf_documents.hidden AS hidden, tx_dlf_documents.record_id AS record_id, tx_dlf_documents.document_format AS document_format, tx_dlf_documents.purl AS purl, tx_dlf_documents.urn AS urn, tx_dlf_documents.location AS location, GROUP_CONCAT(DISTINCT tx_dlf_collections_join.oai_name ORDER BY tx_dlf_collections_join.oai_name SEPARATOR " ") AS collections';
+        $select = 'tx_dlf_documents.uid AS uid, tx_dlf_documents.crdate AS crdate, tx_dlf_documents.tstamp AS tstamp, tx_dlf_documents.deleted AS deleted, tx_dlf_documents.hidden AS hidden, tx_dlf_documents.record_id AS record_id, tx_dlf_documents.document_format AS document_format, tx_dlf_documents.purl AS purl, tx_dlf_documents.urn AS urn, tx_dlf_documents.location AS location, GROUP_CONCAT(DISTINCT tx_dlf_collections_join.oai_name ORDER BY tx_dlf_collections_join.oai_name SEPARATOR " ") AS collections';
 
         $qb = $queryBuilder
             ->selectLiteral($select)
@@ -536,7 +536,7 @@ class DocumentRepository extends AbstractRepository
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
             ->getQueryBuilderForTable('tx_dlf_documents');
 
-        $select = 'tx_dlf_documents.crdate AS crdate, tx_dlf_documents.tstamp AS tstamp, tx_dlf_documents.deleted AS deleted, tx_dlf_documents.hidden AS hidden, tx_dlf_documents.record_id AS record_id, tx_dlf_documents.document_format AS document_format, tx_dlf_documents.purl AS purl, tx_dlf_documents.urn AS urn, tx_dlf_documents.location AS location, GROUP_CONCAT(DISTINCT tx_dlf_collections_join.oai_name ORDER BY tx_dlf_collections_join.oai_name SEPARATOR " ") AS collections';
+        $select = 'tx_dlf_documents.uid AS uid, tx_dlf_documents.crdate AS crdate, tx_dlf_documents.tstamp AS tstamp, tx_dlf_documents.deleted AS deleted, tx_dlf_documents.hidden AS hidden, tx_dlf_documents.record_id AS record_id, tx_dlf_documents.document_format AS document_format, tx_dlf_documents.purl AS purl, tx_dlf_documents.urn AS urn, tx_dlf_documents.location AS location, GROUP_CONCAT(DISTINCT tx_dlf_collections_join.oai_name ORDER BY tx_dlf_collections_join.oai_name SEPARATOR " ") AS collections';
 
         $qb = $queryBuilder
             ->selectLiteral($select)

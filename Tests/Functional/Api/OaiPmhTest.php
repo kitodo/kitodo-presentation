@@ -163,6 +163,45 @@ class OaiPmhTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function canGetRecord()
+    {
+        $client = new OaiPmhTypo3Client($this->baseUrl, $this->oaiPage, $this);
+        $xml = (new Endpoint($client))->getRecord('oai:de:slub-dresden:db:id-476251419', 'mets');
+
+        $record = $xml->GetRecord->record;
+        self::assertNotEmpty($record);
+        self::assertEquals('oai:de:slub-dresden:db:id-476251419', (string) $record->header->identifier);
+        self::assertEquals('2021-09-16T06:50:00Z', (string) $record->header->datestamp);
+        self::assertEquals(['collection-with-single-document', 'music'], (array) $record->header->setSpec);
+        self::assertNotEmpty($record->metadata);
+    }
+
+    #[Test]
+    public function getRecordGivesErrorForUnknownIdentifier()
+    {
+        $client = new OaiPmhTypo3Client($this->baseUrl, $this->oaiPage, $this, false);
+        $xml = $client->request('GetRecord', [
+            'identifier' => 'oai:de:slub-dresden:db:id-doesnotexist',
+            'metadataPrefix' => 'mets',
+        ]);
+
+        self::assertEquals('idDoesNotExist', (string) $xml->error['code']);
+        self::assertFalse(isset($xml->GetRecord));
+    }
+
+    #[Test]
+    public function getRecordGivesErrorForUnknownMetadataPrefix()
+    {
+        $client = new OaiPmhTypo3Client($this->baseUrl, $this->oaiPage, $this, false);
+        $xml = $client->request('GetRecord', [
+            'identifier' => 'oai:de:slub-dresden:db:id-476251419',
+            'metadataPrefix' => 'unknown_prefix',
+        ]);
+
+        self::assertEquals('cannotDisseminateFormat', (string) $xml->error['code']);
+    }
+
+    #[Test]
     public function noRecordsUntil1900()
     {
         $this->expectException(OaipmhException::class);
