@@ -10,6 +10,8 @@ general.forceAbsoluteUrl = 0
 general.forceAbsoluteUrlHttps = 0
 # cat=General; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.caching
 general.caching = 0
+# cat=General; type=int[0-86400]; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.failCacheLifetime
+general.failCacheLifetime = 300
 # cat=General; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.publishNewCollections
 general.publishNewCollections = 1
 # cat=General; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.unhideOnIndex

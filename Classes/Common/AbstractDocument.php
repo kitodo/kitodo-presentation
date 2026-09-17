@@ -520,15 +520,24 @@ abstract class AbstractDocument
         $documentFormat = null;
         $xml = null;
         $iiif = null;
+        $instance = null;
+
+        $cacheManager = GeneralUtility::makeInstance(DocumentCacheManager::class);
 
         if (!$forceReload) {
-            $instance = GeneralUtility::makeInstance(DocumentCacheManager::class)->get($location);
+            $instance = $cacheManager->get($location);
+            if ($instance === DocumentCacheManager::LOAD_FAILED) {
+                // A previous attempt to load this location failed; do not
+                // fetch it over the network again on every request.
+                $instance = null;
+                return $instance;
+            }
             if ($instance !== false) {
                 return $instance;
             }
         }
 
-        GeneralUtility::makeInstance(DocumentCacheManager::class)->remove($location);
+        $cacheManager->remove($location);
         $instance = null;
 
         // Try to load a file from the url
@@ -559,7 +568,11 @@ abstract class AbstractDocument
         }
 
         if ($instance !== null) {
-            GeneralUtility::makeInstance(DocumentCacheManager::class)->set($location, $instance);
+            $cacheManager->set($location, $instance);
+        } else {
+            // Remember the failed load so that the same unloadable location
+            // is not fetched over the network again on every request.
+            $cacheManager->setFail($location);
         }
 
         return $instance;
