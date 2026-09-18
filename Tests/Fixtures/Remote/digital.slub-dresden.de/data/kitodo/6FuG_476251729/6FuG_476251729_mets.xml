@@ -1,0 +1,616 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mets="http://www.loc.gov/METS/" xmlns:dv="http://dfg-viewer.de/" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:slub="http://www.slub-dresden.de/namespace" xmlns:slubarchiv="http://slubarchiv.slub-dresden.de/rights1" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/mods.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
+   <mets:metsHdr CREATEDATE="2019-04-08T07:06:54.000+02:00" LASTMODDATE="2025-05-16T08:24:58.561+02:00"/>
+   <mets:dmdSec ID="uuid-017a6d80-fde9-3445-a239-bc86ba0c9f14">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>6 Fugues - Go. S. 317</mods:title>
+                  <mods:subTitle>keyb</mods:subTitle>
+               </mods:titleInfo>
+               <mods:name type="corporate">
+                  <mods:displayForm>SLUB Dresden</mods:displayForm>
+                  <mods:role>
+                     <mods:roleTerm authority="marcrelator" type="code">own</mods:roleTerm>
+                  </mods:role>
+               </mods:name>
+               <mods:name type="corporate">
+                  <mods:displayForm>Bach-Archiv Leipzig</mods:displayForm>
+                  <mods:role>
+                     <mods:roleTerm authority="marcrelator" type="code">len</mods:roleTerm>
+                  </mods:role>
+                  <mods:role>
+                     <mods:roleTerm authority="marcrelator" type="code">lso</mods:roleTerm>
+                  </mods:role>
+               </mods:name>
+               <mods:name type="corporate">
+                  <mods:displayForm>LDP Sachsen</mods:displayForm>
+                  <mods:role>
+                     <mods:roleTerm authority="marcrelator" type="code">fnd</mods:roleTerm>
+                  </mods:role>
+               </mods:name>
+               <mods:originInfo eventType="publication">
+                  <mods:place>
+                     <mods:placeTerm type="text">[S.l.]</mods:placeTerm>
+                  </mods:place>
+                  <mods:dateIssued encoding="iso8601" keyDate="yes">1820</mods:dateIssued>
+                  <mods:displayDate>[um 1820]</mods:displayDate>
+                  <mods:edition>[Stimme]</mods:edition>
+               </mods:originInfo>
+               <mods:language>
+                  <mods:languageTerm type="code" authority="rfc3066">zxx</mods:languageTerm>
+               </mods:language>
+               <mods:physicalDescription>
+                  <mods:extent>Abschrift</mods:extent>
+                  <mods:digitalOrigin>reformatted digital</mods:digitalOrigin>
+               </mods:physicalDescription>
+               <mods:relatedItem type="series">
+                  <mods:titleInfo>
+                     <mods:title lang="ger">Musik</mods:title>
+                  </mods:titleInfo>
+               </mods:relatedItem>
+               <mods:relatedItem type="series">
+                  <mods:titleInfo>
+                     <mods:title lang="ger">Projekt: Bestände im Bach-Archiv Leipzig</mods:title>
+                  </mods:titleInfo>
+               </mods:relatedItem>
+               <mods:relatedItem type="series">
+                  <mods:titleInfo>
+                     <mods:title lang="ger">LDP: Bach-Archiv Leipzig - Sammlung Manfred Gorke</mods:title>
+                  </mods:titleInfo>
+               </mods:relatedItem>
+               <mods:identifier type="purl">http://digital.slub-dresden.de/id476251729</mods:identifier>
+               <mods:identifier type="urn">urn:nbn:de:bsz:14-db-id4762517292</mods:identifier>
+               <mods:identifier type="swb-ppn-digital">476251729</mods:identifier>
+               <mods:identifier type="rism">RISM-A/II-200043625</mods:identifier>
+               <mods:identifier type="kitodo">167647</mods:identifier>
+               <mods:location>
+                  <mods:physicalLocation valueURI="https://ld.zdb-services.de/resource/organisations/DE-L326">Bach-Archiv, Bibliothek</mods:physicalLocation>
+                  <mods:shelfLocator>Go. S. 317</mods:shelfLocator>
+               </mods:location>
+               <mods:accessCondition type="use and reproduction" xlink:href="http://creativecommons.org/publicdomain/mark/1.0/">Public Domain Mark 1.0</mods:accessCondition>
+               <mods:accessCondition type="restriction on access" xlink:href="http://purl.org/coar/access_right/c_abf2" displayLabel="Access Status">Open Access</mods:accessCondition>
+               <mods:accessCondition type="slubRightsRecord">
+                  <slubarchiv:rightsRecord>
+                     <slubarchiv:copyrightStatus>publicdomain</slubarchiv:copyrightStatus>
+                  </slubarchiv:rightsRecord>
+               </mods:accessCondition>
+               <mods:extension>
+                  <slub:slub>
+                     <slub:id type="digital">476251729</slub:id>
+                     <slub:id type="tsl-ats">6FuG</slub:id>
+                     <slub:footer>slubbal</slub:footer>
+                  </slub:slub>
+               </mods:extension>
+               <mods:recordInfo>
+                  <mods:recordIdentifier source="http://digital.slub-dresden.de/oai/">oai:de:slub-dresden:db:id-476251729</mods:recordIdentifier>
+               </mods:recordInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-349aaab5-14aa-3cb1-a8f0-d673996c45cc">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[Händel, Georg Friedrich; Mozart, Wolfgang Amadeus; Bach, Johann Sebastian]: (6 Klavierfugen von Händel, W. A. Mozart und J. S. Bach)</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-75a7f51c-0493-3860-8bed-12adf2882b2e">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[1 unbenannt] - F. Händel</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-76157dfe-172d-3087-9203-6ae6809c2cb5">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[2 unbenannt] - Mozart. [aus KV 399]</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-9d866665-94c2-3bc6-9298-ee9b44b8947c">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[3 unbenannt] - Händel.</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-5550ea93-b326-37ec-ab29-afd2c43a7ecf">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[4 unbenannt]</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-08f3c7fb-7fd6-33f9-a282-531781923e9d">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[5] Fuga de Seb. Bach. [BWV 873/2]</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-c0f27d42-d114-3d6c-895a-8bfb6b5f6154">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[6 unbenannt] - Bach. [BWV 846/2]</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-04c693c1-bb12-3fab-872e-1842420d7777">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>Originalumschlag</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:amdSec ID="AMD">
+      <mets:rightsMD ID="uuid-2e47d8d8-cb0b-339c-9907-27cc3a0fe9ea">
+         <mets:mdWrap MDTYPE="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="DVRIGHTS">
+            <mets:xmlData>
+               <dv:rights>
+                  <dv:owner>Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden</dv:owner>
+                  <dv:ownerLogo>https://digital.slub-dresden.de/fileadmin/images/dfgviewer_logo_ldp.gif</dv:ownerLogo>
+                  <dv:ownerSiteURL>https://www.slub-dresden.de/</dv:ownerSiteURL>
+                  <dv:ownerContact>mailto:digital@slub-dresden.de</dv:ownerContact>
+                  <dv:license>pdm</dv:license>
+               </dv:rights>
+            </mets:xmlData>
+         </mets:mdWrap>
+      </mets:rightsMD>
+      <mets:digiprovMD ID="uuid-32a3c6af-54ef-3770-85ce-5b03238cc663">
+         <mets:mdWrap MDTYPE="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="DVLINKS">
+            <mets:xmlData>
+               <dv:links>
+                  <dv:presentation>https://digital.slub-dresden.de/id476251729</dv:presentation>
+                  <dv:reference>https://katalog.slub-dresden.de/ppn/476251729</dv:reference>
+               </dv:links>
+            </mets:xmlData>
+         </mets:mdWrap>
+      </mets:digiprovMD>
+   </mets:amdSec>
+   <mets:fileSec>
+      <mets:fileGrp USE="DEFAULT">
+         <mets:file ID="uuid-379c3717-f610-4f69-ba18-0e49b879e741" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000001.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c12f7ec9-6c9e-4e8a-b52e-054d87530e0a" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000002.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-3817feb3-55d3-43b1-9d8f-110a0e0dfada" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000003.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-1e98de28-9607-4f98-a366-7db25601cc16" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000004.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-efdf21d0-184e-4d65-b627-261f251809b5" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000005.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-bdecd695-a643-49e1-89e3-f83050858744" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000006.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-af934f42-ae63-4e3f-b037-2cfdf91a6337" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000007.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-4847cacb-d328-41dd-a703-ca2688bbfe7b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000008.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b693e1c1-33b5-4d22-a05f-8cfd4333c3fa" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000009.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-1ae706a1-0615-46b5-b156-89b0a6dc6fde" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000010.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-61ddefb9-dfc0-4ca3-a298-5493e11f7e00" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000011.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c115096c-ea95-4011-8a94-c725e33076a9" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000012.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-3748889f-9aea-4ead-97c2-402c8d33452e" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000013.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-aa80fef8-eade-40b1-9daf-352786b1ab7b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000014.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-3f511d82-18eb-42f3-9e77-bc6d1ecc0e5a" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000015.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-9c6485a4-8d8a-48f9-a754-be6a020a32a9" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000016.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7955c1f3-a493-484f-aac8-c7bf9e4d770b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000017.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-1e0a0f35-adf1-4960-9d6c-357f06309c2d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000018.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+      </mets:fileGrp>
+      <mets:fileGrp USE="DOWNLOAD">
+         <mets:file ID="uuid-45fd67e2-26c8-4a66-82ce-f446c42ebdec" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000001.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-9f745664-7b23-455a-8710-08d1b9625b19" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000002.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-72837871-af8f-489c-ac71-20a3e237504c" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000003.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-d7e92fd8-d315-49a9-96d6-8a29fe29d3e0" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000004.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-cdbb7f4b-9c16-45b8-bcb8-249a89ec27d8" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000005.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-78b5f4f9-3744-4e71-901d-119899199549" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000006.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c25a3701-0eef-4554-af42-b844e1890e32" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000007.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7ba6304b-e08b-48b5-9da5-3a18277e6fb6" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000008.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b4d8c642-f707-4051-ac71-f49eeeaf5e1b" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000009.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-1aa05012-25c5-41c0-8e39-ba25cff2fb30" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000010.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-28dc3631-9f73-4fca-a5da-57b2c140fcc5" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000011.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b71c6889-f2bb-4d84-97f7-345506c3b1d3" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000012.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-07054399-debb-4954-b0c9-788142c51912" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000013.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-e304e493-7ac5-4d36-baa0-3f7034ea0903" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000014.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-a5096cbe-4b37-4242-aada-3ada277f93b1" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000015.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-f918f743-ffa3-4187-a2d9-71ac1f44e8e6" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000016.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-0322f499-bc34-4dcd-8777-74d859a57d71" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000017.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-d8846491-15a1-4c59-ac99-b9ae65794ce0" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000018.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+      <mets:file ID="FULLDOWNLOAD" MIMETYPE="application/pdf"><mets:FLocat LOCTYPE="URL" xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/6FuG_476251729.pdf"/></mets:file></mets:fileGrp>
+      <mets:fileGrp USE="ORIGINAL">
+         <mets:file ID="uuid-83589a42-72c8-4cc7-a377-d9bad2178389" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000001.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-86311f9f-ed63-43f0-ad20-f9e8df856120" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000002.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-8af939fe-62c8-452c-af63-5de3125b40c5" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000003.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-a234527b-45ae-4461-a86b-7c984495436b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000004.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-30f0c60c-4b41-443e-87c0-0228881125d9" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000005.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-1e55071b-3b80-4519-8dce-297456f606c1" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000006.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-1699a56f-576b-46a0-a377-ff3713ec8d9d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000007.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-f04fb41c-68cc-4b44-9249-9aa3cc9c5ca7" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000008.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-fd59c3eb-cf3a-4ac9-8b11-ec38c08df8e6" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000009.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-d86e7671-0b41-4479-8a9c-fa3e188e314b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000010.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c882afdc-984c-4a4e-be14-19f8115dd0dd" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000011.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-1f6d536a-56c7-419d-a2d3-bbeff2e6d64f" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000012.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c2241605-1c39-49ed-92b2-58bbe5923214" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000013.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-59f59441-dff1-4456-ad5b-b7f4321be113" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000014.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-68b418ce-7b4f-4869-b55a-bfebf33a8ae9" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000015.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-d819d365-cd30-46f9-a2a9-6a8630d423a6" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000016.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-6d2f8e31-7a05-400f-85a5-8faf6ed12260" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000017.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-81244d0f-2220-4b5a-967e-b276b707826c" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000018.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+      </mets:fileGrp>
+      <mets:fileGrp USE="THUMBS">
+         <mets:file ID="uuid-bf2e7e41-b70d-475b-9bf6-71870a79c8c8" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000001.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-63f7d241-dba9-48a5-88d3-fbf72b3f1265" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000002.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-a8f3a6c5-3919-45f3-bda6-66f91a3988bd" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000003.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-68de7976-9580-4704-8a37-059d99de0df1" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000004.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-f9be3274-2f83-4853-afc3-7fe29b86db5f" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000005.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-12c2e2c3-134d-47aa-9871-570f2a093192" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000006.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7e23943d-2b59-4712-ab2a-edd57ab1e309" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000007.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-a40897f5-d2dc-4da0-9ed1-7f7b58373e90" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000008.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-6a89e092-57f0-40f8-aefc-fa11f155bd2e" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000009.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-76b0ef9b-7ee4-4cde-a45c-2c7ebc6dc781" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000010.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-991168ed-8d0c-4305-9322-f991258dc517" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000011.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-035010b8-6c26-4d93-ad4f-ea8c1b94098b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000012.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-267d062c-6de9-47a7-95f3-bcca9ebbc757" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000013.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-06d43570-dc14-47b1-bfe3-69e46a326a22" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000014.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-ea492774-6aa2-4c7d-a12d-41bda651a90f" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000015.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-cd6bb350-647a-49e2-aa75-120cce391042" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000016.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7f4a4b8b-0e75-4797-9505-f0ecd37fec03" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000017.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-22b53818-f140-4328-8a17-b5861a2eaf31" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/6FuG_476251729/6FuG_476251729_tif/jpegs/00000018.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+      </mets:fileGrp>
+   </mets:fileSec>
+   <mets:structMap TYPE="PHYSICAL">
+      <mets:div TYPE="physSequence" ID="PHYS_0000"><mets:fptr FILEID="FULLDOWNLOAD"/>
+         <mets:div ID="PHYS_0001" TYPE="page" ORDER="1" ORDERLABEL="1">
+            <mets:fptr FILEID="uuid-83589a42-72c8-4cc7-a377-d9bad2178389"/>
+            <mets:fptr FILEID="uuid-bf2e7e41-b70d-475b-9bf6-71870a79c8c8"/>
+            <mets:fptr FILEID="uuid-379c3717-f610-4f69-ba18-0e49b879e741"/>
+            <mets:fptr FILEID="uuid-45fd67e2-26c8-4a66-82ce-f446c42ebdec"/>
+         </mets:div>
+         <mets:div ID="PHYS_0002" TYPE="page" ORDER="2" ORDERLABEL="2">
+            <mets:fptr FILEID="uuid-86311f9f-ed63-43f0-ad20-f9e8df856120"/>
+            <mets:fptr FILEID="uuid-63f7d241-dba9-48a5-88d3-fbf72b3f1265"/>
+            <mets:fptr FILEID="uuid-c12f7ec9-6c9e-4e8a-b52e-054d87530e0a"/>
+            <mets:fptr FILEID="uuid-9f745664-7b23-455a-8710-08d1b9625b19"/>
+         </mets:div>
+         <mets:div ID="PHYS_0003" TYPE="page" ORDER="3" ORDERLABEL="3">
+            <mets:fptr FILEID="uuid-8af939fe-62c8-452c-af63-5de3125b40c5"/>
+            <mets:fptr FILEID="uuid-a8f3a6c5-3919-45f3-bda6-66f91a3988bd"/>
+            <mets:fptr FILEID="uuid-3817feb3-55d3-43b1-9d8f-110a0e0dfada"/>
+            <mets:fptr FILEID="uuid-72837871-af8f-489c-ac71-20a3e237504c"/>
+         </mets:div>
+         <mets:div ID="PHYS_0004" TYPE="page" ORDER="4" ORDERLABEL="4">
+            <mets:fptr FILEID="uuid-a234527b-45ae-4461-a86b-7c984495436b"/>
+            <mets:fptr FILEID="uuid-68de7976-9580-4704-8a37-059d99de0df1"/>
+            <mets:fptr FILEID="uuid-1e98de28-9607-4f98-a366-7db25601cc16"/>
+            <mets:fptr FILEID="uuid-d7e92fd8-d315-49a9-96d6-8a29fe29d3e0"/>
+         </mets:div>
+         <mets:div ID="PHYS_0005" TYPE="page" ORDER="5" ORDERLABEL="5">
+            <mets:fptr FILEID="uuid-30f0c60c-4b41-443e-87c0-0228881125d9"/>
+            <mets:fptr FILEID="uuid-f9be3274-2f83-4853-afc3-7fe29b86db5f"/>
+            <mets:fptr FILEID="uuid-efdf21d0-184e-4d65-b627-261f251809b5"/>
+            <mets:fptr FILEID="uuid-cdbb7f4b-9c16-45b8-bcb8-249a89ec27d8"/>
+         </mets:div>
+         <mets:div ID="PHYS_0006" TYPE="page" ORDER="6" ORDERLABEL="6">
+            <mets:fptr FILEID="uuid-1e55071b-3b80-4519-8dce-297456f606c1"/>
+            <mets:fptr FILEID="uuid-12c2e2c3-134d-47aa-9871-570f2a093192"/>
+            <mets:fptr FILEID="uuid-bdecd695-a643-49e1-89e3-f83050858744"/>
+            <mets:fptr FILEID="uuid-78b5f4f9-3744-4e71-901d-119899199549"/>
+         </mets:div>
+         <mets:div ID="PHYS_0007" TYPE="page" ORDER="7" ORDERLABEL="7">
+            <mets:fptr FILEID="uuid-1699a56f-576b-46a0-a377-ff3713ec8d9d"/>
+            <mets:fptr FILEID="uuid-7e23943d-2b59-4712-ab2a-edd57ab1e309"/>
+            <mets:fptr FILEID="uuid-af934f42-ae63-4e3f-b037-2cfdf91a6337"/>
+            <mets:fptr FILEID="uuid-c25a3701-0eef-4554-af42-b844e1890e32"/>
+         </mets:div>
+         <mets:div ID="PHYS_0008" TYPE="page" ORDER="8" ORDERLABEL="8">
+            <mets:fptr FILEID="uuid-f04fb41c-68cc-4b44-9249-9aa3cc9c5ca7"/>
+            <mets:fptr FILEID="uuid-a40897f5-d2dc-4da0-9ed1-7f7b58373e90"/>
+            <mets:fptr FILEID="uuid-4847cacb-d328-41dd-a703-ca2688bbfe7b"/>
+            <mets:fptr FILEID="uuid-7ba6304b-e08b-48b5-9da5-3a18277e6fb6"/>
+         </mets:div>
+         <mets:div ID="PHYS_0009" TYPE="page" ORDER="9" ORDERLABEL="9">
+            <mets:fptr FILEID="uuid-fd59c3eb-cf3a-4ac9-8b11-ec38c08df8e6"/>
+            <mets:fptr FILEID="uuid-6a89e092-57f0-40f8-aefc-fa11f155bd2e"/>
+            <mets:fptr FILEID="uuid-b693e1c1-33b5-4d22-a05f-8cfd4333c3fa"/>
+            <mets:fptr FILEID="uuid-b4d8c642-f707-4051-ac71-f49eeeaf5e1b"/>
+         </mets:div>
+         <mets:div ID="PHYS_0010" TYPE="page" ORDER="10" ORDERLABEL="10">
+            <mets:fptr FILEID="uuid-d86e7671-0b41-4479-8a9c-fa3e188e314b"/>
+            <mets:fptr FILEID="uuid-76b0ef9b-7ee4-4cde-a45c-2c7ebc6dc781"/>
+            <mets:fptr FILEID="uuid-1ae706a1-0615-46b5-b156-89b0a6dc6fde"/>
+            <mets:fptr FILEID="uuid-1aa05012-25c5-41c0-8e39-ba25cff2fb30"/>
+         </mets:div>
+         <mets:div ID="PHYS_0011" TYPE="page" ORDER="11" ORDERLABEL="11">
+            <mets:fptr FILEID="uuid-c882afdc-984c-4a4e-be14-19f8115dd0dd"/>
+            <mets:fptr FILEID="uuid-991168ed-8d0c-4305-9322-f991258dc517"/>
+            <mets:fptr FILEID="uuid-61ddefb9-dfc0-4ca3-a298-5493e11f7e00"/>
+            <mets:fptr FILEID="uuid-28dc3631-9f73-4fca-a5da-57b2c140fcc5"/>
+         </mets:div>
+         <mets:div ID="PHYS_0012" TYPE="page" ORDER="12" ORDERLABEL="12">
+            <mets:fptr FILEID="uuid-1f6d536a-56c7-419d-a2d3-bbeff2e6d64f"/>
+            <mets:fptr FILEID="uuid-035010b8-6c26-4d93-ad4f-ea8c1b94098b"/>
+            <mets:fptr FILEID="uuid-c115096c-ea95-4011-8a94-c725e33076a9"/>
+            <mets:fptr FILEID="uuid-b71c6889-f2bb-4d84-97f7-345506c3b1d3"/>
+         </mets:div>
+         <mets:div ID="PHYS_0013" TYPE="page" ORDER="13" ORDERLABEL="13">
+            <mets:fptr FILEID="uuid-c2241605-1c39-49ed-92b2-58bbe5923214"/>
+            <mets:fptr FILEID="uuid-267d062c-6de9-47a7-95f3-bcca9ebbc757"/>
+            <mets:fptr FILEID="uuid-3748889f-9aea-4ead-97c2-402c8d33452e"/>
+            <mets:fptr FILEID="uuid-07054399-debb-4954-b0c9-788142c51912"/>
+         </mets:div>
+         <mets:div ID="PHYS_0014" TYPE="page" ORDER="14" ORDERLABEL="14">
+            <mets:fptr FILEID="uuid-59f59441-dff1-4456-ad5b-b7f4321be113"/>
+            <mets:fptr FILEID="uuid-06d43570-dc14-47b1-bfe3-69e46a326a22"/>
+            <mets:fptr FILEID="uuid-aa80fef8-eade-40b1-9daf-352786b1ab7b"/>
+            <mets:fptr FILEID="uuid-e304e493-7ac5-4d36-baa0-3f7034ea0903"/>
+         </mets:div>
+         <mets:div ID="PHYS_0015" TYPE="page" ORDER="15" ORDERLABEL="15">
+            <mets:fptr FILEID="uuid-68b418ce-7b4f-4869-b55a-bfebf33a8ae9"/>
+            <mets:fptr FILEID="uuid-ea492774-6aa2-4c7d-a12d-41bda651a90f"/>
+            <mets:fptr FILEID="uuid-3f511d82-18eb-42f3-9e77-bc6d1ecc0e5a"/>
+            <mets:fptr FILEID="uuid-a5096cbe-4b37-4242-aada-3ada277f93b1"/>
+         </mets:div>
+         <mets:div ID="PHYS_0016" TYPE="page" ORDER="16" ORDERLABEL="16">
+            <mets:fptr FILEID="uuid-d819d365-cd30-46f9-a2a9-6a8630d423a6"/>
+            <mets:fptr FILEID="uuid-cd6bb350-647a-49e2-aa75-120cce391042"/>
+            <mets:fptr FILEID="uuid-9c6485a4-8d8a-48f9-a754-be6a020a32a9"/>
+            <mets:fptr FILEID="uuid-f918f743-ffa3-4187-a2d9-71ac1f44e8e6"/>
+         </mets:div>
+         <mets:div ID="PHYS_0017" TYPE="page" ORDER="17" ORDERLABEL=" - ">
+            <mets:fptr FILEID="uuid-6d2f8e31-7a05-400f-85a5-8faf6ed12260"/>
+            <mets:fptr FILEID="uuid-7f4a4b8b-0e75-4797-9505-f0ecd37fec03"/>
+            <mets:fptr FILEID="uuid-7955c1f3-a493-484f-aac8-c7bf9e4d770b"/>
+            <mets:fptr FILEID="uuid-0322f499-bc34-4dcd-8777-74d859a57d71"/>
+         </mets:div>
+         <mets:div ID="PHYS_0018" TYPE="page" ORDER="18" ORDERLABEL=" - ">
+            <mets:fptr FILEID="uuid-81244d0f-2220-4b5a-967e-b276b707826c"/>
+            <mets:fptr FILEID="uuid-22b53818-f140-4328-8a17-b5861a2eaf31"/>
+            <mets:fptr FILEID="uuid-1e0a0f35-adf1-4960-9d6c-357f06309c2d"/>
+            <mets:fptr FILEID="uuid-d8846491-15a1-4c59-ac99-b9ae65794ce0"/>
+         </mets:div>
+      </mets:div>
+   </mets:structMap>
+   <mets:structMap TYPE="LOGICAL">
+      <mets:div ID="LOG_0000" LABEL="6 Fugues - Go. S. 317" ORDERLABEL="6 Fugues - Go. S. 317" DMDID="uuid-017a6d80-fde9-3445-a239-bc86ba0c9f14" ADMID="AMD" TYPE="manuscript">
+         <mets:div ID="LOG_0001" LABEL="[Händel, Georg Friedrich; Mozart, Wolfgang Amadeus; Bach, Johann Sebastian]: (6 Klavierfugen von Händel, W. A. Mozart und J. S. Bach)" ORDERLABEL="[Händel, Georg Friedrich; Mozart, Wolfgang Amadeus; Bach, Johann Sebastian]: (6 Klavierfugen von Händel, W. A. Mozart und J. S. Bach)" DMDID="uuid-349aaab5-14aa-3cb1-a8f0-d673996c45cc" TYPE="other" ORDER="1">
+            <mets:div ID="LOG_0002" LABEL="[1 unbenannt] - F. Händel" ORDERLABEL="[1 unbenannt] - F. Händel" DMDID="uuid-75a7f51c-0493-3860-8bed-12adf2882b2e" TYPE="other" ORDER="1"/>
+            <mets:div ID="LOG_0003" LABEL="[2 unbenannt] - Mozart. [aus KV 399]" ORDERLABEL="[2 unbenannt] - Mozart. [aus KV 399]" DMDID="uuid-76157dfe-172d-3087-9203-6ae6809c2cb5" TYPE="other" ORDER="2"/>
+            <mets:div ID="LOG_0004" LABEL="[3 unbenannt] - Händel." ORDERLABEL="[3 unbenannt] - Händel." DMDID="uuid-9d866665-94c2-3bc6-9298-ee9b44b8947c" TYPE="other" ORDER="3"/>
+            <mets:div ID="LOG_0005" LABEL="[4 unbenannt]" ORDERLABEL="[4 unbenannt]" DMDID="uuid-5550ea93-b326-37ec-ab29-afd2c43a7ecf" TYPE="other" ORDER="4"/>
+            <mets:div ID="LOG_0006" LABEL="[5] Fuga de Seb. Bach. [BWV 873/2]" ORDERLABEL="[5] Fuga de Seb. Bach. [BWV 873/2]" DMDID="uuid-08f3c7fb-7fd6-33f9-a282-531781923e9d" TYPE="other" ORDER="5"/>
+            <mets:div ID="LOG_0007" LABEL="[6 unbenannt] - Bach. [BWV 846/2]" ORDERLABEL="[6 unbenannt] - Bach. [BWV 846/2]" DMDID="uuid-c0f27d42-d114-3d6c-895a-8bfb6b5f6154" TYPE="other" ORDER="6"/>
+         </mets:div>
+         <mets:div ID="LOG_0008" LABEL="Originalumschlag" ORDERLABEL="Originalumschlag" DMDID="uuid-04c693c1-bb12-3fab-872e-1842420d7777" TYPE="jacket" ORDER="2"/>
+      </mets:div>
+   </mets:structMap>
+   <mets:structLink>
+      <mets:smLink xlink:to="PHYS_0001" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0002" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0003" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0004" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0005" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0006" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0007" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0008" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0009" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0010" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0011" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0012" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0013" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0014" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0015" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0016" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0017" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0018" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0001" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0002" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0003" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0004" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0005" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0006" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0007" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0008" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0009" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0010" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0011" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0012" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0013" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0014" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0015" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0016" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0001" xlink:from="LOG_0002"/>
+      <mets:smLink xlink:to="PHYS_0002" xlink:from="LOG_0002"/>
+      <mets:smLink xlink:to="PHYS_0003" xlink:from="LOG_0002"/>
+      <mets:smLink xlink:to="PHYS_0004" xlink:from="LOG_0002"/>
+      <mets:smLink xlink:to="PHYS_0004" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0005" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0006" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0007" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0007" xlink:from="LOG_0004"/>
+      <mets:smLink xlink:to="PHYS_0008" xlink:from="LOG_0004"/>
+      <mets:smLink xlink:to="PHYS_0009" xlink:from="LOG_0004"/>
+      <mets:smLink xlink:to="PHYS_0009" xlink:from="LOG_0005"/>
+      <mets:smLink xlink:to="PHYS_0010" xlink:from="LOG_0005"/>
+      <mets:smLink xlink:to="PHYS_0011" xlink:from="LOG_0005"/>
+      <mets:smLink xlink:to="PHYS_0012" xlink:from="LOG_0005"/>
+      <mets:smLink xlink:to="PHYS_0012" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0013" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0014" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0015" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0015" xlink:from="LOG_0007"/>
+      <mets:smLink xlink:to="PHYS_0016" xlink:from="LOG_0007"/>
+      <mets:smLink xlink:to="PHYS_0017" xlink:from="LOG_0008"/>
+      <mets:smLink xlink:to="PHYS_0018" xlink:from="LOG_0008"/>
+   </mets:structLink>
+</mets:mets>

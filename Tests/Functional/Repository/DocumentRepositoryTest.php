@@ -82,7 +82,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
     #[Test]
     public function canFindOneByParametersWithLocationReturnsDocumentWithLocation(): void
     {
-        $location = 'https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_mets.xml';
+        $location = 'http://web:8001/Tests/Fixtures/Remote/digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_mets.xml';
         $result = $this->documentRepository->findOneByParameters(['location' => $location]);
         self::assertInstanceOf(Document::class, $result);
         self::assertEquals($location, $result->getLocation());
