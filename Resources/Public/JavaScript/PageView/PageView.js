@@ -905,6 +905,13 @@ dlfViewer.prototype.init = function(controlNames) {
                 //        undefinedHTML: '&nbsp;'
                 //    })];
             this.view = dlfUtils.createOlView(this.images);
+            // The map container normally gets its height from the theme CSS.
+            // Without one (e.g. a fresh installation), it is 0 pixels tall
+            // and OpenLayers renders nothing, so apply a fallback height.
+            var mapContainer = document.getElementById(this.div);
+            if (mapContainer && getComputedStyle(mapContainer).height === '0px') {
+                mapContainer.style.height = '57em';
+            }
             // create map
             this.map = new ol.Map({
                 layers: layers,
