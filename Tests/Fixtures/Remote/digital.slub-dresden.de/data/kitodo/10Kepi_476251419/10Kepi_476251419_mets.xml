@@ -1,0 +1,1931 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mets:mets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:mets="http://www.loc.gov/METS/" xmlns:dv="http://dfg-viewer.de/" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:slub="http://www.slub-dresden.de/namespace" xmlns:slubarchiv="http://slubarchiv.slub-dresden.de/rights1" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/mods.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
+   <mets:metsHdr CREATEDATE="2019-04-08T07:06:42.000+02:00" LASTMODDATE="2025-05-16T08:22:12.790+02:00"/>
+   <mets:dmdSec ID="uuid-017a6d80-fde9-3445-a239-bc86ba0c9f14">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>10 Keyboard pieces - Go. S. 658</mods:title>
+                  <mods:subTitle>pf</mods:subTitle>
+               </mods:titleInfo>
+               <mods:name type="corporate">
+                  <mods:displayForm>SLUB Dresden</mods:displayForm>
+                  <mods:role>
+                     <mods:roleTerm authority="marcrelator" type="code">own</mods:roleTerm>
+                  </mods:role>
+               </mods:name>
+               <mods:name type="corporate">
+                  <mods:displayForm>Bach-Archiv Leipzig</mods:displayForm>
+                  <mods:role>
+                     <mods:roleTerm authority="marcrelator" type="code">len</mods:roleTerm>
+                  </mods:role>
+                  <mods:role>
+                     <mods:roleTerm authority="marcrelator" type="code">lso</mods:roleTerm>
+                  </mods:role>
+               </mods:name>
+               <mods:name type="corporate">
+                  <mods:displayForm>LDP Sachsen</mods:displayForm>
+                  <mods:role>
+                     <mods:roleTerm authority="marcrelator" type="code">fnd</mods:roleTerm>
+                  </mods:role>
+               </mods:name>
+               <mods:originInfo eventType="publication">
+                  <mods:place>
+                     <mods:placeTerm type="text">[S.l.]</mods:placeTerm>
+                  </mods:place>
+                  <mods:dateIssued encoding="iso8601" keyDate="yes">1800</mods:dateIssued>
+                  <mods:displayDate>[1759-1800]</mods:displayDate>
+                  <mods:edition>[Stimme]</mods:edition>
+               </mods:originInfo>
+               <mods:language>
+                  <mods:languageTerm type="code" authority="rfc3066">zxx</mods:languageTerm>
+               </mods:language>
+               <mods:physicalDescription>
+                  <mods:extent>Abschrift</mods:extent>
+                  <mods:digitalOrigin>reformatted digital</mods:digitalOrigin>
+               </mods:physicalDescription>
+               <mods:relatedItem type="series">
+                  <mods:titleInfo>
+                     <mods:title lang="ger">Musik</mods:title>
+                  </mods:titleInfo>
+               </mods:relatedItem>
+               <mods:relatedItem type="series">
+                  <mods:titleInfo>
+                     <mods:title lang="ger">Projekt: Bestände im Bach-Archiv Leipzig</mods:title>
+                  </mods:titleInfo>
+               </mods:relatedItem>
+               <mods:relatedItem type="series">
+                  <mods:titleInfo>
+                     <mods:title lang="ger">LDP: Bach-Archiv Leipzig - Sammlung Manfred Gorke</mods:title>
+                  </mods:titleInfo>
+               </mods:relatedItem>
+               <mods:identifier type="purl">http://digital.slub-dresden.de/id476251419</mods:identifier>
+               <mods:identifier type="urn">urn:nbn:de:bsz:14-db-id4762514197</mods:identifier>
+               <mods:identifier type="swb-ppn-digital">476251419</mods:identifier>
+               <mods:identifier type="rism">RISM-A/II-220039392</mods:identifier>
+               <mods:identifier type="kitodo">168196</mods:identifier>
+               <mods:location>
+                  <mods:physicalLocation valueURI="https://ld.zdb-services.de/resource/organisations/DE-L326">Bach-Archiv, Bibliothek</mods:physicalLocation>
+                  <mods:shelfLocator>Go. S. 658</mods:shelfLocator>
+               </mods:location>
+               <mods:accessCondition type="use and reproduction" xlink:href="http://creativecommons.org/publicdomain/mark/1.0/">Public Domain Mark 1.0</mods:accessCondition>
+               <mods:accessCondition type="restriction on access" xlink:href="http://purl.org/coar/access_right/c_abf2" displayLabel="Access Status">Open Access</mods:accessCondition>
+               <mods:accessCondition type="slubRightsRecord">
+                  <slubarchiv:rightsRecord>
+                     <slubarchiv:copyrightStatus>publicdomain</slubarchiv:copyrightStatus>
+                  </slubarchiv:rightsRecord>
+               </mods:accessCondition>
+               <mods:extension>
+                  <slub:slub>
+                     <slub:id type="digital">476251419</slub:id>
+                     <slub:id type="tsl-ats">10Kepi</slub:id>
+                     <slub:footer>slubbal</slub:footer>
+                  </slub:slub>
+               </mods:extension>
+               <mods:recordInfo>
+                  <mods:recordIdentifier source="http://digital.slub-dresden.de/oai/">oai:de:slub-dresden:db:id-476251419</mods:recordIdentifier>
+               </mods:recordInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-349aaab5-14aa-3cb1-a8f0-d673996c45cc">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>Beigefügte Quellenbeschreibung</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-75a7f51c-0493-3860-8bed-12adf2882b2e">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>Beigefügtes Inhaltsverzeichnis</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-76157dfe-172d-3087-9203-6ae6809c2cb5">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[Diverse]: 6 Airs Variés et tirés du Journal die Grazienbibliothek 1791. [Klavier]</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-5550ea93-b326-37ec-ab29-afd2c43a7ecf">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[Dussek, Jan Ladislav]: 4 Variationen über L'Amour est un enfant Trompeur. [CraD 44]</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-08f3c7fb-7fd6-33f9-a282-531781923e9d">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[Paisiello, Giovanni]: La molinara. (Thema) [RobP 1.76/15]</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-c0f27d42-d114-3d6c-895a-8bfb6b5f6154">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[Auernhammer, Josepha Barbara von]: 6 Variationen</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-04c693c1-bb12-3fab-872e-1842420d7777">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[Gelinek, Josef]: 6 Variationen</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-524960b3-12e0-3464-86a4-8f05c3418937">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[Dalayrac, Nicolas-Marie]: Nina. (Thema) ; [Dussek, Jan Ladislav]: 4 Variationen [CraD 45]</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-2830c02c-9b3d-341e-b9d0-31d43d8af684">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[Dezède, Nicolas]: Blaise et Babet. (Thema) ; [Dussek, Jan Ladislav]: 4 Variationen [CraD 46]</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-b6cf1e58-29a9-3a16-9a91-f0998a104007">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[Christmann, Johann Friedrich]: Rondo mit 6 Variationen</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-afd93245-05cd-3145-b28f-84601a5bf627">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[Anonymus]: Allegretto Con 12 Variazioni</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-6abe16e8-103a-3064-b710-f550a179f662">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[Anonymus]: Allegro molto Con 9 Variazione</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-5d6c0447-4562-3d61-b052-a19a449f5f71">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[Anonymus]: Andante Con 3 Variazioni</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:dmdSec ID="uuid-be55e14c-8adf-3654-b855-20fbb0bf2394">
+      <mets:mdWrap MDTYPE="MODS">
+         <mets:xmlData>
+            <mods:mods>
+               <mods:titleInfo>
+                  <mods:title>[Anonymus]: Andante Con 4 Var:</mods:title>
+               </mods:titleInfo>
+            </mods:mods>
+         </mets:xmlData>
+      </mets:mdWrap>
+   </mets:dmdSec>
+   <mets:amdSec ID="AMD">
+      <mets:rightsMD ID="uuid-2e47d8d8-cb0b-339c-9907-27cc3a0fe9ea">
+         <mets:mdWrap MDTYPE="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="DVRIGHTS">
+            <mets:xmlData>
+               <dv:rights>
+                  <dv:owner>Sächsische Landesbibliothek - Staats- und Universitätsbibliothek Dresden</dv:owner>
+                  <dv:ownerLogo>https://digital.slub-dresden.de/fileadmin/images/dfgviewer_logo_ldp.gif</dv:ownerLogo>
+                  <dv:ownerSiteURL>https://www.slub-dresden.de/</dv:ownerSiteURL>
+                  <dv:ownerContact>mailto:digital@slub-dresden.de</dv:ownerContact>
+                  <dv:license>pdm</dv:license>
+               </dv:rights>
+            </mets:xmlData>
+         </mets:mdWrap>
+      </mets:rightsMD>
+      <mets:digiprovMD ID="uuid-32a3c6af-54ef-3770-85ce-5b03238cc663">
+         <mets:mdWrap MDTYPE="OTHER" MIMETYPE="text/xml" OTHERMDTYPE="DVLINKS">
+            <mets:xmlData>
+               <dv:links>
+                  <dv:presentation>https://digital.slub-dresden.de/id476251419</dv:presentation>
+                  <dv:reference>https://katalog.slub-dresden.de/ppn/476251419</dv:reference>
+               </dv:links>
+            </mets:xmlData>
+         </mets:mdWrap>
+      </mets:digiprovMD>
+   </mets:amdSec>
+   <mets:fileSec>
+      <mets:fileGrp USE="DEFAULT">
+         <mets:file ID="uuid-800de028-5cf5-4c24-be7c-2e961bd389c5" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000001.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c5924887-d25e-400f-9167-1e47a492f08f" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000002.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7f0cb2b1-fa1b-4e56-893a-53e3eb412e3b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000003.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c0b0aee5-7145-491a-9e66-37067053da65" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000004.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-45654149-3ea3-4d72-8f72-1ab7fbc895e4" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000005.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-4c355262-508b-4830-a8bc-55f32c185a59" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000006.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-68743ec9-be5a-45d5-a33b-80148ba33968" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000007.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-8523c7ef-7493-44cc-b503-34a2efa2d599" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000008.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-156fc31a-6a90-4b84-841a-5aac484d1951" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000009.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-2f6ea5d3-0d57-429c-bb15-123d1ae720f6" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000010.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-a4b2df86-45a7-4748-b531-bf05a803243e" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000011.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-4c241f31-0f6f-46a3-8875-ff2d685a43f5" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000012.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-2cf29b88-7daf-458e-8e04-ce61afaab6b2" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000013.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b6d7e23d-9412-44ae-83f2-1c738bdfb3d4" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000014.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-0e931b36-b3cd-4ae8-b42d-619080e8f458" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000015.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-9faf8784-d1ce-4961-84ba-de0fba49b713" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000016.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-4a8c77c1-f35a-4d2f-b243-0be71a41be0d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000017.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-075d99d8-9a57-4001-a87c-ce5dd20cccd9" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000018.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-d85f56c9-d321-4ce4-b673-29eb3500e623" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000019.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-86ceca83-547f-4d76-8f74-863918669d3f" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000020.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-58b758b7-2d74-401d-abb0-637326e01b94" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000021.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b46499e1-aaea-45cc-aba2-21cab31ad65c" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000022.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-d47ca715-64db-4e3c-bbbe-6d818d1ed052" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000023.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-bf0c5b7b-2185-49bb-b5a2-f8e77b613f55" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000024.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-66e5b7c4-5f48-4bb2-9f9a-ea3fef01548c" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000025.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-39e7b2a3-8255-4c4d-bd6f-ca1f321f7c36" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000026.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-5300dc64-6e6e-410c-86e0-3efb3ec1290d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000027.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-4e092dd0-200b-4305-9adb-8c2106623f71" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000028.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-59927331-4be4-47d1-9320-fccb14833e82" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000029.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-4c1a4cef-271c-4e47-a37f-d80afe6b78d1" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000030.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-987edd06-8381-4171-a530-294aed8ebfbc" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000031.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-5db223dc-63ac-499a-970b-237fb7c5ac30" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000032.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-3c7bc0d6-97d0-4b23-8eba-a750513a9c60" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000033.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-83f4bb6a-ec2e-476e-b2e5-5330180ff652" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000034.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-34751f53-a58a-43ef-83ab-ebf7067e0902" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000035.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-1ec3201b-98e5-46db-9ce2-5c988f35e43d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000036.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-6dbe8486-6bf7-4d30-8e11-1231591f2f66" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000037.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-2acbe0b3-8bcf-4ed4-bd61-f4c40b9c5a5b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000038.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-bacfdac3-ecff-4d59-9390-72935e740c95" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000039.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-3d2dd5f3-aa80-48d8-99de-6bcf4f8d4d2e" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000040.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-a0932456-fb6a-43d8-b547-04c6aa7e0142" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000041.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-2177d0ce-5013-4791-a946-5812b8aa6ab1" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000042.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-146098d4-5ecb-4ed1-9967-c47a44fc3bcd" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000043.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-13c062b2-0c6d-4d10-856a-a0b7d6cf8f6e" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000044.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-996b0c20-ba3c-467e-aa98-9f995bf1236e" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000045.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-4432a54b-6c37-4fb8-9d3b-64d0e47a8430" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000046.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c33e0123-7ea2-4bb9-be7f-7cc234de93ff" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000047.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-ec8a80d3-4cde-40ab-8e6f-ce974dc63570" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000048.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-24df3cba-d124-4756-84ae-b1f685e7e824" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000049.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-1c57a996-86d1-43ac-96e8-f4b9d5ce3fc4" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000050.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-a60a0b80-aece-4fd1-84d7-55a3705dc332" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000051.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-74123200-21fc-4ae6-85d1-b61f2fb2eedc" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000052.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-3daa87cb-b302-4d75-b5cc-48282992d36d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000053.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-acdaaecd-5576-4ee2-812c-b8da5264fac6" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000054.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-63c9b854-534a-4721-90a0-14ce40345b66" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000055.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-4700cf8f-9d19-4302-8a3f-c515c51ff2d4" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000056.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-2673d0fd-03ac-470c-8ca3-919373b0dbc3" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000057.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-0c642ae1-783c-40be-a4f4-340edf76477e" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000058.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-17899ae0-c2a8-464e-b84f-71f62c0ac16f" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000059.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-ad420af5-32a4-4032-a175-b478713c2bb5" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000060.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-407373d0-74a1-4f4a-bae2-2079e9ce38a5" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000061.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-4bedc54a-d504-4763-ad7f-d9f663ed0410" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000062.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-81f0071d-4d98-4d67-87cf-b43123117b29" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000063.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-862705a5-189f-4222-a2e9-2ce5817b22d7" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000064.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b757e4ef-45db-41f7-935f-db897eda070a" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000065.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-5673ee07-796b-427a-acab-aa92e29bfcd9" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000066.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b7e5b653-e3ea-4a0c-ab9a-f12b8ecf4fa8" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000067.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-bb8176e4-0a10-4292-b99a-d07724056d14" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000068.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-86ea9e40-99e3-4438-a0cb-7f53f6b1e801" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000069.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-02f0fc98-b235-4fb7-9d77-2ba5af786274" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000070.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-f1107c7b-f543-4c63-8532-5998fe95c899" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000071.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-314d7db2-d38d-4450-ba72-371c5659ec04" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000072.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-630df28e-b8e9-4764-be71-5acea977d2ff" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000073.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-018a5853-8fc0-41a1-a271-f4a2f4dd7d46" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000074.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-80dff6a4-0f85-4579-b09e-6d8f03459321" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000075.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b941e3eb-f3dc-4a22-8ba7-364c80ed60e0" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000076.tif.medium.jpg" LOCTYPE="URL"/>
+         </mets:file>
+      </mets:fileGrp>
+      <mets:fileGrp USE="DOWNLOAD">
+         <mets:file ID="uuid-807e287b-5274-4a54-aa9c-902c14388871" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000001.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-e7c8c9e7-7732-4049-b49d-8e089748d76b" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000002.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b8476bb8-4832-4257-9883-b380da311432" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000003.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-08e8c46c-5a62-47fa-bc63-ea07e34b262a" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000004.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-dca9d0d0-5cae-433c-8a39-56855e6b5ebc" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000005.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-aa07689a-215b-4069-a582-8bf72d848ca4" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000006.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-f9cad2b4-de8d-4671-9888-ab788be8efdf" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000007.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-4bcfd4b1-a62a-4efc-829e-43079b6c14be" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000008.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c9820ee2-fb53-4763-a0e8-050d2548e0c8" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000009.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-35b6d14e-331d-4a6d-84e9-2d32c9fe4c0b" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000010.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-932eeb16-5942-4409-93e6-89319c908edc" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000011.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-bb997a99-1186-4433-9427-31dbb714cb8d" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000012.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-90588472-96dd-4fd3-89fd-16c9da1922d9" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000013.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-85eec5cd-a15a-4997-813e-92cde936024c" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000014.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-1ade5404-d169-41b7-ae1e-68f7254f1340" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000015.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-903bbc40-274d-4f3f-8e27-f60faa9e0611" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000016.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-fc0b2580-77b7-44d5-ae58-2c3a60640a3c" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000017.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-aae3188a-37c8-40d8-aa90-5f35dc1cffa0" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000018.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-10d52a83-3803-46d9-a0be-b35ddb478cec" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000019.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-14d63993-56c5-46cf-8bca-ec6c623cc464" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000020.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-63a4c6b2-c6fd-49b8-9018-ee2ecdaaa62c" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000021.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-8bf28b20-882a-49b8-9423-a275982a62bb" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000022.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-956e827d-10a8-4415-8209-f7d3a98b26ba" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000023.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-ef75b324-d266-4346-b59d-50904665c2d6" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000024.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-34e94fa3-3eef-4b46-b8bb-fd7242d24ba3" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000025.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-79d67373-14f9-4b26-8b68-c72504f645c1" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000026.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-db5339a8-68a1-4083-854b-737a417a5527" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000027.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-28a26ce2-7289-427c-9e0b-f34b1f5e7196" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000028.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-fc1c6cc5-8248-44d2-b77a-3792f6320f68" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000029.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-8cdf1708-ca46-42b9-9690-5adf885f501c" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000030.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-cdb4b6cf-3209-44cf-aab9-69d33bc9465e" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000031.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-af3036ba-e403-4d2b-91f2-92120ee15146" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000032.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b62b80a6-a868-4708-a4cd-744744429b12" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000033.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-9095454d-82b2-461e-93f7-a2ce36ca9844" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000034.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b4e5944d-f074-47c2-af38-34488a215d23" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000035.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-abaec554-db5e-4b2d-9125-68cc00147277" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000036.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-2fd04594-6d40-48cd-8c38-69c6e6c31a24" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000037.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-0e0e1339-f4a1-4786-8d81-e1e404a987fb" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000038.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-de74d69b-edf7-4cc5-ae1e-19279b6cdf15" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000039.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7c29ad65-f83a-4a9f-9cfd-f872637a23bb" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000040.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-0089d65a-d8b0-4f60-bf5b-f41be4986906" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000041.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-a69b52ff-9825-4feb-a37a-9e4df4f810ce" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000042.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-3d76a6ba-53d4-4219-a540-768843ce1d69" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000043.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-76e95fb9-cd51-4c16-8930-54b05186f806" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000044.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-a73eabce-aba8-486e-97c2-6dcf3ba39f68" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000045.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-e2812dae-6485-4c4e-979b-9ae33848570c" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000046.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-4c0947a3-f9da-4916-85c1-1fb503d6c1f6" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000047.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7223390a-0b8f-48cf-8c27-f9e99da52ad4" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000048.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-0c6d01f3-9f61-437a-8519-a0462d358b8e" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000049.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-40c5f272-14ff-4b61-83ab-4a6b9bcf7397" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000050.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-36f43af6-cfb4-4b78-973b-5ff3ca324291" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000051.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-3aec65d2-1a40-47a2-b56a-455dcd9eb0e6" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000052.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-06d839bd-aa61-4779-bfba-941dfabe5622" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000053.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-e01028b1-64a5-422c-bbf1-38b92518739d" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000054.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-bc979275-2591-4b60-b230-22e6e42a8929" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000055.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-32045621-21f0-4e93-89be-8c4c2796947e" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000056.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-22def9e2-37e5-4cdf-afdb-28ce2ee10bd7" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000057.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c8311320-36d6-41f9-a45d-253ef8848d33" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000058.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-0c0ec4ea-7f16-4369-b04d-730b39ec5ffe" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000059.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-6e7c4a60-10fe-4a98-ae25-48b4bbb7d292" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000060.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-f838a866-11d7-49dc-976a-fa13cfa2f191" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000061.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-88270c5f-8b8c-4707-a698-c3bf7d590f11" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000062.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7df657d7-37d4-499f-bf7c-db3a4f35cc13" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000063.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-42ca0dd1-d909-4494-9460-327e80881ca3" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000064.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-f70b42e5-d583-40ce-b7f5-f8135c64cbeb" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000065.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-fc3b5a82-e843-459b-b507-27c480f7360a" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000066.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-9c6fb211-35f5-4c27-b15a-12706599c7b8" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000067.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-cb1171bf-78b0-43ea-bc5b-7316bf3af8b2" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000068.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-31881e08-7e41-4bfe-8e6d-d2a75f03324d" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000069.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-a6acce44-7f38-41e1-9c8e-cfc07c18d5f0" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000070.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-2e5e64fa-ec32-494f-883f-85576d812fba" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000071.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c118809d-a8a3-4523-b4cc-42d5d81a1d5f" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000072.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-0ceafc49-9565-4ec2-a915-b7f8f8ea6f07" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000073.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-82e62343-99bc-4e60-9482-318ed7a29e92" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000074.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-6dde773e-71bd-46c3-a356-99cbb7c1896e" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000075.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-8670f64f-515d-446b-9047-1e396fb7dca4" MIMETYPE="application/pdf">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000076.tif.pdf" LOCTYPE="URL"/>
+         </mets:file>
+      <mets:file ID="FULLDOWNLOAD" MIMETYPE="application/pdf"><mets:FLocat LOCTYPE="URL" xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/10Kepi_476251419.pdf"/></mets:file></mets:fileGrp>
+      <mets:fileGrp USE="ORIGINAL">
+         <mets:file ID="uuid-1ff0054e-5101-4f4b-9880-158a8867a0df" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000001.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-20662d5c-f4bd-4c0e-85d5-a71b4da3df07" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000002.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-686495e2-b6b8-4de6-9389-6d165753777e" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000003.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-99dbe7ad-080a-47ba-ab15-0a46c9bc0356" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000004.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-fe01a341-965c-4528-b436-84ca4ed8f933" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000005.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-1567bc88-def2-493f-acab-b88c3f1e83fe" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000006.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7a1a8c56-0a30-4fb8-bf66-7bfacfd6cccc" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000007.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-6e0fea2b-4253-4c49-a3d0-edc1a13d20c4" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000008.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-1ce3890a-7561-466a-ae0f-205c0bb5e009" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000009.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-873cc74d-6dec-45d6-8c31-e3b331e9bf31" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000010.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-680a98dc-3c49-40a7-9b73-c09011b0e2b8" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000011.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-ec662945-1093-4c18-b752-08ace72f90a2" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000012.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-02368cfd-9d0b-4fac-877f-8766dd17ef6c" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000013.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-211d954b-20ed-466a-8637-f019fc114012" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000014.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-d95412c8-5474-4de5-aba2-6ad27edd47f8" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000015.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-89cd1ce8-1ac2-4f85-9100-4b4fde3bf60c" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000016.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-5b67f8b6-e8c8-46e2-bc1e-34110b951d9d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000017.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b3e38d90-6885-458e-b7b9-fdcc0062720a" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000018.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-660b15a2-4a6d-42cb-aaf3-50be1cb410ac" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000019.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-3a1e08d3-f01d-4444-874f-db107298c88a" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000020.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-252a10d9-b4eb-49ab-b175-bb3bccbb8f2b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000021.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-f9c4b6d7-51b2-45a4-bfd2-15b2df8ce9c1" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000022.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-6e951ece-ed07-4756-9e5a-525000f7617b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000023.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-d5ecf193-e2fc-4852-a7e1-a9cbb43d9f08" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000024.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-a196d5d9-fffd-47b6-9e30-f624935ed26e" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000025.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-8e6cd41e-2fcc-49e1-8862-a91ee2365ca9" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000026.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-31c013f3-4b98-4350-9494-f33a8b4d84d2" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000027.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-878a41c5-01ab-4cd8-a386-3681a59a6e31" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000028.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-41fc7c6e-67ef-4f95-a8c7-186d1f76304b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000029.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-23a91b53-e444-48cd-9a1d-49e41af32244" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000030.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-d71f03d0-d181-4efb-a5cd-dc90398f341c" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000031.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7c0680b2-7eaf-40bd-85fa-a8a27dad3d45" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000032.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-25a5b2b4-772e-4e57-8494-73c7ccccdc0e" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000033.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-398f810c-bc29-4794-a615-c008b5d3f27a" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000034.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-9c6e45bd-5efb-4f81-98b8-425f2aad4c6b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000035.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-df2a3824-f5ee-4fa0-9188-be3655fff2dd" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000036.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-4e53c2ff-193b-42a2-b47f-b64cc7fc4d54" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000037.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-54433911-01b9-4d5e-bf73-1fa9e960957a" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000038.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-5694ecc1-a5e8-4a4d-afe4-bb79648bc9e7" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000039.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-eae01128-0bcc-4f76-a8c6-6c96ee185422" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000040.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-0ce191cd-1df8-419f-a8d8-f55cca1f07a9" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000041.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b7619ad1-f99b-4fad-b04d-ee35da0fe004" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000042.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-ece6391f-b300-484c-986d-8c9e5d4dec7c" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000043.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-dbeb8beb-6142-46e9-9300-dbc996222609" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000044.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7e9f1c59-0e97-4eec-9c0d-06f5b6d64300" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000045.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-97e53bda-7ac1-4917-884b-8de139eb3d7b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000046.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-6117d832-277b-4cbe-9364-a269b032a8c1" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000047.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-11563a19-e66b-4504-a6b2-50b1322ca7ce" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000048.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-bc8e8604-2a81-4146-824d-8b3b79baa725" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000049.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-6337dbed-8165-4560-a091-a44164fe5f3c" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000050.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-87a4cdde-dc61-4a94-bb9d-3ddfbcfe2612" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000051.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-af1d0662-1094-4cb8-ad02-9047e8c59ac1" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000052.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-6a010ddd-52bd-4273-b8e2-2d2445796e0f" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000053.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-854b1e82-697b-4984-8499-6400d818994d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000054.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b5d28c38-d3c3-4f07-815a-5ca6fcec3fb0" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000055.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-993e48a6-6dfc-4ef7-bd90-92e4ee684c69" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000056.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-d684a195-0095-45da-8474-c58976756d37" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000057.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-76e45588-8fd4-4e3b-8b0d-9bde8011cbf1" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000058.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-6cabcd6e-f26d-458b-9b85-3bf07ae9b9e0" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000059.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-45d2f71a-1450-4455-9ea4-2cd533012904" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000060.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-41159131-ba54-4dbb-ba96-5ed2e1d5649d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000061.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-d45d38f4-9417-4d86-abaf-0bcbb8023169" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000062.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-f1e50644-7f97-4c62-8470-8a58ec656e52" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000063.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7ffde83d-5a97-4b77-9476-5138888e45c6" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000064.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-cddd0e3d-e100-4666-9123-281b5c1086a5" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000065.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-be68ed31-18fc-4252-8f34-de7ecba7e450" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000066.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-9d348c16-98b0-408f-8a53-c2c8aa093c1d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000067.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-96a5b291-9808-411f-b629-30a7839e4b05" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000068.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-998abe03-d8b6-4a34-8e74-71d116b3cc77" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000069.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b1025382-2cae-4dec-aef6-e14795dd2186" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000070.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-9b962e84-1fc0-4629-86b1-822c3162e709" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000071.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-a6988075-dc7b-432d-ae31-f0116a9adfb9" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000072.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-a0212bd7-c01e-4f3b-bb1c-418ed5cf002b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000073.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-80a45558-edf3-4e1d-a212-52f578d3e2cd" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000074.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b53e2c69-f5d8-49a3-8d7d-b0d49c5d1009" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000075.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-fe690140-f2f2-4687-933c-589ae5f29d20" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000076.tif.original.jpg" LOCTYPE="URL"/>
+         </mets:file>
+      </mets:fileGrp>
+      <mets:fileGrp USE="THUMBS">
+         <mets:file ID="uuid-b1c4d634-f5cf-4e6b-a6f4-175b17f8499d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000001.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-eabf6529-209b-4da7-bd05-902f127524e1" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000002.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-d92b1e76-ae4f-4809-aaf5-bd9051b67c8e" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000003.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-ae470c2f-0f64-4cfa-a336-99215dd1e312" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000004.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-3c8ccd8b-f538-4008-8224-a6cb32caf37d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000005.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-86790557-deb1-4111-9a0e-b816eb20d8e2" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000006.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-e48e19c8-ac8f-4e2a-8ff7-a300491ece26" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000007.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-5b76a5e3-6c95-4147-88a8-6ba58c21b3b0" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000008.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-9e661638-9cbd-4933-97f4-a8435df959bd" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000009.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-1bb44bf2-9727-4dbe-9d5c-fdfc79622533" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000010.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c6499715-9417-4a57-9007-35eac0787e2f" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000011.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-f01a3eab-9b55-4396-bff6-50d23dfdb9be" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000012.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-1d17481b-4261-4f26-994c-39b0a2797924" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000013.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-f4227079-d9d2-4d78-94e6-3b212ec04df4" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000014.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-97f7668d-1b4e-4129-8b9c-f8b28b511298" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000015.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7b0d1f87-de3b-4654-b8aa-132984607644" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000016.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-3b009049-8acf-43dc-bc66-f93a156b67fc" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000017.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-9f42245f-5058-4459-ae77-6ffe0322ba9a" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000018.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-bf4bd00c-f590-4660-9b16-d245ce0b32e1" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000019.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-711f9121-1395-46bf-a9a2-305b04692a86" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000020.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-afea58f4-289d-4c7e-893b-487175e013b3" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000021.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7b34506b-2ec7-4174-ad1f-ded29d3afae5" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000022.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c6bfe98d-b4bd-40e9-898f-30df24aff6d7" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000023.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-44bb8e96-85e0-4316-865b-94c5c6e97004" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000024.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-bc8bd093-48aa-4bec-9bb7-832b3897ba4d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000025.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b88a4a03-b926-4f90-9c7a-eace275e14eb" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000026.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-44ab9f83-4519-41e0-8788-76fcb9a579f9" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000027.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-acf83576-c1eb-4af2-bcba-b3fc9152b2a1" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000028.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b95cbc24-7c41-4ea1-a4df-caf15e774c93" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000029.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-83696b62-bf5f-4631-b6d3-e1d10fbc25fe" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000030.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-73f48378-2902-4255-93ea-dc675aa7851c" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000031.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b01f7f5c-d756-4377-be7a-1eac1534be2b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000032.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-bb86cdd3-8743-4300-a267-d482e8c68cfb" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000033.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-78811b4b-e7c6-47b6-892f-24ffb5064c44" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000034.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7fafc5d6-d2d6-4c6f-890f-077871df4f35" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000035.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-68b3f0d0-0c09-4a03-b7b9-6903e1e6b5b4" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000036.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-72fcae48-bd19-4b20-8eb2-b3d1a3ddb562" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000037.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-02136fdb-dc50-4643-92f6-1de542c5f56b" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000038.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-78cc5060-76d1-401a-9d40-968a3fc1e259" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000039.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-4744f9bc-aab0-4607-ac99-e57963b354b3" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000040.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-d9076dac-2df0-4f0a-9056-cc981700c5dd" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000041.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-2f83bcf7-1294-46c3-90df-6640d11e20a8" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000042.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c210ebf9-24b1-45c9-aa45-95c5adbdb8af" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000043.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-c8999592-d505-4cec-8878-6289cd3674ac" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000044.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-65068ad1-7a4c-433c-b8a9-4ee184299c3d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000045.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-e4cd71d2-2e82-4d4c-b975-46014b7367aa" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000046.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-badb37a3-5325-4398-a150-1ea27263515e" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000047.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-60032abc-03bd-4ba5-a5be-c6b92d3f14d2" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000048.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-2a73676f-0701-4036-9914-ab877a702b91" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000049.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-cdfbe413-f419-4abc-a3ca-de9f8b25fd54" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000050.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-3ca64e53-3d02-4eec-9e78-42f5069d4bea" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000051.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-f26f8d06-883a-4b71-b008-38cb7598ddf4" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000052.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-38a2d310-0075-452a-8fee-cde6056ca7e0" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000053.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-bae5522e-0420-48df-a3ad-530122fe69b6" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000054.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-57069340-ac40-48d6-853a-589d64d0dd92" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000055.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-f8550646-b4df-40e6-942e-139d07a373d0" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000056.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-5c760a19-4609-46b0-9e5f-0f587f1a9360" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000057.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-6fc6661a-bbec-443e-b4ff-b3153300dc09" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000058.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-835a100b-deff-402e-b7ca-12ba5edff3f6" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000059.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-281723e8-1d0b-4190-8f08-d8da1e3dcd88" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000060.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-9605df88-2c21-46d4-b93e-77c2b86dd977" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000061.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-297a9aab-a39f-4c8d-bb55-d8ad8972e1f4" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000062.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-6481562d-2894-44bb-8dd6-3d97973e2d4f" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000063.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-6bcc3c9b-eec2-4810-802c-4cef5c1c28c9" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000064.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-9c77c3d3-639f-4579-a2e8-1bc5c8843d75" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000065.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-88f7fbff-c02e-4174-aee6-4c3c14244294" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000066.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-f6c78f95-54cd-4ef5-8902-16e889914b4c" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000067.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-0579301a-07fe-47f9-8f97-7e506f6fc24e" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000068.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-980ada34-9190-4be3-bf16-117d017c9621" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000069.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-e364025b-ee6b-4c85-b6a9-461d6c3aa17f" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000070.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-3fe0dff4-7df3-482f-afcb-8558e9737b3c" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000071.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-ede2d188-c2b3-451c-b33b-9dc3d01df728" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000072.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-dca8b902-4c4b-47d2-b267-4af4a686fed6" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000073.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-3df3ba78-e779-43f2-9c29-0236071ba76d" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000074.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-b210a02f-e851-4d05-8a9c-606855868a79" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000075.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+         <mets:file ID="uuid-7a25c2d3-577e-4633-a5c8-db247aa21db7" MIMETYPE="image/jpeg">
+            <mets:FLocat xlink:href="https://digital.slub-dresden.de/data/kitodo/10Kepi_476251419/10Kepi_476251419_tif/jpegs/00000076.tif.thumbnail.jpg" LOCTYPE="URL"/>
+         </mets:file>
+      </mets:fileGrp>
+   </mets:fileSec>
+   <mets:structMap TYPE="PHYSICAL">
+      <mets:div TYPE="physSequence" ID="PHYS_0000"><mets:fptr FILEID="FULLDOWNLOAD"/>
+         <mets:div ID="PHYS_0001" TYPE="page" ORDER="1" ORDERLABEL=" - ">
+            <mets:fptr FILEID="uuid-1ff0054e-5101-4f4b-9880-158a8867a0df"/>
+            <mets:fptr FILEID="uuid-b1c4d634-f5cf-4e6b-a6f4-175b17f8499d"/>
+            <mets:fptr FILEID="uuid-800de028-5cf5-4c24-be7c-2e961bd389c5"/>
+            <mets:fptr FILEID="uuid-807e287b-5274-4a54-aa9c-902c14388871"/>
+         </mets:div>
+         <mets:div ID="PHYS_0002" TYPE="page" ORDER="2" ORDERLABEL=" - ">
+            <mets:fptr FILEID="uuid-20662d5c-f4bd-4c0e-85d5-a71b4da3df07"/>
+            <mets:fptr FILEID="uuid-eabf6529-209b-4da7-bd05-902f127524e1"/>
+            <mets:fptr FILEID="uuid-c5924887-d25e-400f-9167-1e47a492f08f"/>
+            <mets:fptr FILEID="uuid-e7c8c9e7-7732-4049-b49d-8e089748d76b"/>
+         </mets:div>
+         <mets:div ID="PHYS_0003" TYPE="page" ORDER="3" ORDERLABEL="1">
+            <mets:fptr FILEID="uuid-686495e2-b6b8-4de6-9389-6d165753777e"/>
+            <mets:fptr FILEID="uuid-d92b1e76-ae4f-4809-aaf5-bd9051b67c8e"/>
+            <mets:fptr FILEID="uuid-7f0cb2b1-fa1b-4e56-893a-53e3eb412e3b"/>
+            <mets:fptr FILEID="uuid-b8476bb8-4832-4257-9883-b380da311432"/>
+         </mets:div>
+         <mets:div ID="PHYS_0004" TYPE="page" ORDER="4" ORDERLABEL="2">
+            <mets:fptr FILEID="uuid-99dbe7ad-080a-47ba-ab15-0a46c9bc0356"/>
+            <mets:fptr FILEID="uuid-ae470c2f-0f64-4cfa-a336-99215dd1e312"/>
+            <mets:fptr FILEID="uuid-c0b0aee5-7145-491a-9e66-37067053da65"/>
+            <mets:fptr FILEID="uuid-08e8c46c-5a62-47fa-bc63-ea07e34b262a"/>
+         </mets:div>
+         <mets:div ID="PHYS_0005" TYPE="page" ORDER="5" ORDERLABEL="3">
+            <mets:fptr FILEID="uuid-fe01a341-965c-4528-b436-84ca4ed8f933"/>
+            <mets:fptr FILEID="uuid-3c8ccd8b-f538-4008-8224-a6cb32caf37d"/>
+            <mets:fptr FILEID="uuid-45654149-3ea3-4d72-8f72-1ab7fbc895e4"/>
+            <mets:fptr FILEID="uuid-dca9d0d0-5cae-433c-8a39-56855e6b5ebc"/>
+         </mets:div>
+         <mets:div ID="PHYS_0006" TYPE="page" ORDER="6" ORDERLABEL="4">
+            <mets:fptr FILEID="uuid-1567bc88-def2-493f-acab-b88c3f1e83fe"/>
+            <mets:fptr FILEID="uuid-86790557-deb1-4111-9a0e-b816eb20d8e2"/>
+            <mets:fptr FILEID="uuid-4c355262-508b-4830-a8bc-55f32c185a59"/>
+            <mets:fptr FILEID="uuid-aa07689a-215b-4069-a582-8bf72d848ca4"/>
+         </mets:div>
+         <mets:div ID="PHYS_0007" TYPE="page" ORDER="7" ORDERLABEL="5">
+            <mets:fptr FILEID="uuid-7a1a8c56-0a30-4fb8-bf66-7bfacfd6cccc"/>
+            <mets:fptr FILEID="uuid-e48e19c8-ac8f-4e2a-8ff7-a300491ece26"/>
+            <mets:fptr FILEID="uuid-68743ec9-be5a-45d5-a33b-80148ba33968"/>
+            <mets:fptr FILEID="uuid-f9cad2b4-de8d-4671-9888-ab788be8efdf"/>
+         </mets:div>
+         <mets:div ID="PHYS_0008" TYPE="page" ORDER="8" ORDERLABEL="6">
+            <mets:fptr FILEID="uuid-6e0fea2b-4253-4c49-a3d0-edc1a13d20c4"/>
+            <mets:fptr FILEID="uuid-5b76a5e3-6c95-4147-88a8-6ba58c21b3b0"/>
+            <mets:fptr FILEID="uuid-8523c7ef-7493-44cc-b503-34a2efa2d599"/>
+            <mets:fptr FILEID="uuid-4bcfd4b1-a62a-4efc-829e-43079b6c14be"/>
+         </mets:div>
+         <mets:div ID="PHYS_0009" TYPE="page" ORDER="9" ORDERLABEL="7">
+            <mets:fptr FILEID="uuid-1ce3890a-7561-466a-ae0f-205c0bb5e009"/>
+            <mets:fptr FILEID="uuid-9e661638-9cbd-4933-97f4-a8435df959bd"/>
+            <mets:fptr FILEID="uuid-156fc31a-6a90-4b84-841a-5aac484d1951"/>
+            <mets:fptr FILEID="uuid-c9820ee2-fb53-4763-a0e8-050d2548e0c8"/>
+         </mets:div>
+         <mets:div ID="PHYS_0010" TYPE="page" ORDER="10" ORDERLABEL="8">
+            <mets:fptr FILEID="uuid-873cc74d-6dec-45d6-8c31-e3b331e9bf31"/>
+            <mets:fptr FILEID="uuid-1bb44bf2-9727-4dbe-9d5c-fdfc79622533"/>
+            <mets:fptr FILEID="uuid-2f6ea5d3-0d57-429c-bb15-123d1ae720f6"/>
+            <mets:fptr FILEID="uuid-35b6d14e-331d-4a6d-84e9-2d32c9fe4c0b"/>
+         </mets:div>
+         <mets:div ID="PHYS_0011" TYPE="page" ORDER="11" ORDERLABEL="9">
+            <mets:fptr FILEID="uuid-680a98dc-3c49-40a7-9b73-c09011b0e2b8"/>
+            <mets:fptr FILEID="uuid-c6499715-9417-4a57-9007-35eac0787e2f"/>
+            <mets:fptr FILEID="uuid-a4b2df86-45a7-4748-b531-bf05a803243e"/>
+            <mets:fptr FILEID="uuid-932eeb16-5942-4409-93e6-89319c908edc"/>
+         </mets:div>
+         <mets:div ID="PHYS_0012" TYPE="page" ORDER="12" ORDERLABEL="10">
+            <mets:fptr FILEID="uuid-ec662945-1093-4c18-b752-08ace72f90a2"/>
+            <mets:fptr FILEID="uuid-f01a3eab-9b55-4396-bff6-50d23dfdb9be"/>
+            <mets:fptr FILEID="uuid-4c241f31-0f6f-46a3-8875-ff2d685a43f5"/>
+            <mets:fptr FILEID="uuid-bb997a99-1186-4433-9427-31dbb714cb8d"/>
+         </mets:div>
+         <mets:div ID="PHYS_0013" TYPE="page" ORDER="13" ORDERLABEL="11">
+            <mets:fptr FILEID="uuid-02368cfd-9d0b-4fac-877f-8766dd17ef6c"/>
+            <mets:fptr FILEID="uuid-1d17481b-4261-4f26-994c-39b0a2797924"/>
+            <mets:fptr FILEID="uuid-2cf29b88-7daf-458e-8e04-ce61afaab6b2"/>
+            <mets:fptr FILEID="uuid-90588472-96dd-4fd3-89fd-16c9da1922d9"/>
+         </mets:div>
+         <mets:div ID="PHYS_0014" TYPE="page" ORDER="14" ORDERLABEL="12">
+            <mets:fptr FILEID="uuid-211d954b-20ed-466a-8637-f019fc114012"/>
+            <mets:fptr FILEID="uuid-f4227079-d9d2-4d78-94e6-3b212ec04df4"/>
+            <mets:fptr FILEID="uuid-b6d7e23d-9412-44ae-83f2-1c738bdfb3d4"/>
+            <mets:fptr FILEID="uuid-85eec5cd-a15a-4997-813e-92cde936024c"/>
+         </mets:div>
+         <mets:div ID="PHYS_0015" TYPE="page" ORDER="15" ORDERLABEL="13">
+            <mets:fptr FILEID="uuid-d95412c8-5474-4de5-aba2-6ad27edd47f8"/>
+            <mets:fptr FILEID="uuid-97f7668d-1b4e-4129-8b9c-f8b28b511298"/>
+            <mets:fptr FILEID="uuid-0e931b36-b3cd-4ae8-b42d-619080e8f458"/>
+            <mets:fptr FILEID="uuid-1ade5404-d169-41b7-ae1e-68f7254f1340"/>
+         </mets:div>
+         <mets:div ID="PHYS_0016" TYPE="page" ORDER="16" ORDERLABEL="14">
+            <mets:fptr FILEID="uuid-89cd1ce8-1ac2-4f85-9100-4b4fde3bf60c"/>
+            <mets:fptr FILEID="uuid-7b0d1f87-de3b-4654-b8aa-132984607644"/>
+            <mets:fptr FILEID="uuid-9faf8784-d1ce-4961-84ba-de0fba49b713"/>
+            <mets:fptr FILEID="uuid-903bbc40-274d-4f3f-8e27-f60faa9e0611"/>
+         </mets:div>
+         <mets:div ID="PHYS_0017" TYPE="page" ORDER="17" ORDERLABEL="15">
+            <mets:fptr FILEID="uuid-5b67f8b6-e8c8-46e2-bc1e-34110b951d9d"/>
+            <mets:fptr FILEID="uuid-3b009049-8acf-43dc-bc66-f93a156b67fc"/>
+            <mets:fptr FILEID="uuid-4a8c77c1-f35a-4d2f-b243-0be71a41be0d"/>
+            <mets:fptr FILEID="uuid-fc0b2580-77b7-44d5-ae58-2c3a60640a3c"/>
+         </mets:div>
+         <mets:div ID="PHYS_0018" TYPE="page" ORDER="18" ORDERLABEL="16">
+            <mets:fptr FILEID="uuid-b3e38d90-6885-458e-b7b9-fdcc0062720a"/>
+            <mets:fptr FILEID="uuid-9f42245f-5058-4459-ae77-6ffe0322ba9a"/>
+            <mets:fptr FILEID="uuid-075d99d8-9a57-4001-a87c-ce5dd20cccd9"/>
+            <mets:fptr FILEID="uuid-aae3188a-37c8-40d8-aa90-5f35dc1cffa0"/>
+         </mets:div>
+         <mets:div ID="PHYS_0019" TYPE="page" ORDER="19" ORDERLABEL="17">
+            <mets:fptr FILEID="uuid-660b15a2-4a6d-42cb-aaf3-50be1cb410ac"/>
+            <mets:fptr FILEID="uuid-bf4bd00c-f590-4660-9b16-d245ce0b32e1"/>
+            <mets:fptr FILEID="uuid-d85f56c9-d321-4ce4-b673-29eb3500e623"/>
+            <mets:fptr FILEID="uuid-10d52a83-3803-46d9-a0be-b35ddb478cec"/>
+         </mets:div>
+         <mets:div ID="PHYS_0020" TYPE="page" ORDER="20" ORDERLABEL="18">
+            <mets:fptr FILEID="uuid-3a1e08d3-f01d-4444-874f-db107298c88a"/>
+            <mets:fptr FILEID="uuid-711f9121-1395-46bf-a9a2-305b04692a86"/>
+            <mets:fptr FILEID="uuid-86ceca83-547f-4d76-8f74-863918669d3f"/>
+            <mets:fptr FILEID="uuid-14d63993-56c5-46cf-8bca-ec6c623cc464"/>
+         </mets:div>
+         <mets:div ID="PHYS_0021" TYPE="page" ORDER="21" ORDERLABEL="19">
+            <mets:fptr FILEID="uuid-252a10d9-b4eb-49ab-b175-bb3bccbb8f2b"/>
+            <mets:fptr FILEID="uuid-afea58f4-289d-4c7e-893b-487175e013b3"/>
+            <mets:fptr FILEID="uuid-58b758b7-2d74-401d-abb0-637326e01b94"/>
+            <mets:fptr FILEID="uuid-63a4c6b2-c6fd-49b8-9018-ee2ecdaaa62c"/>
+         </mets:div>
+         <mets:div ID="PHYS_0022" TYPE="page" ORDER="22" ORDERLABEL="20">
+            <mets:fptr FILEID="uuid-f9c4b6d7-51b2-45a4-bfd2-15b2df8ce9c1"/>
+            <mets:fptr FILEID="uuid-7b34506b-2ec7-4174-ad1f-ded29d3afae5"/>
+            <mets:fptr FILEID="uuid-b46499e1-aaea-45cc-aba2-21cab31ad65c"/>
+            <mets:fptr FILEID="uuid-8bf28b20-882a-49b8-9423-a275982a62bb"/>
+         </mets:div>
+         <mets:div ID="PHYS_0023" TYPE="page" ORDER="23" ORDERLABEL="21">
+            <mets:fptr FILEID="uuid-6e951ece-ed07-4756-9e5a-525000f7617b"/>
+            <mets:fptr FILEID="uuid-c6bfe98d-b4bd-40e9-898f-30df24aff6d7"/>
+            <mets:fptr FILEID="uuid-d47ca715-64db-4e3c-bbbe-6d818d1ed052"/>
+            <mets:fptr FILEID="uuid-956e827d-10a8-4415-8209-f7d3a98b26ba"/>
+         </mets:div>
+         <mets:div ID="PHYS_0024" TYPE="page" ORDER="24" ORDERLABEL="22">
+            <mets:fptr FILEID="uuid-d5ecf193-e2fc-4852-a7e1-a9cbb43d9f08"/>
+            <mets:fptr FILEID="uuid-44bb8e96-85e0-4316-865b-94c5c6e97004"/>
+            <mets:fptr FILEID="uuid-bf0c5b7b-2185-49bb-b5a2-f8e77b613f55"/>
+            <mets:fptr FILEID="uuid-ef75b324-d266-4346-b59d-50904665c2d6"/>
+         </mets:div>
+         <mets:div ID="PHYS_0025" TYPE="page" ORDER="25" ORDERLABEL="23">
+            <mets:fptr FILEID="uuid-a196d5d9-fffd-47b6-9e30-f624935ed26e"/>
+            <mets:fptr FILEID="uuid-bc8bd093-48aa-4bec-9bb7-832b3897ba4d"/>
+            <mets:fptr FILEID="uuid-66e5b7c4-5f48-4bb2-9f9a-ea3fef01548c"/>
+            <mets:fptr FILEID="uuid-34e94fa3-3eef-4b46-b8bb-fd7242d24ba3"/>
+         </mets:div>
+         <mets:div ID="PHYS_0026" TYPE="page" ORDER="26" ORDERLABEL="24">
+            <mets:fptr FILEID="uuid-8e6cd41e-2fcc-49e1-8862-a91ee2365ca9"/>
+            <mets:fptr FILEID="uuid-b88a4a03-b926-4f90-9c7a-eace275e14eb"/>
+            <mets:fptr FILEID="uuid-39e7b2a3-8255-4c4d-bd6f-ca1f321f7c36"/>
+            <mets:fptr FILEID="uuid-79d67373-14f9-4b26-8b68-c72504f645c1"/>
+         </mets:div>
+         <mets:div ID="PHYS_0027" TYPE="page" ORDER="27" ORDERLABEL="25">
+            <mets:fptr FILEID="uuid-31c013f3-4b98-4350-9494-f33a8b4d84d2"/>
+            <mets:fptr FILEID="uuid-44ab9f83-4519-41e0-8788-76fcb9a579f9"/>
+            <mets:fptr FILEID="uuid-5300dc64-6e6e-410c-86e0-3efb3ec1290d"/>
+            <mets:fptr FILEID="uuid-db5339a8-68a1-4083-854b-737a417a5527"/>
+         </mets:div>
+         <mets:div ID="PHYS_0028" TYPE="page" ORDER="28" ORDERLABEL="26">
+            <mets:fptr FILEID="uuid-878a41c5-01ab-4cd8-a386-3681a59a6e31"/>
+            <mets:fptr FILEID="uuid-acf83576-c1eb-4af2-bcba-b3fc9152b2a1"/>
+            <mets:fptr FILEID="uuid-4e092dd0-200b-4305-9adb-8c2106623f71"/>
+            <mets:fptr FILEID="uuid-28a26ce2-7289-427c-9e0b-f34b1f5e7196"/>
+         </mets:div>
+         <mets:div ID="PHYS_0029" TYPE="page" ORDER="29" ORDERLABEL="27">
+            <mets:fptr FILEID="uuid-41fc7c6e-67ef-4f95-a8c7-186d1f76304b"/>
+            <mets:fptr FILEID="uuid-b95cbc24-7c41-4ea1-a4df-caf15e774c93"/>
+            <mets:fptr FILEID="uuid-59927331-4be4-47d1-9320-fccb14833e82"/>
+            <mets:fptr FILEID="uuid-fc1c6cc5-8248-44d2-b77a-3792f6320f68"/>
+         </mets:div>
+         <mets:div ID="PHYS_0030" TYPE="page" ORDER="30" ORDERLABEL="28">
+            <mets:fptr FILEID="uuid-23a91b53-e444-48cd-9a1d-49e41af32244"/>
+            <mets:fptr FILEID="uuid-83696b62-bf5f-4631-b6d3-e1d10fbc25fe"/>
+            <mets:fptr FILEID="uuid-4c1a4cef-271c-4e47-a37f-d80afe6b78d1"/>
+            <mets:fptr FILEID="uuid-8cdf1708-ca46-42b9-9690-5adf885f501c"/>
+         </mets:div>
+         <mets:div ID="PHYS_0031" TYPE="page" ORDER="31" ORDERLABEL="29">
+            <mets:fptr FILEID="uuid-d71f03d0-d181-4efb-a5cd-dc90398f341c"/>
+            <mets:fptr FILEID="uuid-73f48378-2902-4255-93ea-dc675aa7851c"/>
+            <mets:fptr FILEID="uuid-987edd06-8381-4171-a530-294aed8ebfbc"/>
+            <mets:fptr FILEID="uuid-cdb4b6cf-3209-44cf-aab9-69d33bc9465e"/>
+         </mets:div>
+         <mets:div ID="PHYS_0032" TYPE="page" ORDER="32" ORDERLABEL="30">
+            <mets:fptr FILEID="uuid-7c0680b2-7eaf-40bd-85fa-a8a27dad3d45"/>
+            <mets:fptr FILEID="uuid-b01f7f5c-d756-4377-be7a-1eac1534be2b"/>
+            <mets:fptr FILEID="uuid-5db223dc-63ac-499a-970b-237fb7c5ac30"/>
+            <mets:fptr FILEID="uuid-af3036ba-e403-4d2b-91f2-92120ee15146"/>
+         </mets:div>
+         <mets:div ID="PHYS_0033" TYPE="page" ORDER="33" ORDERLABEL="31">
+            <mets:fptr FILEID="uuid-25a5b2b4-772e-4e57-8494-73c7ccccdc0e"/>
+            <mets:fptr FILEID="uuid-bb86cdd3-8743-4300-a267-d482e8c68cfb"/>
+            <mets:fptr FILEID="uuid-3c7bc0d6-97d0-4b23-8eba-a750513a9c60"/>
+            <mets:fptr FILEID="uuid-b62b80a6-a868-4708-a4cd-744744429b12"/>
+         </mets:div>
+         <mets:div ID="PHYS_0034" TYPE="page" ORDER="34" ORDERLABEL="32">
+            <mets:fptr FILEID="uuid-398f810c-bc29-4794-a615-c008b5d3f27a"/>
+            <mets:fptr FILEID="uuid-78811b4b-e7c6-47b6-892f-24ffb5064c44"/>
+            <mets:fptr FILEID="uuid-83f4bb6a-ec2e-476e-b2e5-5330180ff652"/>
+            <mets:fptr FILEID="uuid-9095454d-82b2-461e-93f7-a2ce36ca9844"/>
+         </mets:div>
+         <mets:div ID="PHYS_0035" TYPE="page" ORDER="35" ORDERLABEL="33">
+            <mets:fptr FILEID="uuid-9c6e45bd-5efb-4f81-98b8-425f2aad4c6b"/>
+            <mets:fptr FILEID="uuid-7fafc5d6-d2d6-4c6f-890f-077871df4f35"/>
+            <mets:fptr FILEID="uuid-34751f53-a58a-43ef-83ab-ebf7067e0902"/>
+            <mets:fptr FILEID="uuid-b4e5944d-f074-47c2-af38-34488a215d23"/>
+         </mets:div>
+         <mets:div ID="PHYS_0036" TYPE="page" ORDER="36" ORDERLABEL="34">
+            <mets:fptr FILEID="uuid-df2a3824-f5ee-4fa0-9188-be3655fff2dd"/>
+            <mets:fptr FILEID="uuid-68b3f0d0-0c09-4a03-b7b9-6903e1e6b5b4"/>
+            <mets:fptr FILEID="uuid-1ec3201b-98e5-46db-9ce2-5c988f35e43d"/>
+            <mets:fptr FILEID="uuid-abaec554-db5e-4b2d-9125-68cc00147277"/>
+         </mets:div>
+         <mets:div ID="PHYS_0037" TYPE="page" ORDER="37" ORDERLABEL="35">
+            <mets:fptr FILEID="uuid-4e53c2ff-193b-42a2-b47f-b64cc7fc4d54"/>
+            <mets:fptr FILEID="uuid-72fcae48-bd19-4b20-8eb2-b3d1a3ddb562"/>
+            <mets:fptr FILEID="uuid-6dbe8486-6bf7-4d30-8e11-1231591f2f66"/>
+            <mets:fptr FILEID="uuid-2fd04594-6d40-48cd-8c38-69c6e6c31a24"/>
+         </mets:div>
+         <mets:div ID="PHYS_0038" TYPE="page" ORDER="38" ORDERLABEL="36">
+            <mets:fptr FILEID="uuid-54433911-01b9-4d5e-bf73-1fa9e960957a"/>
+            <mets:fptr FILEID="uuid-02136fdb-dc50-4643-92f6-1de542c5f56b"/>
+            <mets:fptr FILEID="uuid-2acbe0b3-8bcf-4ed4-bd61-f4c40b9c5a5b"/>
+            <mets:fptr FILEID="uuid-0e0e1339-f4a1-4786-8d81-e1e404a987fb"/>
+         </mets:div>
+         <mets:div ID="PHYS_0039" TYPE="page" ORDER="39" ORDERLABEL="37">
+            <mets:fptr FILEID="uuid-5694ecc1-a5e8-4a4d-afe4-bb79648bc9e7"/>
+            <mets:fptr FILEID="uuid-78cc5060-76d1-401a-9d40-968a3fc1e259"/>
+            <mets:fptr FILEID="uuid-bacfdac3-ecff-4d59-9390-72935e740c95"/>
+            <mets:fptr FILEID="uuid-de74d69b-edf7-4cc5-ae1e-19279b6cdf15"/>
+         </mets:div>
+         <mets:div ID="PHYS_0040" TYPE="page" ORDER="40" ORDERLABEL="38">
+            <mets:fptr FILEID="uuid-eae01128-0bcc-4f76-a8c6-6c96ee185422"/>
+            <mets:fptr FILEID="uuid-4744f9bc-aab0-4607-ac99-e57963b354b3"/>
+            <mets:fptr FILEID="uuid-3d2dd5f3-aa80-48d8-99de-6bcf4f8d4d2e"/>
+            <mets:fptr FILEID="uuid-7c29ad65-f83a-4a9f-9cfd-f872637a23bb"/>
+         </mets:div>
+         <mets:div ID="PHYS_0041" TYPE="page" ORDER="41" ORDERLABEL="39">
+            <mets:fptr FILEID="uuid-0ce191cd-1df8-419f-a8d8-f55cca1f07a9"/>
+            <mets:fptr FILEID="uuid-d9076dac-2df0-4f0a-9056-cc981700c5dd"/>
+            <mets:fptr FILEID="uuid-a0932456-fb6a-43d8-b547-04c6aa7e0142"/>
+            <mets:fptr FILEID="uuid-0089d65a-d8b0-4f60-bf5b-f41be4986906"/>
+         </mets:div>
+         <mets:div ID="PHYS_0042" TYPE="page" ORDER="42" ORDERLABEL="40">
+            <mets:fptr FILEID="uuid-b7619ad1-f99b-4fad-b04d-ee35da0fe004"/>
+            <mets:fptr FILEID="uuid-2f83bcf7-1294-46c3-90df-6640d11e20a8"/>
+            <mets:fptr FILEID="uuid-2177d0ce-5013-4791-a946-5812b8aa6ab1"/>
+            <mets:fptr FILEID="uuid-a69b52ff-9825-4feb-a37a-9e4df4f810ce"/>
+         </mets:div>
+         <mets:div ID="PHYS_0043" TYPE="page" ORDER="43" ORDERLABEL="41">
+            <mets:fptr FILEID="uuid-ece6391f-b300-484c-986d-8c9e5d4dec7c"/>
+            <mets:fptr FILEID="uuid-c210ebf9-24b1-45c9-aa45-95c5adbdb8af"/>
+            <mets:fptr FILEID="uuid-146098d4-5ecb-4ed1-9967-c47a44fc3bcd"/>
+            <mets:fptr FILEID="uuid-3d76a6ba-53d4-4219-a540-768843ce1d69"/>
+         </mets:div>
+         <mets:div ID="PHYS_0044" TYPE="page" ORDER="44" ORDERLABEL="42">
+            <mets:fptr FILEID="uuid-dbeb8beb-6142-46e9-9300-dbc996222609"/>
+            <mets:fptr FILEID="uuid-c8999592-d505-4cec-8878-6289cd3674ac"/>
+            <mets:fptr FILEID="uuid-13c062b2-0c6d-4d10-856a-a0b7d6cf8f6e"/>
+            <mets:fptr FILEID="uuid-76e95fb9-cd51-4c16-8930-54b05186f806"/>
+         </mets:div>
+         <mets:div ID="PHYS_0045" TYPE="page" ORDER="45" ORDERLABEL="43">
+            <mets:fptr FILEID="uuid-7e9f1c59-0e97-4eec-9c0d-06f5b6d64300"/>
+            <mets:fptr FILEID="uuid-65068ad1-7a4c-433c-b8a9-4ee184299c3d"/>
+            <mets:fptr FILEID="uuid-996b0c20-ba3c-467e-aa98-9f995bf1236e"/>
+            <mets:fptr FILEID="uuid-a73eabce-aba8-486e-97c2-6dcf3ba39f68"/>
+         </mets:div>
+         <mets:div ID="PHYS_0046" TYPE="page" ORDER="46" ORDERLABEL="44">
+            <mets:fptr FILEID="uuid-97e53bda-7ac1-4917-884b-8de139eb3d7b"/>
+            <mets:fptr FILEID="uuid-e4cd71d2-2e82-4d4c-b975-46014b7367aa"/>
+            <mets:fptr FILEID="uuid-4432a54b-6c37-4fb8-9d3b-64d0e47a8430"/>
+            <mets:fptr FILEID="uuid-e2812dae-6485-4c4e-979b-9ae33848570c"/>
+         </mets:div>
+         <mets:div ID="PHYS_0047" TYPE="page" ORDER="47" ORDERLABEL="45">
+            <mets:fptr FILEID="uuid-6117d832-277b-4cbe-9364-a269b032a8c1"/>
+            <mets:fptr FILEID="uuid-badb37a3-5325-4398-a150-1ea27263515e"/>
+            <mets:fptr FILEID="uuid-c33e0123-7ea2-4bb9-be7f-7cc234de93ff"/>
+            <mets:fptr FILEID="uuid-4c0947a3-f9da-4916-85c1-1fb503d6c1f6"/>
+         </mets:div>
+         <mets:div ID="PHYS_0048" TYPE="page" ORDER="48" ORDERLABEL="46">
+            <mets:fptr FILEID="uuid-11563a19-e66b-4504-a6b2-50b1322ca7ce"/>
+            <mets:fptr FILEID="uuid-60032abc-03bd-4ba5-a5be-c6b92d3f14d2"/>
+            <mets:fptr FILEID="uuid-ec8a80d3-4cde-40ab-8e6f-ce974dc63570"/>
+            <mets:fptr FILEID="uuid-7223390a-0b8f-48cf-8c27-f9e99da52ad4"/>
+         </mets:div>
+         <mets:div ID="PHYS_0049" TYPE="page" ORDER="49" ORDERLABEL="47">
+            <mets:fptr FILEID="uuid-bc8e8604-2a81-4146-824d-8b3b79baa725"/>
+            <mets:fptr FILEID="uuid-2a73676f-0701-4036-9914-ab877a702b91"/>
+            <mets:fptr FILEID="uuid-24df3cba-d124-4756-84ae-b1f685e7e824"/>
+            <mets:fptr FILEID="uuid-0c6d01f3-9f61-437a-8519-a0462d358b8e"/>
+         </mets:div>
+         <mets:div ID="PHYS_0050" TYPE="page" ORDER="50" ORDERLABEL="48">
+            <mets:fptr FILEID="uuid-6337dbed-8165-4560-a091-a44164fe5f3c"/>
+            <mets:fptr FILEID="uuid-cdfbe413-f419-4abc-a3ca-de9f8b25fd54"/>
+            <mets:fptr FILEID="uuid-1c57a996-86d1-43ac-96e8-f4b9d5ce3fc4"/>
+            <mets:fptr FILEID="uuid-40c5f272-14ff-4b61-83ab-4a6b9bcf7397"/>
+         </mets:div>
+         <mets:div ID="PHYS_0051" TYPE="page" ORDER="51" ORDERLABEL="49">
+            <mets:fptr FILEID="uuid-87a4cdde-dc61-4a94-bb9d-3ddfbcfe2612"/>
+            <mets:fptr FILEID="uuid-3ca64e53-3d02-4eec-9e78-42f5069d4bea"/>
+            <mets:fptr FILEID="uuid-a60a0b80-aece-4fd1-84d7-55a3705dc332"/>
+            <mets:fptr FILEID="uuid-36f43af6-cfb4-4b78-973b-5ff3ca324291"/>
+         </mets:div>
+         <mets:div ID="PHYS_0052" TYPE="page" ORDER="52" ORDERLABEL="50">
+            <mets:fptr FILEID="uuid-af1d0662-1094-4cb8-ad02-9047e8c59ac1"/>
+            <mets:fptr FILEID="uuid-f26f8d06-883a-4b71-b008-38cb7598ddf4"/>
+            <mets:fptr FILEID="uuid-74123200-21fc-4ae6-85d1-b61f2fb2eedc"/>
+            <mets:fptr FILEID="uuid-3aec65d2-1a40-47a2-b56a-455dcd9eb0e6"/>
+         </mets:div>
+         <mets:div ID="PHYS_0053" TYPE="page" ORDER="53" ORDERLABEL="51">
+            <mets:fptr FILEID="uuid-6a010ddd-52bd-4273-b8e2-2d2445796e0f"/>
+            <mets:fptr FILEID="uuid-38a2d310-0075-452a-8fee-cde6056ca7e0"/>
+            <mets:fptr FILEID="uuid-3daa87cb-b302-4d75-b5cc-48282992d36d"/>
+            <mets:fptr FILEID="uuid-06d839bd-aa61-4779-bfba-941dfabe5622"/>
+         </mets:div>
+         <mets:div ID="PHYS_0054" TYPE="page" ORDER="54" ORDERLABEL="52">
+            <mets:fptr FILEID="uuid-854b1e82-697b-4984-8499-6400d818994d"/>
+            <mets:fptr FILEID="uuid-bae5522e-0420-48df-a3ad-530122fe69b6"/>
+            <mets:fptr FILEID="uuid-acdaaecd-5576-4ee2-812c-b8da5264fac6"/>
+            <mets:fptr FILEID="uuid-e01028b1-64a5-422c-bbf1-38b92518739d"/>
+         </mets:div>
+         <mets:div ID="PHYS_0055" TYPE="page" ORDER="55" ORDERLABEL="53">
+            <mets:fptr FILEID="uuid-b5d28c38-d3c3-4f07-815a-5ca6fcec3fb0"/>
+            <mets:fptr FILEID="uuid-57069340-ac40-48d6-853a-589d64d0dd92"/>
+            <mets:fptr FILEID="uuid-63c9b854-534a-4721-90a0-14ce40345b66"/>
+            <mets:fptr FILEID="uuid-bc979275-2591-4b60-b230-22e6e42a8929"/>
+         </mets:div>
+         <mets:div ID="PHYS_0056" TYPE="page" ORDER="56" ORDERLABEL="54">
+            <mets:fptr FILEID="uuid-993e48a6-6dfc-4ef7-bd90-92e4ee684c69"/>
+            <mets:fptr FILEID="uuid-f8550646-b4df-40e6-942e-139d07a373d0"/>
+            <mets:fptr FILEID="uuid-4700cf8f-9d19-4302-8a3f-c515c51ff2d4"/>
+            <mets:fptr FILEID="uuid-32045621-21f0-4e93-89be-8c4c2796947e"/>
+         </mets:div>
+         <mets:div ID="PHYS_0057" TYPE="page" ORDER="57" ORDERLABEL="55">
+            <mets:fptr FILEID="uuid-d684a195-0095-45da-8474-c58976756d37"/>
+            <mets:fptr FILEID="uuid-5c760a19-4609-46b0-9e5f-0f587f1a9360"/>
+            <mets:fptr FILEID="uuid-2673d0fd-03ac-470c-8ca3-919373b0dbc3"/>
+            <mets:fptr FILEID="uuid-22def9e2-37e5-4cdf-afdb-28ce2ee10bd7"/>
+         </mets:div>
+         <mets:div ID="PHYS_0058" TYPE="page" ORDER="58" ORDERLABEL="56">
+            <mets:fptr FILEID="uuid-76e45588-8fd4-4e3b-8b0d-9bde8011cbf1"/>
+            <mets:fptr FILEID="uuid-6fc6661a-bbec-443e-b4ff-b3153300dc09"/>
+            <mets:fptr FILEID="uuid-0c642ae1-783c-40be-a4f4-340edf76477e"/>
+            <mets:fptr FILEID="uuid-c8311320-36d6-41f9-a45d-253ef8848d33"/>
+         </mets:div>
+         <mets:div ID="PHYS_0059" TYPE="page" ORDER="59" ORDERLABEL="57">
+            <mets:fptr FILEID="uuid-6cabcd6e-f26d-458b-9b85-3bf07ae9b9e0"/>
+            <mets:fptr FILEID="uuid-835a100b-deff-402e-b7ca-12ba5edff3f6"/>
+            <mets:fptr FILEID="uuid-17899ae0-c2a8-464e-b84f-71f62c0ac16f"/>
+            <mets:fptr FILEID="uuid-0c0ec4ea-7f16-4369-b04d-730b39ec5ffe"/>
+         </mets:div>
+         <mets:div ID="PHYS_0060" TYPE="page" ORDER="60" ORDERLABEL="58">
+            <mets:fptr FILEID="uuid-45d2f71a-1450-4455-9ea4-2cd533012904"/>
+            <mets:fptr FILEID="uuid-281723e8-1d0b-4190-8f08-d8da1e3dcd88"/>
+            <mets:fptr FILEID="uuid-ad420af5-32a4-4032-a175-b478713c2bb5"/>
+            <mets:fptr FILEID="uuid-6e7c4a60-10fe-4a98-ae25-48b4bbb7d292"/>
+         </mets:div>
+         <mets:div ID="PHYS_0061" TYPE="page" ORDER="61" ORDERLABEL="59">
+            <mets:fptr FILEID="uuid-41159131-ba54-4dbb-ba96-5ed2e1d5649d"/>
+            <mets:fptr FILEID="uuid-9605df88-2c21-46d4-b93e-77c2b86dd977"/>
+            <mets:fptr FILEID="uuid-407373d0-74a1-4f4a-bae2-2079e9ce38a5"/>
+            <mets:fptr FILEID="uuid-f838a866-11d7-49dc-976a-fa13cfa2f191"/>
+         </mets:div>
+         <mets:div ID="PHYS_0062" TYPE="page" ORDER="62" ORDERLABEL="60">
+            <mets:fptr FILEID="uuid-d45d38f4-9417-4d86-abaf-0bcbb8023169"/>
+            <mets:fptr FILEID="uuid-297a9aab-a39f-4c8d-bb55-d8ad8972e1f4"/>
+            <mets:fptr FILEID="uuid-4bedc54a-d504-4763-ad7f-d9f663ed0410"/>
+            <mets:fptr FILEID="uuid-88270c5f-8b8c-4707-a698-c3bf7d590f11"/>
+         </mets:div>
+         <mets:div ID="PHYS_0063" TYPE="page" ORDER="63" ORDERLABEL="61">
+            <mets:fptr FILEID="uuid-f1e50644-7f97-4c62-8470-8a58ec656e52"/>
+            <mets:fptr FILEID="uuid-6481562d-2894-44bb-8dd6-3d97973e2d4f"/>
+            <mets:fptr FILEID="uuid-81f0071d-4d98-4d67-87cf-b43123117b29"/>
+            <mets:fptr FILEID="uuid-7df657d7-37d4-499f-bf7c-db3a4f35cc13"/>
+         </mets:div>
+         <mets:div ID="PHYS_0064" TYPE="page" ORDER="64" ORDERLABEL="62">
+            <mets:fptr FILEID="uuid-7ffde83d-5a97-4b77-9476-5138888e45c6"/>
+            <mets:fptr FILEID="uuid-6bcc3c9b-eec2-4810-802c-4cef5c1c28c9"/>
+            <mets:fptr FILEID="uuid-862705a5-189f-4222-a2e9-2ce5817b22d7"/>
+            <mets:fptr FILEID="uuid-42ca0dd1-d909-4494-9460-327e80881ca3"/>
+         </mets:div>
+         <mets:div ID="PHYS_0065" TYPE="page" ORDER="65" ORDERLABEL="63">
+            <mets:fptr FILEID="uuid-cddd0e3d-e100-4666-9123-281b5c1086a5"/>
+            <mets:fptr FILEID="uuid-9c77c3d3-639f-4579-a2e8-1bc5c8843d75"/>
+            <mets:fptr FILEID="uuid-b757e4ef-45db-41f7-935f-db897eda070a"/>
+            <mets:fptr FILEID="uuid-f70b42e5-d583-40ce-b7f5-f8135c64cbeb"/>
+         </mets:div>
+         <mets:div ID="PHYS_0066" TYPE="page" ORDER="66" ORDERLABEL="64">
+            <mets:fptr FILEID="uuid-be68ed31-18fc-4252-8f34-de7ecba7e450"/>
+            <mets:fptr FILEID="uuid-88f7fbff-c02e-4174-aee6-4c3c14244294"/>
+            <mets:fptr FILEID="uuid-5673ee07-796b-427a-acab-aa92e29bfcd9"/>
+            <mets:fptr FILEID="uuid-fc3b5a82-e843-459b-b507-27c480f7360a"/>
+         </mets:div>
+         <mets:div ID="PHYS_0067" TYPE="page" ORDER="67" ORDERLABEL="65">
+            <mets:fptr FILEID="uuid-9d348c16-98b0-408f-8a53-c2c8aa093c1d"/>
+            <mets:fptr FILEID="uuid-f6c78f95-54cd-4ef5-8902-16e889914b4c"/>
+            <mets:fptr FILEID="uuid-b7e5b653-e3ea-4a0c-ab9a-f12b8ecf4fa8"/>
+            <mets:fptr FILEID="uuid-9c6fb211-35f5-4c27-b15a-12706599c7b8"/>
+         </mets:div>
+         <mets:div ID="PHYS_0068" TYPE="page" ORDER="68" ORDERLABEL="66">
+            <mets:fptr FILEID="uuid-96a5b291-9808-411f-b629-30a7839e4b05"/>
+            <mets:fptr FILEID="uuid-0579301a-07fe-47f9-8f97-7e506f6fc24e"/>
+            <mets:fptr FILEID="uuid-bb8176e4-0a10-4292-b99a-d07724056d14"/>
+            <mets:fptr FILEID="uuid-cb1171bf-78b0-43ea-bc5b-7316bf3af8b2"/>
+         </mets:div>
+         <mets:div ID="PHYS_0069" TYPE="page" ORDER="69" ORDERLABEL="67">
+            <mets:fptr FILEID="uuid-998abe03-d8b6-4a34-8e74-71d116b3cc77"/>
+            <mets:fptr FILEID="uuid-980ada34-9190-4be3-bf16-117d017c9621"/>
+            <mets:fptr FILEID="uuid-86ea9e40-99e3-4438-a0cb-7f53f6b1e801"/>
+            <mets:fptr FILEID="uuid-31881e08-7e41-4bfe-8e6d-d2a75f03324d"/>
+         </mets:div>
+         <mets:div ID="PHYS_0070" TYPE="page" ORDER="70" ORDERLABEL="68">
+            <mets:fptr FILEID="uuid-b1025382-2cae-4dec-aef6-e14795dd2186"/>
+            <mets:fptr FILEID="uuid-e364025b-ee6b-4c85-b6a9-461d6c3aa17f"/>
+            <mets:fptr FILEID="uuid-02f0fc98-b235-4fb7-9d77-2ba5af786274"/>
+            <mets:fptr FILEID="uuid-a6acce44-7f38-41e1-9c8e-cfc07c18d5f0"/>
+         </mets:div>
+         <mets:div ID="PHYS_0071" TYPE="page" ORDER="71" ORDERLABEL="69">
+            <mets:fptr FILEID="uuid-9b962e84-1fc0-4629-86b1-822c3162e709"/>
+            <mets:fptr FILEID="uuid-3fe0dff4-7df3-482f-afcb-8558e9737b3c"/>
+            <mets:fptr FILEID="uuid-f1107c7b-f543-4c63-8532-5998fe95c899"/>
+            <mets:fptr FILEID="uuid-2e5e64fa-ec32-494f-883f-85576d812fba"/>
+         </mets:div>
+         <mets:div ID="PHYS_0072" TYPE="page" ORDER="72" ORDERLABEL="70">
+            <mets:fptr FILEID="uuid-a6988075-dc7b-432d-ae31-f0116a9adfb9"/>
+            <mets:fptr FILEID="uuid-ede2d188-c2b3-451c-b33b-9dc3d01df728"/>
+            <mets:fptr FILEID="uuid-314d7db2-d38d-4450-ba72-371c5659ec04"/>
+            <mets:fptr FILEID="uuid-c118809d-a8a3-4523-b4cc-42d5d81a1d5f"/>
+         </mets:div>
+         <mets:div ID="PHYS_0073" TYPE="page" ORDER="73" ORDERLABEL="71">
+            <mets:fptr FILEID="uuid-a0212bd7-c01e-4f3b-bb1c-418ed5cf002b"/>
+            <mets:fptr FILEID="uuid-dca8b902-4c4b-47d2-b267-4af4a686fed6"/>
+            <mets:fptr FILEID="uuid-630df28e-b8e9-4764-be71-5acea977d2ff"/>
+            <mets:fptr FILEID="uuid-0ceafc49-9565-4ec2-a915-b7f8f8ea6f07"/>
+         </mets:div>
+         <mets:div ID="PHYS_0074" TYPE="page" ORDER="74" ORDERLABEL="72">
+            <mets:fptr FILEID="uuid-80a45558-edf3-4e1d-a212-52f578d3e2cd"/>
+            <mets:fptr FILEID="uuid-3df3ba78-e779-43f2-9c29-0236071ba76d"/>
+            <mets:fptr FILEID="uuid-018a5853-8fc0-41a1-a271-f4a2f4dd7d46"/>
+            <mets:fptr FILEID="uuid-82e62343-99bc-4e60-9482-318ed7a29e92"/>
+         </mets:div>
+         <mets:div ID="PHYS_0075" TYPE="page" ORDER="75" ORDERLABEL="73">
+            <mets:fptr FILEID="uuid-b53e2c69-f5d8-49a3-8d7d-b0d49c5d1009"/>
+            <mets:fptr FILEID="uuid-b210a02f-e851-4d05-8a9c-606855868a79"/>
+            <mets:fptr FILEID="uuid-80dff6a4-0f85-4579-b09e-6d8f03459321"/>
+            <mets:fptr FILEID="uuid-6dde773e-71bd-46c3-a356-99cbb7c1896e"/>
+         </mets:div>
+         <mets:div ID="PHYS_0076" TYPE="page" ORDER="76" ORDERLABEL="74">
+            <mets:fptr FILEID="uuid-fe690140-f2f2-4687-933c-589ae5f29d20"/>
+            <mets:fptr FILEID="uuid-7a25c2d3-577e-4633-a5c8-db247aa21db7"/>
+            <mets:fptr FILEID="uuid-b941e3eb-f3dc-4a22-8ba7-364c80ed60e0"/>
+            <mets:fptr FILEID="uuid-8670f64f-515d-446b-9047-1e396fb7dca4"/>
+         </mets:div>
+      </mets:div>
+   </mets:structMap>
+   <mets:structMap TYPE="LOGICAL">
+      <mets:div ID="LOG_0000" LABEL="10 Keyboard pieces - Go. S. 658" ORDERLABEL="10 Keyboard pieces - Go. S. 658" DMDID="uuid-017a6d80-fde9-3445-a239-bc86ba0c9f14" ADMID="AMD" TYPE="manuscript">
+         <mets:div ID="LOG_0001" LABEL="Beigefügte Quellenbeschreibung" ORDERLABEL="Beigefügte Quellenbeschreibung" DMDID="uuid-349aaab5-14aa-3cb1-a8f0-d673996c45cc" TYPE="other" ORDER="1"/>
+         <mets:div ID="LOG_0002" LABEL="Beigefügtes Inhaltsverzeichnis" ORDERLABEL="Beigefügtes Inhaltsverzeichnis" DMDID="uuid-75a7f51c-0493-3860-8bed-12adf2882b2e" TYPE="other" ORDER="2"/>
+         <mets:div ID="LOG_0003" LABEL="[Diverse]: 6 Airs Variés et tirés du Journal die Grazienbibliothek 1791. [Klavier]" ORDERLABEL="[Diverse]: 6 Airs Variés et tirés du Journal die Grazienbibliothek 1791. [Klavier]" DMDID="uuid-76157dfe-172d-3087-9203-6ae6809c2cb5" TYPE="other" ORDER="3">
+            <mets:div ID="LOG_0004" TYPE="title_page" ORDER="1"/>
+            <mets:div ID="LOG_0005" LABEL="[Dussek, Jan Ladislav]: 4 Variationen über L'Amour est un enfant Trompeur. [CraD 44]" ORDERLABEL="[Dussek, Jan Ladislav]: 4 Variationen über L'Amour est un enfant Trompeur. [CraD 44]" DMDID="uuid-5550ea93-b326-37ec-ab29-afd2c43a7ecf" TYPE="other" ORDER="2"/>
+            <mets:div ID="LOG_0006" LABEL="[Paisiello, Giovanni]: La molinara. (Thema) [RobP 1.76/15]" ORDERLABEL="[Paisiello, Giovanni]: La molinara. (Thema) [RobP 1.76/15]" DMDID="uuid-08f3c7fb-7fd6-33f9-a282-531781923e9d" TYPE="other" ORDER="3">
+               <mets:div ID="LOG_0007" LABEL="[Auernhammer, Josepha Barbara von]: 6 Variationen" ORDERLABEL="[Auernhammer, Josepha Barbara von]: 6 Variationen" DMDID="uuid-c0f27d42-d114-3d6c-895a-8bfb6b5f6154" TYPE="other" ORDER="1"/>
+               <mets:div ID="LOG_0008" LABEL="[Gelinek, Josef]: 6 Variationen" ORDERLABEL="[Gelinek, Josef]: 6 Variationen" DMDID="uuid-04c693c1-bb12-3fab-872e-1842420d7777" TYPE="other" ORDER="2"/>
+            </mets:div>
+            <mets:div ID="LOG_0009" LABEL="[Dalayrac, Nicolas-Marie]: Nina. (Thema) ; [Dussek, Jan Ladislav]: 4 Variationen [CraD 45]" ORDERLABEL="[Dalayrac, Nicolas-Marie]: Nina. (Thema) ; [Dussek, Jan Ladislav]: 4 Variationen [CraD 45]" DMDID="uuid-524960b3-12e0-3464-86a4-8f05c3418937" TYPE="other" ORDER="4"/>
+            <mets:div ID="LOG_0010" LABEL="[Dezède, Nicolas]: Blaise et Babet. (Thema) ; [Dussek, Jan Ladislav]: 4 Variationen [CraD 46]" ORDERLABEL="[Dezède, Nicolas]: Blaise et Babet. (Thema) ; [Dussek, Jan Ladislav]: 4 Variationen [CraD 46]" DMDID="uuid-2830c02c-9b3d-341e-b9d0-31d43d8af684" TYPE="other" ORDER="5"/>
+            <mets:div ID="LOG_0011" LABEL="[Christmann, Johann Friedrich]: Rondo mit 6 Variationen" ORDERLABEL="[Christmann, Johann Friedrich]: Rondo mit 6 Variationen" DMDID="uuid-b6cf1e58-29a9-3a16-9a91-f0998a104007" TYPE="other" ORDER="6"/>
+            <mets:div ID="LOG_0012" LABEL="[Anonymus]: Allegretto Con 12 Variazioni" ORDERLABEL="[Anonymus]: Allegretto Con 12 Variazioni" DMDID="uuid-afd93245-05cd-3145-b28f-84601a5bf627" TYPE="other" ORDER="7"/>
+            <mets:div ID="LOG_0013" LABEL="[Anonymus]: Allegro molto Con 9 Variazione" ORDERLABEL="[Anonymus]: Allegro molto Con 9 Variazione" DMDID="uuid-6abe16e8-103a-3064-b710-f550a179f662" TYPE="other" ORDER="8"/>
+            <mets:div ID="LOG_0014" LABEL="[Anonymus]: Andante Con 3 Variazioni" ORDERLABEL="[Anonymus]: Andante Con 3 Variazioni" DMDID="uuid-5d6c0447-4562-3d61-b052-a19a449f5f71" TYPE="other" ORDER="9"/>
+            <mets:div ID="LOG_0015" LABEL="[Anonymus]: Andante Con 4 Var:" ORDERLABEL="[Anonymus]: Andante Con 4 Var:" DMDID="uuid-be55e14c-8adf-3654-b855-20fbb0bf2394" TYPE="other" ORDER="10"/>
+         </mets:div>
+      </mets:div>
+   </mets:structMap>
+   <mets:structLink>
+      <mets:smLink xlink:to="PHYS_0001" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0002" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0003" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0004" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0005" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0006" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0007" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0008" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0009" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0010" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0011" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0012" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0013" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0014" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0015" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0016" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0017" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0018" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0019" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0020" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0021" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0022" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0023" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0024" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0025" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0026" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0027" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0028" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0029" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0030" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0031" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0032" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0033" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0034" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0035" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0036" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0037" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0038" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0039" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0040" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0041" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0042" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0043" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0044" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0045" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0046" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0047" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0048" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0049" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0050" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0051" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0052" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0053" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0054" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0055" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0056" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0057" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0058" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0059" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0060" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0061" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0062" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0063" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0064" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0065" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0066" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0067" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0068" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0069" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0070" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0071" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0072" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0073" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0074" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0075" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0076" xlink:from="LOG_0000"/>
+      <mets:smLink xlink:to="PHYS_0001" xlink:from="LOG_0001"/>
+      <mets:smLink xlink:to="PHYS_0002" xlink:from="LOG_0002"/>
+      <mets:smLink xlink:to="PHYS_0003" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0004" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0005" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0006" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0007" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0008" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0009" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0010" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0011" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0012" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0013" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0014" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0015" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0016" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0017" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0018" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0019" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0020" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0021" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0022" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0023" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0024" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0025" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0026" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0027" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0028" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0029" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0030" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0031" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0032" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0033" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0034" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0035" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0036" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0037" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0038" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0039" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0040" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0041" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0042" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0043" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0044" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0045" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0046" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0047" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0048" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0049" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0050" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0051" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0052" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0053" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0054" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0055" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0056" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0057" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0058" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0059" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0060" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0061" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0062" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0063" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0064" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0065" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0066" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0067" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0068" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0069" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0070" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0071" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0072" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0073" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0074" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0075" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0076" xlink:from="LOG_0003"/>
+      <mets:smLink xlink:to="PHYS_0003" xlink:from="LOG_0004"/>
+      <mets:smLink xlink:to="PHYS_0003" xlink:from="LOG_0005"/>
+      <mets:smLink xlink:to="PHYS_0004" xlink:from="LOG_0005"/>
+      <mets:smLink xlink:to="PHYS_0005" xlink:from="LOG_0005"/>
+      <mets:smLink xlink:to="PHYS_0006" xlink:from="LOG_0005"/>
+      <mets:smLink xlink:to="PHYS_0007" xlink:from="LOG_0005"/>
+      <mets:smLink xlink:to="PHYS_0008" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0009" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0010" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0011" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0012" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0013" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0014" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0015" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0016" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0017" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0018" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0019" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0020" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0021" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0022" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0023" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0024" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0025" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0026" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0027" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0028" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0029" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0030" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0031" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0032" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0033" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0034" xlink:from="LOG_0006"/>
+      <mets:smLink xlink:to="PHYS_0008" xlink:from="LOG_0007"/>
+      <mets:smLink xlink:to="PHYS_0009" xlink:from="LOG_0007"/>
+      <mets:smLink xlink:to="PHYS_0010" xlink:from="LOG_0007"/>
+      <mets:smLink xlink:to="PHYS_0011" xlink:from="LOG_0007"/>
+      <mets:smLink xlink:to="PHYS_0012" xlink:from="LOG_0007"/>
+      <mets:smLink xlink:to="PHYS_0013" xlink:from="LOG_0007"/>
+      <mets:smLink xlink:to="PHYS_0014" xlink:from="LOG_0007"/>
+      <mets:smLink xlink:to="PHYS_0015" xlink:from="LOG_0007"/>
+      <mets:smLink xlink:to="PHYS_0016" xlink:from="LOG_0007"/>
+      <mets:smLink xlink:to="PHYS_0017" xlink:from="LOG_0007"/>
+      <mets:smLink xlink:to="PHYS_0018" xlink:from="LOG_0008"/>
+      <mets:smLink xlink:to="PHYS_0019" xlink:from="LOG_0008"/>
+      <mets:smLink xlink:to="PHYS_0020" xlink:from="LOG_0008"/>
+      <mets:smLink xlink:to="PHYS_0021" xlink:from="LOG_0008"/>
+      <mets:smLink xlink:to="PHYS_0022" xlink:from="LOG_0008"/>
+      <mets:smLink xlink:to="PHYS_0023" xlink:from="LOG_0008"/>
+      <mets:smLink xlink:to="PHYS_0024" xlink:from="LOG_0008"/>
+      <mets:smLink xlink:to="PHYS_0025" xlink:from="LOG_0008"/>
+      <mets:smLink xlink:to="PHYS_0026" xlink:from="LOG_0008"/>
+      <mets:smLink xlink:to="PHYS_0027" xlink:from="LOG_0008"/>
+      <mets:smLink xlink:to="PHYS_0028" xlink:from="LOG_0009"/>
+      <mets:smLink xlink:to="PHYS_0029" xlink:from="LOG_0009"/>
+      <mets:smLink xlink:to="PHYS_0030" xlink:from="LOG_0009"/>
+      <mets:smLink xlink:to="PHYS_0031" xlink:from="LOG_0009"/>
+      <mets:smLink xlink:to="PHYS_0032" xlink:from="LOG_0009"/>
+      <mets:smLink xlink:to="PHYS_0033" xlink:from="LOG_0009"/>
+      <mets:smLink xlink:to="PHYS_0034" xlink:from="LOG_0009"/>
+      <mets:smLink xlink:to="PHYS_0035" xlink:from="LOG_0010"/>
+      <mets:smLink xlink:to="PHYS_0036" xlink:from="LOG_0010"/>
+      <mets:smLink xlink:to="PHYS_0037" xlink:from="LOG_0010"/>
+      <mets:smLink xlink:to="PHYS_0038" xlink:from="LOG_0010"/>
+      <mets:smLink xlink:to="PHYS_0039" xlink:from="LOG_0010"/>
+      <mets:smLink xlink:to="PHYS_0040" xlink:from="LOG_0011"/>
+      <mets:smLink xlink:to="PHYS_0041" xlink:from="LOG_0011"/>
+      <mets:smLink xlink:to="PHYS_0042" xlink:from="LOG_0011"/>
+      <mets:smLink xlink:to="PHYS_0043" xlink:from="LOG_0011"/>
+      <mets:smLink xlink:to="PHYS_0044" xlink:from="LOG_0011"/>
+      <mets:smLink xlink:to="PHYS_0045" xlink:from="LOG_0011"/>
+      <mets:smLink xlink:to="PHYS_0046" xlink:from="LOG_0011"/>
+      <mets:smLink xlink:to="PHYS_0047" xlink:from="LOG_0011"/>
+      <mets:smLink xlink:to="PHYS_0048" xlink:from="LOG_0011"/>
+      <mets:smLink xlink:to="PHYS_0049" xlink:from="LOG_0012"/>
+      <mets:smLink xlink:to="PHYS_0050" xlink:from="LOG_0012"/>
+      <mets:smLink xlink:to="PHYS_0051" xlink:from="LOG_0012"/>
+      <mets:smLink xlink:to="PHYS_0052" xlink:from="LOG_0012"/>
+      <mets:smLink xlink:to="PHYS_0053" xlink:from="LOG_0012"/>
+      <mets:smLink xlink:to="PHYS_0054" xlink:from="LOG_0012"/>
+      <mets:smLink xlink:to="PHYS_0055" xlink:from="LOG_0012"/>
+      <mets:smLink xlink:to="PHYS_0056" xlink:from="LOG_0012"/>
+      <mets:smLink xlink:to="PHYS_0057" xlink:from="LOG_0012"/>
+      <mets:smLink xlink:to="PHYS_0058" xlink:from="LOG_0012"/>
+      <mets:smLink xlink:to="PHYS_0059" xlink:from="LOG_0012"/>
+      <mets:smLink xlink:to="PHYS_0060" xlink:from="LOG_0012"/>
+      <mets:smLink xlink:to="PHYS_0061" xlink:from="LOG_0012"/>
+      <mets:smLink xlink:to="PHYS_0062" xlink:from="LOG_0013"/>
+      <mets:smLink xlink:to="PHYS_0063" xlink:from="LOG_0013"/>
+      <mets:smLink xlink:to="PHYS_0064" xlink:from="LOG_0013"/>
+      <mets:smLink xlink:to="PHYS_0065" xlink:from="LOG_0013"/>
+      <mets:smLink xlink:to="PHYS_0066" xlink:from="LOG_0013"/>
+      <mets:smLink xlink:to="PHYS_0067" xlink:from="LOG_0013"/>
+      <mets:smLink xlink:to="PHYS_0068" xlink:from="LOG_0014"/>
+      <mets:smLink xlink:to="PHYS_0069" xlink:from="LOG_0014"/>
+      <mets:smLink xlink:to="PHYS_0070" xlink:from="LOG_0014"/>
+      <mets:smLink xlink:to="PHYS_0071" xlink:from="LOG_0015"/>
+      <mets:smLink xlink:to="PHYS_0072" xlink:from="LOG_0015"/>
+      <mets:smLink xlink:to="PHYS_0073" xlink:from="LOG_0015"/>
+      <mets:smLink xlink:to="PHYS_0074" xlink:from="LOG_0015"/>
+      <mets:smLink xlink:to="PHYS_0075" xlink:from="LOG_0015"/>
+      <mets:smLink xlink:to="PHYS_0076" xlink:from="LOG_0015"/>
+   </mets:structLink>
+</mets:mets>
