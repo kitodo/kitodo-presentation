@@ -308,8 +308,14 @@
             <trans-unit id="pageGrid.page">
                 <source><![CDATA[Page]]></source>
             </trans-unit>
+            <trans-unit id="pageGrid.thumbnailError">
+                <source><![CDATA[The page image could not be loaded because the image server is unavailable.]]></source>
+            </trans-unit>
             <trans-unit id="pageview.overview-map">
                 <source><![CDATA[Overview Map]]></source>
+            </trans-unit>
+            <trans-unit id="pageview.imageError">
+                <source><![CDATA[The page image could not be loaded because the image server is unavailable.]]></source>
             </trans-unit>
             <trans-unit id="search.dateFrom">
                 <source><![CDATA[From]]></source>
