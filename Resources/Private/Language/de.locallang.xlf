@@ -413,9 +413,17 @@
                 <source><![CDATA[Page]]></source>
                 <target><![CDATA[Seite]]></target>
             </trans-unit>
+            <trans-unit id="pageGrid.thumbnailError" approved="yes">
+                <source><![CDATA[The page image could not be loaded because the image server is unavailable.]]></source>
+                <target><![CDATA[Das Seitenbild konnte nicht geladen werden, da der Bildserver derzeit nicht verfügbar ist.]]></target>
+            </trans-unit>
             <trans-unit id="pageview.overview-map" approved="yes">
                 <source><![CDATA[Overview Map]]></source>
                 <target><![CDATA[Miniaturansicht]]></target>
+            </trans-unit>
+            <trans-unit id="pageview.imageError" approved="yes">
+                <source><![CDATA[The page image could not be loaded because the image server is unavailable.]]></source>
+                <target><![CDATA[Das Seitenbild konnte nicht geladen werden, da der Bildserver derzeit nicht verfügbar ist.]]></target>
             </trans-unit>
             <trans-unit id="search.dateFrom" approved="yes">
                 <source><![CDATA[From]]></source>

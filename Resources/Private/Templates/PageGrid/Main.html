@@ -16,16 +16,26 @@
 </f:if>
 
 <div class="tx-dlf-pagegrid">
+    <f:if condition="{settings.placeholder}">
+        <f:then>
+            <f:image src="{settings.placeholder}" alt="" title="" maxWidth="250" id="tx-dlf-pagegrid-fallback" style="display:none" />
+        </f:then>
+        <f:else>
+            <f:image src="EXT:dlf/Resources/Public/Images/PageGridPlaceholder.jpg" alt="" title="" maxWidth="250" id="tx-dlf-pagegrid-fallback" style="display:none" />
+        </f:else>
+    </f:if>
     <ol class="tx-dlf-pagegrid-list">
         <f:for each="{paginator.paginatedItems}" as="entry" iteration="iterator">
             <li class="tx-dlf-pagegrid-{entry.state}" value="{entry.page}">
                 <div class="tx-dlf-pagegrid-thumbnail">
                     <f:variable name="pageTranslation" value="{f:translate(key: 'pageGrid.page')}" />
                     <f:variable name="thumbnailTranslation" value="{f:translate(key: 'general.thumbnail')}" />
+                    <f:variable name="thumbnailError" value="{f:translate(key: 'pageGrid.thumbnailError')}" />
                     <f:link.page pageUid="{settings.targetPid}" additionalParams="{'tx_dlf[id]': docUid, 'tx_dlf[page]': entry.page}">
                         <f:if condition="{entry.thumbnail}">
                             <f:then>
-                                <img src="{entry.thumbnail}" alt="{thumbnailTranslation} {pageTranslation} {entry.pagination}" title="{pageTranslation} {entry.pagination}" />
+                                <img src="{entry.thumbnail}" onerror="this.onerror=null;var f=document.getElementById('tx-dlf-pagegrid-fallback');if(f){this.src=f.src;}var e=document.getElementById('tx-dlf-pagegrid-error-{entry.page}');if(e){e.style.display='';};" alt="{thumbnailTranslation} {pageTranslation} {entry.pagination}" title="{pageTranslation} {entry.pagination}" />
+                                <p id="tx-dlf-pagegrid-error-{entry.page}" class="tx-dlf-pagegrid-error" style="display:none;margin:0;font-size:0.8em;line-height:1.2;color:#888;">{thumbnailError}</p>
                             </f:then>
                             <f:else>
                                 <f:if condition="{settings.placeholder}">

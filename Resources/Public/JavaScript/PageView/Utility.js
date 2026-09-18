@@ -258,7 +258,11 @@ dlfUtils.fetchImageData = function (imageSourceObjs, loadingIndicator) {
         if (loadCount === imageSourceObjs.length) {
             deferredResponse.resolve(imageSourceData);
         }
-    };
+    },
+        failLoading = function failLoading() {
+            // At least one image could not be loaded; stop and report the error.
+            deferredResponse.reject();
+        };
 
     imageSourceObjs.forEach(function (imageSourceObj, index) {
         if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.ZOOMIFY) {
@@ -266,26 +270,30 @@ dlfUtils.fetchImageData = function (imageSourceObjs, loadingIndicator) {
                 .done(function (imageSourceDataObj) {
                     imageSourceData[index] = imageSourceDataObj;
                     finishLoading();
-            });
+            })
+                .fail(failLoading);
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIIF) {
             dlfUtils.getIIIFResource(imageSourceObj)
                 .done(function (imageSourceDataObj) {
                     imageSourceData[index] = imageSourceDataObj;
                       finishLoading();
-            });
+            })
+                .fail(failLoading);
         } else if (imageSourceObj.mimetype === dlfUtils.CUSTOM_MIMETYPE.IIP) {
             dlfUtils.fetchIIPData(imageSourceObj)
                 .done(function (imageSourceDataObj) {
                     imageSourceData[index] = imageSourceDataObj;
                     finishLoading();
-            });
+            })
+                .fail(failLoading);
         } else {
             // In the worse case expect static image file
             dlfUtils.fetchStaticImageData(imageSourceObj, loadingIndicator)
                 .done(function (imageSourceDataObj) {
                     imageSourceData[index] = imageSourceDataObj;
                     finishLoading();
-            });
+            })
+                .fail(failLoading);
         }
     });
 

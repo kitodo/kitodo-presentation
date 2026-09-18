@@ -974,6 +974,9 @@ dlfViewer.prototype.init = function(controlNames) {
                 dlfUtils.setCookie('tx-dlf-pageview-centerLon', center[0], "lax");
                 dlfUtils.setCookie('tx-dlf-pageview-centerLat', center[1], "lax");
             }, this));
+        }, this))
+        .fail($.proxy(function() {
+            this.showImageLoadError();
         }, this));
         this.source = new ol.source.Vector();
         // crop selection style
@@ -987,6 +990,43 @@ dlfViewer.prototype.init = function(controlNames) {
         });
 
         this.initCropping();
+};
+
+/**
+ * Show a localized error message in the map container when the page image
+ * could not be loaded (e.g. the image server is unavailable).
+ *
+ * @private
+ */
+dlfViewer.prototype.showImageLoadError = function() {
+    var mapContainer = document.getElementById(this.div);
+    if (!mapContainer) {
+        return;
+    }
+    // Ensure the container has a visible height and a positioning context so
+    // the centered message is shown even without a theme CSS styling it.
+    if (getComputedStyle(mapContainer).height === '0px') {
+        mapContainer.style.height = '57em';
+    }
+    if (getComputedStyle(mapContainer).position === 'static') {
+        mapContainer.style.position = 'relative';
+    }
+    var message = document.createElement('div');
+    message.className = 'tx-dlf-pageview-error';
+    message.id = 'tx-dlf-pageview-error';
+    message.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80%;max-width:32em;text-align:center;font-size:1.1em;line-height:1.4;color:#555;';
+    var text = document.createElement('p');
+    text.style.cssText = 'margin:0 0 1em;';
+    text.textContent = (mapContainer.dataset.dlfPageImageError) || 'The page image could not be loaded because the image server is unavailable.';
+    var source = document.createElement('a');
+    source.href = this.imageUrls[0] ? this.imageUrls[0].url : '#';
+    source.textContent = this.imageUrls[0] ? this.imageUrls[0].url : '';
+    source.style.cssText = 'word-break:break-all;font-size:0.8em;color:#888;';
+    message.appendChild(text);
+    if (source.textContent) {
+        message.appendChild(source);
+    }
+    mapContainer.appendChild(message);
 };
 
 dlfViewer.prototype.updateLayerSize = function() {
@@ -1017,6 +1057,9 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs) {
     dlfUtils.fetchImageData(imageSourceObjs, this.loadingIndicator)
       .done(function(imageSourceData) {
           resolveCallback(imageSourceData, dlfUtils.createOlLayers(imageSourceData));
+      })
+      .fail(function() {
+          deferredResponse.reject();
       });
 
     return deferredResponse;
