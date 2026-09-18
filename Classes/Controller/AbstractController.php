@@ -308,7 +308,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected function configureProxyUrl(string &$url): void
     {
-        $this->uriBuilder->reset()
+        $url = $this->uriBuilder->reset()
             ->setTargetPageUid($this->pageUid)
             ->setCreateAbsoluteUri(!empty($this->extConf['general']['forceAbsoluteUrl']))
             ->setArguments(
