@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\PageGridController;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 class PageGridControllerTest extends AbstractControllerTestCase
 {
@@ -60,5 +61,50 @@ class PageGridControllerTest extends AbstractControllerTestCase
             docUid:2001
         </html>';
         $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * Renders the real PageGrid template (not a reduced inline template) and asserts that the
+     * error-handling markup introduced for failing thumbnails is present: a hidden fallback
+     * placeholder image and, for each page that has a thumbnail, an <img onerror> handler plus a
+     * hidden localized error message.
+     */
+    #[Test]
+    public function rendersErrorHandlingMarkupForThumbnails()
+    {
+        $settings = [
+            'storagePid' => self::$storagePid,
+            'action' => 'main'
+        ];
+
+        $templatePath = ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Templates/PageGrid/Main.html';
+        $view = $this->setUpTemplateView($templatePath);
+        $controller = $this->setUpController(PageGridController::class, $settings, '', $view);
+        $request = $this->setUpTemplateRequest('main', ['tx_dlf' => ['id' => 2001]]);
+
+        $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
+        $actual = $response->getBody()->getContents();
+
+        // A single hidden fallback placeholder image is emitted once for the whole grid.
+        $this->assertMatchesRegularExpression(
+            '/<img[^>]*id="tx-dlf-pagegrid-fallback"[^>]*PageGridPlaceholder\.jpg/',
+            $actual
+        );
+        // Every page that has a thumbnail renders an onerror handler that points at the fallback.
+        $this->assertStringContainsString(
+            "onerror=\"this.onerror=null;var f=document.getElementById('tx-dlf-pagegrid-fallback');",
+            $actual
+        );
+        // ... and a hidden localized error message element.
+        $this->assertStringContainsString(
+            'id="tx-dlf-pagegrid-error-1" class="tx-dlf-pagegrid-error"',
+            $actual
+        );
+        $this->assertStringContainsString(
+            'The page image could not be loaded because the image server is unavailable.',
+            $actual
+        );
     }
 }

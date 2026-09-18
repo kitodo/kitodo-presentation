@@ -18,7 +18,10 @@ use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use ReflectionClass;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Information\Typo3Version;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Mvc\ExtbaseRequestParameters;
 use TYPO3\CMS\Extbase\Mvc\Request;
@@ -40,7 +43,34 @@ abstract class AbstractControllerTestCase extends FunctionalTestCase
             ->withArguments($arguments);
     }
 
-    protected function setUpController($class, $settings, $templateHtml = ''): AbstractController
+    /**
+     * Create a request that allows Fluid template files to use view helpers that need
+     * a request context, such as f:translate (extension name + locale) and
+     * f:link.page (application type, graceful degradation to a plain link in BE context).
+     */
+    protected function setUpTemplateRequest($actionName, array $params = [], array $arguments = []): Request
+    {
+        $request = $this->setUpRequest($actionName, $params, $arguments);
+        return $request
+            ->withControllerExtensionName('Dlf')
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE)
+            ->withAttribute('language', new SiteLanguage(0, 'en', new Uri('http://test.local/'), ['typo3Language' => 'default']));
+    }
+
+    /**
+     * Create a view that renders an actual template file (instead of an inline template string),
+     * with the partials of the dlf extension available.
+     */
+    protected function setUpTemplateView(string $templatePathAndFilename): StandaloneView
+    {
+        $view = new StandaloneView();
+        $templatePaths = $view->getRenderingContext()->getTemplatePaths();
+        $templatePaths->setTemplatePathAndFilename($templatePathAndFilename);
+        $templatePaths->setPartialRootPaths([ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Partials/']);
+        return $view;
+    }
+
+    protected function setUpController($class, $settings, $templateHtml = '', ?StandaloneView $view = null): AbstractController
     {
         $documentRepository = $this->initializeRepository(DocumentRepository::class, self::$storagePid);
 
@@ -48,8 +78,10 @@ abstract class AbstractControllerTestCase extends FunctionalTestCase
             (new ServerRequest())->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE)
         );
 
-        $view = new StandaloneView();
-        $view->setTemplateSource($templateHtml);
+        if ($view === null) {
+            $view = new StandaloneView();
+            $view->setTemplateSource($templateHtml);
+        }
 
         if ((new Typo3Version())->getMajorVersion() == 13) {
             // ViewResolverInterface was changed in Typo3 v13

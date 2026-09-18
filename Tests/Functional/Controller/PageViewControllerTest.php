@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\PageViewController;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 class PageViewControllerTest extends AbstractControllerTestCase
 {
@@ -69,5 +70,34 @@ class PageViewControllerTest extends AbstractControllerTestCase
                 });
             </html>';
         $this->assertEquals($expected, $actual);
+    }
+
+    /**
+     * Renders the real PageView template (not a reduced inline template) and asserts that the map
+     * container carries the localized image-load error message used by dlfViewer when the page
+     * image could not be loaded.
+     */
+    #[Test]
+    public function rendersImageErrorAttributeOnMapContainer()
+    {
+        $settings = [
+            'storagePid' => self::$storagePid,
+            'solrcore' => self::$solrCoreId
+        ];
+
+        $templatePath = ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Templates/PageView/Main.html';
+        $view = $this->setUpTemplateView($templatePath);
+        $controller = $this->setUpController(PageViewController::class, $settings, '', $view);
+        $request = $this->setUpTemplateRequest('main', ['tx_dlf' => ['id' => 2001, 'page' => 1]]);
+
+        $response = $controller->processRequest($request);
+
+        $response->getBody()->rewind();
+        $actual = $response->getBody()->getContents();
+
+        $this->assertMatchesRegularExpression(
+            '/<div id="tx-dlf-map"[^>]*data-dlf-page-image-error="The page image could not be loaded because the image server is unavailable\."/',
+            $actual
+        );
     }
 }
