@@ -63,6 +63,8 @@ dlfFulltextSegments.prototype.coordinateToFeature = function (coordinate) {
             return segment.feature;
         }
     }
+
+    return undefined;
 };
 
 /**

@@ -44,7 +44,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * @param {number} [options.frameRate] (Optional) Frame rate of the video. By
  * default, 24 fps is assumed.
  */
-var VideoFrame = function(options) {
+var VideoFrame = function(options) { // eslint-disable-line consistent-return
 	if (this === window) { return new VideoFrame(options); }
 	this.obj = options || {};
 	this.frameRate = this.obj.frameRate || 24;
@@ -99,7 +99,7 @@ VideoFrame.prototype = {
 			if (_video.video.paused || _video.video.ended) { return; }
 			var frame = ((format === 'SMPTE') ? _video.toSMPTE() : ((format === 'time') ? _video.toTime() : _video.get()));
 			if (_video.obj.callback) { _video.obj.callback(frame, format); }
-			return frame;
+			return frame; // eslint-disable-line consistent-return
 		}, (tick ? tick : 1000 / _video.frameRate / 2));
 	},
 	/** Clears the current interval */
@@ -122,7 +122,7 @@ VideoFrame.prototype.toTime = function(frames) {
 	var dt = (new Date()), format = 'hh:mm:ss' + (typeof frames === 'number' ? ':ff' : '');
 	dt.setHours(0); dt.setMinutes(0); dt.setSeconds(0); dt.setMilliseconds(time * 1000);
 	function wrap(n) { return ((n < 10) ? '0' + n : n); }
-	return format.replace(/hh|mm|ss|ff/g, function(format) {
+	return format.replace(/hh|mm|ss|ff/g, function(format) { // eslint-disable-line consistent-return
 		switch (format) {
 			case "hh": return wrap(dt.getHours() < 13 ? dt.getHours() : (dt.getHours() - 12));
 			case "mm": return wrap(dt.getMinutes());

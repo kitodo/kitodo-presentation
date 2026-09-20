@@ -261,11 +261,15 @@ export default class RiaaEq {
    * @private
    */
   makeFilter(nodeKey) {
-    switch (nodeKey) {
-      case 'base': return this.makeBaseFilter();
-      case 'mid': return this.makeMidFilter();
-      case 'treble': return this.makeTrebleFilter();
+    if (nodeKey === 'base') {
+      return this.makeBaseFilter();
     }
+
+    if (nodeKey === 'mid') {
+      return this.makeMidFilter();
+    }
+
+    return this.makeTrebleFilter();
   }
 
   /**
