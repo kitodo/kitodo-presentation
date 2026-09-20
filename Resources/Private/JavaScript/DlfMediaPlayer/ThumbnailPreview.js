@@ -294,7 +294,8 @@ export default class ThumbnailPreview {
   async onPointerMove(e) {
     const rawSeekPosition = this.mouseEventToPosition(e);
     if (rawSeekPosition === undefined) {
-      return this.setIsVisible(false);
+      this.setIsVisible(false);
+      return;
     }
 
     const seekPosition = await this.snapPosition(rawSeekPosition);
@@ -369,12 +370,12 @@ export default class ThumbnailPreview {
   mouseEventToPosition(e, allowWideSeekArea = true) {
     const duration = this.saneVideoDuration();
     if (duration === undefined) {
-      return;
+      return undefined;
     }
 
     const isHoveringButton = document.querySelector("input[type=button]:hover, button:hover") !== null;
     if (isHoveringButton) {
-      return;
+      return undefined;
     }
 
     const bounding = this.seekBar.getBoundingClientRect();
@@ -393,7 +394,7 @@ export default class ThumbnailPreview {
 
         const { right, bottom } = bounding;
         if (!(zeroLeft <= e.clientX && e.clientX <= right && e.clientY <= bottom)) {
-          return;
+          return undefined;
         }
 
         let { top } = this.seekMode === 'wide'
@@ -407,7 +408,7 @@ export default class ThumbnailPreview {
           top += (bottom - top) / 2;
         }
         if (!(top <= e.clientY)) {
-          return;
+          return undefined;
         }
       } else {
         // Before initiating a seek, check that the seek bar (or a descendant)
@@ -415,7 +416,7 @@ export default class ThumbnailPreview {
         // seek bar, such as a modal).
 
         if (!(e.target instanceof Node) || !this.seekBar.contains(e.target)) {
-          return;
+          return undefined;
         }
       }
     }

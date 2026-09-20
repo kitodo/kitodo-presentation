@@ -167,7 +167,7 @@ export default class SlubMediaPlayer extends DlfMediaPlayer {
         if (this.modals?.hasOpen()) {
           this.modals.closeNext();
         } else {
-          return this.ui.handleEscape();
+          this.ui.handleEscape();
         }
       }),
       'modal.help.open': action(() => {
@@ -562,7 +562,7 @@ export default class SlubMediaPlayer extends DlfMediaPlayer {
   prepareScreenshot() {
     // Don't do screenshot if there isn't yet an image to be displayed
     if (!this.hasCurrentData) {
-      return;
+      return undefined;
     }
 
     return (
