@@ -206,6 +206,8 @@ export default class VariantGroups {
 
       return this.keyToGroup[key];
     }
+
+    return undefined;
   }
 
   /**
