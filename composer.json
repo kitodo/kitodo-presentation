@@ -191,7 +191,7 @@
   },
   "repositories": [
     {
-      "type": "github",
+      "type": "git",
       "url": "https://github.com/kitodo/php-iiif-prezi-reader.git"
     }
   ]
