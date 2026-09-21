@@ -22,7 +22,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
-interface ConfigureProxyUrlCaller
+interface ConfigureProxyUrlCallerInterface
 {
     public function callConfigureProxyUrl(string &$url): void;
 }
@@ -51,13 +51,15 @@ class AbstractControllerTest extends UnitTestCase
         $uriBuilderMock = $this->createUriBuilderMock();
         $uriBuilderMock->expects(self::once())
             ->method('setArguments')
-            ->with(self::callback(
-                static function (array $arguments): bool {
-                    return ($arguments['middleware'] ?? '') === 'dlf/page-view-proxy'
-                        && ($arguments['url'] ?? '') === self::ORIGINAL_URL
-                        && ($arguments['uHash'] ?? '') === GeneralUtility::hmac(self::ORIGINAL_URL, 'PageViewProxy');
-                }
-            ))
+            ->with(
+                self::callback(
+                    static function (array $arguments): bool {
+                        return ($arguments['middleware'] ?? '') === 'dlf/page-view-proxy'
+                            && ($arguments['url'] ?? '') === self::ORIGINAL_URL
+                            && ($arguments['uHash'] ?? '') === GeneralUtility::hmac(self::ORIGINAL_URL, 'PageViewProxy');
+                    }
+                )
+            )
             ->willReturn($uriBuilderMock);
 
         $controller = $this->createControllerWithUriBuilder($uriBuilderMock);
@@ -72,7 +74,7 @@ class AbstractControllerTest extends UnitTestCase
      */
     private function createControllerWithUriBuilder(UriBuilder $uriBuilder): ConfigureProxyUrlCaller
     {
-        $controller = new class () extends PageViewController implements ConfigureProxyUrlCaller {
+        $controller = new class () extends PageViewController implements ConfigureProxyUrlCallerInterface {
             public function callConfigureProxyUrl(string &$url): void
             {
                 $this->configureProxyUrl($url);
