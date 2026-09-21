@@ -8,6 +8,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+/* global DlfAnnotationControl, dlfUtils, dlfViewerFullTextControl, dlfViewerFullTextDownloadControl, dlfViewerImageManipulationControl, dlfViewerOLStyles, ol */
+
 /**
  * @typedef {object} LoadingIndicator
  * @property {(key: string, value: number, total: number) => void} progress

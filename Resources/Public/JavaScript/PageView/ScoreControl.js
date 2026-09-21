@@ -8,7 +8,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-/*global ol, saveAs, dlfUtils, tx_dlf_viewer, verovio */
+/*global blobStream, dlfUtils, dlfViewerOLStyles, ol, PDFDocument, saveAs, SVGtoPDF, tx_dlf_viewer, verovio */
 
 /**
  * Retrieve the title from the MEI head.
@@ -607,7 +607,7 @@ dlfViewerScoreControl.prototype.scrollToPagebeginning = function () {
 /**
  * Custom toggle for sync function outside the OpenLayer object
  */
-dlfViewerCustomViewSync = function (element) {
+window.dlfViewerCustomViewSync = function (element) {
   const isActive = $(element).toggleClass('active').hasClass('active');
   if (isActive) {
     tx_dlf_viewer.syncControl.setSync() // eslint-disable-line camelcase

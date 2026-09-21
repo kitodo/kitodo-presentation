@@ -8,6 +8,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+/* global ol */
+
 class SyncViewsControl extends ol.control.Control {
     /**
      * @param {object} [optOptions] Control options.

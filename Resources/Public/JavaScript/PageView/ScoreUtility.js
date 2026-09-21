@@ -10,6 +10,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+/* global dlfScoreUtil, dlfUtils, ol */
+
 /**
  * Base namespace for utility functions used by the dlf module.
  *

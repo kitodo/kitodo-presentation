@@ -8,6 +8,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+/* global dlfUtils, dlfViewerImageManipulationControl */
+
 /**
  * @class
  * @param {Object=} options Control options.

@@ -8,6 +8,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+/* global dlfUtils, dlfViewerOLStyles, ol */
+
 /**
  * This is necessary to support the scrolling of the element into the viewport
  * in case of text hover on the map.

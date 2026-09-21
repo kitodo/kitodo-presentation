@@ -8,6 +8,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+/* global tx_dlf_viewer */
+
 /**
  * This function increases the start parameter of the search form and submits
  * the form.
