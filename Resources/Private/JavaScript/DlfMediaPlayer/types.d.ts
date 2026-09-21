@@ -95,7 +95,7 @@ namespace dlf {
 
     type Fps = {
       rate: number;
-      vifa: import("DlfMediaPlayer/3rd-party/VideoFrame").default;
+      vifa: import("DlfMediaPlayer/lib/FrameStepper").default;
     };
 
     type MediaProperties = {
