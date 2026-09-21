@@ -72,7 +72,7 @@ class AbstractControllerTest extends UnitTestCase
      * Creates a PageViewController with a mocked UriBuilder that exposes the
      * protected configureProxyUrl() method for testing.
      */
-    private function createControllerWithUriBuilder(UriBuilder $uriBuilder): ConfigureProxyUrlCaller
+    private function createControllerWithUriBuilder(UriBuilder $uriBuilder): ConfigureProxyUrlCallerInterface
     {
         $controller = new class () extends PageViewController implements ConfigureProxyUrlCallerInterface {
             public function callConfigureProxyUrl(string &$url): void
