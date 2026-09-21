@@ -15,6 +15,8 @@ namespace Kitodo\Dlf\Tests\Functional\Controller;
 use Kitodo\Dlf\Controller\NavigationController;
 use Kitodo\Dlf\Domain\Model\PageSelectForm;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Property\PropertyMapper;
 use TYPO3\CMS\Frontend\Authentication\FrontendUserAuthentication;
 use TYPO3\TestingFramework\Core\SystemEnvironmentBuilder;
 
@@ -80,5 +82,27 @@ class NavigationControllerTest extends AbstractControllerTestCase
 
         $response = $controller->processRequest($request);
         $this->assertEquals(303, $response->getStatusCode());
+    }
+
+    #[Test]
+    public function canMapPageSelectFormWithUrlId()
+    {
+        $documentUrl = 'http://127.0.0.1:8093/sample_mets.xml';
+
+        // Map the page-select form fields (as submitted by the f:form "object=" form) into a
+        // PageSelectForm through ExtBase property mapping, using the default configuration. This
+        // is the conversion that NavigationController::pageSelectAction() relies on to rebuild the
+        // redirect. PageSelectForm::$id holds the document reference, which may be either a uid or
+        // a URL, so it must be a string.
+        $propertyMapper = GeneralUtility::makeInstance(PropertyMapper::class);
+        $propertyMapper->resetMessages();
+        $pageSelectForm = $propertyMapper->convert(
+            ['id' => $documentUrl, 'page' => '3', 'double' => '0'],
+            PageSelectForm::class
+        );
+
+        self::assertInstanceOf(PageSelectForm::class, $pageSelectForm, 'Form was not converted to a PageSelectForm');
+        self::assertSame($documentUrl, $pageSelectForm->getId(), 'A URL document id must map to PageSelectForm::$id');
+        self::assertSame(3, $pageSelectForm->getPage());
     }
 }
