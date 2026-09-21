@@ -16,16 +16,12 @@ use Kitodo\Dlf\Controller\AbstractController;
 use Kitodo\Dlf\Controller\PageViewController;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionMethod;
 use ReflectionProperty;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
-
-interface ConfigureProxyUrlCallerInterface
-{
-    public function callConfigureProxyUrl(string &$url): void;
-}
 
 class AbstractControllerTest extends UnitTestCase
 {
@@ -39,7 +35,7 @@ class AbstractControllerTest extends UnitTestCase
         $controller = $this->createControllerWithUriBuilder($this->createUriBuilderMock());
 
         $url = self::ORIGINAL_URL;
-        $controller->callConfigureProxyUrl($url);
+        $this->invokeConfigureProxyUrl($controller, $url);
 
         // The URL must be rewritten in place to the built proxy URL.
         self::assertSame(self::PROXY_URL, $url);
@@ -65,25 +61,30 @@ class AbstractControllerTest extends UnitTestCase
         $controller = $this->createControllerWithUriBuilder($uriBuilderMock);
 
         $url = self::ORIGINAL_URL;
-        $controller->callConfigureProxyUrl($url);
+        $this->invokeConfigureProxyUrl($controller, $url);
     }
 
     /**
-     * Creates a PageViewController with a mocked UriBuilder that exposes the
-     * protected configureProxyUrl() method for testing.
+     * Creates a PageViewController with a mocked UriBuilder and the protected
+     * properties that configureProxyUrl() reads.
      */
-    private function createControllerWithUriBuilder(UriBuilder $uriBuilder): ConfigureProxyUrlCallerInterface
+    private function createControllerWithUriBuilder(UriBuilder $uriBuilder): PageViewController
     {
-        $controller = new class () extends PageViewController implements ConfigureProxyUrlCallerInterface {
-            public function callConfigureProxyUrl(string &$url): void
-            {
-                $this->configureProxyUrl($url);
-            }
-        };
+        $controller = new PageViewController();
         $this->injectProperty($controller, ActionController::class, 'uriBuilder', $uriBuilder);
         $this->injectProperty($controller, AbstractController::class, 'extConf', ['general' => []]);
         $this->injectProperty($controller, AbstractController::class, 'pageUid', 123);
         return $controller;
+    }
+
+    /**
+     * Invokes the protected configureProxyUrl() method by reference so the
+     * rewrite of $url is observable by the caller.
+     */
+    private function invokeConfigureProxyUrl(PageViewController $controller, string &$url): void
+    {
+        $method = new ReflectionMethod(AbstractController::class, 'configureProxyUrl');
+        $method->invokeArgs($controller, [&$url]);
     }
 
     /**
