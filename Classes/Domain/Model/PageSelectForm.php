@@ -26,9 +26,9 @@ class PageSelectForm extends AbstractEntity
 {
     /**
      * @access protected
-     * @var int
+     * @var string
      */
-    protected int $id;
+    protected string $id;
 
     /**
      * @access protected
@@ -49,17 +49,17 @@ class PageSelectForm extends AbstractEntity
     protected int $page;
 
     /**
-     * @return int
+     * @return string
      */
-    public function getId(): int
+    public function getId(): string
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
+     * @param string $id
      */
-    public function setId(int $id): void
+    public function setId(string $id): void
     {
         $this->id = $id;
     }
