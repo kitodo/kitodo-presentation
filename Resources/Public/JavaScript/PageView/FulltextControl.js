@@ -296,14 +296,18 @@ dlfViewerFullTextControl.prototype.getFullTextScrollElementId = function() {
     }
     return fullTextScrollElementId.trim();
 };
-
 /**
  * @param {FullTextFeature} fulltextData
  */
 dlfViewerFullTextControl.prototype.loadFulltextData = function (fulltextData) {
 
     if(dlfUtils.exists(fulltextData.type) && fulltextData.type == 'tei') {
-      document.getElementById(this.getFullTextScrollElementId()).innerHTML = fulltextData.fulltext;
+      // getElementById('') (no scroll element configured) returns null, so guard
+      // the dereference to avoid a TypeError and a browser warning.
+      let teiTarget = document.getElementById(this.getFullTextScrollElementId());
+      if (teiTarget !== null) {
+        teiTarget.innerHTML = fulltextData.fulltext;
+      }
       return;
     }
     // add features to fulltext layer
