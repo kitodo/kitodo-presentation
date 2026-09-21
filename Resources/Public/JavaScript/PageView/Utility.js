@@ -10,6 +10,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+/* global dlfViewerSource, ol */
+
 // Internet Explorer does not support String.prototype.endsWith
 if (String.prototype.endsWith === undefined) {
     String.prototype.endsWith = function(searchString, length) {

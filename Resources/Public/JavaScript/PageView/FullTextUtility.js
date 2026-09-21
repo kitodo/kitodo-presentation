@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-/* global dlfTeiParser */
+/* global dlfAltoParser, dlfTeiParser */
 
  /**
  * Base namespace for utility functions used by the dlf module.
