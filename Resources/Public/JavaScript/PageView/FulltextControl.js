@@ -400,8 +400,7 @@ dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOff = function() {
  * Recalculate position of text lines if full text container was resized
  */
 dlfViewerFullTextControl.prototype.onResize = function() {
-    if (this.element != undefined && this.element.css('width') != this.lastHeight) {
-        this.lastHeight = this.element.css('width');
+    if (this.element != undefined) {
         this.calculatePositions();
     }
 };
@@ -415,11 +414,16 @@ dlfViewerFullTextControl.prototype.calculatePositions = function() {
     let texts = $('html').find(this.fullTextScrollElement).children('span.textline');
     // check if fulltext exists for this page
     if (texts.length > 0) {
-        let offset = $('#' + texts[0].id).position().top;
+        // .position() is relative to the nearest positioned ancestor, not the
+        // scroller, so the offsets were wrong once the lines became block
+        // elements. .offset() is viewport-based, so subtracting the scroller's
+        // own offset gives the position within the scrollable content even
+        // when the scroller is itself nested inside a positioned container.
+        let containerOffset = $(this.fullTextScrollElement).offset().top;
 
         for(let text of texts) {
-            let pos = $('#' + text.id).position().top;
-            this.positions[text.id] = pos - offset;
+            let pos = $('#' + text.id).offset().top;
+            this.positions[text.id] = pos - containerOffset;
         }
     }
 };
@@ -557,8 +561,12 @@ dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature
  */
 dlfViewerFullTextControl.prototype.scrollToText = function(element, fullTextScrollElement, positions) {
     if (element.hasClass('highlight')) {
+        let target = positions[element[0].id];
+        if (target === undefined) {
+            return;
+        }
         $(fullTextScrollElement).animate({
-            scrollTop: positions[element[0].id]
+            scrollTop: target
         }, 500);
     }
 };
