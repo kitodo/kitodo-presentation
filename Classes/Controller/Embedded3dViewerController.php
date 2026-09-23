@@ -15,7 +15,7 @@ namespace Kitodo\Dlf\Controller;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Helper;
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Utility\PathUtility;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 
 /**
  * Plugin 'Embedded3dViewer' for the 'dlf' extension
@@ -27,8 +27,6 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  */
 class Embedded3dViewerController extends AbstractController
 {
-    private const MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX = '/?middleware=dlf/embedded3dviewer';
-
     /**
      * @access public
      *
@@ -36,37 +34,50 @@ class Embedded3dViewerController extends AbstractController
      */
     public function mainAction(): ResponseInterface
     {
+        $siteLanguage = $this->getSiteLanguage();
+
         if (!empty($this->requestData['model']) || !empty($this->settings['model'])) {
-            $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl());
+            $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($siteLanguage));
             return $this->htmlResponse();
         }
 
         // when using the component
         if (!empty($this->settings['document'])) {
-            $this->assignModelFromDocument($this->getDocumentByUrl($this->settings['document']));
+            $this->assignModelFromDocument($this->getDocumentByUrl($this->settings['document']), $siteLanguage);
             return $this->htmlResponse();
         }
 
         $this->loadDocument();
 
         if (!$this->isDocMissingOrEmpty()) {
-            $this->assignModelFromDocument($this->document->getCurrentDocument());
+            $this->assignModelFromDocument($this->document->getCurrentDocument(), $siteLanguage);
         }
 
         return $this->htmlResponse();
     }
 
     /**
+     * Get the site language of the current request.
+     *
+     * @return SiteLanguage
+     */
+    protected function getSiteLanguage(): SiteLanguage
+    {
+        return $this->request->getAttribute('language') ?? $this->request->getAttribute('site')->getDefaultLanguage();
+    }
+
+    /**
      * Builds the embedded 3D viewer url.
      *
+     * @param SiteLanguage $siteLanguage The site language to build the url against
      * @param string $model The model url
      * @param string $mimeType The mime type of the model
      * @return string The embedded 3D viewer url
      */
-    protected function buildEmbedded3dViewerUrl(string $model = '', string $mimeType = ''): string
+    protected function buildEmbedded3dViewerUrl(SiteLanguage $siteLanguage, string $model = '', string $mimeType = ''): string
     {
         $viewer = "";
-        $embedded3dViewerUrl = self::MIDDLEWARE_DLF_EMBEDDED_3D_VIEWER_PREFIX;
+        $embedded3dViewerUrl = $siteLanguage->getBase()->getPath() . '?middleware=dlf/embedded3dviewer';
 
         $embedded3dViewerUrl .= $this->getQueryPart('model', $model);
 
@@ -92,14 +103,15 @@ class Embedded3dViewerController extends AbstractController
      * Assign the model from document to view.
      *
      * @param AbstractDocument $document The document containing the model
+     * @param SiteLanguage $siteLanguage The site language to build the url against
      */
-    protected function assignModelFromDocument(AbstractDocument $document): void
+    protected function assignModelFromDocument(AbstractDocument $document, SiteLanguage $siteLanguage): void
     {
         if ($document->getToplevelMetadata()['type'][0] === 'object') {
             $fileId = $document->physicalStructureInfo[$document->physicalStructure[1]]['files']['DEFAULT'];
             $mimeType = trim($document->getFileMimeType($fileId));
             $model = trim($document->getFileLocation($fileId));
-            $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($model, Helper::getModelFormatOfMimeType($mimeType)));
+            $this->view->assign('embedded3dViewerUrl', $this->buildEmbedded3dViewerUrl($siteLanguage, $model, Helper::getModelFormatOfMimeType($mimeType)));
         }
     }
 
