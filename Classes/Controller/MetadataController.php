@@ -346,13 +346,7 @@ class MetadataController extends AbstractController
 
         foreach ($metadata as $i => $section) {
             foreach ($section as $name => $value) {
-                if (($name == 'author' || $name == 'holder') && !empty($value)) {
-                    foreach ($value as $entry) {
-                        if (!empty($entry['url'])) {
-                            $hasExternalUrl[$i][$name][] = true;
-                        }
-                    }
-                } elseif (($name == 'geonames' || $name == 'wikidata' || $name == 'wikipedia') && !empty($value)) {
+                if (($name == 'geonames' || $name == 'wikidata' || $name == 'wikipedia') && !empty($value)) {
                     $hasExternalUrl[$i][$name][] = true;
                 }
             }
