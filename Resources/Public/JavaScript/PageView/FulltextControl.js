@@ -46,9 +46,17 @@ var dlfFulltextSegments = function () {
  */
 dlfFulltextSegments.prototype.populate = function (features) {
     for (let feature of features) {
+        // Some ALTO documents contain placeholder text blocks / lines without
+        // coordinates, which parse to features without a geometry. Skip those:
+        // a feature without a geometry cannot be hit-tested, and calling
+        // getExtent() on it would throw and abort the whole fulltext load.
+        var geometry = feature.getGeometry();
+        if (geometry === undefined) {
+            continue;
+        }
         this.segments_.push({
             feature,
-            extent: feature.getGeometry().getExtent()
+            extent: geometry.getExtent()
         });
     }
 };
