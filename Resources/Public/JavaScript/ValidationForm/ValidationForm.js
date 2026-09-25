@@ -154,7 +154,7 @@ dlfValidationForms.forEach((validationForm) => {
     const loader = buildLoader(event.target);
     const form = event.target.parentElement;
 
-    let dataUrl = this.action + '&type=' + encodeURIComponent(data.type) + '&url=' + encodeURIComponent(data.url);
+    let dataUrl = this.action + '&validationType=' + encodeURIComponent(data.validationType) + '&url=' + encodeURIComponent(data.url);
     if (data.enableValidator && Array.isArray(data.enableValidator)) {
       dataUrl += '&enableValidators=' + encodeURIComponent(data.enableValidator.join(','));
     }
