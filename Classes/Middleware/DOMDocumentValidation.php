@@ -80,9 +80,12 @@ class DOMDocumentValidation implements MiddlewareInterface
             return $this->getJsonResponse('URL parameter is missing.', self::BAD_REQUEST);
         }
 
-        $typeParam = $parameters['type'];
-        if (!isset($typeParam)) {
-            return $this->getJsonResponse('Type parameter is missing.', self::BAD_REQUEST);
+        $typeParam = $parameters['validationType'] ?? null;
+        if ($typeParam === null) {
+            $typeParam = $parameters['type'] ?? null;
+        }
+        if ($typeParam === null) {
+            return $this->getJsonResponse('Validation type parameter is missing.', self::BAD_REQUEST);
         }
         // load dom document from url
         if (!GeneralUtility::isValidUrl($urlParam)) {
@@ -119,8 +122,8 @@ class DOMDocumentValidation implements MiddlewareInterface
         }
 
         if (!array_key_exists($typeParam, $settings["domDocumentValidation"])) {
-            $this->logger->debug('Validation configuration type in type parameter "' . $typeParam . '" does not exist.');
-            return $this->getJsonResponse('Type parameter does not exist.', self::NOT_FOUND);
+            $this->logger->debug('Validation configuration type in validationType parameter "' . $typeParam . '" does not exist.');
+            return $this->getJsonResponse('Validation type does not exist.', self::NOT_FOUND);
         }
 
         $validationConfiguration = $this->removeDisabledValidators($parameters, $settings['domDocumentValidation'][$typeParam]);
