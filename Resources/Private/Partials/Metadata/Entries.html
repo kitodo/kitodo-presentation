@@ -28,6 +28,9 @@
                     <f:else if="{externalUrlExists.{configObject.indexName}}">
                         <f:render partial="Metadata/ExternalLinkEntry" arguments="{_all}"/>
                     </f:else>
+                    <f:else if="{value.url}">
+                        <f:render partial="Metadata/ExternalLinkEntry" arguments="{_all}"/>
+                    </f:else>
                     <f:else>
                         <f:if condition="{kitodo:isArray(subject: '{value}')}">
                             <f:then>

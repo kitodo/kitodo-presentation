@@ -12,7 +12,7 @@
     LICENSE.txt file that was distributed with this source code.
 </f:comment>
 
-<f:if condition="{configObject.indexName} == 'author' || {configObject.indexName} == 'holder'">
+<f:if condition="{value.url}">
     <f:then>
         <kitodo:stdWrap wrap="{metadataWrap.value}" data="{metaSectionConfigObject}"><f:link.external class="external" title="{value.name}" uri="{value.url}">{value.name}</f:link.external></kitodo:stdWrap>
     </f:then>
