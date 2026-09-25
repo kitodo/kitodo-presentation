@@ -363,7 +363,7 @@ class Indexer
                 $solrDoc = self::getSolrDocument($updateQuery, $document, $logicalUnit);
                 $solrDoc->setField(self::$solrFields['logical_id'], $logicalUnit['id']);
                 $solrDoc->setField(self::$solrFields['physical_id'], $doc->smLinks['l2p'][$logicalUnit['id']] ?? []);
-                if (MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
+                if (array_key_exists('points', $logicalUnit) && MathUtility::canBeInterpretedAsInteger($logicalUnit['points'])) {
                     $solrDoc->setField(self::$solrFields['page'], $logicalUnit['points']);
                 }
                 if ($logicalUnit['id'] == $doc->getToplevelId()) {
