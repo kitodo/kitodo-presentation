@@ -110,6 +110,7 @@ var dlfViewerFullTextControl = function(map) {
         {
             'fulltext':'Fulltext',
             'fulltext-loading':'Loading full text...',
+            'fulltext-missing':'Fulltext not available for this page',
             'fulltext-on':'Activate Fulltext',
             'fulltext-off':'Deactivate Fulltext',
             'activate-full-text-initially':'0',
@@ -676,7 +677,12 @@ dlfTmplFulltext.space.className = "sp";
  * @param {array.<ol.Feature>|undefined} features
  */
 dlfViewerFullTextControl.prototype.showFulltext = function(features) {
+    let target = document.getElementById(this.getFullTextScrollElementId());
+
     if (features === undefined) {
+        if (target !== null) {
+            target.innerHTML = this.dic['fulltext-missing'];
+        }
         return;
     }
 
@@ -687,7 +693,6 @@ dlfViewerFullTextControl.prototype.showFulltext = function(features) {
         return;
     }
 
-    let target = document.getElementById(this.getFullTextScrollElementId());
     if (target !== null) {
         target.innerHTML = "";
         for (let feature of features) {
