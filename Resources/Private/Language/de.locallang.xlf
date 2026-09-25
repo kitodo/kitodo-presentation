@@ -517,6 +517,10 @@
                 <source><![CDATA[Loading full text...]]></source>
                 <target><![CDATA[Volltext wird geladen...]]></target>
             </trans-unit>
+            <trans-unit id="toolbox.fulltext.missing" approved="yes">
+                <source><![CDATA[Full text not available for this page]]></source>
+                <target><![CDATA[Volltext nicht verfügbar für diese Seite]]></target>
+            </trans-unit>
             <trans-unit id="toolbox.fulltext.notAvailable" approved="yes">
                 <source><![CDATA[No full text available]]></source>
                 <target><![CDATA[Keine Volltexte vorhanden]]></target>
