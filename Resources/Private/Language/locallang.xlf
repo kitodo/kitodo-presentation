@@ -386,6 +386,9 @@
             <trans-unit id="toolbox.fulltext.loading">
                 <source><![CDATA[Loading full text...]]></source>
             </trans-unit>
+            <trans-unit id="toolbox.fulltext.missing">
+                <source><![CDATA[Full text not available for this page]]></source>
+            </trans-unit>
             <trans-unit id="toolbox.fulltext.notAvailable">
                 <source><![CDATA[No full text available]]></source>
             </trans-unit>
