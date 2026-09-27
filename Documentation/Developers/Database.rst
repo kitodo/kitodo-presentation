@@ -26,10 +26,10 @@ Extbase domain model: ``Kitodo\Dlf\Domain\Model\ActionLog``
      :description:              The id of the page the record is "stored".
 
    - :field:                    crdate  *integer*
-     :description:              
+     :description:
 
    - :field:                    deleted  *smallint*
-     :description:              
+     :description:
 
    - :field:                    user_id  *integer*
      :description:              *User ID*
@@ -69,25 +69,25 @@ Extbase domain model: ``Kitodo\Dlf\Domain\Model\Basket``
      :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
-     :description:              
+     :description:
 
    - :field:                    fe_user_id  *integer*
      :description:              *FE user ID*
 
    - :field:                    deleted  *smallint*
-     :description:              
+     :description:
 
    - :field:                    sys_language_uid  *integer*
-     :description:              
+     :description:              *Language*
 
    - :field:                    l18n_parent  *integer*
-     :description:              
+     :description:              *Transl.Orig*
 
    - :field:                    l18n_diffsource  *blob*
-     :description:              
+     :description:
 
    - :field:                    l10n_state  *text*
-     :description:              
+     :description:
 
    - :field:                    label  *string*
      :description:              *Basket*
@@ -121,13 +121,13 @@ Domain model of the 'Collection'.
      :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
-     :description:              
+     :description:
 
    - :field:                    crdate  *integer*
-     :description:              
+     :description:
 
    - :field:                    cruser_id  *integer*
-     :description:              
+     :description:
 
    - :field:                    fe_cruser_id  *integer*
      :description:              *Frontend User*
@@ -136,7 +136,7 @@ Domain model of the 'Collection'.
      :description:              *Disallow frontend editing?*
 
    - :field:                    deleted  *smallint*
-     :description:              
+     :description:
 
    - :field:                    sys_language_uid  *integer*
      :description:              *Language*
@@ -145,10 +145,10 @@ Domain model of the 'Collection'.
      :description:              *Transl.Orig*
 
    - :field:                    l18n_diffsource  *blob*
-     :description:              
+     :description:
 
    - :field:                    l10n_state  *text*
-     :description:              
+     :description:
 
    - :field:                    hidden  *smallint*
      :description:              *Hide*
@@ -217,10 +217,10 @@ Domain model of the 'Document'.
      :description:              *Created At*
 
    - :field:                    cruser_id  *integer*
-     :description:              
+     :description:
 
    - :field:                    deleted  *smallint*
-     :description:              
+     :description:
 
    - :field:                    hidden  *smallint*
      :description:              *Hide*
@@ -313,7 +313,7 @@ Domain model of the 'Document'.
      :description:              *Owner*
 
    - :field:                    solrcore  *integer*
-     :description:              
+     :description:
 
    - :field:                    status  *smallint*
      :description:              *Status*
@@ -350,16 +350,16 @@ For more information, see the documentation page on metadata.
      :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
-     :description:              
+     :description:
 
    - :field:                    crdate  *integer*
-     :description:              
+     :description:
 
    - :field:                    cruser_id  *integer*
-     :description:              
+     :description:
 
    - :field:                    deleted  *smallint*
-     :description:              
+     :description:
 
    - :field:                    type  *string*
      :description:              *Format Name (e.g. in METS)*
@@ -411,16 +411,16 @@ A library institution with the following use cases:
      :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
-     :description:              
+     :description:
 
    - :field:                    crdate  *integer*
-     :description:              
+     :description:
 
    - :field:                    cruser_id  *integer*
-     :description:              
+     :description:
 
    - :field:                    deleted  *smallint*
-     :description:              
+     :description:
 
    - :field:                    sys_language_uid  *integer*
      :description:              *Language*
@@ -429,10 +429,10 @@ A library institution with the following use cases:
      :description:              *Transl.Orig*
 
    - :field:                    l18n_diffsource  *blob*
-     :description:              
+     :description:
 
    - :field:                    l10n_state  *text*
-     :description:              
+     :description:
 
    - :field:                    label  *string*
      :description:              *Name*
@@ -498,10 +498,10 @@ Extbase domain model: ``Kitodo\Dlf\Domain\Model\Mail``
      :description:              The id of the page the record is "stored".
 
    - :field:                    deleted  *smallint*
-     :description:              
+     :description:
 
    - :field:                    sorting  *integer*
-     :description:              
+     :description:
 
    - :field:                    mail  *string*
      :description:              *Address*
@@ -535,16 +535,16 @@ A metadata kind (title, year, ...) and its configuration for display and indexin
      :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
-     :description:              
+     :description:
 
    - :field:                    crdate  *integer*
-     :description:              
+     :description:
 
    - :field:                    cruser_id  *integer*
-     :description:              
+     :description:
 
    - :field:                    deleted  *smallint*
-     :description:              
+     :description:
 
    - :field:                    sys_language_uid  *integer*
      :description:              *Language*
@@ -553,10 +553,10 @@ A metadata kind (title, year, ...) and its configuration for display and indexin
      :description:              *Transl.Orig*
 
    - :field:                    l18n_diffsource  *blob*
-     :description:              
+     :description:
 
    - :field:                    l10n_state  *text*
-     :description:              
+     :description:
 
    - :field:                    hidden  *smallint*
      :description:              *Hide*
@@ -637,19 +637,19 @@ This contains the xpath expressions on the model 'Metadata'.
      :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
-     :description:              
+     :description:
 
    - :field:                    crdate  *integer*
-     :description:              
+     :description:
 
    - :field:                    cruser_id  *integer*
-     :description:              
+     :description:
 
    - :field:                    deleted  *smallint*
-     :description:              
+     :description:
 
    - :field:                    l10n_state  *text*
-     :description:              
+     :description:
 
    - :field:                    parent_id  *integer*
      :description:              UID of the ``tx_dlf_metadata`` that is encoded by this metadata entry.
@@ -670,7 +670,7 @@ This contains the xpath expressions on the model 'Metadata'.
                                 XPath/JSONPath expression to extract sorting variant (suffixed ``_sorting``) of the metadata.
 
    - :field:                    subentries  *integer*
-     :description:              
+     :description:              *Metadata Subentries*
 
    - :field:                    mandatory  *smallint*
      :description:              *Mandatory field?*
@@ -678,8 +678,8 @@ This contains the xpath expressions on the model 'Metadata'.
 
 
 
-tx_dlf_metadatasubentries: Metadata
-===================================
+tx_dlf_metadatasubentries: Metadata Subentries
+==============================================
 
 Extbase domain model: ``Kitodo\Dlf\Domain\Model\MetadataSubentry``
 
@@ -704,28 +704,28 @@ This contains the xpath expressions on the model 'Metadata'.
      :description:              The id of the page the record is "stored".
 
    - :field:                    parent_id  *integer*
-     :description:              
+     :description:
 
    - :field:                    tstamp  *integer*
-     :description:              
+     :description:
 
    - :field:                    crdate  *integer*
-     :description:              
+     :description:
 
    - :field:                    cruser_id  *integer*
-     :description:              
+     :description:
 
    - :field:                    deleted  *smallint*
-     :description:              
+     :description:
 
    - :field:                    sys_language_uid  *integer*
-     :description:              
+     :description:              *Language*
 
    - :field:                    l18n_parent  *integer*
-     :description:              
+     :description:              *Transl.Orig*
 
    - :field:                    l18n_diffsource  *blob*
-     :description:              
+     :description:
 
    - :field:                    label  *string*
      :description:              *Display Label*
@@ -765,7 +765,7 @@ Extbase domain model: ``Kitodo\Dlf\Domain\Model\Printer``
      :description:              The id of the page the record is "stored".
 
    - :field:                    deleted  *smallint*
-     :description:              
+     :description:
 
    - :field:                    print  *string*
      :description:              *CLI command(##fileName##)*
@@ -788,22 +788,22 @@ Pivot table for many-to-many relations between tables. In particular, this is us
      :description:              Description
 
    - :field:                    **uid**  *integer*
-     :description:              
+     :description:
 
    - :field:                    uid_local  *integer*
-     :description:              
+     :description:
 
    - :field:                    uid_foreign  *integer*
-     :description:              
+     :description:
 
    - :field:                    tablenames  *string*
-     :description:              
+     :description:
 
    - :field:                    sorting  *integer*
-     :description:              
+     :description:
 
    - :field:                    sorting_foreign  *integer*
-     :description:              
+     :description:
 
    - :field:                    ident  *string*
      :description:              An identifier to describe which tables are matched.
@@ -830,19 +830,19 @@ In particular, this holds the index name of the used Solr core.
      :description:              The uid of the record. The uid is only unique in the context of the database table.
 
    - :field:                    pid  *integer*
-     :description:              
+     :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
-     :description:              
+     :description:
 
    - :field:                    crdate  *integer*
-     :description:              
+     :description:
 
    - :field:                    cruser_id  *integer*
-     :description:              
+     :description:
 
    - :field:                    deleted  *smallint*
-     :description:              
+     :description:
 
    - :field:                    label  *string*
      :description:              *Display Label*
@@ -877,16 +877,16 @@ Domain model of 'Structure'.
      :description:              The id of the page the record is "stored".
 
    - :field:                    tstamp  *integer*
-     :description:              
+     :description:
 
    - :field:                    crdate  *integer*
-     :description:              
+     :description:
 
    - :field:                    cruser_id  *integer*
-     :description:              
+     :description:
 
    - :field:                    deleted  *smallint*
-     :description:              
+     :description:
 
    - :field:                    sys_language_uid  *integer*
      :description:              *Language*
@@ -895,10 +895,10 @@ Domain model of 'Structure'.
      :description:              *Transl.Orig*
 
    - :field:                    l18n_diffsource  *blob*
-     :description:              
+     :description:
 
    - :field:                    l10n_state  *text*
-     :description:              
+     :description:
 
    - :field:                    hidden  *smallint*
      :description:              *Hide*
