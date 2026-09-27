@@ -94,8 +94,7 @@ class BaseCommand extends Command
         LibraryRepository $libraryRepository,
         SolrCoreRepository $solrCoreRepository,
         StructureRepository $structureRepository
-    )
-    {
+    ) {
         parent::__construct();
 
         $this->collectionRepository = $collectionRepository;
@@ -138,7 +137,7 @@ class BaseCommand extends Command
     {
         if (MathUtility::canBeInterpretedAsInteger($inputSolrId)) {
             return MathUtility::forceIntegerInRange((int) $inputSolrId, 0);
-        } else if (is_string($inputSolrId) && array_key_exists($inputSolrId, $solrCores)) {
+        } elseif (is_string($inputSolrId) && array_key_exists($inputSolrId, $solrCores)) {
             return $solrCores[$inputSolrId];
         }
         return null;
