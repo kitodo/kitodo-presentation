@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "62788fe013696e8947b549b31d243a91",
+    "content-hash": "cd71bafd83a53e8294fd25dcd7360878",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2429,22 +2429,23 @@
         },
         {
             "name": "slub/php-mods-reader",
-            "version": "v0.4.0",
+            "version": "v0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/slub/php-mods-reader.git",
-                "reference": "f12ece98bdcd2b1569055707bfe1e7e87bee0046"
+                "reference": "7e0f5e465606a5eeb39a477896024c5004f794b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slub/php-mods-reader/zipball/f12ece98bdcd2b1569055707bfe1e7e87bee0046",
-                "reference": "f12ece98bdcd2b1569055707bfe1e7e87bee0046",
+                "url": "https://api.github.com/repos/slub/php-mods-reader/zipball/7e0f5e465606a5eeb39a477896024c5004f794b9",
+                "reference": "7e0f5e465606a5eeb39a477896024c5004f794b9",
                 "shasum": ""
             },
             "require": {
                 "php": ">=7.4"
             },
             "require-dev": {
+                "phpstan/phpstan": "^1.12",
                 "phpunit/phpunit": "~9.6"
             },
             "type": "library",
@@ -2471,9 +2472,9 @@
             ],
             "support": {
                 "issues": "https://github.com/slub/php-mods-reader/issues",
-                "source": "https://github.com/slub/php-mods-reader/tree/v0.4.0"
+                "source": "https://github.com/slub/php-mods-reader/tree/v0.5.0"
             },
-            "time": "2024-06-17T16:17:41+00:00"
+            "time": "2026-06-22T08:47:00+00:00"
         },
         {
             "name": "softcreatr/jsonpath",
@@ -10676,5 +10677,5 @@
         "ext-simplexml": "*"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
