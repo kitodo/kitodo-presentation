@@ -51,6 +51,38 @@ In this example, you place the customized fluid template into this file::
    EXT:example/Resources/Private/Plugins/Kitodo/Partials/Navigation/Main.html
 
 
+Annotation
+----------
+
+The Annotation plugin lists, for the current page, the annotations that an
+external annotation server has stored for the document. The annotations are
+fetched through the IIIF Annotation API.
+
+:typoscript:`plugin.tx_dlf_annotation.settings.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+      Property
+   :Data Type:
+      Data type
+   :Default:
+      Default
+   :Description:
+      Description
+
+ - :Property:
+      apiUrl
+   :Data Type:
+      :ref:`t3tsref:data-type-string`
+   :Default:
+
+   :Description:
+      Base URL of the IIIF annotation server that provides the annotations
+      for the documents. If it is empty, no annotations are requested.
+
+
 Basket
 ------
 
@@ -648,6 +680,54 @@ Metadata
       `#`
    :Description:
 
+.. _multiview:
+
+Multi View
+----------
+
+The Multi View plugin opens a grid in which several documents can be shown
+side by side, each embedded in its own frame. The documents and their pages
+are selected through the request parameters :code:`tx_dlf[multiview]` and
+:code:`tx_dlf[multiViewSource][<n>]`. A URL is normally not assembled by hand:
+the *Add Source* tool of the :ref:`Toolbox` (``multiViewAddSourceTool``)
+appends the current document to the grid. The grid layout (position and size of
+each frame) is created with `Gridstack <https://gridstackjs.com/>`__ and is
+remembered in a cookie, so it is preserved for the current user.
+
+.. note::
+
+    When :code:`tx_dlf[multiview]` is set, the gridstack and Multi View
+    JavaScript are loaded and the Page View plugin is expected to be embedded
+    in a frame rather than rendered directly on the page.
+
+TypoScript Configuration
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+:typoscript:`plugin.tx_dlf_multiview.settings.`
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+      Property
+   :Data Type:
+      Data type
+   :Default:
+      Default
+   :Description:
+      Description
+
+ - :Property:
+      multiDocumentTypes
+   :Data Type:
+      :ref:`t3tsref:data-type-string`
+   :Default:
+
+   :Description:
+      Comma separated list of structure types for which the current document
+      is expanded into its child documents and added to the grid in one step.
+      Leave empty to compare independent documents side by side.
+
 Navigation
 ----------
 
@@ -678,8 +758,10 @@ TypoScript Configuration
    :Default:
       By default all features are activated. The selection is stored as comma separated list.
 
-      doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,listView,measureForward,measureBack
+      doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,listView,measureForward,measureBack,documentBack,documentForward
    :Values:
+      * documentBack
+      * documentForward
       * doublePage
       * listView
       * measureBack
@@ -732,11 +814,24 @@ TypoScript Configuration
    :Default:
 
  - :Property:
+      solrcore
+   :Data Type:
+      :ref:`t3tsref:data-type-integer`
+   :Default:
+
+ - :Property:
       limit
    :Data Type:
       :ref:`t3tsref:data-type-integer`
    :Default:
       5
+
+ - :Property:
+      solrLimit
+   :Data Type:
+      :ref:`t3tsref:data-type-integer`
+   :Default:
+      50000
 
  - :Property:
       expired
@@ -757,7 +852,6 @@ TypoScript Configuration
    :Data Type:
       :ref:`t3tsref:data-type-resource`
    :Default:
-      0
 
 Page Grid
 ---------
@@ -789,7 +883,9 @@ TypoScript Configuration
    :Data Type:
       :ref:`t3tsref:data-type-resource`
    :Default:
-      Navigation.tmpl
+      (no default)
+   :Description:
+      Image shown instead of a thumbnail for pages that have no thumbnail.
 
  - :Property:
       targetPid
@@ -831,8 +927,9 @@ TypoScript Configuration
    :Data Type:
       `t3tsref:data-type-list`
    :Default:
-
+      (none)
    :Description:
+      OpenLayers controls to create, comma separated. Valid values: ``OverviewMap``, ``ZoomPanel``.
 
  - :Property:
       elementId
@@ -853,28 +950,14 @@ TypoScript Configuration
       ID value of the HTML element for the page progress bar.
 
  - :Property:
-      crop
-   :Data Type:
-      :ref:`t3tsref:data-type-boolean`
-   :Default:
-      0
-   :Description:
-
- - :Property:
       useInternalProxy
    :Data Type:
       :ref:`t3tsref:data-type-boolean`
    :Default:
       0
    :Description:
-
- - :Property:
-      magnifier
-   :Data Type:
-      :ref:`t3tsref:data-type-boolean`
-   :Default:
-      0
-   :Description:
+      Serve the page images through the extension's own proxy instead of
+      linking to the original image URLs.
 
  - :Property:
       basketButton
@@ -883,6 +966,27 @@ TypoScript Configuration
    :Default:
       0
    :Description:
+      Show an "add to basket" button for the current page.
+
+ - :Property:
+      basket.crop
+   :Data Type:
+      :ref:`t3tsref:data-type-boolean`
+   :Default:
+      0
+   :Description:
+      Enable the cropping tool, which lets the user select a region of the
+      page to add to the basket. Only available when ``basketButton`` is set.
+
+ - :Property:
+      basket.magnifier
+   :Data Type:
+      :ref:`t3tsref:data-type-boolean`
+   :Default:
+      0
+   :Description:
+      Enable the magnifier, which shows a zoomed view of the page at the
+      mouse location. Only available when ``basketButton`` is set.
 
  - :Property:
       targetBasket
@@ -891,6 +995,15 @@ TypoScript Configuration
    :Default:
 
    :Description:
+
+ - :Property:
+      multiViewType
+   :Data Type:
+      :ref:`t3tsref:data-type-string`
+   :Default:
+
+   :Description:
+      Optional type for the Multi-View feature, see :ref:`Multi View <multiview>`.
 
 Search
 ------
@@ -985,13 +1098,6 @@ FlexForm Configuration
    :Default:
 
  - :Property:
-      limit
-   :Data Type:
-      :ref:`t3tsref:data-type-integer`
-   :Default:
-      50000
-
- - :Property:
       extendedSlotCount
    :Data Type:
       :ref:`t3tsref:data-type-integer`
@@ -1024,6 +1130,12 @@ FlexForm Configuration
    :Default:
 
  - :Property:
+      facetCollections
+   :Data Type:
+      `t3tsref:data-type-list`
+   :Default:
+
+ - :Property:
       limitFacets
    :Data Type:
       :ref:`t3tsref:data-type-integer`
@@ -1035,6 +1147,7 @@ FlexForm Configuration
    :Data Type:
       :ref:`t3tsref:data-type-boolean`
    :Default:
+      0
 
  - :Property:
       sortingFacets
@@ -1048,6 +1161,13 @@ FlexForm Configuration
       :ref:`t3tsref:data-type-boolean`
    :Default:
       1
+
+ - :Property:
+      showLogicalPageField
+   :Data Type:
+      :ref:`t3tsref:data-type-boolean`
+   :Default:
+      0
 
  - :Property:
       showSingleResult
@@ -1067,7 +1187,6 @@ FlexForm Configuration
    :Data Type:
       `t3tsref:data-type-page-id`
    :Default:
-      1
 
 Statistics
 ----------
@@ -1158,7 +1277,7 @@ TypoScript Configuration
    :Default:
 
  - :Property:
-      titleReplacement
+      titleReplacements
    :Data Type:
       `t3tsref:data-type-list`
    :Default:
@@ -1214,10 +1333,11 @@ TypoScript Configuration
       * modelDownloadTool
       * multiViewAddSourceTool
       * pdfDownloadTool
-      * rotationtTool
-      * searchIndocumentTool
+      * rotationTool
+      * searchInDocumentTool
       * scoreTool
-      * zooomTool
+      * viewerSelectionTool
+      * zoomTool
 
  - :Property:
       showAsList
@@ -1238,29 +1358,33 @@ TypoScript Configuration
 Tools
 ^^^^^
 
+All tools are rendered by the single :code:`dlf_toolbox` plugin and are
+configured in the same :typoscript:`plugin.tx_dlf_toolbox.settings` block:
+the :code:`tools` property selects which tools are shown (comma separated)
+and the individual tool options follow as sibling properties. There is no
+separate :typoscript:`plugin.tx_dlf_<tool>.` object per tool.
+
 Audio Video Tool
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
 
-This tool loads the Buttons for the Audiolabel-Image, Equalizer and Marker Table
-
-:typoscript:`plugin.tx_dlf_audiovideotool.settings.`
+This tool loads the buttons for the audio label image, equalizer and marker table.
 
 ..  code-block:: typoscript
     :caption: Example configuration for Audio Video Tool
 
-    plugin.tx_dlf_audiovideotool {
-       settings {
-          tools = audioVideoTool
-       }
+    plugin.tx_dlf_toolbox {
+        settings {
+            tools = audioVideoTool
+        }
     }
 
 Fulltext Tool
 ~~~~~~~~~~~~~
-This plugin adds an activation link for fulltext to the toolbox. If no fulltext is available for the current page, a span-tag is rendered instead.
+This tool adds an activation link for fulltext to the toolbox. If no fulltext is available for the current page, a span-tag is rendered instead.
 
 The default behavior is to show the fulltext after click on the toggle link. There is a TypoScript configuration to show the fulltext initially.
 
-:typoscript:`plugin.tx_dlf_fulltexttool.settings.`
+The following settings are part of :typoscript:`plugin.tx_dlf_toolbox.settings.`:
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -1289,7 +1413,7 @@ The default behavior is to show the fulltext after click on the toggle link. The
    :Data Type:
       :ref:`t3tsref:data-type-string`
    :Default:
-      html, body
+      (no default)
 
 The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-toolbox-fulltext-selection">` of the pageview plugin.
 
@@ -1298,7 +1422,7 @@ The fulltext is fetched and rendered by JavaScript into the `<div id="tx-dlf-too
 ..  code-block:: typoscript
     :caption: Example configuration for Fulltext Tool
 
-    plugin.tx_dlf_fulltexttool {
+    plugin.tx_dlf_toolbox {
         settings {
             tools = fulltextTool
             activateFullTextInitially = 0
@@ -1314,7 +1438,7 @@ This tool adds buttons for rotating, zooming and manipulating the image to the t
 ..  code-block:: typoscript
     :caption: Example configuration for Image Tool
 
-    plugin.tx_dlf_imagetool {
+    plugin.tx_dlf_toolbox {
         settings {
             tools = rotationTool,zoomTool,imageManipulationTool
             showAsList = 1
@@ -1326,12 +1450,12 @@ Model Download Tool
 
 This tool makes it possible to extract the model URL from the METS file or use the provided model parameter to provide a download URL.
 
-:typoscript:`plugin.tx_dlf_modeldownloadtool.settings.`
+The following settings are part of :typoscript:`plugin.tx_dlf_toolbox.settings.`:
 
 ..  code-block:: typoscript
     :caption: Example configuration for Model Download Tool
 
-    plugin.tx_dlf_modeldownloadtool {
+    plugin.tx_dlf_toolbox {
         settings {
             tools = modelDownloadTool
         }
@@ -1344,7 +1468,7 @@ This tool extracts the score from the `SCORE` file group and visualizes the MEI 
 
 The provided MIDI output of `Verovio` is played using the `html-midi-player <https://cifkao.github.io/html-midi-player/>`_
 
-:typoscript:`plugin.tx_dlf_scoretool.settings.`
+:typoscript:`plugin.tx_dlf_toolbox.settings.`
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -1368,7 +1492,7 @@ The provided MIDI output of `Verovio` is played using the `html-midi-player <htt
 ..  code-block:: typoscript
     :caption: Example configuration for Score Tool
 
-    plugin.tx_dlf_scoretool {
+    plugin.tx_dlf_toolbox {
         settings {
             tools = scoreTool
             midiPlayerSoundFont = default
@@ -1377,9 +1501,9 @@ The provided MIDI output of `Verovio` is played using the `html-midi-player <htt
 
 Search in Document Tool
 ~~~~~~~~~~~~~~~~~~~~~~~
-This plugin adds a possibility to search all appearances of the phrase in currently displayed document.
+This tool adds a possibility to search all appearances of the phrase in the currently displayed document.
 
-:typoscript:`plugin.tx_dlf_searchindocumenttool.settings.`
+The following settings are part of :typoscript:`plugin.tx_dlf_toolbox.settings.`:
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -1453,7 +1577,7 @@ This plugin adds a possibility to search all appearances of the phrase in curren
 ..  code-block:: typoscript
     :caption: Example configuration for Search In Document Tool
 
-    plugin.tx_dlf_searchindocumenttool {
+    plugin.tx_dlf_toolbox {
         settings {
             tools = searchInDocumentTool
             idInputName = tx_dlf[id]
@@ -1473,12 +1597,10 @@ This tool can display a selection list of configured 3D viewers (from the "dlf_3
 
 The model URL is extracted from the METS file or taken from the provided model parameter. The extension of the model is extracted from this URL and compared with the supported model formats specified in the respective viewer configuration.
 
-:typoscript:`plugin.tx_dlf_viewerselectiontool.settings.`
-
 ..  code-block:: typoscript
     :caption: Example configuration for Viewer Selection Tool
 
-    plugin.tx_dlf_viewerselectiontool {
+    plugin.tx_dlf_toolbox {
         settings {
             tools = viewerSelectionTool
         }

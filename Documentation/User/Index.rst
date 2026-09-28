@@ -102,7 +102,17 @@ The command `kitodo:index` is used for indexing a single document::
    :Example:
 
  - :Option:
-       ``-q|--quite``
+       ``--softCommit``
+   :Required:
+       no
+   :Description:
+       The document is added to the index by a soft commit instead of a hard
+       commit, which is faster but makes the document visible to searches
+       only after a later hard commit or index optimization.
+   :Example:
+
+ - :Option:
+       ``-q|--quiet``
    :Required:
        no
    :Description:
@@ -138,7 +148,7 @@ collections or even to reindex all documents on the given page.::
     ./vendor/bin/typo3 kitodo:reindex -c 1 -l 1000 -b 0 -p 123 -s dlfCore1
     ./vendor/bin/typo3 kitodo:reindex -c 1 -l 1000 -b 1000 -p 123 -s dlfCore1
     # long notation
-    ./vendor/bin/typo3 kitodo:reindex --coll 1 --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --coll 1 --index-limit=1000 --index-begin=0 --pid 123 --solr dlfCore1
     ./vendor/bin/typo3 kitodo:reindex --coll 1 --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
 
     # reindex collection with uid 1 and 4 on page 123 with solr core 'dlfCore1'
@@ -152,7 +162,7 @@ collections or even to reindex all documents on the given page.::
     ./vendor/bin/typo3 kitodo:reindex -c 1,4 -l 1000 -b 0 -p 123 -s dlfCore1
     ./vendor/bin/typo3 kitodo:reindex -c 1,4 -l 1000 -b 1000 -p 123 -s dlfCore1
     # long notation
-    ./vendor/bin/typo3 kitodo:reindex --coll 1,4 --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --coll 1,4 --index-limit=1000 --index-begin=0 --pid 123 --solr dlfCore1
     ./vendor/bin/typo3 kitodo:reindex --coll 1,4 --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
 
     # reindex all documents on page 123 with solr core 'dlfCore1' (caution can result in memory problems for big amount of documents)
@@ -166,7 +176,7 @@ collections or even to reindex all documents on the given page.::
     ./vendor/bin/typo3 kitodo:reindex -a -l 1000 -b 0 -p 123 -s dlfCore1
     ./vendor/bin/typo3 kitodo:reindex -a -l 1000 -b 1000 -p 123 -s dlfCore1
     # long notation
-    ./vendor/bin/typo3 kitodo:reindex --all --index-limit=1000 --index-begin=0 --pid 123 ---solr dlfCore1
+    ./vendor/bin/typo3 kitodo:reindex --all --index-limit=1000 --index-begin=0 --pid 123 --solr dlfCore1
     ./vendor/bin/typo3 kitodo:reindex --all --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
 
 
@@ -260,6 +270,15 @@ collections or even to reindex all documents on the given page.::
        0
 
  - :Option:
+       ``-uc|--use-cache``
+   :Required:
+       no
+   :Description:
+       If this option is set, the document will be taken from cache if a cache
+       exists.
+   :Example:
+
+ - :Option:
        ``--dry-run``
    :Required:
        no
@@ -269,7 +288,17 @@ collections or even to reindex all documents on the given page.::
    :Example:
 
  - :Option:
-       ``-q|--quite``
+       ``--softCommit``
+   :Required:
+       no
+   :Description:
+       The documents are added to the index by a soft commit instead of a
+       hard commit, which is faster but they are visible to searches only
+       after a later hard commit or index optimization.
+   :Example:
+
+ - :Option:
+       ``-q|--quiet``
    :Required:
        no
    :Description:
@@ -294,7 +323,7 @@ With the command `kitodo:harvest` it is possible to harvest an OAI-PMH
 interface and index all fetched records.::
 
     # example
-    ./vendor/bin/typo3 kitodo:harvest --lib=<UID> --pid=<PID> --solr=<CORE> --from=<timestamp> --until=<timestamp> --set=<set>
+    ./vendor/bin/typo3 kitodo:harvest --owner=<UID> --pid=<PID> --solr=<CORE> --from=<timestamp> --until=<timestamp> --set=<set>
 
 In order to use the command, you first have to configure a library in the
 backend, setting at least a label and oai_base. The latter should be a valid
@@ -313,7 +342,7 @@ OAI-PMH base URL (e.g. https://digital.slub-dresden.de/oai/).
        Example
 
  - :Option:
-       ``-l|--lib``
+       ``-o|--owner``
    :Required:
        yes
    :Description:
@@ -386,7 +415,17 @@ OAI-PMH base URL (e.g. https://digital.slub-dresden.de/oai/).
    :Example:
 
  - :Option:
-       ``-q|--quite``
+       ``--softCommit``
+   :Required:
+       no
+   :Description:
+       The documents are added to the index by a soft commit instead of a
+       hard commit, which is faster but they are visible to searches only
+       after a later hard commit or index optimization.
+   :Example:
+
+ - :Option:
+       ``-q|--quiet``
    :Required:
        no
    :Description:
@@ -461,11 +500,13 @@ The command `kitodo:delete` is used for deleting a single document::
        123 or 'dlfCore1'
 
  - :Option:
-       ``-v|--verbose``
+       ``--softCommit``
    :Required:
        no
    :Description:
-       Show processed documents uid and location with deleting parameters.
+       The deletion from the index is done by a soft commit instead of a
+       hard commit, which is faster but the change is visible to searches
+       only after a later hard commit or index optimization.
    :Example:
 
 Commit and/or optimize index
@@ -518,22 +559,11 @@ With the command `kitodo:optimize` it is possible to hard commit documents to an
    :Example:
 
  - :Option:
-       ``--dry-run``
+       ``-q|--quiet``
    :Required:
        no
    :Description:
-       Nothing will be written to database or index. All documents will be
-       listed which would be processed on a real run.
-   :Example:
-
- - :Option:
-       ``-q|--quite``
-   :Required:
-       no
-   :Description:
-       Do not output any message. Useful when using a wrapper script. The
-       script may check the return value of the CLI job. This is always 0 on
-       success and 1 on failure.
+       Do not output any message (standard Symfony option).
    :Example:
 
  - :Option:
@@ -541,8 +571,7 @@ With the command `kitodo:optimize` it is possible to hard commit documents to an
    :Required:
        no
    :Description:
-       Show each processed documents uid and location with timestamp and
-       amount of processed/all documents.
+       Increase the verbosity of messages (standard Symfony option).
    :Example:
 
 

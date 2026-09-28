@@ -114,7 +114,7 @@ composer docs:stop
 Generate the database reference table by running the following command from the composer-based TYPO3 install directory (not the Kitodo.Presentation source directory):
 
 ```bash
-vendor/bin/typo3 kitodo:dbdocs
+vendor/bin/typo3 kitodo:databaseDocsGenerate
 ```
 
 ### Troubleshooting
