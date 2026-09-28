@@ -506,8 +506,53 @@ dlfViewerFullTextControl.prototype.handleFulltextHoverElements = function(textli
             if (textlineElement && !textlineElement.hasClass('highlight')) {
                 textlineElement.addClass('highlight');
             }
+
+            // Mirror the image->text direction: pan the pageview so the
+            // hovered line is visible, so the user can see where it is.
+            this.panToTextline(textlineFeature);
         }
     }
+};
+
+/**
+ * Pan the pageview so the given textline feature is visible in the image.
+ * Keeps the current zoom and only pans when the line is outside the visible
+ * area, so hovering lines that are already visible does not move the map.
+ * @param {ol.Feature|undefined} textlineFeature
+ */
+dlfViewerFullTextControl.prototype.panToTextline = function(textlineFeature) {
+    if (!textlineFeature || !this.map || !this.map.getView()) {
+        return;
+    }
+
+    var view = this.map.getView();
+    var size = this.map.getSize();
+    if (!size || size.length !== 2) {
+        return;
+    }
+
+    var extent = textlineFeature.getGeometry().getExtent();
+
+    // Only pan when the line is not already fully visible.
+    var viewExtent = view.calculateExtent(size);
+    if (
+        extent[0] >= viewExtent[0] &&
+        extent[1] >= viewExtent[1] &&
+        extent[2] <= viewExtent[2] &&
+        extent[3] <= viewExtent[3]
+    ) {
+        return;
+    }
+
+    // Pan so the line is centered in the view, keeping the current zoom.
+    // This is the simplest correct behavior: the line ends up in the middle
+    // of the viewport, which is always visible regardless of how much of the
+    // line was already on screen.
+    var center = [(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2];
+    view.animate({
+        center: center,
+        duration: 200
+    });
 };
 
 /**
