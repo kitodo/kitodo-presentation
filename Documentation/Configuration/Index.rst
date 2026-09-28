@@ -181,7 +181,7 @@ To setup Apache Solr, perform the following steps:
 
 .. code-block:: bash
 
-      cp -r EXT:dlf/Configuration/ApacheSolr/configsets/dlf $SOLR_HOME/configsets/
+      cp -r dlf/Configuration/ApacheSolr/configsets/dlf $SOLR_HOME/configsets/
 
 3. Get the Solr OCR Highlighting plugin and put it into the modules directory.
 
