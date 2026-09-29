@@ -19,9 +19,9 @@ Introduction
 About Kitodo.Presentation
 *************************
 
-Kitodo.Presentation is a powerful framework for building a METS-based digital
-library. It is highly customizable through an user-friendly backend and flexible
-design templates.
+Kitodo.Presentation is a powerful framework for building a METS- or IIIF-based
+digital library. It is highly customizable through an user-friendly backend and
+flexible design templates.
 
 Since it is based on the great free and open source Content Management System
 TYPO3, it can be integrated seamlessly into your website and can easily be
@@ -29,7 +29,8 @@ managed by editors.
 
 Kitodo.Presentation provides a comprehensive toolset covering all basic
 requirements for presenting digitized media: books, archivalia, digital
-depositary copies, manuscripts and letters, prints, newspapers and magazines.
+depositary copies, manuscripts and letters, prints, newspapers and magazines,
+as well as 3D objects and audio or video content.
 
 Download of current version is `available on GitHub <https://github.com/kitodo/kitodo-presentation>`_.
 
