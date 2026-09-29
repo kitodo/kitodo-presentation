@@ -46,9 +46,17 @@ var dlfFulltextSegments = function () {
  */
 dlfFulltextSegments.prototype.populate = function (features) {
     for (let feature of features) {
+        // Some ALTO documents contain placeholder text blocks / lines without
+        // coordinates, which parse to features without a geometry. Skip those:
+        // a feature without a geometry cannot be hit-tested, and calling
+        // getExtent() on it would throw and abort the whole fulltext load.
+        var geometry = feature.getGeometry();
+        if (geometry === undefined) {
+            continue;
+        }
         this.segments_.push({
             feature,
-            extent: feature.getGeometry().getExtent()
+            extent: geometry.getExtent()
         });
     }
 };
@@ -303,7 +311,12 @@ dlfViewerFullTextControl.prototype.getFullTextScrollElementId = function() {
 dlfViewerFullTextControl.prototype.loadFulltextData = function (fulltextData) {
 
     if(dlfUtils.exists(fulltextData.type) && fulltextData.type == 'tei') {
-      document.getElementById(this.getFullTextScrollElementId()).innerHTML = fulltextData.fulltext;
+      // getElementById('') (no scroll element configured) returns null, so guard
+      // the dereference to avoid a TypeError and a browser warning.
+      let teiTarget = document.getElementById(this.getFullTextScrollElementId());
+      if (teiTarget !== null) {
+        teiTarget.innerHTML = fulltextData.fulltext;
+      }
       return;
     }
     // add features to fulltext layer
@@ -396,8 +409,7 @@ dlfViewerFullTextControl.prototype.addActiveBehaviourForSwitchOff = function() {
  * Recalculate position of text lines if full text container was resized
  */
 dlfViewerFullTextControl.prototype.onResize = function() {
-    if (this.element != undefined && this.element.css('width') != this.lastHeight) {
-        this.lastHeight = this.element.css('width');
+    if (this.element != undefined) {
         this.calculatePositions();
     }
 };
@@ -411,11 +423,16 @@ dlfViewerFullTextControl.prototype.calculatePositions = function() {
     let texts = $('html').find(this.fullTextScrollElement).children('span.textline');
     // check if fulltext exists for this page
     if (texts.length > 0) {
-        let offset = $('#' + texts[0].id).position().top;
+        // .position() is relative to the nearest positioned ancestor, not the
+        // scroller, so the offsets were wrong once the lines became block
+        // elements. .offset() is viewport-based, so subtracting the scroller's
+        // own offset gives the position within the scrollable content even
+        // when the scroller is itself nested inside a positioned container.
+        let containerOffset = $(this.fullTextScrollElement).offset().top;
 
         for(let text of texts) {
-            let pos = $('#' + text.id).position().top;
-            this.positions[text.id] = pos - offset;
+            let pos = $('#' + text.id).offset().top;
+            this.positions[text.id] = pos - containerOffset;
         }
     }
 };
@@ -553,8 +570,12 @@ dlfViewerFullTextControl.prototype.addHighlightEffect = function(textlineFeature
  */
 dlfViewerFullTextControl.prototype.scrollToText = function(element, fullTextScrollElement, positions) {
     if (element.hasClass('highlight')) {
+        let target = positions[element[0].id];
+        if (target === undefined) {
+            return;
+        }
         $(fullTextScrollElement).animate({
-            scrollTop: positions[element[0].id]
+            scrollTop: target
         }, 500);
     }
 };
