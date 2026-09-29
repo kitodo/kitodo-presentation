@@ -21,6 +21,14 @@ Administrator Manual
 Installation
 ************
 
+.. note::
+
+   Kitodo.Presentation requires **TYPO3 v12.4 or v13.4**, **PHP 8.2 - 8.4**,
+   and **Apache Solr 8.11 or 9.x** (8.11 - 9.7) with the
+   `solr-ocrhighlighting <https://github.com/dbmdz/solr-ocrhighlighting/releases>`_
+   module (version 0.9.1 or newer). See :ref:`configuration-solr` for the Solr
+   setup and :ref:`Requirements <requirements>` for details.
+
 Make sure you have TYPO3 and Apache Solr already running.
 
 a. Get the latest release ("jar" file) from https://github.com/dbmdz/solr-ocrhighlighting/releases. Version 0.9.1 is the minimum version number. Make sure to pick the right file for Solr 8 or 9 respectively.
@@ -51,7 +59,29 @@ Please run the following commands in your webroot where the TYPO3 :file:`compose
 
    .. code-block:: shell
 
-      ./vendor/typo3 extension:activate dlf
+      composer install
+      ./vendor/bin/typo3 extension:activate dlf
+
+
+.. _requirements:
+
+************
+Requirements
+************
+
+.. list-table::
+   :header-rows: 1
+
+   * - Component
+     - Required Version
+   * - PHP
+     - 8.2 - 8.4
+   * - TYPO3
+     - v12.4 or v13.4
+   * - Apache Solr
+     - 8.11 - 9.7
+   * - solr-ocrhighlighting
+     - 0.9.1 or newer
 
 
 *******
