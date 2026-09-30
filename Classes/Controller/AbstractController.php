@@ -358,18 +358,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     }
 
     /**
-     * Returns the LanguageService
-     *
-     * @access protected
-     *
-     * @return LanguageService
-     */
-    protected function getLanguageService(): LanguageService
-    {
-        return $GLOBALS['LANG'];
-    }
-
-    /**
      * Gets SOLR instance by its UID configured in the plugin or extension.
      *
      * @access protected
