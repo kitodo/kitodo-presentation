@@ -22,7 +22,7 @@ import Chapters from 'DlfMediaPlayer/Chapters';
 import Markers from 'DlfMediaPlayer/Markers';
 import ShakaFrontend from 'DlfMediaPlayer/frontend/ShakaFrontend';
 import VariantGroups from 'DlfMediaPlayer/VariantGroups';
-import VideoFrame from 'DlfMediaPlayer/3rd-party/VideoFrame';
+import FrameStepper from 'DlfMediaPlayer/lib/FrameStepper';
 
 /**
  * Emits the following custom events:
@@ -1064,7 +1064,7 @@ export default class DlfMediaPlayer extends HTMLElement {
     } else if (this.fps === null || fps !== this.fps.rate) {
       this.fps = {
         rate: fps,
-        vifa: new VideoFrame({
+        vifa: new FrameStepper({
           id: this.video.id,
           frameRate: fps,
         }),
