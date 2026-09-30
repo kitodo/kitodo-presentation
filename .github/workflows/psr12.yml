@@ -1,0 +1,28 @@
+name: Code Style
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  psr12:
+    name: PSR-12 Code Style
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      - name: Fix git ownership (needed for php-actions/composer@v6)
+        run: git config --global --add safe.directory /app
+
+      - name: Install dependencies
+        uses: php-actions/composer@v6
+        with:
+          command: install
+          php_version: 8.4
+          args: --ignore-platform-reqs --no-blocking
+
+      - name: Check PSR-12 code style
+        run: composer php-cs-fixer:check
