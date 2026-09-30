@@ -160,7 +160,15 @@ RST;
                         ? '     :' . $key . ':'
                         : '';
 
-                    $entry .= str_pad($prefix, 32) . trim($valueLines[$i]) . "\n";
+                    $line = str_pad($prefix, 32) . trim($valueLines[$i]);
+                    // Trim trailing whitespace on the line that carries the
+                    // field key. Continuation lines must keep their padding,
+                    // which indents them into the field list (also for blank
+                    // separator lines between paragraphs).
+                    if ($i === 0) {
+                        $line = rtrim($line);
+                    }
+                    $entry .= $line . "\n";
                 }
             }
 
