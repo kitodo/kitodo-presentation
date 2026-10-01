@@ -540,8 +540,7 @@ final class MetsDocument extends AbstractDocument
             // Link logical structure to the first corresponding physical page/track.
             $details['points'] = max((int) array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, true), 1);
             $details['thumbnailId'] = $this->getThumbnail($details['id']);
-            // Get page/track number of the first page/track related to this structure element.
-            $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
+            $details['pagination'] = $this->getFirstOrderLabel($details['id']);
             $details['mediaChapter'] = $this->getTimecode($details);
         } elseif ($details['id'] == $this->getToplevelId()) {
             // Point to self if this is the toplevel structure.
@@ -551,6 +550,26 @@ final class MetsDocument extends AbstractDocument
         if ($details['thumbnailId'] === null) {
             unset($details['thumbnailId']);
         }
+    }
+
+    /**
+     * Get the orderlabel of the first physical page/track related to the structure element.
+     *
+     * @access private
+     *
+     * @param string $id The logical structure element's ID
+     *
+     * @return ?string The orderlabel or null if not found
+     */
+    private function getFirstOrderLabel(string $id): ?string
+    {
+        if (array_key_exists($id, $this->smLinks['l2p'])) {
+            $firstElement = $this->smLinks['l2p'][$id][0] ?? null;
+            if (!empty($firstElement) && array_key_exists($firstElement, $this->physicalStructureInfo)) {
+                return $this->physicalStructureInfo[$firstElement]['orderlabel'];
+            }
+        }
+        return null;
     }
 
     /**
