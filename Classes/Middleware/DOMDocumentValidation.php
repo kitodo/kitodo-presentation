@@ -82,9 +82,6 @@ class DOMDocumentValidation implements MiddlewareInterface
 
         $typeParam = $parameters['validationType'] ?? null;
         if ($typeParam === null) {
-            $typeParam = $parameters['type'] ?? null;
-        }
-        if ($typeParam === null) {
             return $this->getJsonResponse('Validation type parameter is missing.', self::BAD_REQUEST);
         }
         // load dom document from url
