@@ -1620,7 +1620,7 @@ final class MetsDocument extends AbstractDocument
 
     /**
      * Get the MIME type of file, defaulting to 'image/jpeg' if 'unknown'.
-     * TODO: This is a workaround for a bug in the METS file generation. It should be removed when the bug is fixed.
+     * TODO: This is a workaround for a bug in the METS file generation of ACTApro Desk. It should be removed when the upstream bug is fixed.
      *
      * @access private
      *
