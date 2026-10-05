@@ -1610,12 +1610,30 @@ final class MetsDocument extends AbstractDocument
                         'fileGrp' => $useGroup,
                         'admId' => (string) $file->attributes()->ADMID,
                         'dmdId' => (string) $file->attributes()->DMDID,
-                        'mimeType' => (string) $file->attributes()->MIMETYPE,
+                        'mimeType' => $this->getMimeType((string) $file->attributes()->MIMETYPE),
                         'location' => (string) $fileLocation->attributes(self::XLINK_NAMESPACE)->href,
                     ];
                 }
             }
         }
+    }
+
+    /**
+     * Get the MIME type of file, defaulting to 'image/jpeg' if 'unknown'.
+     * TODO: This is a workaround for a bug in the METS file generation. It should be removed when the bug is fixed.
+     *
+     * @access private
+     *
+     * @param string $mimeType The MIME type to check
+     *
+     * @return string The valid MIME type
+     */
+    private function getMimeType(string $mimeType): string
+    {
+        if ($mimeType === 'unknown') {
+            return 'image/jpeg';
+        }
+        return $mimeType;
     }
 
     /**
