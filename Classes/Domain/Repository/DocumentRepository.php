@@ -648,8 +648,7 @@ class DocumentRepository extends AbstractRepository
         array $searchParams,
         ?QueryResultInterface $listedMetadata = null,
         ?QueryResultInterface $indexedMetadata = null
-    ): SolrSearch
-    {
+    ): SolrSearch {
         return $this->findSolr([$collection], $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -672,8 +671,7 @@ class DocumentRepository extends AbstractRepository
         array $searchParams,
         ?QueryResultInterface $listedMetadata = null,
         ?QueryResultInterface $indexedMetadata = null
-    ): SolrSearch
-    {
+    ): SolrSearch {
         return $this->findSolr($collections, $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -694,8 +692,7 @@ class DocumentRepository extends AbstractRepository
         array $searchParams,
         ?QueryResultInterface $listedMetadata = null,
         ?QueryResultInterface $indexedMetadata = null
-    ): SolrSearch
-    {
+    ): SolrSearch {
         return $this->findSolr([], $settings, $searchParams, $listedMetadata, $indexedMetadata);
     }
 
@@ -718,8 +715,7 @@ class DocumentRepository extends AbstractRepository
         array $searchParams,
         ?QueryResultInterface $listedMetadata = null,
         ?QueryResultInterface $indexedMetadata = null
-    ): SolrSearch
-    {
+    ): SolrSearch {
         // set settings global inside this repository
         // (may be necessary when SolrSearch calls back)
         $this->settings = $settings;
