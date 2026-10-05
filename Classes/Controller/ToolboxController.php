@@ -381,6 +381,11 @@ class ToolboxController extends AbstractController
     {
         $file = [];
         if (!empty($this->currentDocument->physicalStructure)) {
+            if (!array_key_exists($page, $this->currentDocument->physicalStructure)) {
+                $this->logger->warning('Page number "' . $page . '" not found in Document (' . $this->document->getLocation() . ') mets:structMap');
+                return $file;
+            }
+
             $physicalStructureInfo = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$page]] ?? null;
             while ($fileGrp = @array_pop($fileGrps)) {
                 if (isset($physicalStructureInfo['files'][$fileGrp])) {
@@ -389,10 +394,10 @@ class ToolboxController extends AbstractController
                         $file['url'] = $this->currentDocument->getDownloadLocation($fileId);
                         $file['mimetype'] = $this->currentDocument->getFileMimeType($fileId);
                     } else {
-                        $this->logger->warning('File not found in fileGrp "' . $fileGrp . '"');
+                        $this->logger->warning('File not found in fileGrp "' . $fileGrp . '" in Document (' . $this->document->getLocation() . ')');
                     }
                 } else {
-                    $this->logger->warning('fileGrp "' . $fileGrp . '" not found in Document mets:fileSec');
+                    $this->logger->warning('fileGrp "' . $fileGrp . '" not found in Document (' . $this->document->getLocation() . ') mets:fileSec');
                 }
             }
         }
