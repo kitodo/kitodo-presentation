@@ -200,12 +200,15 @@ export default class VariantGroups {
   findActiveGroup() {
     const track = this.findActiveTrack();
 
+    let group;
     if (track) {
       const key =
         VariantGroups.splitRepresentationId(track.originalVideoId).group;
 
-      return this.keyToGroup[key];
+      group = this.keyToGroup[key];
     }
+
+    return group;
   }
 
   /**
