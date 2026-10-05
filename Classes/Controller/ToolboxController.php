@@ -147,17 +147,20 @@ class ToolboxController extends AbstractController
         $currentPhysPage = '';
         $scoreFile = '';
         if ($this->requestData['page']) {
-            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[$this->requestData['page']];
+            $currentPhysPage = $this->currentDocument->physicalStructure[$this->requestData['page']];
         } elseif (!empty($this->currentDocument->physicalStructure)) {
-            $currentPhysPage = $this->document->getCurrentDocument()->physicalStructure[1];
+            $currentPhysPage = $this->currentDocument->physicalStructure[1];
         }
 
         if (!empty($currentPhysPage)) {
             $useGroups = $this->useGroupsConfiguration->getScore();
             foreach ($useGroups as $useGroup) {
-                $files = $this->document->getCurrentDocument()->physicalStructureInfo[$currentPhysPage]['files'];
-                if (array_key_exists($useGroup, $files)) {
-                    $scoreFile = $files[$useGroup];
+                $currentPhysicalPage = $this->currentDocument->physicalStructureInfo[$currentPhysPage];
+                if (array_key_exists('files', $currentPhysicalPage)) {
+                    $files = $currentPhysicalPage['files'];
+                    if (array_key_exists($useGroup, $files)) {
+                        $scoreFile = $files[$useGroup];
+                    }
                 }
             }
         }
