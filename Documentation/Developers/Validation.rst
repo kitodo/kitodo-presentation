@@ -71,14 +71,18 @@ To use the validator, the XSL Schematron must be available alongside the XSL pro
 DOMDocumentValidation Middleware
 =======
 
-``Kitodo\Dlf\Validation\DOMDocumentValidation`` middleware must be used by setting the ``middleware`` parameter to ``dlf/dom-document-validation``. Additionally, the ``url`` parameter must contain the URL of the DOMDocument content to be validated, and the ``type`` parameter must specify the corresponding validation configuration type.
+``Kitodo\Dlf\Validation\DOMDocumentValidation`` middleware must be used by setting the ``middleware`` parameter to ``dlf/dom-document-validation``. Additionally, the ``url`` parameter must contain the URL of the DOMDocument content to be validated, and the ``validationType`` parameter must specify the corresponding validation configuration type.
+
+.. note::
+
+   The middleware must not be invoked with the ``type`` parameter. In the TYPO3 frontend, ``type`` is a reserved parameter that selects the page type (``typeNum``), so a non-numeric ``type`` value causes a "No page configured for type=..." error before the middleware is even reached.
 
 .. _DOMDocumentValidation Middleware Configuration:
 
 Configuration
 --------------------------
 
-The validation middleware can be configured through the plugin settings in TypoScript with the block called ``domDocumentValidation``. Under this block, configuration sections (referred to as type) for different validations can be defined. When directly referencing the middleware or using the :ref:`Plugin Validation Form`, this type must be provided as the ``type`` parameter.
+The validation middleware can be configured through the plugin settings in TypoScript with the block called ``domDocumentValidation``. Under this block, configuration sections (referred to as type) for different validations can be defined. When directly referencing the middleware or using the :ref:`Plugin Validation Form`, this type must be provided as the ``validationType`` parameter.
 
    .. code-block::
 
