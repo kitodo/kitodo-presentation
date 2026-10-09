@@ -156,9 +156,9 @@ class ToolboxController extends AbstractController
             $useGroups = $this->useGroupsConfiguration->getScore();
             foreach ($useGroups as $useGroup) {
                 $currentPhysicalPage = $this->currentDocument->physicalStructureInfo[$currentPhysPage];
-                if (array_key_exists('files', $currentPhysicalPage)) {
+                if (is_array($currentPhysicalPage) && array_key_exists('files', $currentPhysicalPage)) {
                     $files = $currentPhysicalPage['files'];
-                    if (array_key_exists($useGroup, $files)) {
+                    if (is_array($files) && array_key_exists($useGroup, $files)) {
                         $scoreFile = $files[$useGroup];
                     }
                 }
