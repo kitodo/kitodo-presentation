@@ -951,6 +951,15 @@ dlfViewer.prototype.init = function(controlNames) {
                 }
             }
 
+            var saveViewParams = $.proxy(function() {
+                var zoom = this.map.getZoom() !== undefined ? this.map.getZoom() : '',
+                    center = this.map.getView().getCenter() !== undefined ? this.map.getView().getCenter() : ['', ''];
+
+                dlfUtils.setCookie('tx-dlf-pageview-zoomLevel', zoom, "lax");
+                dlfUtils.setCookie('tx-dlf-pageview-centerLon', center[0], "lax");
+                dlfUtils.setCookie('tx-dlf-pageview-centerLat', center[1], "lax");
+            }, this);
+            this.map.on('moveend', saveViewParams);
 
           this.addCustomControls(this.images[0]);
 
@@ -968,13 +977,7 @@ dlfViewer.prototype.init = function(controlNames) {
                     this.imageManipulationControl.deactivate();
                 }
 
-                var zoom = this.map.getZoom() !== undefined ? this.map.getZoom() : '',
-                    center = this.map.getView().getCenter() !== undefined ? this.map.getView().getCenter() : ['', ''];
-
-                // save actual map view parameters to cookie
-                dlfUtils.setCookie('tx-dlf-pageview-zoomLevel', zoom, "lax");
-                dlfUtils.setCookie('tx-dlf-pageview-centerLon', center[0], "lax");
-                dlfUtils.setCookie('tx-dlf-pageview-centerLat', center[1], "lax");
+                saveViewParams();
             }, this));
         }, this))
         .fail($.proxy(function() {
