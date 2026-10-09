@@ -1400,11 +1400,15 @@ final class MetsDocument extends AbstractDocument
                 $fileId = (string) $fptr->attributes()->FILEID;
                 $area = $fptr->children(self::METS_NAMESPACE)->area;
 
+                if (array_key_exists($fileId, $fileUse)) {
+                    $fileUseValue = $fileUse[$fileId];
+                }
+
                 // Check if file has valid @USE attribute.
-                if (!empty($fileUse[(string) $fileId])) {
-                    $this->physicalStructureInfo[$id]['files'][$fileUse[$fileId]] = $fileId;
+                if (!empty($fileUseValue)) {
+                    $this->physicalStructureInfo[$id]['files'][$fileUseValue] = $fileId;
                     // List all files of the fileGrp that are referenced on the page, not only the last one
-                    $this->physicalStructureInfo[$id]['all_files'][$fileUse[$fileId]][] = $fileId;
+                    $this->physicalStructureInfo[$id]['all_files'][$fileUseValue][] = $fileId;
                 } elseif ($area) {
                     $areaAttrs = $area->attributes();
                     $fileId = (string) $areaAttrs->FILEID;
