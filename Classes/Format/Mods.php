@@ -272,11 +272,10 @@ class Mods implements MetadataInterface
     {
         $this->getHolderFromXmlDisplayForm($holders, $i);
 
-        $displayName = $this->metadata['holder'][$i];
         if (!empty($holders[$i]->getValueURI())) {
             $this->metadata['holder'][$i] = [
-                'name' => $displayName,
-                'url' => (string) $holders[$i]->getValueURI()
+                'name' => $this->metadata['holder'][$i],
+                'url' => $holders[$i]->getValueURI()
             ];
         }
     }
