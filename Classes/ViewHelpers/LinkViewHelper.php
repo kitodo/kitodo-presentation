@@ -47,6 +47,9 @@ final class LinkViewHelper extends AbstractTagBasedViewHelper
         $request = $renderingContext->getRequest();
 
         $requestData = $this->arguments['requestData'];
+        if (empty($requestData)) {
+            return '';
+        }
 
         $dlfArguments = [];
         foreach ($requestData as $key => $data) {
