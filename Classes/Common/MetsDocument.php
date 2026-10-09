@@ -597,30 +597,33 @@ final class MetsDocument extends AbstractDocument
                 continue;
             }
 
-            $physInfo = $this->physicalStructureInfo[$this->smLinks['l2p'][$logInfo['id']][0]];
-            $fileIds = $physInfo['all_files'][$mediaplayerUseGroup] ?? [];
+            $firstElement = $this->smLinks['l2p'][$logInfo['id']][0];
+            if (array_key_exists($firstElement, $this->physicalStructureInfo)) {
+                $physInfo = $this->physicalStructureInfo[$firstElement];
+                $fileIds = $physInfo['all_files'][$mediaplayerUseGroup] ?? [];
 
-            $chapter = null;
+                $chapter = null;
 
-            foreach ($fileIds as $fileId) {
-                $fileArea = $physInfo['fileInfos'][$fileId]['area'] ?? '';
-                if (empty($fileArea) || $fileArea['betype'] !== 'TIME') {
-                    continue;
+                foreach ($fileIds as $fileId) {
+                    $fileArea = $physInfo['fileInfos'][$fileId]['area'] ?? '';
+                    if (empty($fileArea) || $fileArea['betype'] !== 'TIME') {
+                        continue;
+                    }
+
+                    if ($chapter === null) {
+                        $chapter = [
+                            'fileIds' => [],
+                            'timecode' => Helper::timeCodeToSeconds($fileArea['begin']),
+                        ];
+                    }
+
+                    $chapter['fileIds'][] = $fileId;
                 }
 
-                if ($chapter === null) {
-                    $chapter = [
-                        'fileIds' => [],
-                        'timecode' => Helper::timeCodeToSeconds($fileArea['begin']),
-                    ];
+                if ($chapter !== null) {
+                    $chapter['fileIdsJoin'] = implode(',', $chapter['fileIds']);
+                    return $chapter;
                 }
-
-                $chapter['fileIds'][] = $fileId;
-            }
-
-            if ($chapter !== null) {
-                $chapter['fileIdsJoin'] = implode(',', $chapter['fileIds']);
-                return $chapter;
             }
         }
 
