@@ -490,7 +490,11 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         // if collections are given, we prepare the collection query string
         if (!empty($this->collections)) {
-            $params['filterquery'][]['query'] = $this->getCollectionFilterQuery($query);
+            $lFacet = false;
+            if (isset($this->searchParams['fq']) && is_array($this->searchParams['fq'])) {
+                $lFacet = true;
+            }
+            $params['filterquery'][]['query'] = $this->getCollectionFilterQuery($query, $lFacet);
         }
 
         // Set some query parameters.
@@ -842,14 +846,17 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @access private
      *
-     * @param string $query
+      * @param string $query
+     * @param bool $lFacet when a facet is clicked
      *
      * @return string
      */
-    private function getCollectionFilterQuery(string $query): string
+    private function getCollectionFilterQuery(string $query, bool $lFacet): string
     {
         $collectionsQueryString = '';
         $virtualCollectionsQueryString = '';
+        // Plain browsing (no search term, no facet clicked) lists root documents only.
+        $listsRootDocumentsOnly = (empty($query) || $query === '*') && !$lFacet;
 
         $this->filterCollections();
 
@@ -865,7 +872,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         // distinguish between simple collection browsing and actual searching within the collection(s)
         if (!empty($collectionsQueryString)) {
             $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ')';
-            if (empty($query) || $query === '*') {
+            if ($listsRootDocumentsOnly) {
                 $collectionsQueryString .= ' AND toplevel:true AND partof:0';
             }
             $collectionsQueryString .= ')';
@@ -874,6 +881,10 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separately
         if (!empty($virtualCollectionsQueryString)) {
             $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
+            // like for regular collections: plain browsing (no search, no facet) lists root documents only
+            if ($listsRootDocumentsOnly) {
+                $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ' AND toplevel:true AND partof:0)';
+            }
         }
 
         // combine both query strings into a single filterquery via OR if both are given, otherwise pass either of those
