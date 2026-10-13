@@ -846,7 +846,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      *
      * @access private
      *
-      * @param string $query
+     * @param string $query
      * @param bool $lFacet when a facet is clicked
      *
      * @return string
