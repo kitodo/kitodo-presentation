@@ -9,7 +9,7 @@
                 This installation already includes a working viewer page and a prepared configuration folder.
             </p>
 
-            <form class="tx-dlf-default-viewer-input-form" action="{f:uri.page(pageUid: viewerPid)}" method="get" onsubmit="var input=this.querySelector('input[name='tx_dlf[id]']'); if(input){ input.value=input.value.trim(); }">
+            <form class="tx-dlf-default-viewer-input-form" action="{f:uri.page(pageUid: viewerPid)}" method="get" onsubmit="var input = document.getElementById('tx-dlf-default-viewer-document-url'); input.value=input.value.trim();">
                 <label class="tx-dlf-default-viewer-input-label" for="tx-dlf-default-viewer-document-url">
                     Enter a METS, OAI-PMH or other supported document URL
                 </label>
