@@ -853,41 +853,89 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      */
     private function getCollectionFilterQuery(string $query, bool $lFacet): string
     {
-        $collectionsQueryString = '';
-        $virtualCollectionsQueryString = '';
-        // Plain browsing (no search term, no facet clicked) lists root documents only.
-        $listsRootDocumentsOnly = (empty($query) || $query === '*') && !$lFacet;
-        // A virtual collection string using a Solr local parameter such as a {!join}
-        // block cannot be wrapped in parentheses or OR-combined behind another query,
-        // so join-based collections are collected and merged into one joined clause
-        // (see below).
-        $joinedCollectionQueryStrings = [];
+        $listsRootDocumentsOnly = $this->listsRootDocumentsOnly($query, $lFacet);
 
         $this->filterCollections();
+        [
+            $collectionsQueryString,
+            $virtualCollectionsQueryString,
+            $joinedCollectionQueryStrings,
+        ] = $this->collectCollectionQueries($listsRootDocumentsOnly);
+
+        // join-based virtual collections: combine the collected query strings into
+        // a single joined clause that has to lead the resulting filter query
+        $joinedCollectionQueryString = Solr::combineJoinedCollections($joinedCollectionQueryStrings, $this->logger);
+
+        if (empty($joinedCollectionQueryString)) {
+            // combine both query strings into a single filterquery via OR if both are given, otherwise pass either of those
+            return implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+        }
+
+        // A joined clause must lead the clause, so it is passed through unchanged;
+        // any regular/virtual collection query is OR-combined behind it (already
+        // parenthesised above, the join must not be parenthesised).
+        $remainder = implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+
+        return empty($remainder) ? $joinedCollectionQueryString : $joinedCollectionQueryString . ' OR ' . $remainder;
+    }
+
+    /**
+     * Check if plain browsing (no search term, no facet clicked) is requested;
+     * in that case only root documents are listed. A search of '*' is the
+     * site-wide browse query and is treated like no query at all.
+     *
+     * @access private
+     *
+     * @param string $query the search term
+     * @param bool $lFacet when a facet is clicked
+     *
+     * @return bool
+     */
+    private function listsRootDocumentsOnly(string $query, bool $lFacet): bool
+    {
+        return (empty($query) || $query === '*') && !$lFacet;
+    }
+
+    /**
+     * Collect the query strings of the configured collections and classify them
+     * into regular collections (index name), plain virtual collections (index
+     * search) and join-based virtual collections, each already wrapped in the
+     * parentheses the combined filter query requires.
+     *
+     * @access private
+     *
+     * @param bool $listsRootDocumentsOnly plain browsing restricts the root documents
+     *
+     * @return array{0: string, 1: string, 2: string[]} [collectionsQueryString, virtualCollectionsQueryString, joinedCollectionQueryStrings]
+     */
+    private function collectCollectionQueries(bool $listsRootDocumentsOnly): array
+    {
+        $collectionsQueryString = '';
+        $virtualCollectionsQueryString = '';
+        $joinedCollectionQueryStrings = [];
 
         foreach ($this->collections as $collection) {
-            // check for virtual collections query string
-            if ($collection->getIndexSearch()) {
-                if (str_contains($collection->getIndexSearch(), '{!join')) {
-                    // A Solr local parameter such as a {!join} block may only appear as the
-                    // leading, unparenthesised token of a clause: wrapping it in
-                    // parentheses, OR-combining it behind another query or combining it with a
-                    // second join makes the whole clause unparseable. A trailing
-                    // "AND toplevel:true AND partof:0" (as used for plain browsing) is
-                    // silently ignored by the join. Join-based collections are therefore
-                    // merged into a single joined clause below, unless plain browsing
-                    // lists the root documents which the reference part alone already reaches.
-                    if (!$listsRootDocumentsOnly) {
-                        $joinedCollectionQueryStrings[] = $collection->getIndexSearch();
-                        continue;
-                    }
-                    $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $this->stripJoinLocalParameters($collection->getIndexSearch()) . ')' : ' OR (' . $this->stripJoinLocalParameters($collection->getIndexSearch()) . ')';
-                    continue;
-                }
-                $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collection->getIndexSearch() . ')' : ' OR (' . $collection->getIndexSearch() . ')';
-            } else {
+            if (!$collection->getIndexSearch()) {
                 $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collection->getIndexName() . '"' : ' OR "' . $collection->getIndexName() . '"';
+                continue;
             }
+            if (!str_contains($collection->getIndexSearch(), '{!join')) {
+                $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collection->getIndexSearch() . ')' : ' OR (' . $collection->getIndexSearch() . ')';
+                continue;
+            }
+            // A Solr local parameter block such as a {!join} may only appear as the
+            // leading, unparenthesised token of a clause: wrapping it in parentheses,
+            // OR-combining it behind another query or combining it with a second join
+            // would make the whole clause unparseable. Join-based collections are therefore
+            // collected and merged into a single joined clause later; for plain browsing,
+            // which only lists the root documents that the reference part alone would
+            // already reach, the block is dropped instead.
+            if ($listsRootDocumentsOnly) {
+                $strippedIndexSearch = $this->stripJoinLocalParameters($collection->getIndexSearch());
+                $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? "(" . $strippedIndexSearch . ")" : ' OR (' . $strippedIndexSearch . ')';
+                continue;
+            }
+            $joinedCollectionQueryStrings[] = $collection->getIndexSearch();
         }
 
         // distinguish between simple collection browsing and actual searching within the collection(s)
@@ -908,21 +956,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
             }
         }
 
-        // join-based virtual collections: combine the collected query strings into
-        // a single joined clause that has to lead the resulting filter query
-        $joinedCollectionQueryString = Solr::combineJoinedCollections($joinedCollectionQueryStrings, $this->logger);
-
-        if (empty($joinedCollectionQueryString)) {
-            // combine both query strings into a single filterquery via OR if both are given, otherwise pass either of those
-            return implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
-        }
-
-        // A joined clause must lead the clause, so it is passed through unchanged;
-        // any regular/virtual collection query is OR-combined behind it (already
-        // parenthesised above, the join must not be parenthesised).
-        $remainder = implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
-
-        return empty($remainder) ? $joinedCollectionQueryString : $joinedCollectionQueryString . ' OR ' . $remainder;
+        return [$collectionsQueryString, $virtualCollectionsQueryString, $joinedCollectionQueryStrings];
     }
 
     /**
