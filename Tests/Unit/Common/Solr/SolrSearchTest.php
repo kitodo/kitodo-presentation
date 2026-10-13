@@ -102,6 +102,89 @@ class SolrSearchTest extends UnitTestCase
         );
     }
 
+    #[Test]
+    public function searchMergesTwoJoinedCollectionsWhenSearching(): void
+    {
+        $prefix = '{!join from=uid to=uid}';
+        $solrSearch = $this->createSolrSearch([
+            $this->createCollection('a', $prefix . '(record_id:856399094)'),
+            $this->createCollection('b', $prefix . '(record_id:776857304)'),
+        ]);
+
+        // Searching (a term is present) merges both {!join} collections into a
+        // single joined clause so the fulltext of all referenced pages is reached.
+        self::assertSame(
+            '{!join from=uid to=uid}((record_id:856399094) OR (record_id:776857304))',
+            $this->invokeGetCollectionFilterQuery($solrSearch, 'term', false)
+        );
+    }
+
+    #[Test]
+    public function searchKeepsSingleJoinedCollectionAsIs(): void
+    {
+        $prefix = '{!join from=uid to=uid}';
+        $solrSearch = $this->createSolrSearch([
+            $this->createCollection('a', $prefix . '(record_id:856399094)'),
+        ]);
+
+        // A single join-based collection passes through unchanged.
+        self::assertSame(
+            '{!join from=uid to=uid}(record_id:856399094)',
+            $this->invokeGetCollectionFilterQuery($solrSearch, 'term', false)
+        );
+    }
+
+    #[Test]
+    public function searchPrependsJoinedClauseBeforeOtherCollections(): void
+    {
+        $prefix = '{!join from=uid to=uid}';
+        $solrSearch = $this->createSolrSearch([
+            $this->createCollection('v', 'type:issue'),
+            $this->createCollection('j', $prefix . '(record_id:856399094)'),
+            $this->createCollection('reg', '', 'name_1'),
+        ]);
+
+        // The joined clause must lead; regular/virtual collections are OR-combined behind it.
+        $expected = $prefix . '(record_id:856399094)'
+            . ' OR (collection_faceting:("name_1")) OR ((type:issue))';
+        self::assertSame($expected, $this->invokeGetCollectionFilterQuery($solrSearch, 'term', false));
+    }
+
+    #[Test]
+    public function searchLogsDebugWhenJoinedCollectionsHaveDifferentLocalParameterBlocks(): void
+    {
+        $solrSearch = $this->createSolrSearch([
+            $this->createCollection('a', '{!join from=uid to=uid}(record_id:856399094)'),
+            $this->createCollection('b', '{!join from=partof to=uid}(record_id:776857304)'),
+        ]);
+
+        // The reference queries are merged into the first join (superset of
+        // matches), with a debug message logged because the prefixes differ.
+        $this->loggerMock->expects(self::once())->method('debug');
+        self::assertSame(
+            '{!join from=uid to=uid}((record_id:856399094) OR (record_id:776857304))',
+            $this->invokeGetCollectionFilterQuery($solrSearch, 'term', false)
+        );
+    }
+
+    #[Test]
+    public function browsingStripsJoinDownToReferences(): void
+    {
+        $prefix = '{!join from=uid to=uid}';
+        $solrSearch = $this->createSolrSearch([
+            $this->createCollection('a', $prefix . '(record_id:856399094)'),
+            $this->createCollection('b', $prefix . '(record_id:776857304)'),
+        ]);
+
+        // Plain browsing (no query, no facet) lists root documents only: the join
+        // is dropped and only the combined reference query with the toplevel/partof
+        // restriction is used.
+        self::assertSame(
+            '((((record_id:856399094)) OR ((record_id:776857304))) AND toplevel:true AND partof:0)',
+            $this->invokeGetCollectionFilterQuery($solrSearch, '', false)
+        );
+    }
+
     /**
      * Creates a SolrSearch with a mocked DocumentRepository and the given collections.
      */
