@@ -293,21 +293,21 @@ class Solr implements LoggerAwareInterface
      *
      * @access private
      *
-     * @param string $s The trimmed Solr expression
+     * @param string $expr The trimmed Solr expression
      *
      * @return bool True if a single top-level paren group spans the whole input
      */
-    private static function isTopLevelParens(string $s): bool
+    private static function isTopLevelParens(string $expr): bool
     {
-        $len = strlen($s);
-        if ($len < 2 || $s[0] !== '(' || $s[$len - 1] !== ')') {
+        $len = strlen($expr);
+        if ($len < 2 || $expr[0] !== '(' || $expr[$len - 1] !== ')') {
             return false;
         }
         $depth = 0;
         for ($i = 0; $i < $len; $i++) {
-            if ($s[$i] === '(') {
+            if ($expr[$i] === '(') {
                 $depth++;
-            } elseif ($s[$i] === ')') {
+            } elseif ($expr[$i] === ')') {
                 $depth--;
                 if ($depth === 0 && $i < $len - 1) {
                     return false;
