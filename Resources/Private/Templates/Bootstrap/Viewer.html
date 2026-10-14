@@ -5,16 +5,14 @@
                 <aside class="tx-dlf-default-viewer-control-bar">
                     <section class="tx-dlf-default-viewer-control-panel tx-dlf-default-viewer-control-panel-metadata">
                         <div class="tx-dlf-default-viewer-control-header">
-                            <p class="tx-dlf-default-viewer-panel-kicker">Document</p>
-                            <h2>Metadata</h2>
+                            <h2 class="tx-dlf-default-viewer-element-name">Metadata (dlf_metadata)</h2>
                         </div>
                         <f:cObject typoscriptObjectPath="plugin.tx_dlf_metadata" />
                     </section>
 
                     <section class="tx-dlf-default-viewer-control-panel tx-dlf-default-viewer-control-panel-toc">
                         <div class="tx-dlf-default-viewer-control-header">
-                            <p class="tx-dlf-default-viewer-panel-kicker">Structure</p>
-                            <h2>Contents</h2>
+                            <h2 class="tx-dlf-default-viewer-element-name">Table of contents (dlf_tableofcontents)</h2>
                         </div>
                         <f:cObject typoscriptObjectPath="plugin.tx_dlf_tableofcontents" />
                     </section>
@@ -31,8 +29,18 @@
                             </div>
 
                             <div class="tx-dlf-default-viewer-submenu">
-                                <f:cObject typoscriptObjectPath="plugin.tx_dlf_navigation" />
-                                <f:cObject typoscriptObjectPath="plugin.tx_dlf_toolbox" />
+                                <section class="tx-dlf-default-viewer-element tx-dlf-default-viewer-element-navigation">
+                                    <h2 class="tx-dlf-default-viewer-element-name">Navigation (dlf_navigation)</h2>
+                                    <div class="tx-dlf-default-viewer-element-content">
+                                        <f:cObject typoscriptObjectPath="plugin.tx_dlf_navigation" />
+                                    </div>
+                                </section>
+                                <section class="tx-dlf-default-viewer-element tx-dlf-default-viewer-element-toolbox">
+                                    <h2 class="tx-dlf-default-viewer-element-name">Toolbox (dlf_toolbox)</h2>
+                                    <div class="tx-dlf-default-viewer-element-content">
+                                        <f:cObject typoscriptObjectPath="plugin.tx_dlf_toolbox" />
+                                    </div>
+                                </section>
                             </div>
                         </div>
 

@@ -44,6 +44,28 @@ body.tx-dlf-default-viewer-page {
   margin-bottom: 16px;
 }
 
+.tx-dlf-default-viewer-element-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: #596979;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tx-dlf-default-viewer-element-name::after {
+  min-width: 24px;
+  height: 1px;
+  flex: 1 1 auto;
+  background: var(--default-border);
+  content: "";
+}
+
 .tx-dlf-default-viewer-main {
   min-width: 0;
 }
@@ -93,7 +115,7 @@ body.tx-dlf-default-viewer-page {
 }
 
 .tx-dlf-default-viewer-provider,
-.tx-dlf-default-viewer-submenu {
+.tx-dlf-default-viewer-element {
   pointer-events: auto;
   border: 1px solid var(--default-border);
   border-radius: 10px;
@@ -102,25 +124,16 @@ body.tx-dlf-default-viewer-page {
 }
 
 .tx-dlf-default-viewer-provider {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
   padding: 12px 16px;
 }
 
-.tx-dlf-default-viewer-provider h1,
-.tx-dlf-default-viewer-control-header h2 {
-  margin: 0;
-}
-
 .tx-dlf-default-viewer-provider h1 {
+  margin: 0;
   font-size: 26px;
   line-height: 1;
 }
 
-.tx-dlf-default-viewer-kicker,
-.tx-dlf-default-viewer-panel-kicker {
+.tx-dlf-default-viewer-kicker {
   margin: 0 0 4px;
   color: slategray;
   font-size: 11px;
@@ -130,15 +143,26 @@ body.tx-dlf-default-viewer-page {
 }
 
 .tx-dlf-default-viewer-submenu {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 10px;
+  color: var(--default-accent);
+}
+
+.tx-dlf-default-viewer-element {
+  min-width: 0;
+  padding: 12px;
+}
+
+.tx-dlf-default-viewer-element-content {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 10px;
-  padding: 10px 12px;
-  color: var(--default-accent);
+  margin-top: 10px;
 }
 
-.tx-dlf-default-viewer-submenu ul,
 .tx-dlf-default-viewer-submenu li {
   margin: 0;
   padding: 0;
@@ -192,6 +216,14 @@ body.tx-dlf-default-viewer-page {
   background: var(--default-surface);
 }
 
+.tx-dlf-default-viewer-submenu li.tx-dlf-tools-pdfdownload {
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
 .tx-dlf-default-viewer-submenu .tx-dlf-navigation-pages label {
   font-weight: 700;
 }
@@ -210,6 +242,19 @@ body.tx-dlf-default-viewer-page {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+}
+
+.tx-dlf-default-viewer-submenu li.tx-dlf-tools-pdfdownload > span {
+  display: contents;
+}
+
+.tx-dlf-default-viewer-submenu li.tx-dlf-tools-pdfdownload > span > a {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--default-border);
+  border-radius: 7px;
+  background: var(--default-surface);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .tx-dlf-default-viewer-document-view .tx-dlf-map {
@@ -248,22 +293,21 @@ body.tx-dlf-default-viewer-page {
 }
 
 #tx-dlf-toolbox-fulltext-selection {
-  max-width: min(640px, 100%);
+  box-sizing: border-box;
+  width: min(900px, 100%);
   max-height: 28vh;
   overflow: auto;
   padding: 14px 16px;
   font-size: 14px;
   line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: normal;
   pointer-events: auto;
 }
 
 #tx-dlf-toolbox-fulltext-selection .textline,
 #tx-dlf-toolbox-fulltext-selection .sp {
   display: inline;
-}
-
-#tx-dlf-toolbox-fulltext-selection .sp {
-  white-space: pre;
 }
 
 #tx-dlf-toolbox-fulltext-selection .highlight {
@@ -348,12 +392,8 @@ body.tx-dlf-default-viewer-page.fullscreen .tx-dlf-default-viewer-document-funct
     padding: 12px;
   }
 
-  .tx-dlf-default-viewer-provider {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   .tx-dlf-default-viewer-submenu {
+    grid-template-columns: 1fr;
     gap: 8px;
   }
 
