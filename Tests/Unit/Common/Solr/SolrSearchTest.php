@@ -51,9 +51,7 @@ class SolrSearchTest extends UnitTestCase
     #[Test]
     public function plainBrowsingOfRegularCollectionListsRootDocumentsOnly(): void
     {
-        $solrSearch = $this->createSolrSearch([
-            $this->createCollection('reg', '', 'name_1'),
-        ]);
+        $solrSearch = $this->createSolrSearch([$this->createCollection('reg', '', 'name_1')]);
 
         self::assertSame(
             '(collection_faceting:("name_1") AND toplevel:true AND partof:0)',
