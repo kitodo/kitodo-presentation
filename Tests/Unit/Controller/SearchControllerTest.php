@@ -26,10 +26,12 @@ class SearchControllerTest extends UnitTestCase
     public function addCollectionsQueryMergesTwoJoinedCollectionsWhenSearching(): void
     {
         $prefix = '{!join from=uid to=uid}';
-        $controller = $this->createController([
-            1 => $this->createCollection('a', $prefix . '(record_id:856399094)'),
-            2 => $this->createCollection('b', $prefix . '(record_id:776857304)'),
-        ]);
+        $controller = $this->createController(
+            [
+                1 => $this->createCollection('a', $prefix . '(record_id:856399094)'),
+                2 => $this->createCollection('b', $prefix . '(record_id:776857304)'),
+            ]
+        );
 
         self::assertSame(
             '{!join from=uid to=uid}((record_id:856399094) OR (record_id:776857304))',
