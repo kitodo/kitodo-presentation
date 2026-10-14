@@ -20,7 +20,6 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use ReflectionMethod;
 use ReflectionProperty;
 
-
 class SearchControllerTest extends UnitTestCase
 {
     #[Test]
