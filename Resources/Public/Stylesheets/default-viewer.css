@@ -23,147 +23,6 @@ body.tx-dlf-default-viewer-page {
   min-height: 100vh;
 }
 
-
-.tx-dlf-default-viewer-landing {
-  min-height: 100vh;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.94)),
-    linear-gradient(120deg, rgba(26, 77, 143, 0.08), transparent 35%),
-    whitesmoke;
-}
-
-.tx-dlf-default-viewer-welcome {
-  width: min(1080px, calc(100% - 48px));
-  margin: 48px auto;
-  padding: 40px 44px 56px;
-  border: 1px solid var(--default-border);
-  border-radius: 20px;
-  background: var(--default-surface);
-  box-shadow: var(--default-shadow);
-}
-
-.tx-dlf-default-viewer-welcome-hero,
-.tx-dlf-default-viewer-welcome-section {
-  margin-bottom: 40px;
-  padding: 0;
-}
-
-.tx-dlf-default-viewer-welcome-hero h1,
-.tx-dlf-default-viewer-welcome-header h2,
-.tx-dlf-default-viewer-example-card h3 {
-  margin: 0;
-}
-
-.tx-dlf-default-viewer-welcome-lead {
-  max-width: 760px;
-  margin: 18px 0 0;
-  font-size: 18px;
-  line-height: 1.65;
-}
-
-.tx-dlf-default-viewer-welcome-header {
-  margin-bottom: 18px;
-}
-
-.tx-dlf-default-viewer-welcome-hero {
-  padding-bottom: 34px;
-  border-bottom: 1px solid var(--default-border);
-}
-
-
-.tx-dlf-default-viewer-example-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.tx-dlf-default-viewer-example-card {
-  display: grid;
-  gap: 12px;
-  align-content: start;
-  padding: 20px 18px;
-  border: 1px solid var(--default-border);
-  border-radius: 16px;
-  background: white;
-}
-
-.tx-dlf-default-viewer-example-card p,
-.tx-dlf-default-viewer-welcome-section p {
-  margin: 0;
-  line-height: 1.6;
-}
-
-.tx-dlf-default-viewer-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--default-link);
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.tx-dlf-default-viewer-link:hover {
-  color: var(--default-link-hover);
-}
-
-.tx-dlf-default-viewer-link-muted {
-  color: slategray;
-}
-
-.tx-dlf-default-viewer-link-muted:hover {
-  color: slategray;
-}
-
-.tx-dlf-default-viewer-format-list {
-  margin: 0 0 18px;
-  padding-left: 20px;
-}
-
-.tx-dlf-default-viewer-format-list li {
-  margin-bottom: 10px;
-  line-height: 1.6;
-}
-
-
-.tx-dlf-default-viewer-input-form {
-  display: grid;
-  gap: 14px;
-}
-
-.tx-dlf-default-viewer-input-label {
-  font-weight: 700;
-}
-
-.tx-dlf-default-viewer-input-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 12px;
-  align-items: center;
-}
-
-.tx-dlf-default-viewer-input {
-  min-width: 0;
-  min-height: 46px;
-  padding: 0 14px;
-  border: 1px solid var(--default-border);
-  border-radius: 12px;
-  background: white;
-  color: var(--default-ink);
-  font: inherit;
-}
-
-.tx-dlf-default-viewer-input:focus {
-  outline: 2px solid rgba(26, 77, 143, 0.22);
-  outline-offset: 1px;
-}
-
-.tx-dlf-default-viewer-welcome-section-compact {
-  max-width: 760px;
-  margin-bottom: 0;
-  padding-top: 10px;
-  border-top: 1px solid var(--default-border);
-}
-
 .tx-dlf-default-viewer-control-bar {
   display: grid;
   grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
@@ -173,13 +32,9 @@ body.tx-dlf-default-viewer-page {
   background: rgba(24, 33, 44, 0.14);
 }
 
-.tx-dlf-default-viewer-control-panel,
-.tx-dlf-default-viewer-card {
+.tx-dlf-default-viewer-control-panel {
   border: 1px solid var(--default-border);
   background: var(--default-surface);
-}
-
-.tx-dlf-default-viewer-control-panel {
   min-width: 0;
   padding: 22px 20px;
   overflow: auto;
@@ -255,20 +110,13 @@ body.tx-dlf-default-viewer-page {
 }
 
 .tx-dlf-default-viewer-provider h1,
-.tx-dlf-default-viewer-control-header h2,
-.tx-dlf-default-viewer-card h2 {
+.tx-dlf-default-viewer-control-header h2 {
   margin: 0;
 }
 
 .tx-dlf-default-viewer-provider h1 {
   font-size: 26px;
   line-height: 1;
-}
-
-.tx-dlf-default-viewer-provider-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
 .tx-dlf-default-viewer-kicker,
@@ -279,27 +127,6 @@ body.tx-dlf-default-viewer-page {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-}
-
-.tx-dlf-default-viewer-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 38px;
-  padding: 0 14px;
-  border: 1px solid var(--default-accent);
-  border-radius: 999px;
-  background: var(--default-accent);
-  color: white;
-  font-size: 13px;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.tx-dlf-default-viewer-button-secondary {
-  background: white;
-  color: var(--default-accent);
-  border-color: rgba(33, 51, 69, 0.2);
 }
 
 .tx-dlf-default-viewer-submenu {
@@ -335,7 +162,6 @@ body.tx-dlf-default-viewer-page {
   font-size: 13px;
   text-decoration: none;
 }
-
 
 .tx-dlf-default-viewer-submenu .tx-dlf-navigation-backward > div,
 .tx-dlf-default-viewer-submenu .tx-dlf-navigation-forward > div,
@@ -486,23 +312,6 @@ body.tx-dlf-default-viewer-page {
   margin: 0 0 14px;
 }
 
-.tx-dlf-default-viewer-card {
-  max-width: 760px;
-  margin: 12vh auto 0;
-  padding: 28px;
-  border-radius: 18px;
-  box-shadow: 0 24px 60px rgba(9, 16, 24, 0.14);
-}
-
-.tx-dlf-default-viewer-actions {
-  margin: 24px 0 0;
-}
-
-.tx-dlf-default-viewer-example {
-  margin-bottom: 0;
-  word-break: break-all;
-}
-
 body.tx-dlf-default-viewer-page.fullscreen .tx-dlf-default-viewer-viewframe {
   grid-template-columns: 1fr;
 }
@@ -513,18 +322,6 @@ body.tx-dlf-default-viewer-page.fullscreen .tx-dlf-default-viewer-control-bar {
 
 body.tx-dlf-default-viewer-page.fullscreen .tx-dlf-default-viewer-document-functions {
   padding: 12px;
-}
-
-@media (max-width: 980px) {
-  .tx-dlf-default-viewer-welcome {
-    width: min(100% - 32px, 1080px);
-    margin: 24px auto;
-    padding: 32px 28px 40px;
-  }
-
-  .tx-dlf-default-viewer-example-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 1180px) {
@@ -547,24 +344,6 @@ body.tx-dlf-default-viewer-page.fullscreen .tx-dlf-default-viewer-document-funct
 }
 
 @media (max-width: 720px) {
-  .tx-dlf-default-viewer-welcome {
-    width: min(100% - 24px, 1080px);
-    margin: 12px auto;
-    padding: 24px 18px 28px;
-  }
-
-  .tx-dlf-default-viewer-welcome-lead {
-    font-size: 16px;
-  }
-
-  .tx-dlf-default-viewer-input-row {
-    grid-template-columns: 1fr;
-  }
-
-  .tx-dlf-default-viewer-input-row .tx-dlf-default-viewer-button {
-    width: 100%;
-  }
-
   .tx-dlf-default-viewer-document-functions {
     padding: 12px;
   }

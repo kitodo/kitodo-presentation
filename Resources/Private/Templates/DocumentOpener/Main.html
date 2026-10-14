@@ -1,0 +1,40 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>
+    (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+
+    This file is part of the Kitodo and TYPO3 projects.
+
+    @license GNU General Public License version 3 or later.
+    For the full copyright and license information, please read the
+    LICENSE.txt file that was distributed with this source code.
+</f:comment>
+
+<f:asset.css identifier="dlf-document-opener" href="EXT:dlf/Resources/Public/Stylesheets/document-opener.css" />
+
+<div class="tx-dlf-document-opener">
+    <form class="tx-dlf-document-opener-form"
+          action="{f:uri.page(pageUid: targetPid)}"
+          method="get"
+          onsubmit="var input = document.getElementById('tx-dlf-document-opener-url-{uniqueId}'); input.value = input.value.trim();">
+        <label class="tx-dlf-document-opener-label" for="tx-dlf-document-opener-url-{uniqueId}">
+            <f:translate key="documentOpener.label" />
+        </label>
+        <div class="tx-dlf-document-opener-input-row">
+            <input id="tx-dlf-document-opener-url-{uniqueId}"
+                   class="tx-dlf-document-opener-input"
+                   type="url"
+                   name="tx_dlf[id]"
+                   placeholder="{f:translate(key: 'documentOpener.placeholder')}"
+                   inputmode="url"
+                   autocomplete="url"
+                   required />
+            <button type="submit" class="tx-dlf-document-opener-button">
+                <f:translate key="documentOpener.submit" />
+            </button>
+        </div>
+    </form>
+</div>
+
+</html>

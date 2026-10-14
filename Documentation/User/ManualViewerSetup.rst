@@ -2,7 +2,9 @@
 Manual Viewer Setup
 ###################
 
-This document describes the verified manual backend setup for a standalone viewer page and configuration folder without using the root setup CLI command.
+This document describes the verified manual backend setup for a standalone viewer
+page, a reusable document opener and a configuration folder without using the
+root setup CLI command.
 
 Working Sequence
 ================
@@ -29,7 +31,6 @@ Working Sequence
      .. code-block:: typoscript
 
         plugin.tx_dlf.persistence.storagePid = <uid of Kitodo Configuration>
-        plugin.tx_dlf.basicViewer.rootPid = <uid of root page>
         plugin.tx_dlf.basicViewer.viewerPid = <uid of Viewer page>
 
    Under the tab ``Advanced Options``:
@@ -41,3 +42,6 @@ Working Sequence
      * ``Basic Viewer Configuration``
 
 6. Apply tenant defaults to the configuration folder through the backend new-tenant module.
+7. Add the ``Kitodo: Document Opener`` content element to any standard page and,
+   if needed, select a different target viewer page in its plugin settings. If no
+   target is selected, the content element uses ``plugin.tx_dlf.basicViewer.viewerPid``.

@@ -133,6 +133,18 @@
                 <source><![CDATA[volumes]]></source>
                 <target><![CDATA[Bände]]></target>
             </trans-unit>
+            <trans-unit id="documentOpener.label" approved="yes">
+                <source><![CDATA[Enter a METS, OAI-PMH or IIIF document URL]]></source>
+                <target><![CDATA[URL eines METS-, OAI-PMH- oder IIIF-Dokuments eingeben]]></target>
+            </trans-unit>
+            <trans-unit id="documentOpener.placeholder" approved="yes">
+                <source><![CDATA[https://example.org/document.xml]]></source>
+                <target><![CDATA[https://example.org/dokument.xml]]></target>
+            </trans-unit>
+            <trans-unit id="documentOpener.submit" approved="yes">
+                <source><![CDATA[Open]]></source>
+                <target><![CDATA[Öffnen]]></target>
+            </trans-unit>
             <trans-unit id="feeds.new" approved="yes">
                 <source><![CDATA[NEW:]]></source>
                 <target><![CDATA[NEU:]]></target>

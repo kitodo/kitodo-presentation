@@ -29,6 +29,15 @@ mod.wizards.newContentElement.wizardItems {
           list_type = dlf_collection
         }
       }
+      tx_dlf_documentopener {
+        iconIdentifier = tx-dlf-documentopener
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:documentOpener.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:documentOpener.plugin.description
+        tt_content_defValues {
+          CType = list
+          list_type = dlf_documentopener
+        }
+      }
       tx_dlf_embedded3dviewer {
         iconIdentifier = tx-dlf-embedded3dviewer
         title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:embedded3dViewer.plugin.title
