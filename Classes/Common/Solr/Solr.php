@@ -274,17 +274,17 @@ class Solr implements LoggerAwareInterface
      *
      * @access private
      *
-     * @param string $s the Solr expression
+     * @param string $expr the Solr expression
      *
      * @return string The expression wrapped in one top-level paren group
      */
-    private static function parenthesise(string $s): string
+    private static function parenthesise(string $expr): string
     {
-        $s = trim($s);
-        if ($s !== '' && self::isTopLevelParens($s)) {
-            return $s;
+        $expr = trim($expr);
+        if ($expr !== '' && self::isTopLevelParens($expr)) {
+            return $expr;
         }
-        return '(' . $s . ')';
+        return '(' . $expr . ')';
     }
 
     /**
