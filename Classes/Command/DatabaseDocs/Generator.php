@@ -301,7 +301,8 @@ RST);
 
         // Sort tables alphabetically
         usort(
-            $tables, function ($lhs, $rhs) {
+            $tables,
+            function ($lhs, $rhs) {
                 return $lhs->name <=> $rhs->name;
             }
         );
@@ -346,7 +347,8 @@ RST);
                             ]
                         ),
                     ];
-                }, $tableInfo->columns
+                },
+                $tableInfo->columns
             );
 
             $section->addTable($rows, $header);
