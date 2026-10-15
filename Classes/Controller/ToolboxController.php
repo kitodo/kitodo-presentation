@@ -706,9 +706,11 @@ class ToolboxController extends AbstractController
     private function isFullTextEmpty(): bool
     {
         $useGroups = $this->useGroupsConfiguration->getFulltext();
+        $currentDocument = $this->document->getCurrentDocument();
         while ($useGroup = array_shift($useGroups)) {
-            if (isset($this->requestData['page']) && !empty($this->currentDocument->physicalStructure)) {
-                $files = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$this->requestData['page']]]['files'];
+            if (isset($this->requestData['page']) && !empty($currentDocument->physicalStructure)) {
+                $pagePhysicalStructureInfo = $currentDocument->physicalStructureInfo[$currentDocument->physicalStructure[$this->requestData['page']]] ?? [];
+                $files = $pagePhysicalStructureInfo['files'] ?? [];
                 if (!empty($files[$useGroup])) {
                     return false;
                 }
