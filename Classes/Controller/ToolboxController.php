@@ -522,40 +522,47 @@ class ToolboxController extends AbstractController
      */
     private function getPageLink(): array
     {
-        $firstPageLink = '';
-        $secondPageLink = '';
-        $pageLinkArray = [];
         $pageNumber = $this->requestData['page'] ?? 0;
         $useGroups = $this->useGroupsConfiguration->getDownload();
+        $physicalStructure = $this->currentDocument->physicalStructure;
+        $physicalStructureInfo = $this->currentDocument->physicalStructureInfo;
+
         // Get image link.
         while ($useGroup = array_shift($useGroups)) {
-            if (!empty($this->currentDocument->physicalStructure)) {
-                $firstFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$pageNumber]]['files'][$useGroup] ?? [];
+            if (!empty($physicalStructure)) {
+                $firstFileGroupDownload = $physicalStructureInfo[$physicalStructure[$pageNumber]]['files'][$useGroup] ?? [];
                 if (!empty($firstFileGroupDownload)) {
-                    $firstPageLink = $this->currentDocument->getFileLocation($firstFileGroupDownload);
-                    // Get second page, too, if double page view is activated.
-                    $nextPage = $pageNumber + 1;
-                    $secondFileGroupDownload = '';
-                    if (array_key_exists($nextPage, $this->currentDocument->physicalStructure)) {
-                        $secondFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$nextPage]]['files'][$useGroup];
+                    $file = $this->currentDocument->getFileInfo($firstFileGroupDownload);
+                    if (!empty($file) && isset($file['mimeType']) && $file['mimeType'] === 'application/pdf') {
+                        $firstPageLink = $this->currentDocument->getFileLocation($firstFileGroupDownload);
+                        // Get second page, too, if double page view is activated.
+                        $nextPage = $pageNumber + 1;
+                        $secondFileGroupDownload = '';
+                        if (array_key_exists($nextPage, $physicalStructure)) {
+                            $secondFileGroupDownload = $physicalStructureInfo[$physicalStructure[$nextPage]]['files'][$useGroup];
+                        }
+                        if (
+                            $this->requestData['double']
+                            && $pageNumber < $this->currentDocument->numPages
+                            && !empty($secondFileGroupDownload)
+                        ) {
+                            $secondPageLink = $this->currentDocument->getFileLocation($secondFileGroupDownload);
+                        }
+                        break;
                     }
-                    if (
-                        $this->requestData['double']
-                        && $pageNumber < $this->currentDocument->numPages
-                        && !empty($secondFileGroupDownload)
-                    ) {
-                        $secondPageLink = $this->currentDocument->getFileLocation($secondFileGroupDownload);
-                    }
-                    break;
                 }
             }
         }
+
         if (
             empty($firstPageLink)
             && empty($secondPageLink)
         ) {
-            $this->logger->warning('File not found in fileGrps "' . $this->extConf['files']['useGroupsDownload'] . '"');
+            $this->logger->warning('PDF file not found in fileGrps "' . $this->extConf['files']['useGroupsDownload'] . '"');
+            return [];
         }
+
+        $pageLinkArray = [];
 
         if (!empty($firstPageLink)) {
             $pageLinkArray[0] = $firstPageLink;
@@ -575,26 +582,35 @@ class ToolboxController extends AbstractController
      */
     private function getWorkLink(): string
     {
-        $workLink = '';
         $useGroups = $this->useGroupsConfiguration->getDownload();
+        $physicalStructure = $this->currentDocument->physicalStructure;
+        $physicalStructureInfo = $this->currentDocument->physicalStructureInfo;
+
         // Get work link.
         while ($useGroup = array_shift($useGroups)) {
-            if (!empty($this->currentDocument->physicalStructure)) {
-                $fileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[0]]['files'][$useGroup] ?? [];
+            if (!empty($physicalStructure)) {
+                $fileGroupDownload = $physicalStructureInfo[$physicalStructure[0]]['files'][$useGroup] ?? [];
                 if (!empty($fileGroupDownload)) {
-                    $workLink = $this->currentDocument->getFileLocation($fileGroupDownload);
-                    break;
+                    $file = $this->currentDocument->getFileInfo($fileGroupDownload);
+                    if (!empty($file) && isset($file['mimeType']) && $file['mimeType'] === 'application/pdf') {
+                        $workLink = $this->currentDocument->getFileLocation($fileGroupDownload);
+                        break;
+                    }
                 } else {
                     $details = $this->currentDocument->getLogicalStructure($this->currentDocument->getToplevelId());
                     if (!empty($details['files'][$useGroup])) {
-                        $workLink = $this->currentDocument->getFileLocation($details['files'][$useGroup]);
-                        break;
+                        $file = $this->currentDocument->getFileInfo((string) $details['files'][$useGroup]);
+                        if (!empty($file) && isset($file['mimeType']) && $file['mimeType'] === 'application/pdf') {
+                            $workLink = $this->currentDocument->getFileLocation($details['files'][$useGroup]);
+                            break;
+                        }
                     }
                 }
             }
         }
         if (empty($workLink)) {
-            $this->logger->warning('File not found in fileGrps "' . $this->extConf['files']['useGroupsDownload'] . '"');
+            $this->logger->warning('PDF file not found in fileGrps "' . $this->extConf['files']['useGroupsDownload'] . '"');
+            return '';
         }
         return $workLink;
     }
