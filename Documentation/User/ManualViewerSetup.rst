@@ -45,3 +45,15 @@ Working Sequence
 7. Add the ``Kitodo: Document Opener`` content element to any standard page and,
    if needed, select a different target viewer page in its plugin settings. If no
    target is selected, the content element uses ``plugin.tx_dlf.basicViewer.viewerPid``.
+
+Multi-view
+==========
+
+The Basic Viewer toolbox includes an ``Add Document`` field. Submitting a METS/MODS
+URL switches the viewer to multi-view and displays the current and added documents
+side by side. Further URLs can be added from the multi-view page. The shared page
+controls navigate all documents together, while the document panels can be moved
+and resized independently.
+
+Multi-view can also be opened directly with ``tx_dlf[multiview]=1`` and one or more
+``tx_dlf[multiViewSource][N]`` URL parameters.

@@ -34,6 +34,15 @@ plugin.tx_dlf_metadata {
     }
 }
 
+plugin.tx_dlf_multiview = EXTBASEPLUGIN
+plugin.tx_dlf_multiview {
+    extensionName = Dlf
+    pluginName = MultiView
+    settings {
+        multiDocumentTypes =
+    }
+}
+
 plugin.tx_dlf_pageview = EXTBASEPLUGIN
 plugin.tx_dlf_pageview {
     extensionName = Dlf
@@ -58,7 +67,7 @@ plugin.tx_dlf_toolbox {
     extensionName = Dlf
     pluginName = Toolbox
     settings {
-        tools = rotationTool,zoomTool,imageDownloadTool,pdfDownloadTool,fulltextTool,fulltextDownloadTool
+        tools = rotationTool,zoomTool,imageDownloadTool,pdfDownloadTool,fulltextTool,fulltextDownloadTool,multiViewAddSourceTool
         showAsList = 0
         activateFullTextInitially = 0
         fullTextScrollElement = #tx-dlf-toolbox-fulltext-selection
@@ -80,5 +89,20 @@ page {
             documentId.data = GP:tx_dlf|id
         }
     }
+}
+[END]
+
+[getTSFE() && getTSFE().id == {$plugin.tx_dlf.basicViewer.viewerPid} && request && like(traverse(request.getQueryParams(), 'tx_dlf/multiview'), '1')]
+plugin.tx_dlf_toolbox.settings.tools = multiViewAddSourceTool
+page {
+    bodyTag = <body class="tx-dlf-default-viewer tx-dlf-default-viewer-page tx-dlf-default-viewer-multiview-page">
+    10.file = EXT:dlf/Resources/Private/Templates/Bootstrap/MultiViewer.html
+}
+[END]
+
+[getTSFE() && getTSFE().id == {$plugin.tx_dlf.basicViewer.viewerPid} && request && like(traverse(request.getQueryParams(), 'tx_dlf/multiviewembedded'), '1')]
+page {
+    bodyTag = <body class="tx-dlf-default-viewer tx-dlf-default-viewer-page multiviewembedded">
+    10.file = EXT:dlf/Resources/Private/Templates/Bootstrap/EmbeddedViewer.html
 }
 [END]
