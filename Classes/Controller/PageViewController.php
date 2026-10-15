@@ -292,14 +292,14 @@ class PageViewController extends AbstractController
                         $fulltext['mimetype'] = $file['mimeType'];
                         break;
                     } else {
-                        $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $useGroup . '"');
+                        $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $useGroup . '" in document "' . $this->document->getLocation() . '"');
                     }
                 }
             } else {
                 $this->logger->notice('No files found for page "' . $page . '" in document "' . $this->document->getLocation() . '"');
             }
         } else {
-            $this->logger->notice('No page "' . $page . '" found in document "' . $this->document->getLocation() . '"');
+            $this->logger->notice('Page "' . $page . '" not found in document "' . $this->document->getLocation() . '"');
         }
 
         if (empty($fulltext)) {
