@@ -238,20 +238,7 @@ class PageViewController extends AbstractController
                     $score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
                     $score['url'] = $doc->getFileLocation($loc);
                     if ($this->settings['useInternalProxy']) {
-                        // Configure @action URL for form.
-                        $uri = $this->uriBuilder->reset()
-                            ->setTargetPageUid($this->pageUid)
-                            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']))
-                            ->setArguments(
-                                [
-                                    'eID' => 'tx_dlf_pageview_proxy',
-                                    'url' => $score['url'],
-                                    'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
-                                ]
-                            )
-                            ->build();
-
-                        $score['url'] = $uri;
+                        $this->configureProxyUrl($score['url']);
                     }
                 }
             }
