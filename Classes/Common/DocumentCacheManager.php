@@ -36,6 +36,39 @@ class DocumentCacheManager implements SingletonInterface
     public const LOAD_FAILED = '__DLF_DOC_LOAD_FAILED__';
 
     /**
+     * Lifetime of entries in the in-memory pool in seconds. An entry is
+     * refreshed (sliding TTL) as long as it is requested regularly.
+     */
+    private const POOL_TTL = 300;
+
+    /**
+     * Maximum number of documents kept in the in-memory pool per
+     * PHP-FPM worker. The oldest (least recently used) entry is
+     * evicted first.
+     */
+    private const POOL_MAX_ENTRIES = 5;
+
+    /**
+     * In-memory, per-PHP-FPM-worker pool of recently used documents.
+     *
+     * Reading a document from the file-based TYPO3 cache requires
+     * deserializing the entry and re-parsing the complete METS XML in
+     * AbstractDocument::__wakeup(). Documents that are requested
+     * repeatedly (e.g. by crawlers) are therefore additionally kept
+     * in this short-lived pool: a pool hit skips the file cache, the
+     * deserialization and the XML re-parsing entirely, and the already
+     * computed lazy data (physical structure, metadata array, file
+     * groups) is reused as well.
+     *
+     * Note: PHP static state lives per FPM worker process and is only
+     * accessed by one request at a time, so sharing the instances
+     * between sequential requests of the same worker is safe.
+     *
+     * @var array<string, array{0: AbstractDocument, 1: int}>
+     */
+    protected static array $pool = [];
+
+    /**
      * @var FrontendInterface
      */
     protected $cache;
@@ -51,6 +84,11 @@ class DocumentCacheManager implements SingletonInterface
     /**
      * Get document instance from cache.
      *
+     * The per-worker in-memory pool is checked first; on a hit the
+     * fully loaded document is returned without touching the file
+     * cache. On a miss the file cache is read and the result is added
+     * to the pool (subject to its TTL and entry cap).
+     *
      * @access public
      *
      * @param string $location
@@ -61,13 +99,30 @@ class DocumentCacheManager implements SingletonInterface
      */
     public function get(string $location)
     {
-        return $this->cache->get($this->getIdentifier($location));
+        $identifier = $this->getIdentifier($location);
+        $now = time();
+        if (isset(self::$pool[$identifier])) {
+            [$document, $cachedAt] = self::$pool[$identifier];
+            // Re-insert the entry to keep least-recently-used ordering.
+            unset(self::$pool[$identifier]);
+            if ($now - $cachedAt < self::POOL_TTL) {
+                self::$pool[$identifier] = [$document, $now];
+                return $document;
+            }
+        }
+        $instance = $this->cache->get($identifier);
+        if ($instance instanceof AbstractDocument) {
+            self::$pool[$identifier] = [$instance, $now];
+            self::evictOldestPoolEntries();
+        }
+        return $instance;
     }
 
     /**
      * Set cache for document instance.
      *
-     * The entry uses the cache's default lifetime (one day).
+     * The entry uses the cache's default lifetime (one day) in the
+     * file cache and POOL_TTL in the per-worker in-memory pool.
      *
      * @access public
      *
@@ -78,7 +133,11 @@ class DocumentCacheManager implements SingletonInterface
      */
     public function set(string $location, AbstractDocument $currentDocument): void
     {
-        $this->cache->set($this->getIdentifier($location), $currentDocument);
+        $identifier = $this->getIdentifier($location);
+        $this->cache->set($identifier, $currentDocument);
+        unset(self::$pool[$identifier]);
+        self::$pool[$identifier] = [$currentDocument, time()];
+        self::evictOldestPoolEntries();
     }
 
     /**
@@ -97,6 +156,7 @@ class DocumentCacheManager implements SingletonInterface
      */
     public function setFail(string $location): void
     {
+        unset(self::$pool[$this->getIdentifier($location)]);
         $this->cache->set($this->getIdentifier($location), self::LOAD_FAILED, [], $this->getFailLifetime());
     }
 
@@ -115,7 +175,7 @@ class DocumentCacheManager implements SingletonInterface
     }
 
     /**
-     * Remove all documents from cache.
+     * Remove all documents from cache and from the in-memory pool.
      *
      * @access public
      *
@@ -123,11 +183,12 @@ class DocumentCacheManager implements SingletonInterface
      */
     public function flush(): void
     {
+        self::$pool = [];
         $this->cache->flush();
     }
 
     /**
-     * Remove single document from cache.
+     * Remove single document from cache and from the in-memory pool.
      *
      * @access public
      *
@@ -137,6 +198,7 @@ class DocumentCacheManager implements SingletonInterface
      */
     public function remove(string $location): void
     {
+        unset(self::$pool[$this->getIdentifier($location)]);
         $this->cache->remove($this->getIdentifier($location));
     }
 
@@ -152,5 +214,20 @@ class DocumentCacheManager implements SingletonInterface
     private function getIdentifier(string $location): string
     {
         return hash('md5', $location);
+    }
+
+    /**
+     * Evict least-recently-used entries from the in-memory pool until
+     * it contains at most POOL_MAX_ENTRIES documents.
+     *
+     * @access private
+     *
+     * @return void
+     */
+    private static function evictOldestPoolEntries(): void
+    {
+        while (count(self::$pool) > self::POOL_MAX_ENTRIES) {
+            unset(self::$pool[array_key_first(self::$pool)]);
+        }
     }
 }
