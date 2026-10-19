@@ -461,6 +461,9 @@
             <trans-unit id="tt_content.dlf_collection">
                 <source>DLF: Collection</source>
             </trans-unit>
+            <trans-unit id="tt_content.dlf_document">
+                <source>DLF: Document</source>
+            </trans-unit>
             <trans-unit id="tt_content.dlf_listview">
                 <source>DLF: List View</source>
             </trans-unit>
