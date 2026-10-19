@@ -1613,7 +1613,7 @@ Validation Form
 
 The plugin renders an input field where a METS URL can be entered. After submission, the document is loaded and validated against the :ref:`DOMDocumentValidation Middleware`. For the validation to work, a corresponding configuration (see :ref:`DOMDocumentValidation Middleware Configuration`) must be present in TypoScript, and the type of this configuration must be provided to the plugin as a required parameter.
 
-:typoscript:`plugin.tx_dlf_validationform.`
+:typoscript:`plugin.tx_dlf_validation.`
 
 .. t3-field-list-table::
  :header-rows: 1

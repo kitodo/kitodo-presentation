@@ -682,19 +682,19 @@
                 <source><![CDATA[Kitodo: Toolbox]]></source>
                 <target><![CDATA[Kitodo: Werkzeugkasten]]></target>
             </trans-unit>
-            <trans-unit id="validationForm.flexForm.type.description" approved="yes">
+            <trans-unit id="validation.flexForm.type.description" approved="yes">
                 <source><![CDATA[Validation configuration type for DOMDocument validation]]></source>
                 <target><![CDATA[Typ der Validierungskonfiguration für die DOMDocument-Validierung]]></target>
             </trans-unit>
-             <trans-unit id="validationForm.flexForm.type.label" approved="yes">
+             <trans-unit id="validation.flexForm.type.label" approved="yes">
                  <source><![CDATA[Type]]></source>
                  <target><![CDATA[Typ]]></target>
              </trans-unit>
-            <trans-unit id="validationForm.plugin.description" approved="yes">
+            <trans-unit id="validation.plugin.description" approved="yes">
                 <source><![CDATA[Validation form for Kitodo.Presentation]]></source>
                 <target><![CDATA[Validierungsformular für Kitodo.Presentation]]></target>
             </trans-unit>
-            <trans-unit id="validationForm.plugin.title" approved="yes">
+            <trans-unit id="validation.plugin.title" approved="yes">
                 <source><![CDATA[Kitodo: Validation Form]]></source>
                 <target><![CDATA[Kitodo: Validierungsformular]]></target>
             </trans-unit>

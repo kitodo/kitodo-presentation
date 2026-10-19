@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Middleware;
 use DOMDocument;
 use Exception;
 use InvalidArgumentException;
+use Kitodo\Dlf\Validation\Configuration\YamlConfigurationProvider;
 use Kitodo\Dlf\Validation\DOMDocumentValidationStack;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -84,6 +85,7 @@ class DOMDocumentValidation implements MiddlewareInterface
         if ($typeParam === null) {
             return $this->getJsonResponse('Validation type parameter is missing.', self::BAD_REQUEST);
         }
+
         // load dom document from url
         if (!GeneralUtility::isValidUrl($urlParam)) {
             return $this->getJsonResponse('Parameter "' . $urlParam . '" is not a valid URL.', self::NOT_FOUND);
@@ -104,26 +106,14 @@ class DOMDocumentValidation implements MiddlewareInterface
             return $this->getJsonResponse("Content from the URL is not valid XML.", self::BAD_REQUEST);
         }
 
-        // retrieve validation configuration from plugin.tx_dlf typoscript
-        /** @var ConfigurationManagerInterface $configurationManager */
-        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
-        $typoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+        $validationConfiguration = GeneralUtility::makeInstance(YamlConfigurationProvider::class)->getConfiguration($typeParam);
 
-        /** @var TypoScriptService $typoScriptService */
-        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
-        $settings = $typoScriptService->convertTypoScriptArrayToPlainArray($typoScript['plugin.']['tx_dlf.']['settings.']);
-
-        if (!array_key_exists("domDocumentValidation", $settings)) {
-            $this->logger->error('DOMDocumentValidation is not configured.');
-            return $this->getJsonResponse('An internal server error occurred.', self::INTERNAL_SERVER_ERROR);
-        }
-
-        if (!array_key_exists($typeParam, $settings["domDocumentValidation"])) {
+        if (empty($validationConfiguration)) {
             $this->logger->debug('Validation configuration type in validationType parameter "' . $typeParam . '" does not exist.');
-            return $this->getJsonResponse('Validation type does not exist.', self::NOT_FOUND);
+            return $this->getJsonResponse('Validation type parameter does not exist.', self::NOT_FOUND);
         }
 
-        $validationConfiguration = $this->removeDisabledValidators($parameters, $settings['domDocumentValidation'][$typeParam]);
+        $validationConfiguration = $this->removeDisabledValidators($parameters, $validationConfiguration);
 
         $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $validationConfiguration);
 

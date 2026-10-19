@@ -12,18 +12,20 @@
 
 namespace Kitodo\Dlf\Controller;
 
+use Kitodo\Dlf\Validation\Configuration\YamlConfigurationProvider;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Plugin 'ValidationForm' for the 'dlf' extension
+ * Plugin 'Validation' for the 'dlf' extension
  *
  * @package TYPO3
  * @subpackage dlf
  *
  * @access public
  */
-class ValidationFormController extends AbstractController
+class ValidationController extends AbstractController
 {
     /**
      * @access public
@@ -32,17 +34,16 @@ class ValidationFormController extends AbstractController
      */
     public function mainAction(): ResponseInterface
     {
+        $validationConfiguration = GeneralUtility::makeInstance(YamlConfigurationProvider::class)->getConfiguration($this->settings['type']);
+
         /** @var SiteLanguage $siteLanguage */
         $siteLanguage = $this->request->getAttribute('language') ?? $this->request->getAttribute('site')->getDefaultLanguage();
 
         $disabledValidators = [];
-        if (array_key_exists("domDocumentValidation", $this->settings)) {
-            $validationConfiguration = $this->settings['domDocumentValidation'];
-            foreach ($validationConfiguration as $key => $value) {
-                if (isset($value['disabled']) && $value['disabled'] === "true") {
-                    $disabledValidators[$key]['title'] = $value['title'];
-                    $disabledValidators[$key]['shortdescription'] = $value['shortdescription'];
-                }
+        foreach ($validationConfiguration as $key => $value) {
+            if (isset($value['disabled']) && $value['disabled'] === "true") {
+                $disabledValidators[$key]['title'] = $value['title'];
+                $disabledValidators[$key]['shortdescription'] = $value['shortdescription'];
             }
         }
 
