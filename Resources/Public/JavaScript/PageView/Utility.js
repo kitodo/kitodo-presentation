@@ -410,6 +410,7 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj, loadingIndicator) {
         makeImage(imageSourceObj.url, imageSourceObj.mimetype);
     };
     xhr.open('GET', imageSourceObj.url);
+    xhr.withCredentials = true;
     xhr.send();
 
     return deferredResponse;
@@ -426,7 +427,10 @@ dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
     $.ajax({
         url: dlfViewerSource.IIIF.getMetdadataURL(imageSourceObj.url),
         type,
-        dataType: 'json'
+        dataType: 'json',
+        xhrFields: {
+            withCredentials: true
+        }
     }).done(cb);
 
     function cb(data) {

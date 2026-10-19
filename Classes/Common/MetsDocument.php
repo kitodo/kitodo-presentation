@@ -540,8 +540,7 @@ final class MetsDocument extends AbstractDocument
             // Link logical structure to the first corresponding physical page/track.
             $details['points'] = max((int) array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, true), 1);
             $details['thumbnailId'] = $this->getThumbnail($details['id']);
-            // Get page/track number of the first page/track related to this structure element.
-            $details['pagination'] = $this->physicalStructureInfo[$this->smLinks['l2p'][$details['id']][0]]['orderlabel'];
+            $details['pagination'] = $this->getFirstOrderLabel($details['id']);
             $details['mediaChapter'] = $this->getTimecode($details);
         } elseif ($details['id'] == $this->getToplevelId()) {
             // Point to self if this is the toplevel structure.
@@ -551,6 +550,26 @@ final class MetsDocument extends AbstractDocument
         if ($details['thumbnailId'] === null) {
             unset($details['thumbnailId']);
         }
+    }
+
+    /**
+     * Get the orderlabel of the first physical page/track related to the structure element.
+     *
+     * @access private
+     *
+     * @param string $id The logical structure element's ID
+     *
+     * @return ?string The orderlabel or null if not found
+     */
+    private function getFirstOrderLabel(string $id): ?string
+    {
+        if (array_key_exists($id, $this->smLinks['l2p'])) {
+            $firstElement = $this->smLinks['l2p'][$id][0] ?? null;
+            if (!empty($firstElement) && array_key_exists($firstElement, $this->physicalStructureInfo)) {
+                return $this->physicalStructureInfo[$firstElement]['orderlabel'];
+            }
+        }
+        return null;
     }
 
     /**
@@ -578,30 +597,33 @@ final class MetsDocument extends AbstractDocument
                 continue;
             }
 
-            $physInfo = $this->physicalStructureInfo[$this->smLinks['l2p'][$logInfo['id']][0]];
-            $fileIds = $physInfo['all_files'][$mediaplayerUseGroup] ?? [];
+            $firstElement = $this->smLinks['l2p'][$logInfo['id']][0];
+            if (array_key_exists($firstElement, $this->physicalStructureInfo)) {
+                $physInfo = $this->physicalStructureInfo[$firstElement];
+                $fileIds = $physInfo['all_files'][$mediaplayerUseGroup] ?? [];
 
-            $chapter = null;
+                $chapter = null;
 
-            foreach ($fileIds as $fileId) {
-                $fileArea = $physInfo['fileInfos'][$fileId]['area'] ?? '';
-                if (empty($fileArea) || $fileArea['betype'] !== 'TIME') {
-                    continue;
+                foreach ($fileIds as $fileId) {
+                    $fileArea = $physInfo['fileInfos'][$fileId]['area'] ?? '';
+                    if (empty($fileArea) || $fileArea['betype'] !== 'TIME') {
+                        continue;
+                    }
+
+                    if ($chapter === null) {
+                        $chapter = [
+                            'fileIds' => [],
+                            'timecode' => Helper::timeCodeToSeconds($fileArea['begin']),
+                        ];
+                    }
+
+                    $chapter['fileIds'][] = $fileId;
                 }
 
-                if ($chapter === null) {
-                    $chapter = [
-                        'fileIds' => [],
-                        'timecode' => Helper::timeCodeToSeconds($fileArea['begin']),
-                    ];
+                if ($chapter !== null) {
+                    $chapter['fileIdsJoin'] = implode(',', $chapter['fileIds']);
+                    return $chapter;
                 }
-
-                $chapter['fileIds'][] = $fileId;
-            }
-
-            if ($chapter !== null) {
-                $chapter['fileIdsJoin'] = implode(',', $chapter['fileIds']);
-                return $chapter;
             }
         }
 
@@ -1378,11 +1400,15 @@ final class MetsDocument extends AbstractDocument
                 $fileId = (string) $fptr->attributes()->FILEID;
                 $area = $fptr->children(self::METS_NAMESPACE)->area;
 
+                if (array_key_exists($fileId, $fileUse)) {
+                    $fileUseValue = $fileUse[$fileId];
+                }
+
                 // Check if file has valid @USE attribute.
-                if (!empty($fileUse[(string) $fileId])) {
-                    $this->physicalStructureInfo[$id]['files'][$fileUse[$fileId]] = $fileId;
+                if (!empty($fileUseValue)) {
+                    $this->physicalStructureInfo[$id]['files'][$fileUseValue] = $fileId;
                     // List all files of the fileGrp that are referenced on the page, not only the last one
-                    $this->physicalStructureInfo[$id]['all_files'][$fileUse[$fileId]][] = $fileId;
+                    $this->physicalStructureInfo[$id]['all_files'][$fileUseValue][] = $fileId;
                 } elseif ($area) {
                     $areaAttrs = $area->attributes();
                     $fileId = (string) $areaAttrs->FILEID;
@@ -1591,12 +1617,30 @@ final class MetsDocument extends AbstractDocument
                         'fileGrp' => $useGroup,
                         'admId' => (string) $file->attributes()->ADMID,
                         'dmdId' => (string) $file->attributes()->DMDID,
-                        'mimeType' => (string) $file->attributes()->MIMETYPE,
+                        'mimeType' => $this->getMimeType((string) $file->attributes()->MIMETYPE),
                         'location' => (string) $fileLocation->attributes(self::XLINK_NAMESPACE)->href,
                     ];
                 }
             }
         }
+    }
+
+    /**
+     * Get the MIME type of file, defaulting to 'image/jpeg' if 'unknown'.
+     * TODO: This is a workaround for a bug in the METS file generation of ACTApro Desk. It should be removed when the upstream bug is fixed.
+     *
+     * @access private
+     *
+     * @param string $mimeType The MIME type to check
+     *
+     * @return string The valid MIME type
+     */
+    private function getMimeType(string $mimeType): string
+    {
+        if ($mimeType === 'unknown') {
+            return 'image/jpeg';
+        }
+        return $mimeType;
     }
 
     /**
