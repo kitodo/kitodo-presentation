@@ -189,6 +189,135 @@ class Solr implements LoggerAwareInterface
     }
 
     /**
+     * Split a virtual collection query string with leading Solr local parameter
+     * blocks (e.g. a {!join ...} block) into the trimmed local parameter prefix
+     * and the trimmed reference query remaining after the parameter blocks.
+     *
+     * @access public
+     *
+     * @param string $query the virtual collection query string
+     *
+     * @return array{0: string, 1: string} The local parameter prefix and the reference query
+     */
+    public static function splitJoinLocalParameters(string $query): array
+    {
+        preg_match('/^((?:\s*\{\![^}]*\})+)(.*)$/s', $query, $matches);
+        if (empty($matches)) {
+            return ['', trim($query)];
+        }
+        return [trim($matches[1]), trim($matches[2])];
+    }
+
+    /**
+     * Combine multiple join-based virtual collection query strings into a single
+     * join clause.
+     *
+     * Solr supports only a single join per clause, so the reference queries of all
+     * join-based collections are OR-combined into one merged join clause, led by
+     * the local parameter prefix of the first entry. A join-based collection whose
+     * local parameter blocks differ from the others nevertheless contributes its
+     * reference query: it is bridged by the single leading join on that join's
+     * `from` field, which is only a superset of the documents the collection's
+     * own (incompatible) join would reach. A debug notice is logged when this
+     * fallback happens.
+     *
+     * An empty input array means "no join-based collections" and the caller must
+     * then bypass the joined code path entirely; the empty string returned here
+     * is a sentinel, not a usable clause.
+     *
+     * @access public
+     *
+     * @param string[] $joinedQueries the virtual collection query strings with leading local parameter blocks
+     * @param \Psr\Log\LoggerInterface|null $logger used to log a debug notice when local parameter blocks differ
+     *
+     * @return string The merged join clause, or '' if $joinedQueries is empty
+     */
+    public static function combineJoinedCollections(array $joinedQueries, ?\Psr\Log\LoggerInterface $logger = null): string
+    {
+        if (empty($joinedQueries)) {
+            return '';
+        }
+        // Single join: preserve unchanged (safest).
+        if (count($joinedQueries) === 1) {
+            return trim($joinedQueries[0]);
+        }
+        // Split each join-based collection query string into the local
+        // parameter prefix and the trimmed reference query.
+        $parts = array_map(
+            static fn (string $joinedQuery): array => self::splitJoinLocalParameters($joinedQuery),
+            $joinedQueries
+        );
+        // The first join's local parameter prefix leads the merged clause;
+        // reference queries are combined via OR beneath that single join.
+        [$firstPrefix, $firstReference] = $parts[0];
+        $references = [self::parenthesise($firstReference)];
+        $differingPrefix = false;
+        foreach (array_slice($parts, 1) as $part) {
+            [$partPrefix, $partReference] = $part;
+            if (!empty($firstPrefix) && $partPrefix !== $firstPrefix) {
+                $differingPrefix = true;
+            }
+            $references[] = self::parenthesise($partReference);
+        }
+        if ($differingPrefix) {
+            $logger?->debug('Join-based virtual collections have different Solr local parameter blocks and cannot share a single join; combining their reference queries via OR (superset of matches)');
+        }
+        // The caller only passes strings that start with a local parameter
+        // block, so the first prefix is never empty here.
+        return trim($firstPrefix) . '(' . implode(' OR ', $references) . ')';
+    }
+
+    /**
+     * Ensure a Solr expression is wrapped in exactly one matching pair of
+     * top-level parentheses. If the string is already wrapped in a single
+     * spanning paren group, it is returned unchanged; otherwise it is wrapped.
+     *
+     * @access private
+     *
+     * @param string $expr the Solr expression
+     *
+     * @return string The expression wrapped in one top-level paren group
+     */
+    private static function parenthesise(string $expr): string
+    {
+        $expr = trim($expr);
+        if ($expr !== '' && self::isTopLevelParens($expr)) {
+            return $expr;
+        }
+        return '(' . $expr . ')';
+    }
+
+    /**
+     * Checks whether a Solr expression is already entirely wrapped in one
+     * matching top-level pair of parentheses.
+     *
+     * @access private
+     *
+     * @param string $expr The trimmed Solr expression
+     *
+     * @return bool True if a single top-level paren group spans the whole input
+     */
+    private static function isTopLevelParens(string $expr): bool
+    {
+        $len = strlen($expr);
+        if ($len < 2 || $expr[0] !== '(' || $expr[$len - 1] !== ')') {
+            return false;
+        }
+        $depth = 0;
+        for ($i = 0; $i < $len; $i++) {
+            if ($expr[$i] === '(') {
+                $depth++;
+            } elseif ($expr[$i] === ')') {
+                $depth--;
+                if ($depth === 0 && $i < $len - 1) {
+                    return false;
+                }
+            }
+        }
+        return $depth === 0;
+    }
+
+    /**
      * Escape all special characters in a query string while retaining valid field queries
      *
      * @access public
