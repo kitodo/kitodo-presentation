@@ -559,7 +559,7 @@ class Indexer
             ) {
                 $solrDoc->setField(self::getIndexFieldName($indexName, $document->getPid()), $data);
                 if (in_array($indexName, self::$fields['sortables']) &&
-                    in_array($indexName . '_sorting', $metadata)) {
+                    array_key_exists($indexName . '_sorting', $metadata)) {
                     // Add sortable fields to index.
                     $solrDoc->setField($indexName . '_sorting', $metadata[$indexName . '_sorting'][0]);
                 }

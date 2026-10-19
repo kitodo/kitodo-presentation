@@ -228,7 +228,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 $this->addMultiViewDocument($document['points']);
             }
         } else {
-            $this->addMultiViewDocument($docUrl, $this->requestData['page']);
+            $this->addMultiViewDocument($docUrl, (int) $this->requestData['page']);
         }
         if (isset($this->requestData['multiViewSource']) && is_array($this->requestData['multiViewSource'])) {
             foreach ($this->requestData['multiViewSource'] as $sourceKey => $documentUrl) {
@@ -355,18 +355,6 @@ abstract class AbstractController extends ActionController implements LoggerAwar
     protected function isDocMissing(): bool
     {
         return $this->document === null || $this->document->getCurrentDocument() === null;
-    }
-
-    /**
-     * Returns the LanguageService
-     *
-     * @access protected
-     *
-     * @return LanguageService
-     */
-    protected function getLanguageService(): LanguageService
-    {
-        return $GLOBALS['LANG'];
     }
 
     /**
