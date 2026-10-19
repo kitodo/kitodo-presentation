@@ -43,7 +43,7 @@ class ValidationController extends AbstractController
         foreach ($validationConfiguration as $key => $value) {
             if (isset($value['disabled']) && $value['disabled'] === "true") {
                 $disabledValidators[$key]['title'] = $value['title'];
-                $disabledValidators[$key]['shortdescription'] = $value['shortdescription'];
+                $disabledValidators[$key]['shortDescription'] = $value['shortDescription'];
             }
         }
 
