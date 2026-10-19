@@ -613,6 +613,10 @@
                 <source>DLF: Collection</source>
                 <target>DLF: Kollektion</target>
             </trans-unit>
+            <trans-unit id="tt_content.dlf_document">
+                <source>DLF: Document</source>
+                <target>DLF: Dokument</target>
+            </trans-unit>
             <trans-unit id="tt_content.dlf_listview">
                 <source>DLF: List View</source>
                 <target>DLF: Listenansicht</target>
