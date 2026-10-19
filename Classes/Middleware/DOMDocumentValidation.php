@@ -47,7 +47,6 @@ class DOMDocumentValidation implements MiddlewareInterface
 
     private const BAD_REQUEST = 400;
     private const NOT_FOUND = 404;
-    private const INTERNAL_SERVER_ERROR = 500;
 
     private ServerRequestInterface $request;
 
