@@ -524,6 +524,12 @@
             <trans-unit id="validationForm.validate">
                 <source><![CDATA[validate]]></source>
             </trans-unit>
+            <trans-unit id="validationForm.error.generic">
+                <source><![CDATA[The validation request could not be completed. Please check the URL and try again.]]></source>
+            </trans-unit>
+            <trans-unit id="validationForm.error.timeout">
+                <source><![CDATA[The validation request timed out. Please try again.]]></source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

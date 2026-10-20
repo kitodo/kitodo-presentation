@@ -701,6 +701,14 @@
                 <source><![CDATA[validate]]></source>
                 <target><![CDATA[Validieren]]></target>
             </trans-unit>
+            <trans-unit id="validationForm.error.generic" approved="yes">
+                <source><![CDATA[The validation request could not be completed. Please check the URL and try again.]]></source>
+                <target><![CDATA[Der Validierungsanfrage konnte nicht abgeschlossen werden. Bitte prüfen Sie die URL und versuchen Sie es erneut.]]></target>
+            </trans-unit>
+            <trans-unit id="validationForm.error.timeout" approved="yes">
+                <source><![CDATA[The validation request timed out. Please try again.]]></source>
+                <target><![CDATA[Der Validierungsanfrage ist abgelaufen. Bitte versuchen Sie es erneut.]]></target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
