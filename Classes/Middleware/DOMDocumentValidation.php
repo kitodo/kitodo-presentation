@@ -391,11 +391,13 @@ class DOMDocumentValidation implements MiddlewareInterface
             if (substr($binary, 0, 10) === str_repeat("\x00", 10)
                 && ord($binary[10]) === 0xff
                 && ord($binary[11]) === 0xff) {
-                return $this->isPublicAddress(inet_ntop(substr($binary, 12, 4)));
+                $ipv4 = inet_ntop(substr($binary, 12, 4));
+                return $ipv4 !== false && $this->isPublicAddress($ipv4);
             }
             if (substr($binary, 0, 12) === str_repeat("\x00", 12)) {
                 // deprecated IPv4-compatible form (::a.b.c.d)
-                return $this->isPublicAddress(inet_ntop(substr($binary, 12, 4)));
+                $ipv4 = inet_ntop(substr($binary, 12, 4));
+                return $ipv4 !== false && $this->isPublicAddress($ipv4);
             }
         }
 
@@ -421,8 +423,8 @@ class DOMDocumentValidation implements MiddlewareInterface
     {
         [$network, $prefix] = explode('/', $cidr, 2);
         $networkBinary = inet_pton($network);
-        if ($networkBinary === false || $binaryIp === false || strlen($binaryIp) !== strlen($networkBinary)) {
-            // different address family (IPv4 vs IPv6)
+        if ($networkBinary === false || strlen($binaryIp) !== strlen($networkBinary)) {
+            // invalid network or different address family (IPv4 vs IPv6)
             return false;
         }
         $prefix = (int) $prefix;
