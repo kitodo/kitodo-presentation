@@ -109,6 +109,35 @@ Validators derived from ``Kitodo\Dlf\Validation\AbstractDlfValidator`` can be co
 
 In the background of the middleware, the ``Kitodo\Dlf\Validation\DOMDocumentValidationStack`` is used, to which the configured validators are assigned.
 
+Server-Side Request Forgery Protection
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``url`` parameter is fetched server-side. To prevent the middleware from
+being abused for server-side request forgery (SSRF) or local file inclusion,
+only ``http`` and ``https`` URLs are accepted, and the host of the URL must be
+a public one by default. Hosts that resolve to private or otherwise reserved
+address ranges (loopback, RFC 1918, link-local, CGNAT, multicast, etc.) are
+rejected, as are unresolvable hosts.
+
+Optionally, a validation configuration may define a ``hostAllowList``
+(a comma-separated list of hostnames or subdomain wildcards such as
+``*.example.org``). If it is set, only the listed hosts may be fetched; an
+entry for a host that would otherwise be rejected (for example an internal
+service) explicitly allows it.
+
+   .. code-block::
+
+      plugin.tx_dlf {
+          settings {
+              domDocumentValidation {
+                  typeA {
+                      hostAllowList = web, *.example.org
+                      ...
+                  },
+              }
+          }
+      }
+
 For each validator, the title and description can be defined as XLF labels and are returned in the response according to the selected site language.
 
 The description label can include placeholders. The syntax changes slightly in this case: a separate block is used for the description, consisting of the XLF label as the key and an additional block containing arguments.
