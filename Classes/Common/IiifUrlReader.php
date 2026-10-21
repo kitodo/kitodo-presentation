@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Common;
 
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use Ubl\Iiif\Tools\UrlReaderInterface;
 
 /**
@@ -38,7 +37,12 @@ class IiifUrlReader implements UrlReaderInterface
      */
     public function getContent($url)
     {
-        $fileContents = GeneralUtility::getUrl($url);
+        // Use Helper::getUrl() instead of GeneralUtility::getUrl(), because the
+        // latter falls back to file_get_contents() for URLs that are not
+        // http(s), which would allow local files to be read. Helper::getUrl()
+        // also validates the host, so that a document cannot make the server
+        // fetch resources from internal services.
+        $fileContents = Helper::getUrl((string) $url);
         if ($fileContents !== false) {
             return $fileContents;
         } else {

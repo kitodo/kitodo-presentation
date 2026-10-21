@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Common;
 use Exception;
 use Kitodo\Dlf\Domain\Model\Structure;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
+use Kitodo\Dlf\Service\UrlValidationService;
 use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
@@ -222,14 +223,17 @@ class Helper
      *
      * @param string $documentLocation The URL of XML file or the IRI of the IIIF resource
      * @param mixed[] $settings
+     * @param bool $isTrustedLocation Whether the location originates from a
+     *                               trusted source (a database record or the
+     *                               configuration) instead of user input
      *
      * @return ?AbstractDocument
      */
-    public static function getDocumentInstance(string $documentLocation, array $settings): AbstractDocument|null
+    public static function getDocumentInstance(string $documentLocation, array $settings, bool $isTrustedLocation = false): AbstractDocument|null
     {
         $hash = hash('sha256', $documentLocation);
         if (!isset(static::$docs[$hash])) {
-            static::$docs[$hash] = AbstractDocument::getInstance($documentLocation, $settings);
+            static::$docs[$hash] = AbstractDocument::getInstance($documentLocation, $settings, false, $isTrustedLocation);
         }
         return static::$docs[$hash];
     }
@@ -758,26 +762,52 @@ class Helper
     }
 
     /**
+     * The maximum number of redirects that are followed by Helper::getUrl().
+     *
+     * @var int
+     */
+    protected const MAX_REDIRECTS = 5;
+
+    /**
      * Replacement for the TYPO3 GeneralUtility::getUrl().
      *
-     * This method respects the User Agent settings from extConf
+     * This method respects the User Agent settings from extConf.
+     *
+     * Only http(s) URLs are fetched, so that no stream wrapper such as
+     * "file://" or "php://" can be used to read local files. Unless the
+     * location is explicitly trusted, the host of the URL must be allowed to
+     * be fetched, which prevents server-side request forgery (SSRF). Redirects
+     * are followed manually, so that every redirect target is validated as
+     * well and cannot be used to reach a host that would not be allowed.
      *
      * @access public
      *
      * @static
      *
-     * @param string $url
+     * @param string $url The URL to fetch
+     * @param bool $isTrustedLocation Whether the URL originates from a trusted
+     *                               source (a database record or the
+     *                               configuration) instead of user input.
+     *                               Trusted locations are exempt from the host
+     *                               check, but their redirect targets are
+     *                               still validated.
+     * @param string[] $allowedHosts Additional host patterns that may be
+     *                               fetched even if they do not resolve to a
+     *                               public address
      *
-     * @return bool|string
+     * @return string|false The response body or false on error
      */
-    public static function getUrl(string $url): bool|string
+    public static function getUrl(string $url, bool $isTrustedLocation = false, array $allowedHosts = []): string|false
     {
-        if (!Helper::isValidHttpUrl($url)) {
-            return false;
-        }
-
         // Get extension configuration.
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'general');
+
+        /** @var UrlValidationService $urlValidationService */
+        $urlValidationService = GeneralUtility::makeInstance(UrlValidationService::class);
+        $allowedHosts = array_merge(
+            $allowedHosts,
+            $urlValidationService->parseHostList($extConf['urlAllowList'] ?? '')
+        );
 
         /** @var RequestFactory $requestFactory */
         $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
@@ -786,14 +816,60 @@ class Helper
             'headers' => [
                 'User-Agent' => $extConf['userAgent'] ?? 'Kitodo.Presentation',
             ],
+            // Redirects are followed manually below, so that every redirect
+            // target can be validated before it is fetched.
+            'allow_redirects' => false,
         ];
-        try {
-            $response = $requestFactory->request($url, 'GET', $configuration);
-        } catch (\Exception $e) {
-            self::warning('Could not fetch data from URL "' . $url . '". Error: ' . $e->getMessage() . '.');
-            return false;
+
+        $currentUrl = $url;
+        for ($redirects = 0; $redirects <= self::MAX_REDIRECTS; $redirects++) {
+            // Only http(s) may be fetched. GeneralUtility::getUrl() would fall
+            // back to file_get_contents() for any other scheme, and curl
+            // would read local files for the "file" scheme. The check is
+            // repeated for every redirect target, which is under the control
+            // of the remote server.
+            if (!Helper::isValidHttpUrl($currentUrl)) {
+                self::warning('Refused to fetch URL "' . $currentUrl . '" because it is not a valid http(s) URL.');
+                return false;
+            }
+            $scheme = strtolower((string) parse_url($currentUrl, PHP_URL_SCHEME));
+            if (!in_array($scheme, ['http', 'https'], true)) {
+                self::warning('Refused to fetch URL "' . $currentUrl . '" because of its unsupported scheme.');
+                return false;
+            }
+            if (!$isTrustedLocation && !$urlValidationService->isHostAllowed($currentUrl, $allowedHosts)) {
+                self::warning('Refused to fetch URL "' . $currentUrl . '" because its host is not allowed.');
+                return false;
+            }
+            try {
+                $response = $requestFactory->request($currentUrl, 'GET', $configuration);
+            } catch (\Exception $e) {
+                self::warning('Could not fetch data from URL "' . $currentUrl . '". Error: ' . $e->getMessage() . '.');
+                return false;
+            }
+            $statusCode = $response->getStatusCode();
+            if ($statusCode >= 300 && $statusCode < 400 && $response->hasHeader('Location')) {
+                $redirectUrl = $urlValidationService->resolveRedirectUrl($currentUrl, $response->getHeaderLine('Location'));
+                if ($redirectUrl === null) {
+                    self::warning('Could not resolve the redirect target of URL "' . $currentUrl . '".');
+                    return false;
+                }
+                // The redirect target must either stay on the same host or
+                // point to a host that is allowed to be fetched.
+                if (
+                    !$urlValidationService->isSameHost($currentUrl, $redirectUrl)
+                    && !$urlValidationService->isHostAllowed($redirectUrl, $allowedHosts)
+                ) {
+                    self::warning('Refused to follow the redirect from "' . $currentUrl . '" to "' . $redirectUrl . '".');
+                    return false;
+                }
+                $currentUrl = $redirectUrl;
+                continue;
+            }
+            return $response->getBody()->getContents();
         }
-        return $response->getBody()->getContents();
+        self::warning('Too many redirects while fetching URL "' . $url . '".');
+        return false;
     }
 
     /**

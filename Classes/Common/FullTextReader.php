@@ -64,7 +64,13 @@ class FullTextReader
             while ($useGroupFulltext = array_shift($useGroupsFulltext)) {
                 if (!empty($physicalStructureNode['files'][$useGroupFulltext])) {
                     // Get full text file.
-                    $fileContent = GeneralUtility::getUrl($fileLocations[$useGroupFulltext]);
+                    // Use Helper::getUrl() instead of GeneralUtility::getUrl(),
+                    // because the latter falls back to file_get_contents() for
+                    // URLs that are not http(s), which would allow local files
+                    // to be read. Helper::getUrl() also validates the host, so
+                    // that a document cannot make the server fetch resources
+                    // from internal services.
+                    $fileContent = Helper::getUrl((string) $fileLocations[$useGroupFulltext]);
                     if ($fileContent !== false) {
                         $textFormat = $this->getTextFormat($fileContent);
                     } else {

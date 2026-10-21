@@ -173,7 +173,7 @@ class ReindexCommand extends BaseCommand
         $amount = count($documents);
 
         foreach ($documents as $id => $document) {
-            $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], !$useCache);
+            $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], !$useCache, isTrustedLocation: true);
 
             if ($doc === null) {
                 $io->warning('WARNING: Document "' . $document->getLocation() . '" could not be loaded. Skip to next document.');
