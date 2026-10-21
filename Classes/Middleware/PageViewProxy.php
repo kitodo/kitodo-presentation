@@ -19,6 +19,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Crypto\HashService;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Http\Response;
@@ -50,6 +51,8 @@ class PageViewProxy implements MiddlewareInterface
      */
     protected array $extConf;
 
+    protected HashService $hashService;
+
     /**
      * Constructs the instance
      *
@@ -61,6 +64,7 @@ class PageViewProxy implements MiddlewareInterface
     {
         $this->requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'general');
+        $this->hashService = GeneralUtility::makeInstance(HashService::class);
     }
 
     /**
@@ -233,7 +237,7 @@ class PageViewProxy implements MiddlewareInterface
 
         // get and verify the uHash
         $uHash = (string) ($queryParams['uHash'] ?? '');
-        if (!hash_equals(GeneralUtility::hmac($url, 'PageViewProxy'), $uHash)) {
+        if (!hash_equals($this->hashService->hmac($url, 'PageViewProxy'), $uHash)) {
             return new JsonResponse(['message' => 'No valid uHash passed!'], 401);
         }
         try {
