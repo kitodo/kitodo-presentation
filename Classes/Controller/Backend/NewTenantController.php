@@ -29,6 +29,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -137,6 +138,13 @@ class NewTenantController extends AbstractController
     public function injectSolrCoreRepository(SolrCoreRepository $solrCoreRepository): void
     {
         $this->solrCoreRepository = $solrCoreRepository;
+    }
+
+    protected TcaSchemaFactory $tcaSchemaFactory;
+
+    public function injectTcaSchemaFactory(TcaSchemaFactory $tcaSchemaFactory): void
+    {
+        $this->tcaSchemaFactory = $tcaSchemaFactory;
     }
 
     /**
@@ -254,7 +262,7 @@ class NewTenantController extends AbstractController
             $availableFormats[$insertedFormat->getRoot()] = $insertedFormat->getUid();
         }
 
-        $defaultWrap = BackendUtility::getTcaFieldConfiguration('tx_dlf_metadata', 'wrap')['default'];
+        $defaultWrap = $this->tcaSchemaFactory->get('tx_dlf_metadata')->getField('wrap')->getConfiguration()['default'];
 
         $data = [];
         foreach ($metadataDefaults as $indexName => $values) {
