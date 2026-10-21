@@ -16,6 +16,7 @@ use DOMDocument;
 use Exception;
 use InvalidArgumentException;
 use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Service\UrlValidationService;
 use Kitodo\Dlf\Validation\DOMDocumentValidationStack;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -50,6 +51,29 @@ class DOMDocumentValidation implements MiddlewareInterface
     private const INTERNAL_SERVER_ERROR = 500;
 
     private ServerRequestInterface $request;
+
+    /**
+     * The service that decides whether a URL may be fetched server-side.
+     *
+     * @access protected
+     * @var UrlValidationService
+     */
+    protected UrlValidationService $urlValidationService;
+
+    /**
+     * Constructs an instance of this middleware.
+     *
+     * @access public
+     *
+     * @param UrlValidationService|null $urlValidationService The service that
+     *        decides whether a URL may be fetched server-side
+     *
+     * @return void
+     */
+    public function __construct(?UrlValidationService $urlValidationService = null)
+    {
+        $this->urlValidationService = $urlValidationService ?? GeneralUtility::makeInstance(UrlValidationService::class);
+    }
 
     /**
      * The main method of the middleware.
@@ -114,13 +138,17 @@ class DOMDocumentValidation implements MiddlewareInterface
         }
 
         // reject hosts that are not allowed to be fetched to prevent SSRF
+        $allowedHosts = $this->getAllowedHosts($settings['domDocumentValidation'][$typeParam]);
         if (!$this->isHostAllowed((string) $urlParam, $settings['domDocumentValidation'][$typeParam])) {
             $this->logger->warning('Attempt to validate document from non-allowed host: ' . $urlParam);
             return $this->getJsonResponse('Host of the given URL is not allowed.', self::BAD_REQUEST);
         }
 
-        // load dom document from url
-        $content = GeneralUtility::getUrl($urlParam);
+        // load dom document from url. The host has been validated above, so
+        // the location is passed as trusted here. Redirects are still
+        // validated by Helper::getUrl(), so that a redirect cannot be used to
+        // reach a host that would not be allowed.
+        $content = Helper::getUrl((string) $urlParam, true, $allowedHosts);
         if ($content === false) {
             return $this->getJsonResponse('Unable to load content from the URL.', self::NOT_FOUND);
         }
@@ -232,57 +260,36 @@ class DOMDocumentValidation implements MiddlewareInterface
     }
 
     /**
+     * Get the host patterns that may be fetched for the given validation
+     * configuration.
+     *
+     * @access protected
+     *
+     * @param mixed[] $validationConfiguration The validation configuration of the requested type
+     *
+     * @return string[] List of host patterns
+     */
+    protected function getAllowedHosts(array $validationConfiguration): array
+    {
+        $allowList = $validationConfiguration['hostAllowList'] ?? '';
+        return is_string($allowList)
+            ? $this->urlValidationService->parseHostList($allowList)
+            : [];
+    }
+
+    /**
      * Check whether the host of the given URL may be fetched server-side.
-     *
-     * By default, only hosts that resolve to public addresses are allowed;
-     * hosts that resolve to private or otherwise reserved address ranges
-     * (loopback, RFC 1918, link-local, etc.) are rejected to prevent the
-     * middleware from being abused for server-side request forgery.
-     *
-     * Optionally, the validation configuration may define a
-     * ``hostAllowList`` (a comma-separated list of hostnames or subdomain
-     * wildcards such as ``*.example.org``). If it is set, only these hosts
-     * may be fetched; an entry for a host that would otherwise be rejected
-     * (e.g. an internal service) explicitly allows it.
      *
      * @access protected
      *
      * @param string $url The URL that is about to be fetched
      * @param mixed[] $validationConfiguration The validation configuration of the requested type
      *
-     * @return bool Whether the host of the URL may be fetched
+     * @return bool Whether the host of the given URL may be fetched
      */
     protected function isHostAllowed(string $url, array $validationConfiguration): bool
     {
-        $host = parse_url($url, PHP_URL_HOST);
-        if (!is_string($host) || $host === '') {
-            return false;
-        }
-        $host = strtolower($host);
-
-        $allowList = $validationConfiguration['hostAllowList'] ?? '';
-        if (is_string($allowList) && trim($allowList) !== '') {
-            foreach (explode(',', $allowList) as $allowed) {
-                $allowed = strtolower(trim($allowed));
-                if ($allowed === '') {
-                    continue;
-                }
-                if (str_starts_with($allowed, '*.')) {
-                    // wildcard entries such as "*.example.org" match the
-                    // host "example.org" and all of its subdomains
-                    $base = substr($allowed, 2);
-                    if ($host === $base || str_ends_with($host, '.' . $base)) {
-                        return true;
-                    }
-                } elseif ($host === $allowed) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        // default: reject hosts that resolve to private or reserved ranges
-        return $this->resolvesToPublicAddress($host);
+        return $this->urlValidationService->isHostAllowed($url, $this->getAllowedHosts($validationConfiguration));
     }
 
     /**
@@ -296,75 +303,12 @@ class DOMDocumentValidation implements MiddlewareInterface
      */
     protected function resolvesToPublicAddress(string $host): bool
     {
-        // treat the host as an IP address directly (this also covers IPv6
-        // literals, with or without surrounding square brackets)
-        $candidate = ltrim($host, '[');
-        $candidate = rtrim($candidate, ']');
-        if (filter_var($candidate, FILTER_VALIDATE_IP) !== false) {
-            return $this->isPublicAddress($candidate);
-        }
-
-        $addresses = gethostbynamel($host);
-        if ($addresses === false || $addresses === []) {
-            // unresolvable hosts are rejected to prevent bypassing the
-            // check via DNS rebinding
-            return false;
-        }
-        foreach ($addresses as $address) {
-            if (!$this->isPublicAddress($address)) {
-                return false;
-            }
-        }
-        return true;
+        return $this->urlValidationService->resolvesToPublicAddress($host);
     }
-
-    /**
-     * The IPv4 and IPv6 address ranges that are not globally routable and
-     * therefore must never be fetched by the middleware.
-     *
-     * This is an explicit list (instead of relying on
-     * FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE, whose coverage
-     * varies between PHP versions) so the result is deterministic and also
-     * covers ranges such as CGNAT (RFC 6598) and IPv6 documentation space.
-     *
-     * @var string[]
-     */
-    private const RESERVED_RANGES = [
-        // IPv4
-        '0.0.0.0/8',        // "this" network
-        '10.0.0.0/8',       // RFC 1918 private
-        '100.64.0.0/10',    // RFC 6598 carrier-grade NAT
-        '127.0.0.0/8',      // loopback
-        '169.254.0.0/16',   // link-local (incl. cloud metadata 169.254.169.254)
-        '172.16.0.0/12',    // RFC 1918 private
-        '192.0.0.0/24',     // IETF protocol assignments
-        '192.0.2.0/24',     // TEST-NET-1 (documentation)
-        '192.88.99.0/24',   // 6to4 relay anycast
-        '192.168.0.0/16',   // RFC 1918 private
-        '198.18.0.0/15',    // benchmarking
-        '198.51.100.0/24',  // TEST-NET-2 (documentation)
-        '203.0.113.0/24',   // TEST-NET-3 (documentation)
-        '224.0.0.0/4',      // multicast
-        '240.0.0.0/4',      // reserved / future use
-        '255.255.255.255/32', // broadcast
-        // IPv6
-        '::/128',           // unspecified
-        '::1/128',          // loopback
-        '64:ff9b::/96',     // NAT64 well-known prefix
-        '100::/64',         // discard-only
-        '2001:db8::/32',    // documentation
-        'fc00::/7',         // unique local address
-        'fe80::/10',        // link-local
-        'ff00::/8',         // multicast
-    ];
 
     /**
      * Check whether an IP address is a public address, i.e. not loopback,
      * private (RFC 1918), link-local, or otherwise reserved.
-     *
-     * IPv4-mapped and IPv4-compatible IPv6 addresses (for example
-     * ::ffff:127.0.0.1) are unwrapped and checked as their IPv4 address,
-     * because otherwise the IPv4 checks could be bypassed.
      *
      * @access protected
      *
@@ -374,74 +318,22 @@ class DOMDocumentValidation implements MiddlewareInterface
      */
     protected function isPublicAddress(string $address): bool
     {
-        $ip = filter_var($address, FILTER_VALIDATE_IP);
-        if ($ip === false) {
-            return false;
-        }
-
-        $binary = inet_pton($ip);
-        if ($binary === false) {
-            return false;
-        }
-
-        // IPv4-mapped/compatible IPv6 addresses embed an IPv4 address in the
-        // last four bytes (e.g. ::ffff:127.0.0.1). Unwrap and check the IPv4
-        // address, because otherwise the IPv4 checks could be bypassed.
-        if (strlen($binary) === 16) {
-            if (substr($binary, 0, 10) === str_repeat("\x00", 10)
-                && ord($binary[10]) === 0xff
-                && ord($binary[11]) === 0xff) {
-                $ipv4 = inet_ntop(substr($binary, 12, 4));
-                return $ipv4 !== false && $this->isPublicAddress($ipv4);
-            }
-            if (substr($binary, 0, 12) === str_repeat("\x00", 12)) {
-                // deprecated IPv4-compatible form (::a.b.c.d)
-                $ipv4 = inet_ntop(substr($binary, 12, 4));
-                return $ipv4 !== false && $this->isPublicAddress($ipv4);
-            }
-        }
-
-        foreach (self::RESERVED_RANGES as $range) {
-            if ($this->isInRange($binary, $range)) {
-                return false;
-            }
-        }
-        return true;
+        return $this->urlValidationService->isPublicAddress($address);
     }
 
     /**
      * Check whether a binary-packed IP address is contained in a CIDR range.
      *
-     * @access private
+     * @access protected
      *
      * @param string $binaryIp The IP address packed with inet_pton()
      * @param string $cidr A CIDR notation such as "10.0.0.0/8"
      *
      * @return bool Whether the address is in the given range
      */
-    private function isInRange(string $binaryIp, string $cidr): bool
+    protected function isInRange(string $binaryIp, string $cidr): bool
     {
-        [$network, $prefix] = explode('/', $cidr, 2);
-        $networkBinary = inet_pton($network);
-        if ($networkBinary === false || strlen($binaryIp) !== strlen($networkBinary)) {
-            // invalid network or different address family (IPv4 vs IPv6)
-            return false;
-        }
-        $prefix = (int) $prefix;
-        $fullBytes = strlen($networkBinary);
-        $wholeBytes = intdiv($prefix, 8);
-        $remainingBits = $prefix % 8;
-
-        if ($wholeBytes > 0 && substr($binaryIp, 0, $wholeBytes) !== substr($networkBinary, 0, $wholeBytes)) {
-            return false;
-        }
-        if ($remainingBits === 0) {
-            return true;
-        }
-        $mask = 0xff << (8 - $remainingBits) & 0xff;
-        $ipByte = ord($binaryIp[$wholeBytes]);
-        $netByte = ord($networkBinary[$wholeBytes]);
-        return ($ipByte & $mask) === ($netByte & $mask);
+        return $this->urlValidationService->isInRange($binaryIp, $cidr);
     }
 
     /**

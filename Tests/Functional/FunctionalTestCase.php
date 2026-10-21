@@ -148,7 +148,11 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         return [
             'general' => [
                 'useExternalApisForMetadata' => 0,
-                'requiredMetadataFields' => 'document_format'
+                'requiredMetadataFields' => 'document_format',
+                // The test fixtures are served by the local test server, which
+                // is not a publicly routable host and therefore has to be
+                // allowed explicitly.
+                'urlAllowList' => 'web,127.0.0.1,localhost'
             ],
             'files' => [
                 'useGroupsImage' => 'DEFAULT,MAX',

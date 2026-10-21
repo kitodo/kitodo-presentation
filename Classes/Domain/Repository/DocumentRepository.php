@@ -95,7 +95,7 @@ class DocumentRepository extends AbstractRepository
         }
 
         if ($document !== null && $doc === null) {
-            $doc = AbstractDocument::getInstance($document->getLocation());
+            $doc = AbstractDocument::getInstance($document->getLocation(), isTrustedLocation: true);
         }
 
         if ($doc !== null) {
