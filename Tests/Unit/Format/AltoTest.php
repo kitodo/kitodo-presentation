@@ -19,7 +19,6 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class AltoTest extends UnitTestCase
 {
-
     #[Test]
     #[Group('extract data')]
     public function getRawData(): void
