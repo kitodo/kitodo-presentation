@@ -145,6 +145,16 @@ class PageViewProxy
         $queryParams = $request->getQueryParams();
 
         $url = (string) ($queryParams['url'] ?? '');
+        if (!Helper::isValidHttpUrl($url)) {
+            return new JsonResponse(['message' => 'Did not receive a valid URL.'], 400);
+        }
+
+        // get and verify the uHash
+        $uHash = (string) ($queryParams['uHash'] ?? '');
+        if (!hash_equals(GeneralUtility::hmac($url, 'PageViewProxy'), $uHash)) {
+            return new JsonResponse(['message' => 'No valid uHash passed!'], 401);
+        }
+
         $headers = [
             'User-Agent' => $this->extConf['userAgent'] ?? 'Kitodo.Presentation'
         ];
