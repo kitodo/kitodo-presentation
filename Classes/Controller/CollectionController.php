@@ -226,7 +226,7 @@ class CollectionController extends AbstractController
      *
      * @return array<int,array{collection:Collection,info:array<string,mixed>}> Processed collections keyed by priority-based integer
      */
-    private function processCollections(array $collections, Solr $solr): array
+    private function processCollections(array|QueryResultInterface $collections, Solr $solr): array
     {
         $processedCollections = [];
 
