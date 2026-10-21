@@ -18,15 +18,27 @@ $excludeList = 'layout,select_key,pages,recursive';
 $addList = 'pi_flexform';
 
 $flexFormsPathPrefix = 'FILE:EXT:dlf/Configuration/FlexForms/';
-$iconsDirectory = 'EXT:dlf/Resources/Public/Icons/';
 $langFile = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:';
 $title = '.plugin.title';
+$description = '.plugin.description';
+$pluginGroup = 'dlf';
+
+// Create wizard item group for all plugins
+TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTcaSelectItemGroup(
+  'tt_content',
+  'CType',
+  $pluginGroup,
+  'Kitodo Plugins',
+);
 
 // Plugin "annotation".
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
     'Annotation',
     $langFile . 'annotation' . $title,
+    null,
+    $pluginGroup,
+    $langFile . 'annotation' . $description
 );
 
 // Plugin "basket".
@@ -44,7 +56,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'Basket',
     $langFile . 'basket' . $title,
-    $iconsDirectory . 'tx-dlf-basket.svg'
+    'tx-dlf-basket',
+    $pluginGroup,
+    $langFile . 'basket' . $description,
+    $flexFormsPathPrefix . 'Basket.xml'
 );
 
 // Plugin "calendar".
@@ -62,7 +77,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'Calendar',
     $langFile . 'calendar' . $title,
-    $iconsDirectory . 'tx-dlf-calendar.svg'
+    'tx-dlf-calendar',
+    $pluginGroup,
+    $langFile . 'calendar' . $description,
+    $flexFormsPathPrefix . 'Calendar.xml'
 );
 
 // Plugin "collection".
@@ -80,7 +98,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'Collection',
     $langFile . 'collection' . $title,
-    $iconsDirectory . 'tx-dlf-collection.svg'
+    'tx-dlf-collection',
+    $pluginGroup,
+    $langFile . 'collection' . $description,
+    $flexFormsPathPrefix . 'Collection.xml'
 );
 
 // Plugin "embedded3dviewer".
@@ -98,7 +119,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'Embedded3dViewer',
     $langFile . 'embedded3dViewer' . $title,
-    $iconsDirectory . 'tx-dlf-embedded3dviewer.svg'
+    'tx-dlf-embedded3dviewer',
+    $pluginGroup,
+    $langFile . 'embedded3dViewer' . $description,
+    $flexFormsPathPrefix . 'Embedded3dViewer.xml'
 );
 
 // Plugin "validationform".
@@ -116,7 +140,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'ValidationForm',
     $langFile . 'validationForm' . $title,
-    $iconsDirectory . 'tx-dlf-validationform.svg'
+    'tx-dlf-validationform',
+    $pluginGroup,
+    $langFile . 'validationForm' . $description,
+    $flexFormsPathPrefix . 'ValidationForm.xml'
 );
 
 // Plugin "feeds".
@@ -134,7 +161,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'Feeds',
     $langFile . 'feeds' . $title,
-    $iconsDirectory . 'tx-dlf-feeds.svg'
+    'tx-dlf-feeds',
+    $pluginGroup,
+    $langFile . 'feeds' . $description,
+    $flexFormsPathPrefix . 'Feeds.xml'
 );
 
 // Plugin "listview".
@@ -152,7 +182,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'ListView',
     $langFile . 'listView' . $title,
-    $iconsDirectory . 'tx-dlf-listview.svg'
+    'tx-dlf-listview',
+    $pluginGroup,
+    $langFile . 'listView' . $description,
+    $flexFormsPathPrefix . 'ListView.xml'
 );
 
 // Plugin "mediaplayer".
@@ -170,7 +203,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'MediaPlayer',
     $langFile . 'mediaPlayer' . $title,
-    $iconsDirectory . 'tx-dlf-mediaplayer.svg'
+    'tx-dlf-mediaplayer',
+    $pluginGroup,
+    $langFile . 'mediaPlayer' . $description,
+    $flexFormsPathPrefix . 'MediaPlayer.xml'
 );
 
 // Plugin "metadata".
@@ -188,7 +224,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'Metadata',
     $langFile . 'metadata' . $title,
-    $iconsDirectory . 'tx-dlf-metadata.svg'
+    'tx-dlf-metadata',
+    $pluginGroup,
+    $langFile . 'metadata' . $description,
+    $flexFormsPathPrefix . 'Metadata.xml'
 );
 
 // Plugin "navigation".
@@ -206,7 +245,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'Navigation',
     $langFile . 'navigation' . $title,
-    $iconsDirectory . 'tx-dlf-navigation.svg'
+    'tx-dlf-navigation',
+    $pluginGroup,
+    $langFile . 'navigation' . $description,
+    $flexFormsPathPrefix . 'Navigation.xml'
 );
 
 // Plugin "oaipmh".
@@ -224,7 +266,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'OaiPmh',
     $langFile . 'oaiPmh' . $title,
-    $iconsDirectory . 'tx-dlf-oaipmh.svg'
+    'tx-dlf-oaipmh',
+    $pluginGroup,
+    $langFile . 'oaiPmh' . $description,
+    $flexFormsPathPrefix . 'OaiPmh.xml'
 );
 
 // Plugin "pagegrid".
@@ -241,7 +286,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'PageGrid',
     $langFile . 'pageGrid' . $title,
-    $iconsDirectory . 'tx-dlf-pagegrid.svg'
+    'tx-dlf-pagegrid',
+    $pluginGroup,
+    $langFile . 'pageGrid' . $description,
+    $flexFormsPathPrefix . 'PageGrid.xml'
 );
 
 // Plugin "pageview".
@@ -258,7 +306,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'PageView',
     $langFile . 'pageView' . $title,
-    $iconsDirectory . 'tx-dlf-pageview.svg'
+    'tx-dlf-pageview',
+    $pluginGroup,
+    $langFile . 'pageView' . $description,
+    $flexFormsPathPrefix . 'PageView.xml'
 );
 
 // Plugin "search".
@@ -276,7 +327,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'Search',
     $langFile . 'search' . $title,
-    $iconsDirectory . 'tx-dlf-search.svg'
+    'tx-dlf-search',
+    $pluginGroup,
+    $langFile . 'search' . $description,
+    $flexFormsPathPrefix . 'Search.xml'
 );
 
 // Plugin "statistics".
@@ -294,7 +348,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'Statistics',
     $langFile . 'statistics' . $title,
-    $iconsDirectory . 'tx-dlf-statistics.svg'
+    'tx-dlf-statistics',
+    $pluginGroup,
+    $langFile . 'statistics' . $description,
+    $flexFormsPathPrefix . 'Statistics.xml'
 );
 
 // Plugin "tableofcontents".
@@ -312,7 +369,10 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'TableOfContents',
     $langFile . 'tableOfContents' . $title,
-    $iconsDirectory . 'tx-dlf-tableofcontents.svg'
+    'tx-dlf-tableofcontents',
+    $pluginGroup,
+    $langFile . 'tableOfContents' . $description,
+    $flexFormsPathPrefix . 'TableOfContents.xml'
 );
 
 // Plugin "toolbox".
@@ -329,5 +389,8 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     'Dlf',
     'Toolbox',
     $langFile . 'toolbox' . $title,
-    $iconsDirectory . 'tx-dlf-toolbox.svg'
+    'tx-dlf-toolbox',
+    $pluginGroup,
+    $langFile . 'toolbox' . $description,
+    $flexFormsPathPrefix . 'Toolbox.xml'
 );
