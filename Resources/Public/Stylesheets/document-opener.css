@@ -1,0 +1,75 @@
+.tx-dlf-document-opener {
+  --document-opener-ink: #18212c;
+  --document-opener-accent: #213345;
+  --document-opener-border: rgba(24, 33, 44, 0.18);
+  width: 100%;
+  color: var(--document-opener-ink);
+  font-family: Arial, sans-serif;
+}
+
+.tx-dlf-document-opener-form {
+  display: grid;
+  gap: 10px;
+}
+
+.tx-dlf-document-opener-label {
+  font-weight: 700;
+}
+
+.tx-dlf-document-opener-input-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.tx-dlf-document-opener-input {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--document-opener-border);
+  border-radius: 12px;
+  background: #fff;
+  color: var(--document-opener-ink);
+  font: inherit;
+}
+
+.tx-dlf-document-opener-input:focus-visible {
+  outline: 2px solid rgba(26, 77, 143, 0.32);
+  outline-offset: 1px;
+}
+
+.tx-dlf-document-opener-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 18px;
+  border: 1px solid var(--document-opener-accent);
+  border-radius: 999px;
+  background: var(--document-opener-accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tx-dlf-document-opener-button:hover {
+  background: #2e4a64;
+}
+
+.tx-dlf-document-opener-button:focus-visible {
+  outline: 2px solid rgba(26, 77, 143, 0.32);
+  outline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .tx-dlf-document-opener-input-row {
+    grid-template-columns: 1fr;
+  }
+
+  .tx-dlf-document-opener-button {
+    width: 100%;
+  }
+}
