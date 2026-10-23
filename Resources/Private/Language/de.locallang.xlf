@@ -301,53 +301,85 @@
                 <source><![CDATA[Create structures]]></source>
                 <target><![CDATA[Strukturdaten Konfiguration anlegen]]></target>
             </trans-unit>
-            <trans-unit id="newTenant.formatOkay" approved="yes">
+            <trans-unit id="newTenant.formatFound" approved="yes">
                 <source><![CDATA[Default namespaces found!]]></source>
                 <target><![CDATA[Standard-Namensräume gefunden!]]></target>
             </trans-unit>
-            <trans-unit id="newTenant.formatOkayMsg" approved="yes">
+            <trans-unit id="newTenant.formatFoundMsg" approved="yes">
                 <source><![CDATA[The namespace definitions for MODS, TEIHDR and ALTO do exist.]]></source>
                 <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und ALTO sind definiert.]]></target>
             </trans-unit>
-            <trans-unit id="newTenant.formatNotOkay" approved="yes">
+            <trans-unit id="newTenant.formatNotFound" approved="yes">
                 <source><![CDATA[Default namespaces not found!]]></source>
                 <target><![CDATA[Standard-Namensräume nicht gefunden!]]></target>
             </trans-unit>
-            <trans-unit id="newTenant.formatNotOkayMsg" approved="yes">
+            <trans-unit id="newTenant.formatNotFoundMsg" approved="yes">
                 <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.]]></source>
                 <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO konnten nicht definiert werden.]]></target>
             </trans-unit>
-            <trans-unit id="newTenant.metadataOkay" approved="yes">
+            <trans-unit id="newTenant.metadataFound" approved="yes">
                 <source><![CDATA[Metadata found!]]></source>
                 <target><![CDATA[Metadaten gefunden!]]></target>
             </trans-unit>
-            <trans-unit id="newTenant.metadataOkayMsg" approved="yes">
+            <trans-unit id="newTenant.metadataFoundMsg" approved="yes">
                 <source><![CDATA[There are configuration records for bibliographic metadata. They can be edited in the list module.]]></source>
                 <target><![CDATA[Es ist eine Konfiguration für Metadaten vorhanden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.]]></target>
             </trans-unit>
-            <trans-unit id="newTenant.metadataNotOkay" approved="yes">
+            <trans-unit id="newTenant.metadataMissing" approved="yes">
+                <source><![CDATA[Some metadata not found!]]></source>
+                <target><![CDATA[Einige Metadaten nicht gefunden!]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.metadataMissingMsg" approved="yes">
+                <source><![CDATA[There are some missing configuration records for bibliographic metadata. If it is not intentionally then they can be added automatically.]]></source>
+                <target><![CDATA[Es gibt einige fehlende Konfigurationsdatensätze für bibliografische Metadaten. Falls dies nicht beabsichtigt ist, können sie automatisch hinzugefügt werden.]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.metadataNotFound" approved="yes">
                 <source><![CDATA[No metadata found!]]></source>
                 <target><![CDATA[Keine Metadaten gefunden!]]></target>
             </trans-unit>
-            <trans-unit id="newTenant.metadataNotOkayMsg" approved="yes">
+            <trans-unit id="newTenant.metadataNotFoundMsg" approved="yes">
                 <source><![CDATA[There are no configuration records for bibliographic metadata. A basic configuration can be added automatically.]]></source>
                 <target><![CDATA[Es wurde keine Konfiguration für Metadaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.]]></target>
             </trans-unit>
-            <trans-unit id="newTenant.solrcoreOkay" approved="yes">
+            <trans-unit id="newTenant.solrCoreFound" approved="yes">
                 <source><![CDATA[Solr core found!]]></source>
                 <target><![CDATA[Solr Kern gefunden!]]></target>
             </trans-unit>
-            <trans-unit id="newTenant.solrcoreOkayMsg" approved="yes">
+            <trans-unit id="newTenant.solrCoreFoundMsg" approved="yes">
                 <source><![CDATA[There are configuration records for Solr cores. They can be edited in the list module.]]></source>
                 <target><![CDATA[Es wurde die Konfiguration für einen Solr Kern gefunden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.]]></target>
             </trans-unit>
-            <trans-unit id="newTenant.solrcoreNotOkay" approved="yes">
+            <trans-unit id="newTenant.solrCoreNotFound" approved="yes">
                 <source><![CDATA[No Solr core found!]]></source>
                 <target><![CDATA[Kein Solr Kern gefunden!]]></target>
             </trans-unit>
-            <trans-unit id="newTenant.solrcoreNotOkayMsg" approved="yes">
+            <trans-unit id="newTenant.solrCoreNotFoundMsg" approved="yes">
                 <source><![CDATA[There is no Solr core configured. For the search plugin at least one Solr core is needed. It can be created automatically.]]></source>
                 <target><![CDATA[Es wurde kein Solr Kern gefunden. Ohne Solr Kern kann das Plugin zur Recherche in den Meta- und Strukturdaten nicht verwendet werden. Ein Solr Kern kann automatisch angelegt werden.]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.structureFound" approved="yes">
+                <source><![CDATA[Structures found!]]></source>
+                <target><![CDATA[Strukturdaten gefunden!]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.structureFoundMsg" approved="yes">
+                <source><![CDATA[There are configuration records for structural metadata. They can be edited in the list module.]]></source>
+                <target><![CDATA[Es ist eine Konfiguration für Strukturdaten vorhanden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.structureMissing" approved="yes">
+                <source><![CDATA[Some structures not found!]]></source>
+                <target><![CDATA[Einige Strukturdaten wurden nicht gefunden!]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.structureMissingMsg" approved="yes">
+                <source><![CDATA[There are some missing configuration records for structural metadata. If it is not intentionally then they can be added automatically.]]></source>
+                <target><![CDATA[Einige Konfigurationen für Strukturdaten fehlen. Falls dies nicht beabsichtigt ist, können sie automatisch hinzugefügt werden.]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.structureNotFound" approved="yes">
+                <source><![CDATA[No structures found!]]></source>
+                <target><![CDATA[Keine Strukturdaten gefunden!]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.structureNotFoundMsg" approved="yes">
+                <source><![CDATA[There are no configuration records for structural metadata. A basic configuration can be added automatically.]]></source>
+                <target><![CDATA[Es wurde keine Konfiguration für Strukturdaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.]]></target>
             </trans-unit>
             <trans-unit id="newTenant.wrongPageType" approved="yes">
                 <source><![CDATA[Page is no Folder!]]></source>
@@ -356,22 +388,6 @@
             <trans-unit id="newTenant.wrongPageTypeMsg" approved="yes">
                 <source><![CDATA[The configuration records of Kitodo.Presentation need to be stored in a Folder.]]></source>
                 <target><![CDATA[Die Konfigurationsdatensätze von Kitodo.Presentation müssen in Ordnern abgelegt werden.]]></target>
-            </trans-unit>
-            <trans-unit id="newTenant.structureOkay" approved="yes">
-                <source><![CDATA[Structures found!]]></source>
-                <target><![CDATA[Strukturdaten gefunden!]]></target>
-            </trans-unit>
-            <trans-unit id="newTenant.structureOkayMsg" approved="yes">
-                <source><![CDATA[There are configuration records for structural metadata. They can be edited in the list module.]]></source>
-                <target><![CDATA[Es ist eine Konfiguration für Strukturdaten vorhanden. Über das Listenmodul können neue Datensätze hinzugefügt und die vorhandenen editiert werden.]]></target>
-            </trans-unit>
-            <trans-unit id="newTenant.structureNotOkay" approved="yes">
-                <source><![CDATA[No structures found!]]></source>
-                <target><![CDATA[Keine Strukturdaten gefunden!]]></target>
-            </trans-unit>
-            <trans-unit id="newTenant.structureNotOkayMsg" approved="yes">
-                <source><![CDATA[There are no configuration records for structural metadata. A basic configuration can be added automatically.]]></source>
-                <target><![CDATA[Es wurde keine Konfiguration für Strukturdaten gefunden. Eine Grundkonfiguration kann automatisch angelegt werden.]]></target>
             </trans-unit>
             <trans-unit id="oaiPmh.badArgument" approved="yes">
                 <source><![CDATA[The request includes illegal arguments, is missing required arguments, or values for arguments have an illegal syntax.]]></source>
