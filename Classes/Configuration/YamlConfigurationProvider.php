@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Validation\Configuration;
+namespace Kitodo\Dlf\Configuration;
 
 use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
 use TYPO3\CMS\Core\Log\Logger;
@@ -57,13 +57,47 @@ class YamlConfigurationProvider
     }
 
     /**
-     * @return array<int, array<string, mixed>>
+     * @access public
+     *
+     * @param string $type The type of configuration
+     *
+     * @return mixed[]
      */
-    public function getConfiguration(string $type): array
+    public function getTenantConfiguration(string $type): array
+    {
+        $tenantConfiguration = $this->getConfiguration($type, '/Configuration/Kitodo/Tenant/');
+
+        if (!empty($tenantConfiguration)) {
+            return $tenantConfiguration;
+        }
+        return $this->getConfiguration($type, '/Configuration/Tenant/');
+    }
+
+    /**
+     * @access public
+     *
+     * @param string $type The type of configuration
+     *
+     * @return mixed[]
+     */
+    public function getValidationConfiguration(string $type): array
+    {
+        return $this->getConfiguration($type, '/Configuration/Kitodo/Validation/');
+    }
+
+    /**
+     * @access private
+     *
+     * @param string $type The type of configuration
+     * @param string $path The path to the configuration file
+     *
+     * @return mixed[]
+     */
+    private function getConfiguration(string $type, string $path): array
     {
         foreach ($this->packageManager->getActivePackages() as $package) {
             $packagePath = rtrim($package->getPackagePath(), '/');
-            $configurationFile = $packagePath . '/Configuration/Kitodo/Validation/' . $type . '.yaml';
+            $configurationFile = $packagePath . $path . $type . '.yaml';
             if (is_file($configurationFile)) {
                 $configuration = $this->yamlFileLoader->load($configurationFile);
                 if (is_array($configuration)) {
