@@ -1,17 +1,9 @@
 parameters:
   ignoreErrors:
     - '#Call to an undefined method Psr\\Http\\Message\\RequestFactoryInterface::request\(\)\.#'
-    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\ManifestInterface::getOriginalJsonArray\(\)\.#'
-    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\RangeInterface::getMemberRangesAndRanges\(\)\.#'
     -
-      message: '#Class TYPO3\\CMS\\Core\\Database\\Schema\\Parser\\Lexer constructor invoked with 0 parameters, 1 required\.#'
-      path: ../Classes/Command/DatabaseDocs/Generator.php
-    -
-      message: '#Parameter \#1 \$statement of class TYPO3\\CMS\\Core\\Database\\Schema\\Parser\\Parser constructor expects string, TYPO3\\CMS\\Core\\Database\\Schema\\Parser\\Lexer given\.#'
-      path: ../Classes/Command/DatabaseDocs/Generator.php
-    -
-      message: '#Method TYPO3\\CMS\\Core\\Database\\Schema\\Parser\\Parser::parse\(\) invoked with 1 parameter, 0 required\.#'
-      path: ../Classes/Command/DatabaseDocs/Generator.php
+      message: '#Call to an undefined method DOMXPath|SimpleXMLElement::getName\(\)\.#'
+      path: ../Classes/Common/MetsDocument.php
     -
       message: '#Class TYPO3\\CMS\\Core\\TypoScript\\FrontendTypoScriptFactory not found\.#'
       path: ../Classes/Common/TypoScriptHelper.php
@@ -22,6 +14,9 @@ parameters:
       message: '#Call to method createSetupConfigOrFullSetup\(\) on an unknown class TYPO3\\CMS\\Core\\TypoScript\\FrontendTypoScriptFactory\.#'
       path: ../Classes/Common/TypoScriptHelper.php
     -
+      message: '#Parameter \#1 \$separator of function explode expects non-empty-string, string given\.#'
+      path: ../Classes/Controller/ToolboxController.php
+    -
       message: '#PHPDoc tag @var for variable \$action contains unknown class TYPO3\\CMS\\Scheduler\\SchedulerManagementAction\.#'
       path: ../Classes/Task/BaseAdditionalFieldProvider.php
     -
@@ -30,10 +25,14 @@ parameters:
     -
       message: '#Cannot call method getFirst\(\) on iterable<Kitodo\\Dlf\\Domain\\Model\\SolrCore>|TYPO3\\CMS\\Extbase\\Persistence\\QueryResultInterface\.#'
       path: ../Classes/Controller/Backend/NewTenantController.php
+    -
+      message: '#PHPDoc tag \@var with type TYPO3\\CMS\\Scheduler\\SchedulerManagementAction is not subtype of native type TYPO3\\CMS\\Scheduler\\Task\\Enumeration\\Action\.#'
+      path: ../Classes/Task/BaseAdditionalFieldProvider.php
   level: 7
   paths:
     - ../Classes/
   excludePaths:
+    - ../Classes/Common/IiifManifest.php
     - ../Classes/Controller/OaiPmhController.php
-    - ../Classes/Command/DbDocs/Generator.php # dbdocs command is not supported in Typo3 v12
+    - ../Classes/Command/DatabaseDocs/Generator.php # dbdocs command is not supported in Typo3 v12
   treatPhpDocTypesAsCertain: false
