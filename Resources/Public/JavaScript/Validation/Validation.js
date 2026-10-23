@@ -8,7 +8,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-const dlfValidationForms = document.querySelectorAll('.tx-dlf-validationform form');
+const dlfValidationForms = document.querySelectorAll('.tx-dlf-validation form');
 
 /**
  * Get the data from an URL.
