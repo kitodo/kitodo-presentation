@@ -201,7 +201,8 @@ class PageViewProxyTest extends FunctionalTestCase
     public function canAccessUrlWithUrlHashUsingHead(): void
     {
         $targetUrl = 'http://web:8001/Tests/Fixtures/PageViewProxy/test.txt';
-        $uHash = GeneralUtility::hmac($targetUrl, 'PageViewProxy');
+        $hashService = GeneralUtility::makeInstance(HashService::class);
+        $uHash = $hashService->hmac($targetUrl, 'PageViewProxy');
 
         $response = $this->queryProxy([
             'url' => $targetUrl,
