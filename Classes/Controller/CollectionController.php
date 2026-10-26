@@ -221,7 +221,7 @@ class CollectionController extends AbstractController
      *
      * @access private
      *
-     * @param array<Collection> $collections to be processed
+     * @param array<Collection>|QueryResultInterface<int, Collection> $collections to be processed
      * @param Solr $solr for query
      *
      * @return array<int,array{collection:Collection,info:array<string,mixed>}> Processed collections keyed by priority-based integer
