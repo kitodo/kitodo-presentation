@@ -4,6 +4,12 @@ annotationServerUrl =
 general.enableInternalProxy = 0
 # cat=General; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.userAgent
 general.userAgent = Kitodo.Presentation
+# cat=General; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.urlAllowList
+# Comma-separated list of host names that the server may fetch, even if they do not resolve
+# to a public address. Wildcards such as "*.example.org" are supported. Hosts that are not
+# listed here must resolve to a public address, so that documents cannot make the server
+# fetch resources from internal services.
+general.urlAllowList =
 # cat=General; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.forceAbsoluteUrl
 general.forceAbsoluteUrl = 0
 # cat=General; type=boolean; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.general.forceAbsoluteUrlHttps
