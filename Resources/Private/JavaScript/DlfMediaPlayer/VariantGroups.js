@@ -67,11 +67,11 @@ export default class VariantGroups {
     this.groups = [];
 
     /**
-     * @type {Record<GroupKey, Group>}
+     * @type {Map<GroupKey, Group>}
      *
      * @private
      */
-    this.keyToGroup = {};
+    this.keyToGroup = new Map();
 
     if (this.manifest === null) {
       console.warn("Manifest not available");
@@ -139,15 +139,16 @@ export default class VariantGroups {
    * @returns {Group}
    */
   getGroupOrCreate(key) {
-    let group = this.keyToGroup[key];
+    let group = this.keyToGroup.get(key);
 
     if (!group) {
-      group = this.keyToGroup[key] = {
+      group = {
         key: key,
         variants: [],
         roles: new Set(),
         hasPrimary: false,
       };
+      this.keyToGroup.set(key, group);
 
       this.groupKeys.push(key);
       this.groups.push(group);
@@ -205,7 +206,7 @@ export default class VariantGroups {
       const key =
         VariantGroups.splitRepresentationId(track.originalVideoId).group;
 
-      group = this.keyToGroup[key];
+      group = this.keyToGroup.get(key);
     }
 
     return group;
@@ -260,7 +261,7 @@ export default class VariantGroups {
    * @returns {boolean} Whether or not a relevant group has been found.
    */
   selectGroupByKey(key) {
-    return this.trySelectGroup(this.keyToGroup[key]);
+    return this.trySelectGroup(this.keyToGroup.get(key));
   }
 
   /**
@@ -299,8 +300,6 @@ export default class VariantGroups {
    * @returns {IterableIterator<Group>}
    */
   *[Symbol.iterator]() {
-    for (const key in this.keyToGroup) {
-      yield /** @type {Group} */(this.keyToGroup[key]);
-    }
+    yield* this.groups;
   }
 }
