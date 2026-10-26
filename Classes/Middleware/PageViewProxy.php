@@ -19,7 +19,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Crypto\HashService;
 use TYPO3\CMS\Core\Http\JsonResponse;
 use TYPO3\CMS\Core\Http\RequestFactory;
 use TYPO3\CMS\Core\Http\Response;
@@ -51,8 +50,6 @@ class PageViewProxy implements MiddlewareInterface
      */
     protected array $extConf;
 
-    protected HashService $hashService;
-
     /**
      * Constructs the instance
      *
@@ -64,7 +61,6 @@ class PageViewProxy implements MiddlewareInterface
     {
         $this->requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
         $this->extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'general');
-        $this->hashService = GeneralUtility::makeInstance(HashService::class);
     }
 
     /**
@@ -107,6 +103,34 @@ class PageViewProxy implements MiddlewareInterface
             default => GeneralUtility::makeInstance(Response::class)
                 ->withStatus(405),
         };
+    }
+
+    /**
+     * Validate the `url` and `uHash` query parameters of a proxy request.
+     *
+     * Both GET and HEAD requests must be authenticated by a valid uHash to
+     * prevent unauthenticated server-side request forgery (SSRF).
+     *
+     * @access protected
+     *
+     * @param mixed[] $queryParams The query parameters of the request
+     *
+     * @return JsonResponse|NULL An error response if the URL or uHash is invalid, NULL otherwise
+     */
+    protected function validateProxyUrl(array $queryParams): ?JsonResponse
+    {
+        $url = (string) ($queryParams['url'] ?? '');
+        if (!Helper::isValidHttpUrl($url)) {
+            return new JsonResponse(['message' => 'Did not receive a valid URL.'], 400);
+        }
+
+        // get and verify the uHash
+        $uHash = (string) ($queryParams['uHash'] ?? '');
+        if (!hash_equals(GeneralUtility::hmac($url, 'PageViewProxy'), $uHash)) {
+            return new JsonResponse(['message' => 'No valid uHash passed!'], 401);
+        }
+
+        return null;
     }
 
     /**
@@ -194,7 +218,12 @@ class PageViewProxy implements MiddlewareInterface
     {
         $queryParams = $request->getQueryParams();
 
-        $url = (string) ($queryParams['url'] ?? '');
+        $error = $this->validateProxyUrl($queryParams);
+        if ($error !== null) {
+            return $error;
+        }
+
+        $url = (string) $queryParams['url'];
         try {
             $targetResponse = $this->requestFactory->request($url, 'HEAD', [
                 'headers' => [
@@ -230,16 +259,12 @@ class PageViewProxy implements MiddlewareInterface
     {
         $queryParams = $request->getQueryParams();
 
-        $url = (string) ($queryParams['url'] ?? '');
-        if (!Helper::isValidHttpUrl($url)) {
-            return new JsonResponse(['message' => 'Did not receive a valid URL.'], 400);
+        $error = $this->validateProxyUrl($queryParams);
+        if ($error !== null) {
+            return $error;
         }
 
-        // get and verify the uHash
-        $uHash = (string) ($queryParams['uHash'] ?? '');
-        if (!hash_equals($this->hashService->hmac($url, 'PageViewProxy'), $uHash)) {
-            return new JsonResponse(['message' => 'No valid uHash passed!'], 401);
-        }
+        $url = (string) $queryParams['url'];
         try {
             $targetResponse = $this->requestFactory->request($url, 'GET', [
                 'headers' => [

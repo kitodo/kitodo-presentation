@@ -55,10 +55,10 @@ $pluginDefinitions = [
         'flexFormFile' => 'Embedded3dViewer.xml'
     ],
     [
-        'name' => 'ValidationForm',
-        'langKey' => 'validationForm',
-        'icon' => 'tx-dlf-validationform',
-        'flexFormFile' => 'ValidationForm.xml'
+        'name' => 'Validation',
+        'langKey' => 'validation',
+        'icon' => 'tx-dlf-validation',
+        'flexFormFile' => 'Validation.xml'
     ],
     [
         'name' => 'Feeds',

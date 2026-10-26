@@ -332,13 +332,13 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'Dlf',
-    'ValidationForm',
+    'Validation',
     [
-        \Kitodo\Dlf\Controller\ValidationFormController::class => 'main',
+        \Kitodo\Dlf\Controller\ValidationController::class => 'main',
     ],
     // non-cacheable actions
     [
-        \Kitodo\Dlf\Controller\ValidationFormController::class => '',
+        \Kitodo\Dlf\Controller\ValidationController::class => '',
     ],
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );

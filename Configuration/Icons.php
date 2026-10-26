@@ -66,8 +66,8 @@ return [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
         'source' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-toolbox.svg',
     ],
-    'tx-dlf-validationform' => [
+    'tx-dlf-validation' => [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-        'source' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-validationform.svg',
+        'source' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-validation.svg',
     ]
 ];
