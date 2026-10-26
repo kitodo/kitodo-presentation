@@ -15,16 +15,16 @@
     <f:debug title="all">{_all}</f:debug>
 </f:if>
 
-<div class="tx-dlf-validationform" >
+<div class="tx-dlf-validation" >
     <form action="{url}"
-          data-i18n-headline-error="<f:translate key='validationForm.headline.error' extensionName='dlf' />"
-          data-i18n-headline-notice="<f:translate key='validationForm.headline.notice' extensionName='dlf' />"
-          data-i18n-headline-success="<f:translate key='validationForm.headline.success' extensionName='dlf' />"
-          data-i18n-headline-warning="<f:translate key='validationForm.headline.warning' extensionName='dlf'/>"
+          data-i18n-headline-error="<f:translate key='validation.form.headline.error' extensionName='dlf' />"
+          data-i18n-headline-notice="<f:translate key='validation.form.headline.notice' extensionName='dlf' />"
+          data-i18n-headline-success="<f:translate key='validation.form.headline.success' extensionName='dlf' />"
+          data-i18n-headline-warning="<f:translate key='validation.form.headline.warning' extensionName='dlf'/>"
     >
         <input type="hidden" name="validationType" value="{settings.type}">
         <label>
-            <f:format.raw><f:translate key='validationForm.label' extensionName='dlf' /></f:format.raw>
+            <f:format.raw><f:translate key='validation.form.label' extensionName='dlf' /></f:format.raw>
             <input type="text" name="url" class="url" value="" required>
         </label>
         <div class="disabled-validators">
@@ -35,7 +35,7 @@
                 </label>
             </f:for>
         </div>
-        <input type="submit" class="submit" value="<f:translate key='validationForm.validate' extensionName='dlf' />">
+        <input type="submit" class="submit" value="<f:translate key='validation.form.validate' extensionName='dlf' />">
     </form>
 </div>
 
