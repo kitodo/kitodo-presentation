@@ -23,6 +23,7 @@ use Kitodo\Dlf\Domain\Repository\BasketRepository;
 use Kitodo\Dlf\Domain\Repository\PrinterRepository;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Mime\Address;
+use TYPO3\CMS\Core\Mail\MailerInterface;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MailUtility;
@@ -109,6 +110,24 @@ class BasketController extends AbstractController
     public function injectActionLogRepository(ActionLogRepository $actionLogRepository): void
     {
         $this->actionLogRepository = $actionLogRepository;
+    }
+
+    /**
+     * @access protected
+     * @var MailerInterface
+     */
+    protected MailerInterface $mailer;
+
+    /**
+     * @access public
+     * 
+     * @param MailerInterface $mailer
+     * 
+     * @return void
+     */
+    public function injectMailer(MailerInterface $mailer): void
+    {
+        $this->mailer = $mailer;
     }
 
     /**
@@ -637,8 +656,9 @@ class BasketController extends AbstractController
             ->setFrom($from)
             // Set the To addresses with an associative array
             ->to(new Address($mailObject->getMail(), $mailObject->getName()))
-            ->html($mailBody)
-            ->send();
+            ->html($mailBody);
+        
+        $this->mailer->send($mail);
 
         // create entry for action log
         $newActionLog = GeneralUtility::makeInstance(ActionLog::class);
