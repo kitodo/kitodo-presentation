@@ -511,10 +511,16 @@ abstract class AbstractDocument
      * @param string $location The URL of XML file or the IRI of the IIIF resource
      * @param mixed[] $settings
      * @param bool $forceReload Force reloading the document instead of returning the cached instance
+     * @param bool $isTrustedLocation Whether the location originates from a
+     *                               trusted source (a database record or the
+     *                               configuration) instead of user input.
+     *                               Untrusted locations are only fetched if
+     *                               their host is allowed to be fetched, which
+     *                               prevents server-side request forgery.
      *
      * @return AbstractDocument|null Instance of this class, either MetsDocument or IiifManifest
      */
-    public static function &getInstance(string $location, array $settings = [], bool $forceReload = false)
+    public static function &getInstance(string $location, array $settings = [], bool $forceReload = false, bool $isTrustedLocation = false)
     {
         // Create new instance depending on format (METS or IIIF) ...
         $documentFormat = null;
@@ -542,7 +548,7 @@ abstract class AbstractDocument
 
         // Try to load a file from the url
         if (GeneralUtility::isValidUrl($location)) {
-            $content = Helper::getUrl($location);
+            $content = Helper::getUrl($location, $isTrustedLocation);
             if (is_string($content)) {
                 $xml = Helper::getXmlFileAsString($content);
                 if ($xml !== false) {
