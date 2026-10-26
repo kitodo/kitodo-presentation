@@ -677,27 +677,27 @@
                 <source><![CDATA[Zoom Out]]></source>
                 <target><![CDATA[Ansicht verkleinern]]></target>
             </trans-unit>
-            <trans-unit id="validationForm.headline.success" approved="yes">
+            <trans-unit id="validation.form.headline.success" approved="yes">
                 <source><![CDATA[Successful]]></source>
                 <target><![CDATA[Erfolgreich]]></target>
             </trans-unit>
-            <trans-unit id="validationForm.headline.error" approved="yes">
+            <trans-unit id="validation.form.headline.error" approved="yes">
                 <source><![CDATA[Error]]></source>
                 <target><![CDATA[Fehler]]></target>
             </trans-unit>
-            <trans-unit id="validationForm.headline.warning" approved="yes">
+            <trans-unit id="validation.form.headline.warning" approved="yes">
                 <source><![CDATA[Warning]]></source>
                 <target><![CDATA[Warnung]]></target>
             </trans-unit>
-            <trans-unit id="validationForm.headline.notice" approved="yes">
+            <trans-unit id="validation.form.headline.notice" approved="yes">
                 <source><![CDATA[Notice]]></source>
                 <target><![CDATA[Info]]></target>
             </trans-unit>
-            <trans-unit id="validationForm.label" approved="yes">
+            <trans-unit id="validation.form.label" approved="yes">
                 <source><![CDATA[Insert the link to your <acronym href="" title="metadata encoding and transmission standard">METS</acronym> file here:]]></source>
                 <target><![CDATA[Fügen Sie hier den Link zu Ihrer <acronym title="Metadatenkodierungs- und -übertragungsstandard">METS</acronym>-Datei ein:]]></target>
             </trans-unit>
-            <trans-unit id="validationForm.validate" approved="yes">
+            <trans-unit id="validation.form.validate" approved="yes">
                 <source><![CDATA[validate]]></source>
                 <target><![CDATA[Validieren]]></target>
             </trans-unit>

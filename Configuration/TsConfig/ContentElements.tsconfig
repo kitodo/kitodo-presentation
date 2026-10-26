@@ -146,13 +146,13 @@ mod.wizards.newContentElement.wizardItems {
           list_type = dlf_toolbox
         }
       }
-      tx_dlf_validationform {
-        iconIdentifier = tx-dlf-validationform
-        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:validationForm.plugin.title
-        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:validationForm.plugin.description
+      tx_dlf_validation {
+        iconIdentifier = tx-dlf-validation
+        title = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:validation.plugin.title
+        description = LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:validation.plugin.description
         tt_content_defValues {
           CType = list
-          list_type = dlf_validationform
+          list_type = dlf_validation
         }
       }
     }
