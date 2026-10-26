@@ -515,17 +515,17 @@
             <trans-unit id="toolbox.plugin.title">
                 <source><![CDATA[Kitodo: Toolbox]]></source>
             </trans-unit>
-            <trans-unit id="validationForm.flexForm.type.description">
+            <trans-unit id="validation.flexForm.type.description">
                 <source><![CDATA[Validation configuration type for DOMDocument validation]]></source>
             </trans-unit>
-            <trans-unit id="validationForm.flexForm.type.label">
+            <trans-unit id="validation.flexForm.type.label">
                 <source><![CDATA[Type]]></source>
             </trans-unit>
-            <trans-unit id="validationForm.plugin.description">
-                <source><![CDATA[Validation form for Kitodo.Presentation]]></source>
+            <trans-unit id="validation.plugin.description">
+                <source><![CDATA[Validation Plugin for Kitodo.Presentation]]></source>
             </trans-unit>
-            <trans-unit id="validationForm.plugin.title">
-                <source><![CDATA[Kitodo: Validation Form]]></source>
+            <trans-unit id="validation.plugin.title">
+                <source><![CDATA[Kitodo: Validation]]></source>
             </trans-unit>
         </body>
     </file>
