@@ -518,22 +518,22 @@
             <trans-unit id="toolbox.zoom.out">
                 <source><![CDATA[Zoom Out]]></source>
             </trans-unit>
-            <trans-unit id="validationForm.headline.success">
+            <trans-unit id="validation.form.headline.success">
                 <source><![CDATA[Successful]]></source>
             </trans-unit>
-            <trans-unit id="validationForm.headline.error">
+            <trans-unit id="validation.form.headline.error">
                 <source><![CDATA[Error]]></source>
             </trans-unit>
-            <trans-unit id="validationForm.headline.warning">
+            <trans-unit id="validation.form.headline.warning">
                 <source><![CDATA[Warning]]></source>
             </trans-unit>
-            <trans-unit id="validationForm.headline.notice">
+            <trans-unit id="validation.form.headline.notice">
                 <source><![CDATA[Notice]]></source>
             </trans-unit>
-            <trans-unit id="validationForm.label">
+            <trans-unit id="validation.form.label">
                 <source><![CDATA[Insert the link to your <acronym title="metadata encoding and transmission standard">METS</acronym> file here:]]></source>
             </trans-unit>
-            <trans-unit id="validationForm.validate">
+            <trans-unit id="validation.form.validate">
                 <source><![CDATA[validate]]></source>
             </trans-unit>
         </body>

@@ -215,7 +215,7 @@ class BaseCommand extends Command
             // set title data
             $document->setTitle($metadata['title'][0] ?? '');
             $document->setTitleSorting($metadata['title_sorting'][0] ?? '');
-            $document->setPlace(implode('; ', $metadata['place'] ?? []));
+            $document->setPlace($this->shortenValue($metadata['place'] ?? []));
             $document->setYear(implode('; ', $metadata['year'] ?? []));
             $document->setAuthor($this->getAuthors($metadata['author'] ?? []));
             $document->setThumbnail($doc->thumbnail);
@@ -447,26 +447,39 @@ class BaseCommand extends Command
             }
         }
 
-        $authors = '';
+        return $this->shortenValue($metadataAuthor);
+    }
+
+    /**
+     * Shorten the value to a maximum length, adding an ellipsis if necessary.
+     *
+     * @access private
+     *
+     * @param array<int, string> $values The values to shorten
+     *
+     * @return string The shortened value
+     */
+    private function shortenValue(array $values): string
+    {
+        $value = '';
         $delimiter = '; ';
         $ellipsis = 'et al.';
 
-        $count = count($metadataAuthor);
+        $count = count($values);
 
         for ($i = 0; $i < $count; $i++) {
             // Build the next part to add
-            $nextPart = ($i === 0 ? '' : $delimiter) . $metadataAuthor[$i];
+            $nextPart = ($i === 0 ? '' : $delimiter) . $values[$i];
             // Check if adding this part and ellipsis in future would exceed the character limit
-            if (strlen($authors . $nextPart . $delimiter . $ellipsis) > 255) {
-                // Add ellipsis and stop adding more authors
-                $authors .= $delimiter . $ellipsis;
+            if (strlen($value . $nextPart . $delimiter . $ellipsis) > 255) {
+                // Add ellipsis and stop adding more values
+                $value .= $delimiter . $ellipsis;
                 break;
             }
             // Add the part to the main string
-            $authors .= $nextPart;
+            $value .= $nextPart;
         }
-
-        return $authors;
+        return $value;
     }
 
     /**
