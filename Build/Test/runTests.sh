@@ -78,12 +78,12 @@ Options:
             - functional: PHP functional tests
             - unit (default): PHP unit tests
 
-    -t <12.4|13.4>
+    -t <13.4|14.3>
         Only with -s composerInstall
         Specifies which TYPO3 version to install. When unset, installs either the packages from
         composer.lock, or the latest version otherwise (default behavior of "composer install").
-            - 12.4
             - 13.4
+            - 14.3
 
     -a <mysqli|pdo_mysql>
         Only with -s functional
