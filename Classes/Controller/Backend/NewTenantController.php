@@ -481,9 +481,14 @@ class NewTenantController extends AbstractController
      */
     private function getLLL(string $index, string $lang, array $langArray): string
     {
-        if (isset($langArray[$lang][$index][0]['target'])) {
+        if (isset($langArray[$index]) && is_string($langArray[$index])) {
+            // Typo3 v14 langArray is structured as [$index] => "translation"
+            return $langArray[$index];
+        } else if (isset($langArray[$lang][$index][0]['target'])) {
+            // $langArray[$lang] seems to be empty in Typo3 v13
             return $langArray[$lang][$index][0]['target'];
         } elseif (isset($langArray['default'][$index][0]['target'])) {
+            // Typo3 v13 langArray is structured as ["default"] => [$index] => [0] => ["target"] => "translation
             return $langArray['default'][$index][0]['target'];
         } else {
             return 'Missing translation for ' . $index;
