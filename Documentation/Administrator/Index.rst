@@ -193,7 +193,7 @@ This is not possible anymore, but instead they must be included via the overarch
    lib.imagemanipulation < tt_content.list.20.dlf_imagemanipulationtool
 
    // After
-   lib.imagemanipulation < tt_content.list.20.dlf_toolbox {
+   lib.imagemanipulation < tt_content.dlf_toolbox.20 {
      settings {
        tool = imagemanipulationtool
      }
