@@ -16,7 +16,8 @@ use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Fluid\View\FluidViewFactory;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -37,8 +38,7 @@ class StdWrapViewHelperTest extends FunctionalTestCase
         $request = new ServerRequest();
         $request = $request->withAttribute("currentContentObject", $cObj);
 
-        $view = new StandaloneView();
-        $view->setRequest($request);
+        $view = $this->get(FluidViewFactory::class)->create(new ViewFactoryData(request: $request));
 
         $view->assign(
             'metadataWrap',
@@ -53,7 +53,7 @@ class StdWrapViewHelperTest extends FunctionalTestCase
         // has not been influenced by the viewhelpers data parameter.
         $view->assign('metaSectionConfigObject', [0 => ['tilte' => 'A test title']]);
 
-        $view->setTemplateSource(
+        $view->getRenderingContext()->getTemplatePaths()->setTemplateSource(
             '<html xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers">
               <kitodo:stdWrap wrap="{metadataWrap.all}" data="{metaConfigObjectData.0}">
                 <kitodo:stdWrap wrap="{metadataWrap.key}" data="{metaConfigObjectData.0}">Label</kitodo:stdWrap>
@@ -73,7 +73,7 @@ class StdWrapViewHelperTest extends FunctionalTestCase
         );
 
         // Without using the data parameter the rendering result is the same as above.
-        $view->setTemplateSource(
+        $view->getRenderingContext()->getTemplatePaths()->setTemplateSource(
             '<html xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers">
               <kitodo:stdWrap wrap="{metadataWrap.all}">
                 <kitodo:stdWrap wrap="{metadataWrap.key}">Label</kitodo:stdWrap>

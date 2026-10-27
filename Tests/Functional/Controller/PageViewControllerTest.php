@@ -86,9 +86,9 @@ class PageViewControllerTest extends AbstractControllerTestCase
         ];
 
         $templatePath = ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Templates/PageView/Main.html';
-        $view = $this->setUpTemplateView($templatePath);
-        $controller = $this->setUpController(PageViewController::class, $settings, '', $view);
         $request = $this->setUpTemplateRequest('main', ['tx_dlf' => ['id' => 2001, 'page' => 1]]);
+        $view = $this->setUpTemplateView($templatePath, $request);
+        $controller = $this->setUpController(PageViewController::class, $settings, '', $view);
 
         $response = $controller->processRequest($request);
 

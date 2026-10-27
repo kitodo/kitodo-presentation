@@ -16,7 +16,8 @@ use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Fluid\View\FluidViewFactory;
 
 /**
  * @covers JsFooterViewHelper
@@ -40,8 +41,8 @@ class JsFooterViewHelperTest extends FunctionalTestCase
 
         GeneralUtility::setSingletonInstance(PageRenderer::class, $pageRendererProphecy);
 
-        $view = new StandaloneView();
-        $view->setTemplateSource(
+        $view = $this->get(FluidViewFactory::class)->create(new ViewFactoryData());
+        $view->getRenderingContext()->getTemplatePaths()->setTemplateSource(
             '<html xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers">
                 <kitodo:jsFooter inlineCode="$(document).ready(function() {});" />
             </html>'
