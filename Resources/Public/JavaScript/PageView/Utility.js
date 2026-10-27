@@ -424,14 +424,6 @@ dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
 
     var deferredResponse = new $.Deferred();
     var type = 'GET';
-    $.ajax({
-        url: dlfViewerSource.IIIF.getMetdadataURL(imageSourceObj.url),
-        type,
-        dataType: 'json',
-        xhrFields: {
-            withCredentials: true
-        }
-    }).done(cb);
 
     function cb(data) {
         var format = new ol.format.IIIFInfo(data);
@@ -448,6 +440,15 @@ dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
             });
         }
     }
+
+    $.ajax({
+        url: dlfViewerSource.IIIF.getMetdadataURL(imageSourceObj.url),
+        type,
+        dataType: 'json',
+        xhrFields: {
+            withCredentials: true
+        }
+    }).done(cb);
 
     return deferredResponse;
 };
