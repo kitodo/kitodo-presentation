@@ -193,7 +193,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the add document tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -211,7 +211,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the annotation tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -239,7 +239,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the audio video tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -267,7 +267,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the fulltext download tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -288,7 +288,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the fulltext tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -334,7 +334,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the image download tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -409,7 +409,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the image manipulation tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -427,7 +427,7 @@ class ToolboxController extends AbstractController
     /**
      * Renders the model download tool
      * Renders the model download tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -447,7 +447,7 @@ class ToolboxController extends AbstractController
     /**
      * Renders the viewer selection tool
      * Renders the viewer selection tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -487,7 +487,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the PDF download tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -601,7 +601,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the searchInDocument tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -668,7 +668,6 @@ class ToolboxController extends AbstractController
             $arr = explode('*', $this->settings['documentIdUrlSchema']);
 
             if (count($arr) == 2) {
-                /** @var non-empty-string $arr[0] */
                 $id = explode($arr[0], $id)[0];
             } elseif (count($arr) == 3) {
                 $sub = substr($id, strpos($id, $arr[0]) + strlen($arr[0]), strlen($id));
@@ -721,7 +720,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the rotation tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -734,7 +733,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the zoom tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
