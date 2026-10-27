@@ -93,9 +93,9 @@ DlfIiifAnnotationParser.prototype.parseAnnotation = function(annotation) {
 
 DlfIiifAnnotationParser.prototype.parseAnnotationList = function(annotationList, currentCanvas) {
 
-    var minX, maxX, minY, maxY, annotationFeatures = [];
+    var minX, maxX, minY, maxY, i, annotationFeatures = [];
 
-    for (var i = 0; i < annotationList.resources.length; i++) {
+    for (i = 0; i < annotationList.resources.length; i++) {
 
         var annotation = annotationList.resources[i];
 
@@ -123,7 +123,7 @@ DlfIiifAnnotationParser.prototype.parseAnnotationList = function(annotationList,
         scale = this.image_.width / this.width_,
         coordinatesRescale = [];
 
-    for (var i = 0; i < listCoordinatesWithoutScale[0].length; i++) {
+    for (i = 0; i < listCoordinatesWithoutScale[0].length; i++) {
         coordinatesRescale.push([(scale * listCoordinatesWithoutScale[0][i][0]),
             0 - (scale * listCoordinatesWithoutScale[0][i][1])]);
     }
