@@ -8,6 +8,10 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+// Abort the validation request if the server does not answer within this
+// time (in milliseconds), so the user is not left with a spinner forever.
+const dlfValidationRequestTimeout = 60000;
+
 const dlfValidationForms = document.querySelectorAll('.tx-dlf-validation form');
 
 /**
@@ -151,33 +155,77 @@ dlfValidationForms.forEach((validationForm) => {
       return entryContainer;
     }
 
-    const loader = buildLoader(event.target);
     const form = event.target.parentElement;
+    const submitButton = event.target.querySelector('.submit');
+
+    /**
+     * Show the given error message below the form.
+     *
+     * @param {string} message The message to show
+     */
+    function showError(message) {
+      let validation = form.querySelector('.validation');
+      if (validation) {
+        form.removeChild(validation);
+      }
+      validation = document.createElement('div');
+      validation.classList.add("validation");
+      validation.appendChild(createMessagesContainer('error', [message], validationForm.dataset.i18nHeadlineError));
+      form.appendChild(validation);
+    }
+
+    // a new request aborts a pending one so the requests do not stack
+    let controller = new AbortController();
+    const abortTimer = window.setTimeout(() => controller.abort(), dlfValidationRequestTimeout);
+    // lock the form so repeated clicks do not start parallel requests
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
 
     let dataUrl = this.action + '&validationType=' + encodeURIComponent(data.validationType) + '&url=' + encodeURIComponent(data.url);
     if (data.enableValidator && Array.isArray(data.enableValidator)) {
       dataUrl += '&enableValidators=' + encodeURIComponent(data.enableValidator.join(','));
     }
 
-    fetch(dataUrl)
+    const loader = buildLoader(event.target);
+
+    fetch(dataUrl, {signal: controller.signal})
         .then(response => {
-          response.json().then(data => {
-            let validation = form.querySelector('.validation');
-            if (validation) {
-              form.removeChild(validation);
-            }
-            validation = document.createElement('div');
-            validation.classList.add("validation");
-            if (response.ok) {
-              data.forEach(item => {
-                validation.appendChild(createValidationEntry(item));
-              });
-            } else {
-              validation.appendChild(createMessagesContainer('error', [data], validationForm.dataset.i18nHeadlineError));
-            }
-            form.appendChild(validation);
-            loader.remove();
-          });
+          return response.json().catch(() => {
+            // a non-JSON response (e.g. an HTML error page) must not leave
+            // the loader running: report it like a plain error
+            throw new TypeError('The server did not respond with JSON (status ' + response.status + ').');
+          }).then(data => ({ok: response.ok, data: data}));
+        })
+        .then(({ok, data}) => {
+          let validation = form.querySelector('.validation');
+          if (validation) {
+            form.removeChild(validation);
+          }
+          validation = document.createElement('div');
+          validation.classList.add("validation");
+          if (ok) {
+            data.forEach(item => {
+              validation.appendChild(createValidationEntry(item));
+            });
+          } else {
+            validation.appendChild(createMessagesContainer('error', [data], validationForm.dataset.i18nHeadlineError));
+          }
+          form.appendChild(validation);
+        })
+        .catch(error => {
+          if (error && error.name === 'AbortError') {
+            showError(validationForm.dataset.i18nTimeout);
+          } else {
+            showError(validationForm.dataset.i18nError);
+          }
+        })
+        .finally(() => {
+          window.clearTimeout(abortTimer);
+          if (submitButton) {
+            submitButton.disabled = false;
+          }
+          loader.remove();
         });
   });
 });
