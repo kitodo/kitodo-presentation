@@ -15,7 +15,8 @@ namespace Kitodo\Dlf\Middleware;
 use DOMDocument;
 use Exception;
 use InvalidArgumentException;
-use Kitodo\Dlf\Configuration\YamlConfigurationProvider;
+use Kitodo\Dlf\Common\Helper;
+use Kitodo\Dlf\Service\UrlValidationService;
 use Kitodo\Dlf\Validation\DOMDocumentValidationStack;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -47,8 +48,32 @@ class DOMDocumentValidation implements MiddlewareInterface
 
     private const BAD_REQUEST = 400;
     private const NOT_FOUND = 404;
+    private const INTERNAL_SERVER_ERROR = 500;
 
     private ServerRequestInterface $request;
+
+    /**
+     * The service that decides whether a URL may be fetched server-side.
+     *
+     * @access protected
+     * @var UrlValidationService
+     */
+    protected UrlValidationService $urlValidationService;
+
+    /**
+     * Constructs an instance of this middleware.
+     *
+     * @access public
+     *
+     * @param UrlValidationService|null $urlValidationService The service that
+     *        decides whether a URL may be fetched server-side
+     *
+     * @return void
+     */
+    public function __construct(?UrlValidationService $urlValidationService = null)
+    {
+        $this->urlValidationService = $urlValidationService ?? GeneralUtility::makeInstance(UrlValidationService::class);
+    }
 
     /**
      * The main method of the middleware.
@@ -85,12 +110,45 @@ class DOMDocumentValidation implements MiddlewareInterface
             return $this->getJsonResponse('Validation type parameter is missing.', self::BAD_REQUEST);
         }
 
-        // load dom document from url
-        if (!GeneralUtility::isValidUrl($urlParam)) {
+        // retrieve validation configuration from plugin.tx_dlf typoscript
+        // before fetching the URL, so that requests are rejected without
+        // side effects when the feature is not (properly) configured
+        /** @var ConfigurationManagerInterface $configurationManager */
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManagerInterface::class);
+        $typoScript = $configurationManager->getConfiguration(ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT);
+
+        /** @var TypoScriptService $typoScriptService */
+        $typoScriptService = GeneralUtility::makeInstance(TypoScriptService::class);
+        $settings = $typoScriptService->convertTypoScriptArrayToPlainArray($typoScript['plugin.']['tx_dlf.']['settings.'] ?? []);
+
+        if (!array_key_exists("domDocumentValidation", $settings)) {
+            $this->logger->error('DOMDocumentValidation is not configured.');
+            return $this->getJsonResponse('An internal server error occurred.', self::INTERNAL_SERVER_ERROR);
+        }
+
+        if (!array_key_exists($typeParam, $settings["domDocumentValidation"])) {
+            $this->logger->debug('Validation configuration type in validationType parameter "' . $typeParam . '" does not exist.');
+            return $this->getJsonResponse('Validation type does not exist.', self::NOT_FOUND);
+        }
+
+        // only http/https URLs may be fetched server-side, anything else
+        // could be used for server-side request forgery (SSRF)
+        if (!Helper::isValidHttpUrl((string) $urlParam)) {
             return $this->getJsonResponse('Parameter "' . $urlParam . '" is not a valid URL.', self::NOT_FOUND);
         }
 
-        $content = GeneralUtility::getUrl($urlParam);
+        // reject hosts that are not allowed to be fetched to prevent SSRF
+        $allowedHosts = $this->getAllowedHosts($settings['domDocumentValidation'][$typeParam]);
+        if (!$this->isHostAllowed((string) $urlParam, $settings['domDocumentValidation'][$typeParam])) {
+            $this->logger->warning('Attempt to validate document from non-allowed host: ' . $urlParam);
+            return $this->getJsonResponse('Host of the given URL is not allowed.', self::BAD_REQUEST);
+        }
+
+        // load dom document from url. The host has been validated above, so
+        // the location is passed as trusted here. Redirects are still
+        // validated by Helper::getUrl(), so that a redirect cannot be used to
+        // reach a host that would not be allowed.
+        $content = Helper::getUrl((string) $urlParam, true, $allowedHosts);
         if ($content === false) {
             return $this->getJsonResponse('Unable to load content from the URL.', self::NOT_FOUND);
         }
@@ -105,14 +163,9 @@ class DOMDocumentValidation implements MiddlewareInterface
             return $this->getJsonResponse("Content from the URL is not valid XML.", self::BAD_REQUEST);
         }
 
-        $validationConfiguration = GeneralUtility::makeInstance(YamlConfigurationProvider::class)->getValidationConfiguration($typeParam);
-
-        if (empty($validationConfiguration)) {
-            $this->logger->debug('Validation configuration type in validationType parameter "' . $typeParam . '" does not exist.');
-            return $this->getJsonResponse('Validation type parameter does not exist.', self::NOT_FOUND);
-        }
-
-        $validationConfiguration = $this->removeDisabledValidators($parameters, $validationConfiguration);
+        $validationConfiguration = $this->removeDisabledValidators($parameters, $settings['domDocumentValidation'][$typeParam]);
+        // the hostAllowList is middleware configuration, not a validator
+        unset($validationConfiguration['hostAllowList']);
 
         $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $validationConfiguration);
 
@@ -204,6 +257,83 @@ class DOMDocumentValidation implements MiddlewareInterface
             }
         }
         return $validationConfiguration;
+    }
+
+    /**
+     * Get the host patterns that may be fetched for the given validation
+     * configuration.
+     *
+     * @access protected
+     *
+     * @param mixed[] $validationConfiguration The validation configuration of the requested type
+     *
+     * @return string[] List of host patterns
+     */
+    protected function getAllowedHosts(array $validationConfiguration): array
+    {
+        $allowList = $validationConfiguration['hostAllowList'] ?? '';
+        return is_string($allowList)
+            ? $this->urlValidationService->parseHostList($allowList)
+            : [];
+    }
+
+    /**
+     * Check whether the host of the given URL may be fetched server-side.
+     *
+     * @access protected
+     *
+     * @param string $url The URL that is about to be fetched
+     * @param mixed[] $validationConfiguration The validation configuration of the requested type
+     *
+     * @return bool Whether the host of the given URL may be fetched
+     */
+    protected function isHostAllowed(string $url, array $validationConfiguration): bool
+    {
+        return $this->urlValidationService->isHostAllowed($url, $this->getAllowedHosts($validationConfiguration));
+    }
+
+    /**
+     * Check whether a hostname resolves to a public (non-reserved) address.
+     *
+     * @access protected
+     *
+     * @param string $host The hostname to check
+     *
+     * @return bool Whether all resolved addresses are public
+     */
+    protected function resolvesToPublicAddress(string $host): bool
+    {
+        return $this->urlValidationService->resolvesToPublicAddress($host);
+    }
+
+    /**
+     * Check whether an IP address is a public address, i.e. not loopback,
+     * private (RFC 1918), link-local, or otherwise reserved.
+     *
+     * @access protected
+     *
+     * @param string $address The IP address to check
+     *
+     * @return bool Whether the address is a public address
+     */
+    protected function isPublicAddress(string $address): bool
+    {
+        return $this->urlValidationService->isPublicAddress($address);
+    }
+
+    /**
+     * Check whether a binary-packed IP address is contained in a CIDR range.
+     *
+     * @access protected
+     *
+     * @param string $binaryIp The IP address packed with inet_pton()
+     * @param string $cidr A CIDR notation such as "10.0.0.0/8"
+     *
+     * @return bool Whether the address is in the given range
+     */
+    protected function isInRange(string $binaryIp, string $cidr): bool
+    {
+        return $this->urlValidationService->isInRange($binaryIp, $cidr);
     }
 
     /**
