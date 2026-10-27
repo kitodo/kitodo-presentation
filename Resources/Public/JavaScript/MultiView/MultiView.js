@@ -8,11 +8,12 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-/*global GridStack, Cookies */
+/*global GridStack, dlfUtils */
 
 $( document ).ready(function() {
   const options = { // Put in gridstack options here
-    disableOneColumnMode: true, // For jfiddle small window size
+    cellHeight: 88,
+    disableOneColumnMode: false,
     float: false,
     handle: '.gridstack-dragging-handle',
     minW: 2,
@@ -20,9 +21,9 @@ $( document ).ready(function() {
   };
   const grid = GridStack.init(options);
 
-  if (Cookies.get('gsLayout')) {
+  if (dlfUtils.getCookie('gsLayout')) {
     // Only extract saved layout for elements that exist
-    const loadedGridLayout = JSON.parse(Cookies.get('gsLayout'));
+    const loadedGridLayout = JSON.parse(dlfUtils.getCookie('gsLayout'));
     $(loadedGridLayout).each(function () {
       const elements = $("[gs-id='" + this.id + "']");
       if (elements.length === 1) {
@@ -33,14 +34,14 @@ $( document ).ready(function() {
   }
 
   $('.reset-gridstack-layout').on('click', function () {
-    Cookies.set('gsLayout', '');
+    dlfUtils.setCookie('gsLayout', '', 'lax');
     location.reload();
     return false;
   });
 
   if (grid) {
     grid.on('change', function() {
-      Cookies.set('gsLayout', JSON.stringify(grid.save(false)));
+      dlfUtils.setCookie('gsLayout', JSON.stringify(grid.save(false)), 'lax');
     });
   }
 });
