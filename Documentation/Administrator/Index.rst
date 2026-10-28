@@ -23,7 +23,7 @@ Installation
 
 .. note::
 
-   Kitodo.Presentation requires **TYPO3 v13.4 or v14.3**, **PHP 8.2 - 8.4**,
+   Kitodo.Presentation requires **TYPO3 v13.4 or v14.3**, **PHP 8.2 - 8.5**,
    and **Apache Solr 8.11 or 9.x** (8.11 - 9.7) with the
    `solr-ocrhighlighting <https://github.com/dbmdz/solr-ocrhighlighting/releases>`_
    module (version 0.9.1 or newer). See :ref:`configuration-solr` for the Solr
