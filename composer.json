@@ -41,9 +41,9 @@
     "typo3/cms-tstemplate": "^13.4|^14.3",
     "caseyamcl/phpoaipmh": "^3.3",
     "slub/php-mods-reader": "^0.5",
-    "ubl/php-iiif-prezi-reader": "0.3.2",
+    "ubl/php-iiif-prezi-reader": "dev-support-php-8.5",
     "solarium/solarium": "^6.4",
-    "softcreatr/jsonpath": "^0.10",
+    "softcreatr/jsonpath": "^0.10.0|^0.11.0",
     "symfony/process": "^7.4"
   },
   "require-dev": {
@@ -189,10 +189,11 @@
       }
     }
   },
+  "minimum-stability": "dev",
   "repositories": [
     {
-      "type": "git",
-      "url": "https://github.com/kitodo/php-iiif-prezi-reader.git"
+      "type": "path",
+      "url": "https://github.com/thomaslow/php-iiif-prezi-reader"
     }
   ]
 }
