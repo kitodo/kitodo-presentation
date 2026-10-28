@@ -1,6 +1,6 @@
 {
   "name": "kitodo-presentation",
-  "version": "7.0.2",
+  "version": "7.1.0",
   "description": "Base plugins, modules, services and API of the Digital Library Framework. It is part of the community-based Kitodo Digitization Suite.",
   "scripts": {
     "watch": "webpack watch --mode=development",
