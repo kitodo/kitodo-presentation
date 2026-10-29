@@ -77,16 +77,16 @@
                             <renderType>selectSingle</renderType>
                             <items type="array">
                                 <numIndex index="0" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.none</numIndex>
-                                    <numIndex index="1">0</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.none</label>
+                                    <value index="1">0</value>
                                 </numIndex>
                                 <numIndex index="1" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.all</numIndex>
-                                    <numIndex index="1">1</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.all</label>
+                                    <value>1</value>
                                 </numIndex>
                                 <numIndex index="2" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.flexForm.rootLine.titleData</numIndex>
-                                    <numIndex index="1">2</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.flexForm.rootLine.titleData</label>
+                                    <value>2</value>
                                 </numIndex>
                             </items>
                             <size>1</size>

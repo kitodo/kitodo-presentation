@@ -34,12 +34,12 @@
                             <renderType>selectMultipleSideBySide</renderType>
                             <items type="array">
                                 <numIndex index="0" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.features.overviewMap</numIndex>
-                                    <numIndex index="1">OverviewMap</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.features.overviewMap</label>
+                                    <value index="1">OverviewMap</value>
                                 </numIndex>
                                 <numIndex index="1" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.features.zoomPanel</numIndex>
-                                    <numIndex index="1">ZoomPanel</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.features.zoomPanel</label>
+                                    <value index="1">ZoomPanel</value>
                                 </numIndex>
                             </items>
                             <size>5</size>

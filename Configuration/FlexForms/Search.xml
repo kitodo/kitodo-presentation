@@ -25,12 +25,12 @@
                             <type>radio</type>
                             <items type="array">
                                 <numIndex index="0" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.yes</numIndex>
-                                    <numIndex index="1">1</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.yes</label>
+                                    <value>1</value>
                                 </numIndex>
                                 <numIndex index="1" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.no</numIndex>
-                                    <numIndex index="1">0</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.no</label>
+                                    <value>0</value>
                                 </numIndex>
                             </items>
                             <maxitems>1</maxitems>
@@ -101,20 +101,20 @@
                             <renderType>selectSingle</renderType>
                             <items type="array">
                                 <numIndex index="0" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.none</numIndex>
-                                    <numIndex index="1">none</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.text.none</label>
+                                    <value>none</value>
                                 </numIndex>
                                 <numIndex index="1" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.searchIn.document</numIndex>
-                                    <numIndex index="1">document</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.searchIn.document</label>
+                                    <value>document</value>
                                 </numIndex>
                                 <numIndex index="2" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.searchIn.collection</numIndex>
-                                    <numIndex index="1">collection</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.searchIn.collection</label>
+                                    <value>collection</value>
                                 </numIndex>
                                 <numIndex index="3" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.searchIn.all</numIndex>
-                                    <numIndex index="1">all</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexForm.searchIn.all</label>
+                                    <value>all</value>
                                 </numIndex>
                             </items>
                             <size>1</size>
@@ -199,12 +199,12 @@
                             <renderType>selectSingle</renderType>
                             <items type="array">
                                 <numIndex index="0" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexform.facets.sorting.count</numIndex>
-                                    <numIndex index="1">count</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexform.facets.sorting.count</label>
+                                    <value>count</value>
                                 </numIndex>
                                 <numIndex index="1" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexform.facets.sorting.index</numIndex>
-                                    <numIndex index="1">index</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:search.flexform.facets.sorting.index</label>
+                                    <value>index</value>
                                 </numIndex>
                             </items>
                             <size>1</size>

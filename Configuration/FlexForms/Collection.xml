@@ -57,16 +57,16 @@
                             <renderType>selectSingle</renderType>
                             <items type="array">
                                 <numIndex index="0" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:collection.flexForm.showUserDefined.all</numIndex>
-                                    <numIndex index="1">-1</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:collection.flexForm.showUserDefined.all</label>
+                                    <value>-1</value>
                                 </numIndex>
                                 <numIndex index="1" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:collection.flexForm.showUserDefined.none</numIndex>
-                                    <numIndex index="1">0</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:collection.flexForm.showUserDefined.none</label>
+                                    <value>0</value>
                                 </numIndex>
                                 <numIndex index="2" type="array">
-                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:collection.flexForm.showUserDefined.exclusive</numIndex>
-                                    <numIndex index="1">1</numIndex>
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:collection.flexForm.showUserDefined.exclusive</label>
+                                    <value>1</value>
                                 </numIndex>
                             </items>
                             <size>1</size>
