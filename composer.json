@@ -189,7 +189,6 @@
       }
     }
   },
-  "minimum-stability": "dev",
   "repositories": [
     {
       "type": "git",
