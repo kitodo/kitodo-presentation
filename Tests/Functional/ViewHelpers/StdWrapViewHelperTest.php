@@ -13,6 +13,8 @@
 namespace Kitodo\Dlf\Tests\Unit\ViewHelpers;
 
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use Kitodo\Dlf\ViewHelpers\StdWrapViewHelper;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -20,9 +22,7 @@ use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\CMS\Fluid\View\FluidViewFactory;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-/**
- * @covers StdWrapViewHelper
- */
+#[CoversClass(StdWrapViewHelper::class)]
 class StdWrapViewHelperTest extends FunctionalTestCase
 {
     /**
@@ -30,6 +30,9 @@ class StdWrapViewHelperTest extends FunctionalTestCase
      */
     protected bool $initializeDatabase = false;
 
+    /**
+     * Test rendering with `stdWrap` view helper.
+     */
     #[Test]
     public function renderWithStdWrap(): void
     {

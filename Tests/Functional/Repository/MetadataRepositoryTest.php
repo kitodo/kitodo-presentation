@@ -12,6 +12,8 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Repository;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Extbase\Persistence\Generic\QueryResult;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
@@ -64,10 +66,8 @@ class MetadataRepositoryTest extends FunctionalTestCase
         return $metadataByLabel;
     }
 
-    /**
-     * @test
-     * @group find
-     */
+    #[Test()]
+    #[Group('find')]
     public function canFindBySettings(): void
     {
         $metadataByLabel = $this->findBySettings([]);
@@ -104,20 +104,16 @@ class MetadataRepositoryTest extends FunctionalTestCase
         );
     }
 
-    /**
-     * @test
-     * @group find
-     */
+    #[Test()]
+    #[Group('find')]
     public function canFindIndexedFields(): void
     {
         $metadata = $this->metadataRepository->findIndexedFields();
         self::assertEquals(6, $metadata->count());
     }
 
-    /**
-     * @test
-     * @group find
-     */
+    #[Test()]
+    #[Group('find')]
     public function canFindWithFormat(): void
     {
         $metadata = $this->metadataRepository->findWithFormat(20000, 'mods');
@@ -132,10 +128,8 @@ class MetadataRepositoryTest extends FunctionalTestCase
         self::assertEmpty($metadata);
     }
 
-    /**
-     * @test
-     * @group find
-     */
+    #[Test()]
+    #[Group('find')]
     public function canFindWithoutFormat(): void
     {
         $metadata = $this->metadataRepository->findWithoutFormat();

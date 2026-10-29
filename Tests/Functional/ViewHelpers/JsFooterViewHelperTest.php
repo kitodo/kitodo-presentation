@@ -13,15 +13,15 @@
 namespace Kitodo\Dlf\Tests\Unit\ViewHelpers;
 
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use Kitodo\Dlf\ViewHelpers\JsFooterViewHelper;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\CMS\Fluid\View\FluidViewFactory;
 
-/**
- * @covers JsFooterViewHelper
- */
+#[CoversClass(JsFooterViewHelper::class)]
 class JsFooterViewHelperTest extends FunctionalTestCase
 {
     /**
@@ -29,6 +29,9 @@ class JsFooterViewHelperTest extends FunctionalTestCase
      */
     protected bool $initializeDatabase = false;
 
+    /**
+     * Test rendering includes JavaScript footer inline code.
+     */
     #[Test]
     public function pageRendererCallsAddJsFooterInlineCode(): void
     {

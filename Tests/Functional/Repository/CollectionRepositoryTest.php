@@ -44,10 +44,8 @@ class CollectionRepositoryTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/../../Fixtures/Repository/collections.csv');
     }
 
-    /**
-     *
-     * @group find
-     */
+    #[Test]
+    #[Group('find')]
     public function canFindAllByUids(): void
     {
         $collections = $this->collectionRepository->findAllByUids([1101, 1102]);
