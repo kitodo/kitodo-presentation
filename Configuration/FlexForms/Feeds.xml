@@ -61,9 +61,9 @@
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.limit</label>
                         <config>
-                            <type>input</type>
+                            <type>number</type>
                             <required>true</required>
-                            <eval>num,int</eval>
+                            <format>integer</format>
                             <default>50</default>
                         </config>
                     </settings.limit>

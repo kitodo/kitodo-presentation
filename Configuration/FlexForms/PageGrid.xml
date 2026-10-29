@@ -22,9 +22,9 @@
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageGrid.flexForm.limit</label>
                         <config>
-                            <type>input</type>
+                            <type>number</type>
                             <required>true</required>
-                            <eval>num,int</eval>
+                            <format>integer</format>
                             <default>24</default>
                         </config>
                     </settings.paginate.itemsPerPage>

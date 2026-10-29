@@ -37,9 +37,9 @@
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:oaiPmh.flexForm.limit</label>
                         <config>
-                            <type>input</type>
+                            <type>number</type>
                             <required>true</required>
-                            <eval>num,int</eval>
+                            <format>integer</format>
                             <default>5</default>
                         </config>
                     </settings.limit>
@@ -47,9 +47,9 @@
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:oaiPmh.flexForm.expired</label>
                         <config>
-                            <type>input</type>
+                            <type>number</type>
                             <required>true</required>
-                            <eval>num,int</eval>
+                            <format>integer</format>
                             <default>1800</default>
                         </config>
                     </settings.expired>
@@ -78,9 +78,9 @@
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:oaiPmh.flexForm.solrLimit</label>
                         <config>
-                            <type>input</type>
+                            <type>number</type>
                             <required>true</required>
-                            <eval>num,int</eval>
+                            <format>integer</format>
                             <default>50000</default>
                         </config>
                     </settings.solrLimit>

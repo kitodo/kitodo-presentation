@@ -120,11 +120,13 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.constants.prevChapterTolerance.label</label>
                         <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.constants.prevChapterTolerance.description</description>
                         <config>
-                            <type>input</type>
+                            <type>number</type>
                             <required>true</required>
-                            <eval>num,int</eval>
+                            <format>integer</format>
                             <default>5</default>
-                            <min>0</min>
+                            <range>
+                                <lower>0</lower>
+                            </range>
                         </config>
                     </settings.constants.prevChapterTolerance>
                 </el>
