@@ -145,7 +145,8 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:metadata.flexForm.separator</label>
                         <config>
                             <type>input</type>
-                            <eval>required,trim</eval>
+                            <required>true</required>
+                            <eval>trim</eval>
                             <default>#</default>
                         </config>
                     </settings.separator>

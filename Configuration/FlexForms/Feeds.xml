@@ -62,7 +62,8 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:general.flexForm.limit</label>
                         <config>
                             <type>input</type>
-                            <eval>required,num,int</eval>
+                            <required>true</required>
+                            <eval>num,int</eval>
                             <default>50</default>
                         </config>
                     </settings.limit>
@@ -96,7 +97,8 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:feeds.flexForm.title</label>
                         <config>
                             <type>input</type>
-                            <eval>required,trim</eval>
+                            <required>true</required>
+                            <eval>trim</eval>
                         </config>
                     </settings.title>
                     <settings.description>

@@ -31,7 +31,8 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.elementId</label>
                         <config>
                             <type>input</type>
-                            <eval>required,alphanum_x,nospace</eval>
+                            <required>true</required>
+                            <eval>alphanum_x,nospace</eval>
                             <default>tx-dlf-media</default>
                         </config>
                     </settings.elementId>
@@ -120,7 +121,8 @@
                         <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.constants.prevChapterTolerance.description</description>
                         <config>
                             <type>input</type>
-                            <eval>required,num,int</eval>
+                            <required>true</required>
+                            <eval>num,int</eval>
                             <default>5</default>
                             <min>0</min>
                         </config>

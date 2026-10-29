@@ -53,7 +53,8 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.elementId</label>
                         <config>
                             <type>input</type>
-                            <eval>required,alphanum_x,nospace</eval>
+                            <required>true</required>
+                            <eval>alphanum_x,nospace</eval>
                             <default>tx-dlf-map</default>
                         </config>
                     </settings.elementId>
@@ -62,7 +63,8 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.progressElementId</label>
                         <config>
                             <type>input</type>
-                            <eval>required,alphanum_x,nospace</eval>
+                            <required>true</required>
+                            <eval>alphanum_x,nospace</eval>
                             <default>tx-dlf-page-progress</default>
                         </config>
                     </settings.progressElementId>

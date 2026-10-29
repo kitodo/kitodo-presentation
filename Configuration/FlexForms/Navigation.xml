@@ -87,7 +87,8 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.pageStep</label>
                         <config>
                             <type>input</type>
-                            <eval>required,num,int</eval>
+                            <required>true</required>
+                            <eval>num,int</eval>
                             <default>5</default>
                         </config>
                     </settings.pageStep>

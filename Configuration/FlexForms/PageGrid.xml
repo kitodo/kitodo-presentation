@@ -23,7 +23,8 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageGrid.flexForm.limit</label>
                         <config>
                             <type>input</type>
-                            <eval>required,num,int</eval>
+                            <required>true</required>
+                            <eval>num,int</eval>
                             <default>24</default>
                         </config>
                     </settings.paginate.itemsPerPage>
