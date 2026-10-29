@@ -349,3 +349,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1638809996] = [
     'priority' => 40,
     'class' => \Kitodo\Dlf\Hooks\ThumbnailCustomElement::class
 ];
+
+// Allow uploading of XSL and XSLT files
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['textfile_ext'] .= ',xsl,xslt';

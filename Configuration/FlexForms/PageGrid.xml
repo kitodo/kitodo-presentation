@@ -32,35 +32,10 @@
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageGrid.flexForm.placeholder</label>
                         <config>
-                            <type>inline</type>
+                            <type>file</type>
                             <maxitems>1</maxitems>
-                            <foreign_table>sys_file_reference</foreign_table>
-                            <foreign_table_field>tablenames</foreign_table_field>
-                            <foreign_label>uid_local</foreign_label>
-                            <foreign_sortby>sorting_foreign</foreign_sortby>
-                            <foreign_field>uid_foreign</foreign_field>
-                            <foreign_selector>uid_local</foreign_selector>
-                            <foreign_selector_fieldTcaOverride>
-                                <config>
-                                    <appearance>
-                                        <elementBrowserType>file</elementBrowserType>
-                                        <elementBrowserAllowed>gif,jpg,jpeg,png</elementBrowserAllowed>
-                                    </appearance>
-                                </config>
-                            </foreign_selector_fieldTcaOverride>
-                            <foreign_types type="array">
-                                <numIndex index="0">
-                                    <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
-                                </numIndex>
-                                <numIndex index="2">
-                                    <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
-                                </numIndex>
-                            </foreign_types>
-                            <foreign_match_fields>
-                                <fieldname>image</fieldname>
-                            </foreign_match_fields>
+                            <allowed>gif,jpg,jpeg,png</allowed>
                             <appearance type="array">
-                                <newRecordLinkAddTitle>1</newRecordLinkAddTitle>
                                 <headerThumbnail>
                                     <field>uid_local</field>
                                     <height>64</height>
@@ -78,26 +53,8 @@
                                 <createNewRelationLinkTitle>LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:images.addFileReference</createNewRelationLinkTitle>
                             </appearance>
                             <behaviour>
-                                <localizationMode>select</localizationMode>
-                                <localizeChildrenAtParentLocalization>1</localizeChildrenAtParentLocalization>
+                                <allowLanguageSynchronization>true</allowLanguageSynchronization>
                             </behaviour>
-                            <overrideChildTca>
-                                <columns type="array">
-                                    <uid_local type="array">
-                                        <config type="array">
-                                            <appearance type="array">
-                                                <elementBrowserType>file</elementBrowserType>
-                                                <elementBrowserAllowed>jpg,png,jpeg,gif</elementBrowserAllowed>
-                                            </appearance>
-                                        </config>
-                                    </uid_local>
-                                </columns>
-                                <types type="array">
-                                    <numIndex index="2">
-                                        <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
-                                    </numIndex>
-                                </types>
-                            </overrideChildTca>
                         </config>
                     </settings.placeholder>
                     <settings.targetPid>
