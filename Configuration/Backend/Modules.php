@@ -23,7 +23,7 @@ return [
         'access'                => 'admin',
         'labels'                => 'LLL:EXT:dlf/Resources/Private/Language/locallang_mod_newtenant.xlf',
         'icon'                  => 'EXT:dlf/Resources/Public/Icons/Extension.svg',
-        'navigationComponentId' => '@typo3/backend/page-tree/page-tree-element',
+        'navigationComponentId' => '@typo3/backend/tree/page-tree-element',
         'controllerActions'     => [
             \Kitodo\Dlf\Controller\Backend\NewTenantController::class => [
                 'index','error','addFormat','addMetadata','addSolrCore','addStructure'

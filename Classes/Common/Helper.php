@@ -19,6 +19,7 @@ use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\Expression\CompositeExpression;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Http\RequestFactory;
@@ -555,8 +556,6 @@ class Helper
         ) {
             // Instantiate TYPO3 core engine.
             $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
-            // We do not use workspaces and have to bypass restrictions in DataHandler.
-            $dataHandler->bypassWorkspaceRestrictions = true;
             // Load data and command arrays.
             $dataHandler->start($data, $cmd);
             // Process command map first if default order is reversed.
@@ -699,35 +698,26 @@ class Helper
      * @static
      *
      * @param string $table Table name as defined in TCA
-     * @param bool $showHidden Ignore the hidden flag?
      *
-     * @return string Additional WHERE expression
+     * @return array<CompositeExpression|string> Additional WHERE expression
      */
-    public static function whereExpression(string $table, bool $showHidden = false): string
+    public static function whereExpression(string $table): array
     {
         if (!Environment::isCli() && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
-            // Should we ignore the record's hidden flag?
-            $ignoreHide = 0;
-            if ($showHidden) {
-                $ignoreHide = 1;
-            }
             /** @var PageRepository $pageRepository */
             $pageRepository = GeneralUtility::makeInstance(PageRepository::class);
 
-            $expression = $pageRepository->enableFields($table, $ignoreHide);
-            if (!empty($expression)) {
-                return substr($expression, 5);
-            } else {
-                return '';
-            }
+            return $pageRepository->getDefaultConstraints($table);
         } elseif (Environment::isCli() || ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
-            return GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable($table)
-                ->expr()
-                ->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0);
+            return [
+                GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable($table)
+                    ->expr()
+                    ->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0)
+            ];
         } else {
             self::error('Unexpected application type (neither frontend or backend)');
-            return '1=-1';
+            return ['1=-1'];
         }
     }
 

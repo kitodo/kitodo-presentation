@@ -11,8 +11,8 @@ namespace Kitodo\Dlf\ViewHelpers;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Core\Localization\Locale;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
@@ -35,28 +35,19 @@ class MediaPlayerConfigViewHelper extends AbstractViewHelper
         $this->registerArgument('settings', 'array', 'the settings array that is converted to JSON', true);
     }
 
-    /**
-     * @access public
-     *
-     * @static
-     *
-     * @param mixed[] $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     *
-     * @return string
-     */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ): string
+    public function render(): string
     {
-        $id = $arguments['id'];
-        $inputSettings = $arguments['settings'];
+        $id = $this->arguments['id'];
+        $inputSettings = $this->arguments['settings'];
 
         /** @var RenderingContext $renderingContext */
-        $request = $renderingContext->getRequest();
+        $renderingContext = $this->renderingContext;
+
+        /** @var ServerRequestInterface $request */
+        $request = null;
+        if ($renderingContext->hasAttribute(ServerRequestInterface::class)) {
+            $request = $renderingContext->getAttribute(ServerRequestInterface::class);
+        }
 
         /** @var SiteLanguage $language */
         $language = $request->getAttribute('language');
@@ -127,6 +118,7 @@ CONFIG;
         // Get default language labels
         $localizationFactory = GeneralUtility::makeInstance(LocalizationFactory::class);
         $defaultTranslations = $localizationFactory->getParsedData($translationFile, 'default');
+        // TODO Typo3 v14: result array structure of getParsedData has changed in Typo3 v14
 
         $phrases = [];
         if (isset($defaultTranslations['default']) && is_array($defaultTranslations['default'])) {

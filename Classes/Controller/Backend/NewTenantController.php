@@ -30,6 +30,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Site\Entity\NullSite;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -138,6 +139,13 @@ class NewTenantController extends AbstractController
     public function injectSolrCoreRepository(SolrCoreRepository $solrCoreRepository): void
     {
         $this->solrCoreRepository = $solrCoreRepository;
+    }
+
+    protected TcaSchemaFactory $tcaSchemaFactory;
+
+    public function injectTcaSchemaFactory(TcaSchemaFactory $tcaSchemaFactory): void
+    {
+        $this->tcaSchemaFactory = $tcaSchemaFactory;
     }
 
     /**
@@ -255,7 +263,7 @@ class NewTenantController extends AbstractController
             $availableFormats[$insertedFormat->getRoot()] = $insertedFormat->getUid();
         }
 
-        $defaultWrap = BackendUtility::getTcaFieldConfiguration('tx_dlf_metadata', 'wrap')['default'];
+        $defaultWrap = $this->tcaSchemaFactory->get('tx_dlf_metadata')->getField('wrap')->getConfiguration()['default'];
 
         $data = [];
         foreach ($metadataRecords as $indexName => $values) {
@@ -474,9 +482,14 @@ class NewTenantController extends AbstractController
      */
     private function getLLL(string $index, string $lang, array $langArray): string
     {
-        if (isset($langArray[$lang][$index][0]['target'])) {
+        if (isset($langArray[$index]) && is_string($langArray[$index])) {
+            // Typo3 v14 langArray is structured as [$index] => "translation"
+            return $langArray[$index];
+        } elseif (isset($langArray[$lang][$index][0]['target'])) {
+            // $langArray[$lang] seems to be empty in Typo3 v13
             return $langArray[$lang][$index][0]['target'];
         } elseif (isset($langArray['default'][$index][0]['target'])) {
+            // Typo3 v13 langArray is structured as ["default"] => [$index] => [0] => ["target"] => "translation
             return $langArray['default'][$index][0]['target'];
         } else {
             return 'Missing translation for ' . $index;

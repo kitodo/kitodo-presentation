@@ -45,6 +45,11 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
                     'tx_dlf_doc' => [
                         'backend' => \TYPO3\CMS\Core\Cache\Backend\NullBackend::class,
                     ],
+                    'extbase' => [
+                        // use TransientMemoryBackend to avoid https://forge.typo3.org/issues/110909
+                        // until patch https://review.typo3.org/c/Packages/TYPO3.CMS/+/96351 is merged
+                        'backend' => \TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend::class
+                    ]
                 ],
             ],
             'displayErrors' => '1'

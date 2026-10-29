@@ -18,6 +18,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionMethod;
 use ReflectionProperty;
+use TYPO3\CMS\Core\Crypto\HashService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
@@ -32,6 +33,7 @@ class AbstractControllerTest extends UnitTestCase
     #[Test]
     public function configureProxyUrlRewritesUrlByReference(): void
     {
+        $this->resetSingletonInstances = true;
         $controller = $this->createControllerWithUriBuilder($this->createUriBuilderMock());
 
         $url = self::ORIGINAL_URL;
@@ -44,15 +46,17 @@ class AbstractControllerTest extends UnitTestCase
     #[Test]
     public function configureProxyUrlPassesOriginalUrlAndHmacToUriBuilder(): void
     {
+        $this->resetSingletonInstances = true;
         $uriBuilderMock = $this->createUriBuilderMock();
         $uriBuilderMock->expects(self::once())
             ->method('setArguments')
             ->with(
                 self::callback(
                     static function (array $arguments): bool {
+                        $hashService = GeneralUtility::makeInstance(HashService::class);
                         return ($arguments['middleware'] ?? '') === 'dlf/page-view-proxy'
                             && ($arguments['url'] ?? '') === self::ORIGINAL_URL
-                            && ($arguments['uHash'] ?? '') === GeneralUtility::hmac(self::ORIGINAL_URL, 'PageViewProxy');
+                            && ($arguments['uHash'] ?? '') === $hashService->hmac(self::ORIGINAL_URL, 'PageViewProxy');
                     }
                 )
             )
@@ -74,6 +78,7 @@ class AbstractControllerTest extends UnitTestCase
         $this->injectProperty($controller, ActionController::class, 'uriBuilder', $uriBuilder);
         $this->injectProperty($controller, AbstractController::class, 'extConf', ['general' => []]);
         $this->injectProperty($controller, AbstractController::class, 'pageUid', 123);
+        $this->injectProperty($controller, AbstractController::class, 'hashService', GeneralUtility::makeInstance(HashService::class));
         return $controller;
     }
 
@@ -111,7 +116,7 @@ class AbstractControllerTest extends UnitTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // Required by GeneralUtility::hmac() for the uHash argument.
+        // Required by HashService::hmac() for the uHash argument.
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey'] = 'TestEncryptionKey';
     }
 }

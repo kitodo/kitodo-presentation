@@ -31,7 +31,8 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.elementId</label>
                         <config>
                             <type>input</type>
-                            <eval>required,alphanum_x,nospace</eval>
+                            <required>true</required>
+                            <eval>alphanum_x,nospace</eval>
                             <default>tx-dlf-media</default>
                         </config>
                     </settings.elementId>
@@ -52,12 +53,12 @@
                                             <renderType>selectSingle</renderType>
                                             <items>
                                                 <numIndex index="0">
-                                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.type.material</numIndex>
-                                                    <numIndex index="1">material</numIndex>
+                                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.type.material</label>
+                                                    <value>material</value>
                                                 </numIndex>
                                                 <numIndex index="1">
-                                                    <numIndex index="0">LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.type.image</numIndex>
-                                                    <numIndex index="1">image</numIndex>
+                                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.shareButtons.type.image</label>
+                                                    <value>image</value>
                                                 </numIndex>
                                             </items>
                                         </config>
@@ -119,10 +120,13 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.constants.prevChapterTolerance.label</label>
                         <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:mediaPlayer.flexForm.constants.prevChapterTolerance.description</description>
                         <config>
-                            <type>input</type>
-                            <eval>required,num,int</eval>
+                            <type>number</type>
+                            <required>true</required>
+                            <format>integer</format>
                             <default>5</default>
-                            <min>0</min>
+                            <range>
+                                <lower>0</lower>
+                            </range>
                         </config>
                     </settings.constants.prevChapterTolerance>
                 </el>

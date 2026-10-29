@@ -24,7 +24,8 @@
                         <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:validation.flexForm.type.description</description>
                         <config>
                             <type>input</type>
-                            <eval>required,trim</eval>
+                            <required>true</required>
+                            <eval>trim</eval>
                         </config>
                     </settings.type>
                 </el>

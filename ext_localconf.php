@@ -14,40 +14,6 @@ if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
-// Register plugin icons.
-$iconArray = [
-    'tx-dlf-basket' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-basket.svg',
-    'tx-dlf-calendar' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-calendar.svg',
-    'tx-dlf-collection' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-collection.svg',
-    'tx-dlf-embedded3dviewer' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-embedded3dviewer.svg',
-    'tx-dlf-feeds' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-feeds.svg',
-    'tx-dlf-listview' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-listview.svg',
-    'tx-dlf-mediaplayer' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-mediaplayer.svg',
-    'tx-dlf-metadata' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-metadata.svg',
-    'tx-dlf-navigation' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-navigation.svg',
-    'tx-dlf-oaipmh' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-oaipmh.svg',
-    'tx-dlf-pagegrid' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-pagegrid.svg',
-    'tx-dlf-pageview' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-pageview.svg',
-    'tx-dlf-search' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-search.svg',
-    'tx-dlf-statistics' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-statistics.svg',
-    'tx-dlf-tableofcontents' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-tableofcontents.svg',
-    'tx-dlf-toolbox' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-toolbox.svg',
-    'tx-dlf-validation' => 'EXT:dlf/Resources/Public/Icons/tx-dlf-validation.svg',
-];
-$iconRegistry = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-    \TYPO3\CMS\Core\Imaging\IconRegistry::class
-);
-foreach ($iconArray as $key => $value) {
-    $iconRegistry->registerIcon(
-        $key,
-        \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
-        ['source' => $value]
-    );
-}
-// Register plugins as content elements.
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
-    '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:dlf/Configuration/TsConfig/ContentElements.tsconfig">'
-);
 $_EXTKEY = 'dlf';
 // Register tools for toolbox plugin.
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['dlf/Classes/Plugin/Toolbox.php']['tools'] = [];
@@ -142,7 +108,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\SearchController::class => 'main, search'
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -154,7 +121,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\FeedsController::class => 'main',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -166,7 +134,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\StatisticsController::class => '',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -178,7 +147,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\TableOfContentsController::class => '',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -190,7 +160,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\PageGridController::class => '',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -202,7 +173,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\NavigationController::class => 'pageSelect',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -214,7 +186,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\CalendarController::class => '',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -226,7 +199,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\PageViewController::class => '',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -238,7 +212,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\MultiViewController::class => '',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -250,7 +225,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\BasketController::class => 'main, add, basket',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -262,7 +238,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\ToolboxController::class => '',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -274,7 +251,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\OaiPmhController::class => 'main',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -286,7 +264,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\ListViewController::class => 'main',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -298,7 +277,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\CollectionController::class => 'showSorted',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'Dlf',
@@ -309,7 +289,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\MetadataController::class => '',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
     'Dlf',
@@ -320,7 +301,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\Embedded3dViewerController::class => '',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -331,7 +313,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     ],
     // non-cacheable actions
     [
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -343,7 +326,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\MediaPlayerController::class => '',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -355,7 +339,8 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][] = [
     // non-cacheable actions
     [
         \Kitodo\Dlf\Controller\ValidationController::class => '',
-    ]
+    ],
+    \TYPO3\CMS\Extbase\Utility\ExtensionUtility::PLUGIN_TYPE_CONTENT_ELEMENT
 );
 
 // Register a node in ext_localconf.php
@@ -364,3 +349,6 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1638809996] = [
     'priority' => 40,
     'class' => \Kitodo\Dlf\Hooks\ThumbnailCustomElement::class
 ];
+
+// Allow uploading of XSL and XSLT files
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['textfile_ext'] .= ',xsl,xslt';

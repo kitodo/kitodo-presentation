@@ -1,0 +1,22 @@
+parameters:
+  ignoreErrors:
+    - '#Call to an undefined method Psr\\Http\\Message\\RequestFactoryInterface::request\(\)\.#'
+    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\ManifestInterface::getOriginalJsonArray\(\)\.#'
+    - '#Call to an undefined method Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\RangeInterface::getMemberRangesAndRanges\(\)\.#'
+    -
+      message: '#Method TYPO3\\CMS\\Core\\Database\\Schema\\Parser\\Parser::parse\(\) invoked with 0 parameters, 1 required\.#'
+      path: ../Classes/Command/DatabaseDocs/Generator.php
+    -
+      message: '#PHPDoc tag @var for variable \$action contains unknown class TYPO3\\CMS\\Scheduler\\Task\\Enumeration\\Action\.#'
+      path: ../Classes/Task/BaseAdditionalFieldProvider.php
+    -
+      message: '#Access to constant EDIT on an unknown class TYPO3\\CMS\\Scheduler\\Task\\Enumeration\\Action\.#'
+      path: ../Classes/Task/BaseAdditionalFieldProvider.php
+    -
+      message: '#Call to method equals\(\) on an unknown class TYPO3\\CMS\\Scheduler\\Task\\Enumeration\\Action\.#'
+      path: ../Classes/Task/BaseAdditionalFieldProvider.php
+  level: 7
+  paths:
+    - ../Classes
+  excludePaths:
+  treatPhpDocTypesAsCertain: false

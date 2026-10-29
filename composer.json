@@ -25,37 +25,37 @@
     "docs": "https://docs.typo3.org/p/kitodo/presentation/main/en-us/"
   },
   "require": {
-    "php": "8.2 - 8.4",
+    "php": "8.2 - 8.5",
     "ext-curl": "*",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-libxml": "*",
     "ext-openssl": "*",
     "ext-simplexml": "*",
-    "typo3/cms-core": "^12.4|^13.4",
-    "typo3/cms-extbase": "^12.4|^13.4",
-    "typo3/cms-install": "^12.4|^13.4",
-    "typo3/cms-reports": "^12.4|^13.4",
-    "typo3/cms-scheduler": "^12.4|^13.4",
-    "typo3/cms-tstemplate": "^12.4|^13.4",
+    "typo3/cms-core": "^13.4|^14.3",
+    "typo3/cms-extbase": "^13.4|^14.3",
+    "typo3/cms-extensionmanager": "^13.4|^14.3",
+    "typo3/cms-install": "^13.4|^14.3",
+    "typo3/cms-reports": "^13.4|^14.3",
+    "typo3/cms-scheduler": "^13.4|^14.3",
+    "typo3/cms-tstemplate": "^13.4|^14.3",
     "caseyamcl/phpoaipmh": "^3.3",
     "slub/php-mods-reader": "^0.5",
-    "ubl/php-iiif-prezi-reader": "0.3.2",
+    "ubl/php-iiif-prezi-reader": "dev-support-php-8.5",
     "solarium/solarium": "^6.4",
-    "softcreatr/jsonpath": "^0.10",
+    "softcreatr/jsonpath": "^0.10.0|^0.11.0",
     "symfony/process": "^7.4"
   },
   "require-dev": {
-    "fluidtypo3/vhs": "^7.2",
     "friendsofphp/php-cs-fixer": "^3.95",
     "phpstan/phpstan": "^1.12",
-    "phpunit/phpunit": "^10.5",
+    "phpunit/phpunit": "^11.5",
     "spatie/phpunit-watcher": "^1.24",
-    "typo3/cms-backend": "^12.4|^13.4",
-    "typo3/cms-fluid": "^12.4|^13.4",
-    "typo3/cms-fluid-styled-content": "^12.4|^13.4",
-    "typo3/cms-frontend": "^12.4|^13.4",
-    "typo3/testing-framework": "^8.3",
+    "typo3/cms-backend": "^13.4|^14.3",
+    "typo3/cms-fluid": "^13.4|^14.3",
+    "typo3/cms-fluid-styled-content": "^13.4|^14.3",
+    "typo3/cms-frontend": "^13.4|^14.3",
+    "typo3/testing-framework": "^9.7",
     "vlucas/phpdotenv": "^5.6"
   },
   "replace": {
@@ -192,7 +192,7 @@
   "repositories": [
     {
       "type": "git",
-      "url": "https://github.com/kitodo/php-iiif-prezi-reader.git"
+      "url": "https://github.com/thomaslow/php-iiif-prezi-reader"
     }
   ]
 }
