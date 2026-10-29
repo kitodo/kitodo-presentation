@@ -32,14 +32,14 @@
                         <config>
                             <type>select</type>
                             <renderType>selectMultipleSideBySide</renderType>
-                            <items type="array">
-                                <numIndex index="0" type="array">
+                            <items>
+                                <numIndex index="0">
                                     <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.features.overviewMap</label>
-                                    <value index="1">OverviewMap</value>
+                                    <value>OverviewMap</value>
                                 </numIndex>
-                                <numIndex index="1" type="array">
+                                <numIndex index="1">
                                     <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:pageView.flexForm.features.zoomPanel</label>
-                                    <value index="1">ZoomPanel</value>
+                                    <value>ZoomPanel</value>
                                 </numIndex>
                             </items>
                             <size>5</size>
