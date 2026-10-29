@@ -62,11 +62,13 @@ abstract class AbstractControllerTestCase extends FunctionalTestCase
      */
     protected function setUpTemplateView(string $templatePathAndFilename, Request $request): ViewInterface
     {
-        return $this->get(FluidViewFactory::class)->create(new ViewFactoryData(
-            templatePathAndFilename: $templatePathAndFilename,
-            partialRootPaths: [ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Partials/'],
-            request: $request,
-        ));
+        return $this->get(FluidViewFactory::class)->create(
+            new ViewFactoryData(
+                templatePathAndFilename: $templatePathAndFilename,
+                partialRootPaths: [ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Partials/'],
+                request: $request,
+            )
+        );
     }
 
     protected function setUpController($class, $settings, $templateHtml = '', ?ViewInterface $view = null): AbstractController
@@ -84,7 +86,7 @@ abstract class AbstractControllerTestCase extends FunctionalTestCase
 
         /** @var AbstractController $controller */
         $controller = $this->get($class);
-        
+
         $viewFactoryMock = $this->createMock(ViewFactoryInterface::class);
         $viewFactoryMock
             ->expects(self::once())

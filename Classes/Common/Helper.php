@@ -709,10 +709,12 @@ class Helper
 
             return $pageRepository->getDefaultConstraints($table);
         } elseif (Environment::isCli() || ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend()) {
-            return [GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getQueryBuilderForTable($table)
-                ->expr()
-                ->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0)];
+            return [
+                GeneralUtility::makeInstance(ConnectionPool::class)
+                    ->getQueryBuilderForTable($table)
+                    ->expr()
+                    ->eq($table . '.' . $GLOBALS['TCA'][$table]['ctrl']['delete'], 0)
+            ];
         } else {
             self::error('Unexpected application type (neither frontend or backend)');
             return ['1=-1'];

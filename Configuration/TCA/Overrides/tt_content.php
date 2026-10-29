@@ -136,13 +136,13 @@ $pluginDefinitions = [
 
 // Create wizard item group for all plugins
 TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTcaSelectItemGroup(
-  'tt_content',
-  'CType',
-  $pluginGroup,
-  'Kitodo Plugins',
+    'tt_content',
+    'CType',
+    $pluginGroup,
+    'Kitodo Plugins',
 );
 
-foreach ( $pluginDefinitions as $pluginDefinition ) {
+foreach ($pluginDefinitions as $pluginDefinition) {
     $pluginSignature = \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
         'Dlf',
         $pluginDefinition['name'],

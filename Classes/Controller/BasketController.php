@@ -120,9 +120,9 @@ class BasketController extends AbstractController
 
     /**
      * @access public
-     * 
+     *
      * @param MailerInterface $mailer
-     * 
+     *
      * @return void
      */
     public function injectMailer(MailerInterface $mailer): void
@@ -657,7 +657,7 @@ class BasketController extends AbstractController
             // Set the To addresses with an associative array
             ->to(new Address($mailObject->getMail(), $mailObject->getName()))
             ->html($mailBody);
-        
+
         $this->mailer->send($mail);
 
         // create entry for action log
