@@ -118,12 +118,20 @@ CONFIG;
         // Get default language labels
         $localizationFactory = GeneralUtility::makeInstance(LocalizationFactory::class);
         $defaultTranslations = $localizationFactory->getParsedData($translationFile, 'default');
-        // TODO Typo3 v14: result array structure of getParsedData has changed in Typo3 v14
+        
+        /** @var array<string>|null $translationKeys */
+        $translationKeys = null;
+        if (isset($defaultTranslations['default']) && is_array($defaultTranslations['default'])) {
+            // in Typo3 v13, translations are structured as ["default"] => [$key] => [0] => ["target"] => "translation"
+            $translationKeys = array_keys($defaultTranslations['default']);
+        } elseif (is_array($defaultTranslations)) {
+            // in Typo3 v14, translations are structured as [$key] => "translation"
+            $translationKeys = array_keys($defaultTranslations);
+        }
 
         $phrases = [];
-        if (isset($defaultTranslations['default']) && is_array($defaultTranslations['default'])) {
-            foreach (array_keys($defaultTranslations['default']) as $translationKey) {
-
+        if (is_array($translationKeys)) {   
+            foreach ($translationKeys as $translationKey) {
                 // Translate each available key as per the current language.
                 // - This falls back to default language if a key isn't translated
                 // - Pass $languageKey to ensure that translation matches ISO code
