@@ -25,6 +25,7 @@ jobs:
         with:
           command: update
           php_version: ${{ matrix.variants.php }}
+          php_extensions: intl
           args: --no-blocking --with=typo3/cms-core:^${{ matrix.variants.typo3 }}
 
       - name: PHPStan Static Analysis
