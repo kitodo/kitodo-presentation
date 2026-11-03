@@ -28,10 +28,6 @@ return [
         'rootLevel' => 0,
         'searchFields' => 'title,volume,author,year,place,uid,prod_id,location,record_id,oai_id,opac_id,union_id,urn',
     ],
-    'interface' => [
-        'maxDBListItems' => 25,
-        'maxSingleDBListItems' => 50,
-    ],
     'columns' => [
         'hidden' => [
             'exclude' => 1,

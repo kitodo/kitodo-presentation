@@ -21,10 +21,6 @@ return [
         'rootLevel' => 0,
         'searchFields' => 'label,name,crdate',
     ],
-    'interface' => [
-        'maxDBListItems' => 25,
-        'maxSingleDBListItems' => 50,
-    ],
     'columns' => [
         'label' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_actionlog.label',

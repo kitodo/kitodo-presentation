@@ -1,0 +1,9 @@
+mod.web_list {
+    # the maximum number of records listed in a table when showing records of a single type
+    # see https://docs.typo3.org/permalink/t3tsref:pagetsconfigweblist-itemslimitsingletable
+    itemsLimitSingleTable = 50
+
+    # the maximum number of records listed for each table in the "records" view
+    # see https://docs.typo3.org/permalink/t3tsref:pagetsconfigweblist-listonlyinsingletableview
+    itemsLimitPerTable = 25
+}
