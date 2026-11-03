@@ -10,6 +10,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+$t3ver = (new TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+
 return [
     'ctrl' => [
         'title'     => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_documents',
@@ -26,7 +28,7 @@ return [
         ],
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfdocuments.png',
         'rootLevel' => 0,
-        'searchFields' => 'title,volume,author,year,place,uid,prod_id,location,record_id,oai_id,opac_id,union_id,urn',
+        ...($t3ver >= 14 ? [] : ['searchFields' => 'title,volume,author,year,place,uid,prod_id,location,record_id,oai_id,opac_id,union_id,urn']),
     ],
     'columns' => [
         'hidden' => [
@@ -41,12 +43,14 @@ return [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.timestamp',
             'config' => [
                 'type' => 'datetime',
+                'searchable' => false,
             ]
         ],
         'crdate' => [
             'label' => 'LLL:EXT:core/Resources/Private/Language/locallang_general.xlf:LGL.creationDate',
             'config' => [
                 'type' => 'datetime',
+                'searchable' => false,
             ]
         ],
         'starttime' => [
@@ -56,6 +60,7 @@ return [
                 'type' => 'datetime',
                 'size' => 13,
                 'default' => 0,
+                'searchable' => false,
             ],
         ],
         'endtime' => [
@@ -65,6 +70,7 @@ return [
                 'type' => 'datetime',
                 'size' => 13,
                 'default' => 0,
+                'searchable' => false,
             ],
         ],
         'fe_group' => [
@@ -172,6 +178,7 @@ return [
                 'max' => 255,
                 'eval' => 'nospace',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'title' => [
@@ -194,6 +201,7 @@ return [
                 'max' => 1024,
                 'eval' => 'trim',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'author' => [
@@ -290,6 +298,7 @@ return [
                 'max' => 255,
                 'eval' => 'trim',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'license' => [
@@ -301,6 +310,7 @@ return [
                 'max' => 255,
                 'eval' => 'trim',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'terms' => [
@@ -312,6 +322,7 @@ return [
                 'max' => 255,
                 'eval' => 'trim',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'restrictions' => [
@@ -323,6 +334,7 @@ return [
                 'max' => 255,
                 'eval' => 'trim',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'out_of_print' => [
@@ -334,6 +346,7 @@ return [
                 'max' => 1024,
                 'eval' => 'trim',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'rights_info' => [
@@ -345,6 +358,7 @@ return [
                 'max' => 1024,
                 'eval' => 'trim',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'mets_label' => [
@@ -356,6 +370,7 @@ return [
                 'max' => 255,
                 'eval' => 'trim',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'mets_orderlabel' => [
@@ -367,6 +382,7 @@ return [
                 'max' => 255,
                 'eval' => 'trim',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'collections' => [
