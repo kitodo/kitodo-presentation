@@ -41,7 +41,7 @@
     "caseyamcl/phpoaipmh": "^3.3",
     "slub/php-mods-reader": "^0.5",
     "ubl/php-iiif-prezi-reader": "0.3.2",
-    "solarium/solarium": "^6.4",
+    "solarium/solarium": "^7.0",
     "softcreatr/jsonpath": "^0.10",
     "symfony/process": "^7.4"
   },
