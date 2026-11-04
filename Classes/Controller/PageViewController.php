@@ -272,12 +272,14 @@ class PageViewController extends AbstractController
                 while ($useGroup = array_shift($useGroups)) {
                     if (!empty($files[$useGroup])) {
                         $file = $currentDocument->getFileInfo($files[$useGroup]);
-                        $fulltext['url'] = $file['location'];
-                        if ($this->settings['useInternalProxy']) {
-                            $this->configureProxyUrl($fulltext['url']);
+                        if ($file !== null) {
+                            $fulltext['url'] = $file['location'];
+                            if ($this->settings['useInternalProxy']) {
+                                $this->configureProxyUrl($fulltext['url']);
+                            }
+                            $fulltext['mimetype'] = $file['mimeType'];
+                            break;
                         }
-                        $fulltext['mimetype'] = $file['mimeType'];
-                        break;
                     } else {
                         $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $useGroup . '" in document "' . $this->document->getLocation() . '"');
                     }

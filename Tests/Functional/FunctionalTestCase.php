@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Tests\Functional;
 
 use Dotenv\Dotenv;
 use GuzzleHttp\Client as HttpClient;
+use Kitodo\Dlf\Common\DocumentCacheManager;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr\Solr;
@@ -116,6 +117,11 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         $this->configurationToUseInTestInstance['EXTENSIONS']['dlf'] = $this->getDlfConfiguration();
 
         parent::setUp();
+
+        // The in-memory document pool is per-worker state that survives
+        // individual tests; reset it so that no document loaded by a
+        // previous test (possibly with different settings) leaks in.
+        DocumentCacheManager::resetPool();
 
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
 
