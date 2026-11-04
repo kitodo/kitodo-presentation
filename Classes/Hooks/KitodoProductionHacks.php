@@ -40,33 +40,36 @@ class KitodoProductionHacks
             $xml->registerXPathNamespace('mods', 'http://www.loc.gov/mods/v3');
             // Get all logical structure nodes with metadata, but without associated METS-Pointers.
             $divs = $xml->xpath('//mets:structMap[@TYPE="LOGICAL"]//mets:div[@DMDID and not(./mets:mptr)]');
-            if (is_array($divs)) {
-                $smLinks = $xml->xpath('//mets:structLink/mets:smLink');
-                if (!empty($smLinks)) {
-                    $links = [];
 
-                    foreach ($smLinks as $smLink) {
-                        $link = $smLink->attributes('http://www.w3.org/1999/xlink');
-                        $links[(string) $link->from][] = (string) $link->to;
-                    }
+            if (!is_array($divs) || $divs === []) {
+                return;
+            }
 
-                    foreach ($divs as $div) {
-                        if (!empty($links[(string) $div['ID']])) {
-                            $id = (string) $div['DMDID'];
-                            break;
-                        }
-                    }
+            $smLinks = $xml->xpath('//mets:structLink/mets:smLink');
+            if (!empty($smLinks)) {
+                $links = [];
+
+                foreach ($smLinks as $smLink) {
+                    $link = $smLink->attributes('http://www.w3.org/1999/xlink');
+                    $links[(string) $link->from][] = (string) $link->to;
                 }
-                if (empty($id)) {
-                    $id = (string) $divs[0]['DMDID'];
-                }
-                $dmdIds = explode(' ', $id);
-                foreach ($dmdIds as $dmdId) {
-                    $recordIds = $xml->xpath('//mets:dmdSec[@ID="' . $dmdId . '"]//mods:mods/mods:recordInfo/mods:recordIdentifier');
-                    if (!empty($recordIds)) {
-                        $recordId = (string) $recordIds[0];
+
+                foreach ($divs as $div) {
+                    if (!empty($links[(string) $div['ID']])) {
+                        $id = (string) $div['DMDID'];
                         break;
                     }
+                }
+            }
+            if (empty($id)) {
+                $id = (string) $divs[0]['DMDID'];
+            }
+            $dmdIds = explode(' ', $id);
+            foreach ($dmdIds as $dmdId) {
+                $recordIds = $xml->xpath('//mets:dmdSec[@ID="' . $dmdId . '"]//mods:mods/mods:recordInfo/mods:recordIdentifier');
+                if (!empty($recordIds)) {
+                    $recordId = (string) $recordIds[0];
+                    break;
                 }
             }
         }
