@@ -101,22 +101,22 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     $iconsDirectory . 'tx-dlf-embedded3dviewer.svg'
 );
 
-// Plugin "validationform".
-$plugin = 'dlf_validationform';
+// Plugin "validation".
+$plugin = 'dlf_validation';
 
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
 $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    'dlf_validationform',
-    $flexFormsPathPrefix . 'ValidationForm.xml'
+    'dlf_validation',
+    $flexFormsPathPrefix . 'Validation.xml'
 );
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
     'Dlf',
-    'ValidationForm',
-    $langFile . 'validationForm' . $title,
-    $iconsDirectory . 'tx-dlf-validationform.svg'
+    'Validation',
+    $langFile . 'validation' . $title,
+    $iconsDirectory . 'tx-dlf-validation.svg'
 );
 
 // Plugin "feeds".

@@ -71,35 +71,18 @@ To use the validator, the XSL Schematron must be available alongside the XSL pro
 DOMDocumentValidation Middleware
 =======
 
-``Kitodo\Dlf\Validation\DOMDocumentValidation`` middleware must be used by setting the ``middleware`` parameter to ``dlf/dom-document-validation``. Additionally, the ``url`` parameter must contain the URL of the DOMDocument content to be validated, and the ``type`` parameter must specify the corresponding validation configuration type.
+``Kitodo\Dlf\Validation\DOMDocumentValidation`` middleware must be used by setting the ``middleware`` parameter to ``dlf/dom-document-validation``. Additionally, the ``url`` parameter must contain the URL of the DOMDocument content to be validated, and the ``validationType`` parameter must specify the corresponding validation configuration type.
+
+.. note::
+
+   The middleware must not be invoked with the ``type`` parameter. In the TYPO3 frontend, ``type`` is a reserved parameter that selects the page type (``typeNum``), so a non-numeric ``type`` value causes a "No page configured for type=..." error before the middleware is even reached.
 
 .. _DOMDocumentValidation Middleware Configuration:
 
 Configuration
 --------------------------
 
-The validation middleware can be configured through the plugin settings in TypoScript with the block called ``domDocumentValidation``. Under this block, configuration sections (referred to as type) for different validations can be defined. When directly referencing the middleware or using the :ref:`Plugin Validation Form`, this type must be provided as the ``type`` parameter.
-
-   .. code-block::
-
-      plugin.tx_dlf {
-          settings {
-              domDocumentValidation {
-                  typeA {
-                     validator {
-                        ...
-                     },
-                     validatorStack {
-                        ...
-                     },
-                     ...
-                  },
-                  typeB {
-                     ...
-                  },
-                  ...
-
-
+The validation middleware can be configured via a YAML file located within any extending extension at the path ``EXT:<my_extension>/Configuration/Kitodo/Validation/``. The name of the configuration file must match the configured validation type, allowing you to define different validation rules. When directly referencing the middleware or using the :ref:`Plugin Validation`, this identifier must be provided as the ``validationType`` parameter.
 
 Validators derived from ``Kitodo\Dlf\Validation\AbstractDlfValidator`` can be configured here. This also includes the use of validation stack implementations derived from ``Kitodo\Dlf\Validation\AbstractDlfValidationStack``, which use ``DOMDocument`` as the ``valueClassName`` for validation. This allows for multiple levels of nesting.
 
@@ -110,64 +93,67 @@ For each validator, the title and description can be defined as XLF labels and a
 The description label can include placeholders. The syntax changes slightly in this case: a separate block is used for the description, consisting of the XLF label as the key and an additional block containing arguments.
 These arguments are then inserted into the placeholders within the label in the given order. The ``EXT:`` prefix can also be used as an argument value, which will be replaced with the corresponding extension path.
 
-   .. code-block::
+   .. code-block:: yaml
 
-      plugin.tx_dlf {
-          settings {
-             domDocumentValidation {
-                 typeA {
-                    10 {
-                       title = LLL:EXT:.../locallang.xlf:title
-                       description = LLL:EXT:.../locallang.xlf:description
-                    }
-                    ...
-                 },
-                 typeB {
-                      10 {
-                          title = LLL:EXT:.../locallang.xlf:title
-                          description {
-                              key = LLL:EXT:.../locallang.xlf:description
-                              arguments {
-                                  0 = EXT:...
-                                  1 = Test
-                                  ...
-                              }
-                          }
-                          ...
+    1:
+      title: 'LLL:EXT:.../locallang.xlf:title'
+      shortDescription: 'LLL:EXT:.../locallang.xlf:description'
+      description: 'LLL:EXT:.../locallang.xlf:description'
+    2:
+      title: 'LLL:EXT:.../locallang.xlf:title'
+      description:
+        key: 'LLL:EXT:.../locallang.xlf:description'
+        arguments:
+          0: 'EXT:...'
+          1: 'Test'
+      className: '...\ApplicationProfileValidationStack'
 
-TypoScript Example
+YAML Example
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   .. code-block::
+   .. code-block:: yaml
 
-      plugin.tx_dlf {
-          settings {
-              storagePid = {$config.storagePid}
-              domDocumentValidation {
-                  dfgviewer {
-                       10 {
-                           title = LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validator.xmlschemas.title
-                           description {
-                               key = LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validator.xmlschemas.description
-                               arguments {
-                                   0 = EXT:dfgviewer/Resources/Public/Xsd/Mets/1.12.1.xsd
-                                   1 = METS 1.12.1
-                                   2 = EXT:dfgviewer/Resources/Public/Xsd/Mods/3.8.xsd
-                                   3 = MODS 3.8
-                               }
-                           }
-                           className = Kitodo\Dlf\Validation\XmlSchemasValidator
-                           configuration {
-                              mets {
-                                  namespace = http://www.loc.gov/METS/
-                                  schemaLocation = EXT:dfgviewer/Resources/Public/Xsd/Mets/1.12.1.xsd
-                              }
-                              mods {
-                                  namespace = http://www.loc.gov/mods/v3
-                                  schemaLocation = EXT:dfgviewer/Resources/Public/Xsd/Mods/3.8.xsd
-                              }
-                          }
-                       },
-                       ...
-                  }
-                  ...
+    1:
+      title: 'LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validator.xmlschemas.title'
+      shortDescription: 'LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validator.xmlschemas.shortdescription'
+      description:
+        key: 'LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validator.xmlschemas.description'
+        arguments:
+          0: 'EXT:dfgviewer/Resources/Public/Xsd/Mets/1.12.1.xsd'
+          1: 'METS 1.12.1'
+          2: 'EXT:dfgviewer/Resources/Public/Xsd/Mods/3.8.xsd'
+          3: 'MODS 3.8'
+      className: 'Kitodo\Dlf\Validation\XmlSchemasValidator'
+      configuration:
+        mets:
+          namespace: 'http://www.loc.gov/METS/'
+          schemaLocation: 'EXT:dfgviewer/Resources/Public/Xsd/Mets/1.12.1.xsd'
+        mods:
+          namespace: 'http://www.loc.gov/mods/v3'
+          schemaLocation: 'EXT:dfgviewer/Resources/Public/Xsd/Mods/3.8.xsd'
+    2:
+      title: 'LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validator.metsapplicationprofile.title'
+      shortDescription: 'LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validator.metsapplicationprofile.shortdescription'
+      description:
+        key: 'LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validator.metsapplicationprofile.description'
+        arguments:
+          0: '/fileadmin/groups/dfgviewer/METS_application_profile_2.4.pdf'
+          1: 'METS Application Profile version 2.4'
+      className: 'Slub\Dfgviewer\Validation\Mets\ApplicationProfileValidationStack'
+    3:
+      title: 'LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validator.modsapplicationprofile.title'
+      shortDescription: 'LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validator.modsapplicationprofile.shortdescription'
+      description:
+        key: 'LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validator.modsapplicationprofile.description'
+        arguments:
+          0: '/fileadmin/groups/dfgviewer/MODS_application_profile_2.4.pdf'
+          1: 'MODS Application Profile version 2.4'
+      className: 'Slub\Dfgviewer\Validation\Mods\ApplicationProfileValidationStack'
+    4:
+      title: 'LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validator.metsurlexistence.title'
+      shortDescription: 'LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validator.metsurlexistence.shortdescription'
+      description: 'LLL:EXT:dfgviewer/Resources/Private/Language/locallang_validation.xlf:validator.metsurlexistence.description'
+      className: 'Slub\Dfgviewer\Validation\MetsUrlExistenceValidator'
+      configuration:
+        excludeHosts: 'dfg-viewer.de,www.loc.gov,id.loc.gov,www.openarchives.org,purl.org,www.w3.org'
+      disabled: true

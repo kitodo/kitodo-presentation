@@ -410,6 +410,7 @@ dlfUtils.fetchStaticImageData = function (imageSourceObj, loadingIndicator) {
         makeImage(imageSourceObj.url, imageSourceObj.mimetype);
     };
     xhr.open('GET', imageSourceObj.url);
+    xhr.withCredentials = true;
     xhr.send();
 
     return deferredResponse;
@@ -423,11 +424,6 @@ dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
 
     var deferredResponse = new $.Deferred();
     var type = 'GET';
-    $.ajax({
-        url: dlfViewerSource.IIIF.getMetdadataURL(imageSourceObj.url),
-        type,
-        dataType: 'json'
-    }).done(cb);
 
     function cb(data) {
         var format = new ol.format.IIIFInfo(data);
@@ -444,6 +440,15 @@ dlfUtils.getIIIFResource = function getIIIFResource(imageSourceObj) {
             });
         }
     }
+
+    $.ajax({
+        url: dlfViewerSource.IIIF.getMetdadataURL(imageSourceObj.url),
+        type,
+        dataType: 'json',
+        xhrFields: {
+            withCredentials: true
+        }
+    }).done(cb);
 
     return deferredResponse;
 };

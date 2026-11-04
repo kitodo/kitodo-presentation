@@ -488,13 +488,17 @@ class CalendarController extends AbstractController
         foreach ($toc[0]['children'] as $year) {
             if (array_key_exists('children', $year)) {
                 foreach ($year['children'] as $month) {
-                    foreach ($month['children'] as $day) {
-                        foreach ($day['children'] as $issue) {
-                            yield [
-                                'uid' => $issue['points'] ?? null,
-                                'title' => $this->getTitle($issue['label'], $issue['orderlabel']),
-                                'year' => $day['orderlabel'],
-                            ];
+                    if (array_key_exists('children', $month)) {
+                        foreach ($month['children'] as $day) {
+                            if (array_key_exists('children', $day)) {
+                                foreach ($day['children'] as $issue) {
+                                    yield [
+                                        'uid' => $issue['points'] ?? null,
+                                        'title' => $this->getTitle($issue['label'], $issue['orderlabel']),
+                                        'year' => $day['orderlabel'],
+                                    ];
+                                }
+                            }
                         }
                     }
                 }

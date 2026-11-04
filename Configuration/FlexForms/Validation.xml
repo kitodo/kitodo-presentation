@@ -20,8 +20,8 @@
                 <el>
                     <settings.type>
                         <exclude>1</exclude>
-                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:validationForm.flexForm.type.label</label>
-                        <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:validationForm.flexForm.type.description</description>
+                        <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:validation.flexForm.type.label</label>
+                        <description>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:validation.flexForm.type.description</description>
                         <config>
                             <type>input</type>
                             <eval>required,trim</eval>

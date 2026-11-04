@@ -13,8 +13,8 @@
 namespace Kitodo\Dlf\Command\DatabaseDocs;
 
 use Doctrine\DBAL\Schema\Table;
+use Doctrine\DBAL\Types\Type;
 use ReflectionClass;
-use ReflectionProperty;
 use TYPO3\CMS\Core\Database\Schema\Parser\Lexer;
 use TYPO3\CMS\Core\Database\Schema\Parser\Parser;
 use TYPO3\CMS\Core\Database\Schema\SqlReader;
@@ -22,10 +22,6 @@ use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Persistence\ClassesConfiguration;
-use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory;
-use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapper;
 
 /**
  * Aggregates information about database tables and generates an .rst reference page.
@@ -43,27 +39,9 @@ class Generator
     protected LanguageService $languageService;
 
     /**
-     * @var DataMapper
-     */
-    protected DataMapper $dataMapper;
-
-    /**
      * @var SqlReader
      */
     protected SqlReader $sqlReader;
-
-    /**
-     * @var ConfigurationManager
-     */
-    protected ConfigurationManager $configurationManager;
-
-    /**
-     * @param DataMapper $dataMapper
-     */
-    public function injectDataMapper(DataMapper $dataMapper): void
-    {
-        $this->dataMapper = $dataMapper;
-    }
 
     /**
      * @param SqlReader $sqlReader
@@ -71,14 +49,6 @@ class Generator
     public function injectSqlReader(SqlReader $sqlReader): void
     {
         $this->sqlReader = $sqlReader;
-    }
-
-    /**
-     * @param ConfigurationManager $configurationManager
-     */
-    public function injectConfigurationManager(ConfigurationManager $configurationManager): void
-    {
-        $this->configurationManager = $configurationManager;
     }
 
     public function __construct()
@@ -96,6 +66,10 @@ class Generator
      */
     public function collectTables(): array
     {
+        if (array_filter(array_keys($GLOBALS['TCA'] ?? []), static fn ($tableName): bool => is_string($tableName) && str_starts_with($tableName, 'tx_dlf_')) === []) {
+            throw new \RuntimeException('No TCA tables for the dlf extension are loaded. Run this command from a composer-based TYPO3 install directory, not from the extension source directory.');
+        }
+
         $sqlCode = $this->sqlReader->getTablesDefinitionString(true);
         $createTableStatements = $this->sqlReader->getCreateTableStatementArray($sqlCode);
 
@@ -129,26 +103,26 @@ class Generator
     /**
      * Get a map from database table names to their domain model class names.
      *
+     * The class configuration is read directly from the extbase Classes.php
+     * of the dlf extension. This deliberately avoids instantiating the
+     * DataMapFactory or any other persistence service, because those depend
+     * on a configured database connection while generating the documentation
+     * does not.
+     *
      * @access public
      *
      * @return mixed[] Map from table name to fully qualified class name
      */
     public function getTableClassMap(): array
     {
-        $dataMapFactory = GeneralUtility::makeInstance(DataMapFactory::class);
-
-        // access classes configuration through reflection, which is otherwise not available?
-        $reflectionProperty = new ReflectionProperty(DataMapFactory::class, 'classesConfiguration');
-        $reflectionProperty->setAccessible(true);
-        $classesConfiguration = $reflectionProperty->getValue($dataMapFactory);
-        $reflectionProperty = new ReflectionProperty(ClassesConfiguration::class, 'configuration');
-        $reflectionProperty->setAccessible(true);
-        $configuration = $reflectionProperty->getValue($classesConfiguration);
+        $classConfigurationPath = GeneralUtility::getFileAbsFileName('EXT:dlf/Configuration/Extbase/Persistence/Classes.php');
+        $configuration = is_file($classConfigurationPath) ? (array) include $classConfigurationPath : [];
 
         $result = [];
         foreach ($configuration as $className => $tableConf) {
-            $tableName = $tableConf['tableName'];
-            $result[$tableName] = $className;
+            if (is_string($tableConf['tableName'] ?? null)) {
+                $result[$tableConf['tableName']] = $className;
+            }
         }
 
         return $result;
@@ -180,7 +154,7 @@ class Generator
 
             $columns[$columnName] = (object) [
                 'name' => $columnName,
-                'type' => $column->getType(),
+                'type' => Type::lookupName($column->getType()),
                 'isPrimary' => isset($isPrimary[$columnName]),
                 'sqlComment' => $column->getComment() ?? '',
                 'fieldComment' => '',
@@ -201,16 +175,11 @@ class Generator
         if ($className !== null) {
             $reflection = new ReflectionClass($className); // @phpstan-ignore-line
 
-            $dataMap = $this->dataMapper->getDataMap($className);
-
             foreach ($reflection->getProperties() as $property) {
-                // If the TCA doesn't list the column, DataMap won't know about it.
-                // In that case, try to guess the column name from the property name.
+                // The domain models do not use explicit column names, so the
+                // column name is derived from the property name.
 
-                $column = $dataMap->getColumnMap($property->getName());
-                $columnName = $column === null
-                    ? GeneralUtility::camelCaseToLowerCaseUnderscored($property->getName())
-                    : $column->getColumnName();
+                $columnName = GeneralUtility::camelCaseToLowerCaseUnderscored($property->getName());
 
                 if (isset($result->columns[$columnName]) && $property->getDocComment() !== false) {
                     $result->columns[$columnName]->fieldComment = $this->parsePropertyDocComment($property->getDocComment());
@@ -241,9 +210,18 @@ class Generator
         foreach ($lines as $line) {
             // extract text from @var line
             if ($line !== '' && str_contains($line, '@var')) {
-                $text = preg_replace('#\\s*/?[*/]*\\s?(.*)$#', '$1', $line) . "\n";
-                $text = preg_replace('/@var [^ ]+ ?/', '', $text);
-                return trim($text);
+                $text = preg_replace('#\s*/?[*/]*\s?(.*)$#', '$1', $line);
+                // strip the @var tag and the type name, including generics like
+                // int<1, max> and unions like string|null, keeping the description
+                $count = 0;
+                $text = preg_replace(
+                    '/@var\s+[A-Za-z_\\\\][\w\\\\]*(?:\s*<[^>]*>)?(?:\|[A-Za-z_\\\\][\w\\\\]*(?:\s*<[^>]*>)?)*\s+/',
+                    '',
+                    $text,
+                    1,
+                    $count
+                );
+                return $count ? trim($text) : '';
             }
         }
         return '';
@@ -296,7 +274,7 @@ class Generator
         $page->addText(<<<RST
 This is a reference of all database tables defined by Kitodo.Presentation.
 
-.. tip:: This page is auto-generated. If you would like to edit it, please use doc-comments in the model class, COMMENT fields in ``ext_tables.sql`` if the table does not have one, or TCA labels. Then, you may re-generate the page by running ``vendor/bin/typo3 kitodo:dbdocs`` from the composer-based TYPO3 install directory (not the Kitodo.Presentation source directory).
+.. tip:: This page is auto-generated. If you would like to edit it, please use doc-comments in the model class, COMMENT fields in ``ext_tables.sql`` if the table does not have one, or TCA labels. Then, you may re-generate the page by running ``vendor/bin/typo3 kitodo:databaseDocsGenerate`` from the composer-based TYPO3 install directory (not the Kitodo.Presentation source directory).
 RST);
 
         // Sort tables alphabetically
@@ -335,7 +313,7 @@ RST);
                         'field' => (
                             $page->format($column->name, ['bold' => $column->isPrimary])
                             . "\u{00a0}\u{00a0}"
-                            . $page->format($column->type->getName(), ['italic' => true])
+                            . $page->format($column->type, ['italic' => true])
                         ),
 
                         'description' => $page->paragraphs(
