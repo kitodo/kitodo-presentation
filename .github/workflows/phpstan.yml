@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        variants: [ {typo3: 12.4, php: 8.2}, {typo3: 13.4, php: 8.4}  ]
+        variants: [ {typo3: 13.4, php: 8.2}, {typo3: 14.3, php: 8.5}  ]
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -25,10 +25,13 @@ jobs:
         with:
           command: update
           php_version: ${{ matrix.variants.php }}
-          args: --ignore-platform-reqs --no-blocking --with=typo3/cms-core:^${{ matrix.variants.typo3 }}
+          php_extensions: intl
+          args: --no-blocking --with=typo3/cms-core:^${{ matrix.variants.typo3 }}
 
       - name: PHPStan Static Analysis
         uses: php-actions/phpstan@v3
         with:
           configuration: ./.github/phpstan_${{ matrix.variants.typo3 }}.neon
           path: ''
+          php_version: ${{ matrix.variants.php }}
+          php_extensions: intl

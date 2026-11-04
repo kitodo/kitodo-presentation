@@ -37,8 +37,9 @@
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:oaiPmh.flexForm.limit</label>
                         <config>
-                            <type>input</type>
-                            <eval>required,num,int</eval>
+                            <type>number</type>
+                            <required>true</required>
+                            <format>integer</format>
                             <default>5</default>
                         </config>
                     </settings.limit>
@@ -46,8 +47,9 @@
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:oaiPmh.flexForm.expired</label>
                         <config>
-                            <type>input</type>
-                            <eval>required,num,int</eval>
+                            <type>number</type>
+                            <required>true</required>
+                            <format>integer</format>
                             <default>1800</default>
                         </config>
                     </settings.expired>
@@ -76,8 +78,9 @@
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:oaiPmh.flexForm.solrLimit</label>
                         <config>
-                            <type>input</type>
-                            <eval>required,num,int</eval>
+                            <type>number</type>
+                            <required>true</required>
+                            <format>integer</format>
                             <default>50000</default>
                         </config>
                     </settings.solrLimit>
@@ -85,35 +88,10 @@
                         <exclude>1</exclude>
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:oaiPmh.flexForm.stylesheet</label>
                         <config>
-                            <type>inline</type>
+                            <type>file</type>
+                            <allowed>xsl,xslt</allowed>
                             <maxitems>1</maxitems>
-                            <foreign_table>sys_file_reference</foreign_table>
-                            <foreign_table_field>tablenames</foreign_table_field>
-                            <foreign_label>uid_local</foreign_label>
-                            <foreign_sortby>sorting_foreign</foreign_sortby>
-                            <foreign_field>uid_foreign</foreign_field>
-                            <foreign_selector>uid_local</foreign_selector>
-                            <foreign_selector_fieldTcaOverride>
-                                <config>
-                                    <appearance>
-                                        <elementBrowserType>file</elementBrowserType>
-                                        <elementBrowserAllowed>xsl,xslt</elementBrowserAllowed>
-                                    </appearance>
-                                </config>
-                            </foreign_selector_fieldTcaOverride>
-                            <foreign_types type="array">
-                                <numIndex index="0">
-                                    <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
-                                </numIndex>
-                                <numIndex index="2">
-                                    <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
-                                </numIndex>
-                            </foreign_types>
-                            <foreign_match_fields>
-                                <fieldname>stylesheet</fieldname>
-                            </foreign_match_fields>
                             <appearance type="array">
-                                <newRecordLinkAddTitle>1</newRecordLinkAddTitle>
                                 <enabledControls>
                                     <info>1</info>
                                     <new>0</new>
@@ -125,27 +103,9 @@
                                 </enabledControls>
                                 <createNewRelationLinkTitle>LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:media.addFileReference</createNewRelationLinkTitle>
                             </appearance>
-                            <behaviour>
-                                <localizationMode>select</localizationMode>
-                                <localizeChildrenAtParentLocalization>1</localizeChildrenAtParentLocalization>
-                            </behaviour>
-                            <overrideChildTca>
-                                <columns type="array">
-                                    <uid_local type="array">
-                                        <config type="array">
-                                            <appearance type="array">
-                                                <elementBrowserType>file</elementBrowserType>
-                                                <elementBrowserAllowed>xsl,xslt</elementBrowserAllowed>
-                                            </appearance>
-                                        </config>
-                                    </uid_local>
-                                </columns>
-                                <types type="array">
-                                    <numIndex index="2">
-                                        <showitem>--palette--;LLL:EXT:core/Resources/Private/Language/locallang_tca.xlf:sys_file_reference.imageoverlayPalette;imageoverlayPalette,--palette--;;filePalette</showitem>
-                                    </numIndex>
-                                </types>
-                            </overrideChildTca>
+                            <behavior>
+                                <allowLanguageSynchronization>true</allowLanguageSynchronization>
+                            </behavior>
                         </config>
                     </settings.stylesheet>
                 </el>

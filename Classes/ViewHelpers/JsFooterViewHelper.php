@@ -38,22 +38,9 @@ class JsFooterViewHelper extends AbstractViewHelper
         $this->registerArgument('inlineCode', 'string', 'Inline JavaScript', true);
     }
 
-    /**
-     * @access public
-     *
-     * @static
-     *
-     * @param mixed[] $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ): void
+    public function render(): void
     {
-        $inlineCode = $arguments['inlineCode'];
+        $inlineCode = $this->arguments['inlineCode'];
 
         /** @var PageRenderer $pageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);

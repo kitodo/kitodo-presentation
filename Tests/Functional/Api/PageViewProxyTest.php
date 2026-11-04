@@ -18,6 +18,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use TYPO3\CMS\Core\Crypto\HashService;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
@@ -112,7 +113,8 @@ class PageViewProxyTest extends FunctionalTestCase
     public function canAccessPageWithUrlHash(): void
     {
         $targetUrl = 'http://web:8001/Tests/Fixtures/PageViewProxy/test.txt';
-        $uHash = GeneralUtility::hmac($targetUrl, 'PageViewProxy');
+        $hashService = GeneralUtility::makeInstance(HashService::class);
+        $uHash = $hashService->hmac($targetUrl, 'PageViewProxy');
 
         $response = $this->queryProxy([
             'url' => $targetUrl,
@@ -127,7 +129,8 @@ class PageViewProxyTest extends FunctionalTestCase
     public function cannotSendPostRequest(): void
     {
         $targetUrl = 'http://web:8001/Tests/Fixtures/PageViewProxy/test.txt';
-        $uHash = GeneralUtility::hmac($targetUrl, 'PageViewProxy');
+        $hashService = GeneralUtility::makeInstance(HashService::class);
+        $uHash = $hashService->hmac($targetUrl, 'PageViewProxy');
 
         $response = $this->queryProxy([
             'url' => $targetUrl,
@@ -141,7 +144,8 @@ class PageViewProxyTest extends FunctionalTestCase
     public function sendsUserAgentToTarget(): void
     {
         $targetUrl = 'http://web:8001/Tests/Fixtures/PageViewProxy/echo_user_agent.php';
-        $uHash = GeneralUtility::hmac($targetUrl, 'PageViewProxy');
+        $hashService = GeneralUtility::makeInstance(HashService::class);
+        $uHash = $hashService->hmac($targetUrl, 'PageViewProxy');
 
         $response = $this->queryProxy([
             'url' => $targetUrl,
@@ -197,7 +201,8 @@ class PageViewProxyTest extends FunctionalTestCase
     public function canAccessUrlWithUrlHashUsingHead(): void
     {
         $targetUrl = 'http://web:8001/Tests/Fixtures/PageViewProxy/test.txt';
-        $uHash = GeneralUtility::hmac($targetUrl, 'PageViewProxy');
+        $hashService = GeneralUtility::makeInstance(HashService::class);
+        $uHash = $hashService->hmac($targetUrl, 'PageViewProxy');
 
         $response = $this->queryProxy([
             'url' => $targetUrl,

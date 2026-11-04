@@ -16,6 +16,7 @@ use Kitodo\Dlf\Controller\CollectionController;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 
 class CollectionControllerTest extends AbstractControllerTestCase
 {
@@ -67,6 +68,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
         $controller = $this->setUpController(CollectionController::class, $settings);
         $request = $this->setUpRequest('list', ['tx_dlf' => ['id' => 1] ]);
         $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
+        $request = $request->withAttribute('normalizedParams', NormalizedParams::createFromRequest($request));
 
         $response = $controller->processRequest($request);
         $this->assertEquals(303, $response->getStatusCode());
@@ -86,6 +88,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
         $controller = $this->setUpController(CollectionController::class, $settings);
         $request = $this->setUpRequest('list', ['tx_dlf' => ['id' => 1] ]);
         $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
+        $request = $request->withAttribute('normalizedParams', NormalizedParams::createFromRequest($request));
 
         $response = $controller->processRequest($request);
         $this->assertEquals(303, $response->getStatusCode());
@@ -204,6 +207,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
         $controller = $this->setUpController(CollectionController::class, $settings);
         $request = $this->setUpRequest('showSorted');
         $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
+        $request = $request->withAttribute('normalizedParams', NormalizedParams::createFromRequest($request));
 
         $response = $controller->processRequest($request);
         $this->assertEquals(303, $response->getStatusCode());

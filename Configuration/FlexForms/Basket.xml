@@ -31,7 +31,7 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:basket.flexForm.pdfGenerate</label>
                         <config>
                             <type>input</type>
-                            <eval>required</eval>
+                            <required>true</required>
                         </config>
                     </settings.pdfgenerate>
                     <settings.pdfdownload>
@@ -39,7 +39,7 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:basket.flexForm.pdfDownload</label>
                         <config>
                             <type>input</type>
-                            <eval>required</eval>
+                            <required>true</required>
                             <default></default>
                         </config>
                     </settings.pdfdownload>
@@ -48,7 +48,7 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:basket.flexForm.pdfPrint</label>
                         <config>
                             <type>input</type>
-                            <eval>required</eval>
+                            <required>true</required>
                             <default></default>
                         </config>
                     </settings.pdfprint>
@@ -57,7 +57,7 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:basket.flexForm.pdfParams</label>
                         <config>
                             <type>input</type>
-                            <eval>required</eval>
+                            <required>true</required>
                             <default>##docId##,##startpage##,##endpage##,##startx##,##starty##,##endx##,##endy##,##rotation##</default>
                         </config>
                     </settings.pdfparams>
@@ -66,7 +66,7 @@
                         <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:basket.flexForm.pdfParamSeparator</label>
                         <config>
                             <type>input</type>
-                            <eval>required</eval>
+                            <required>true</required>
                             <default>*</default>
                         </config>
                     </settings.pdfparamseparator>

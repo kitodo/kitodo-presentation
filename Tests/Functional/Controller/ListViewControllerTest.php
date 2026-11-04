@@ -49,9 +49,9 @@ class ListViewControllerTest extends AbstractControllerTestCase
             'showSingle' => '0',
             'randomize' => ''
         ];
-        $templateHtml = '<html xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers">
+        $templateHtml = '<html>
                 <f:spaceless>
-                uniqueId-length: <v:count.bytes>{uniqueId}</v:count.bytes>
+                uniqueId-length: <f:length>{uniqueId}</f:length>
                 page: {page}
                 double: {requestData.double}
                 lastSearch.query: {lastSearch.query}
@@ -65,7 +65,7 @@ class ListViewControllerTest extends AbstractControllerTestCase
 
         $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
-        $expected = '<html xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers">
+        $expected = '<html>
                 uniqueId-length: 13
                 page: 1
                 double: 0

@@ -124,7 +124,7 @@ class ResultDocument
         $this->type = $record[$fields['type']];
         $this->structurePath = $record[$fields['structure_path']] ?? [];
 
-        if (!empty($highlighting[$this->id])) {
+        if ($this->id !== null && !empty($highlighting[$this->id])) {
             $highlightingForRecord = $highlighting[$this->id][$fields['fulltext']];
             $this->snippetsForRecord = is_array($highlightingForRecord['snippets']) ? $highlightingForRecord['snippets'] : [];
         }

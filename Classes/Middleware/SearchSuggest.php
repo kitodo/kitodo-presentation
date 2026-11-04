@@ -18,6 +18,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Crypto\HashService;
 use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -32,6 +33,21 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SearchSuggest implements MiddlewareInterface
 {
+
+    protected HashService $hashService;
+
+    /**
+     * Constructs the instance
+     *
+     * @access public
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->hashService = GeneralUtility::makeInstance(HashService::class);
+    }
+
     /**
      * The process method of the middleware.
      *
@@ -56,7 +72,7 @@ class SearchSuggest implements MiddlewareInterface
         $output = [];
         $solrCore = (string) $parameters['solrcore'];
         $uHash = (string) $parameters['uHash'];
-        if (hash_equals(GeneralUtility::hmac((new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'), $uHash) === false) {
+        if (hash_equals($this->hashService->hmac((new Typo3Version()) . Environment::getExtensionsPath(), 'SearchSuggest'), $uHash) === false) {
             throw new \InvalidArgumentException('No valid parameter passed!', 1580585079);
         }
         // Perform Solr query.

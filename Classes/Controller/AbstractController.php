@@ -23,12 +23,10 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Pagination\PaginationInterface;
 use TYPO3\CMS\Core\Pagination\PaginatorInterface;
 use TYPO3\CMS\Core\Pagination\SimplePagination;
-use TYPO3\CMS\Core\Resource\Exception\InvalidFileException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
@@ -315,7 +313,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
                 [
                     'middleware' => 'dlf/page-view-proxy',
                     'url' => $url,
-                    'uHash' => GeneralUtility::hmac($url, 'PageViewProxy')
+                    'uHash' => $this->hashService->hmac($url, 'PageViewProxy')
                 ]
             )
             ->build();
