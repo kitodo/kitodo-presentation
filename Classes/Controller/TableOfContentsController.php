@@ -258,7 +258,7 @@ class TableOfContentsController extends AbstractController
         // resolve to the parent UID set on indexation.
         $doc = $this->document->getCurrentDocument();
         if ($doc instanceof MetsDocument && array_key_exists('points', $entry)) {
-            if ($entry['points'] === $doc->parentHref || $this->isMultiElement($entry['type']) && !empty($this->document->getPartof())) {
+            if (($entry['points'] === $doc->parentHref || $this->isMultiElement($entry['type'])) && !empty($this->document->getPartof())) {
                 unset($entry['points']);
                 $entry['targetUid'] = $this->document->getPartof();
             } elseif (GeneralUtility::isValidUrl((string) $entry['points'])) {

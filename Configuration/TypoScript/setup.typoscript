@@ -31,8 +31,8 @@ page {
   }
 
   includeJSFooter {
-    # ValidationForm plugin
-    kitodo-validationForm = EXT:dlf/Resources/Public/JavaScript/ValidationForm/ValidationForm.js
+    # Validation plugin
+    kitodo-validation = EXT:dlf/Resources/Public/JavaScript/Validation/Validation.js
 
     # Verovio plugin
     kitodo-verovio = EXT:dlf/Resources/Public/JavaScript/Verovio/verovio-toolkit-wasm.js
