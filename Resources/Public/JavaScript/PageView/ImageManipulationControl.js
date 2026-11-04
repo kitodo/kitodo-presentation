@@ -8,7 +8,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-/* global dlfUtils, dlfViewerImageManipulationControl */
+/* global dlfUtils, dlfViewerImageManipulationControl: writable */
 
 /**
  * @class

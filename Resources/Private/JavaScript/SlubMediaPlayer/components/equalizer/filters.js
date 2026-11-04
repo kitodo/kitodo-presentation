@@ -40,6 +40,38 @@
  */
 
 /**
+ *
+ * @param {number} A
+ * @param {number} S
+ */
+function slopeToQuality(A, S) {
+  // https://webaudio.github.io/Audio-EQ-Cookbook/audio-eq-cookbook.html, shelf slope
+  return 1 / Math.sqrt((A + 1 / A) * (1 / S - 1) + 2);
+}
+
+/**
+ * Normalize IIR filter coefficients.
+ *
+ * @param {dlf.media.eq.EqIIRFilterNode} options
+ */
+function normalize(options) {
+  let a0 = /** @type {number} */(options.feedback[0]);
+
+  for (let i = 0; i < 3; i++) {
+    if (a0 !== undefined) {
+      // @ts-ignore
+      options.feedback[i] /= a0;
+    }
+    if (a0 !== undefined) {
+      // @ts-ignore
+      options.feedforward[i] /= a0;
+    }
+  }
+
+  return options;
+}
+
+/**
  * Calculate IIR filter coefficients for first-order lowpass filter.
  *
  * @param {PassFilter} filter
@@ -149,36 +181,4 @@ export function highShelf({ frequency, gain, S, sampleRate }) {
       (A + 1) - (A - 1) * cos_w0 - interm,
     ],
   });
-}
-
-/**
- *
- * @param {number} A
- * @param {number} S
- */
-function slopeToQuality(A, S) {
-  // https://webaudio.github.io/Audio-EQ-Cookbook/audio-eq-cookbook.html, shelf slope
-  return 1 / Math.sqrt((A + 1 / A) * (1 / S - 1) + 2);
-}
-
-/**
- * Normalize IIR filter coefficients.
- *
- * @param {dlf.media.eq.EqIIRFilterNode} options
- */
-function normalize(options) {
-  let a0 = /** @type {number} */(options.feedback[0]);
-
-  for (let i = 0; i < 3; i++) {
-    if (a0 !== undefined) {
-      // @ts-ignore
-      options.feedback[i] /= a0;
-    }
-    if (a0 !== undefined) {
-      // @ts-ignore
-      options.feedforward[i] /= a0;
-    }
-  }
-
-  return options;
 }
