@@ -12,7 +12,7 @@
 
 namespace Kitodo\Dlf\Controller;
 
-use Kitodo\Dlf\Validation\Configuration\YamlConfigurationProvider;
+use Kitodo\Dlf\Configuration\YamlConfigurationProvider;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -34,7 +34,7 @@ class ValidationController extends AbstractController
      */
     public function mainAction(): ResponseInterface
     {
-        $validationConfiguration = GeneralUtility::makeInstance(YamlConfigurationProvider::class)->getConfiguration($this->settings['type']);
+        $validationConfiguration = GeneralUtility::makeInstance(YamlConfigurationProvider::class)->getValidationConfiguration($this->settings['type']);
 
         /** @var SiteLanguage $siteLanguage */
         $siteLanguage = $this->request->getAttribute('language') ?? $this->request->getAttribute('site')->getDefaultLanguage();

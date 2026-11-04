@@ -15,7 +15,7 @@ namespace Kitodo\Dlf\Middleware;
 use DOMDocument;
 use Exception;
 use InvalidArgumentException;
-use Kitodo\Dlf\Validation\Configuration\YamlConfigurationProvider;
+use Kitodo\Dlf\Configuration\YamlConfigurationProvider;
 use Kitodo\Dlf\Validation\DOMDocumentValidationStack;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -105,7 +105,7 @@ class DOMDocumentValidation implements MiddlewareInterface
             return $this->getJsonResponse("Content from the URL is not valid XML.", self::BAD_REQUEST);
         }
 
-        $validationConfiguration = GeneralUtility::makeInstance(YamlConfigurationProvider::class)->getConfiguration($typeParam);
+        $validationConfiguration = GeneralUtility::makeInstance(YamlConfigurationProvider::class)->getValidationConfiguration($typeParam);
 
         if (empty($validationConfiguration)) {
             $this->logger->debug('Validation configuration type in validationType parameter "' . $typeParam . '" does not exist.');

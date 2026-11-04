@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Controller\Backend;
 
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Solr\Solr;
+use Kitodo\Dlf\Configuration\YamlConfigurationProvider;
 use Kitodo\Dlf\Controller\AbstractController;
 use Kitodo\Dlf\Domain\Model\Format;
 use Kitodo\Dlf\Domain\Model\Metadata;
@@ -205,11 +206,11 @@ class NewTenantController extends AbstractController
     public function addFormatAction(): ResponseInterface
     {
         // Include formats definition file.
-        $formatsDefaults = $this->getRecords('Format');
+        $formatRecords = $this->getRecords('format');
 
         $doPersist = false;
 
-        foreach ($formatsDefaults as $type => $values) {
+        foreach ($formatRecords as $type => $values) {
             // if default format record is not found, add it to the repository
             if ($this->formatRepository->findOneBy(['type' => $type]) === null) {
                 $newRecord = GeneralUtility::makeInstance(Format::class);
@@ -241,7 +242,7 @@ class NewTenantController extends AbstractController
     public function addMetadataAction(): ResponseInterface
     {
         // Include metadata definition file.
-        $metadataDefaults = $this->getRecords('Metadata');
+        $metadataRecords = $this->getRecords('metadata');
 
         // load language file in own array
         $metadataLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_metadata.xlf', $this->siteLanguages[0]->getLocale()->getLanguageCode());
@@ -257,7 +258,7 @@ class NewTenantController extends AbstractController
         $defaultWrap = BackendUtility::getTcaFieldConfiguration('tx_dlf_metadata', 'wrap')['default'];
 
         $data = [];
-        foreach ($metadataDefaults as $indexName => $values) {
+        foreach ($metadataRecords as $indexName => $values) {
             $formatIds = [];
 
             foreach ($values['format'] as $format) {
@@ -365,13 +366,13 @@ class NewTenantController extends AbstractController
     public function addStructureAction(): ResponseInterface
     {
         // Include structure definition file.
-        $structureDefaults = $this->getRecords('Structure');
+        $structureRecords = $this->getRecords('structure');
 
         // load language file in own array
         $structureLabels = $this->languageFactory->getParsedData('EXT:dlf/Resources/Private/Language/locallang_structure.xlf', $this->siteLanguages[0]->getLocale()->getLanguageCode());
 
         $data = [];
-        foreach ($structureDefaults as $indexName => $values) {
+        foreach ($structureRecords as $indexName => $values) {
             $data['tx_dlf_structures'][uniqid('NEW')] = [
                 'pid' => $this->pid,
                 'toplevel' => $values['toplevel'],
@@ -429,17 +430,17 @@ class NewTenantController extends AbstractController
             return $this->redirect('error');
         }
 
-        $formatsDefaults = $this->getRecords('Format');
+        $formatRecords = $this->getRecords('format');
         $recordInfos['formats']['numCurrent'] = $this->formatRepository->countAll();
-        $recordInfos['formats']['numDefault'] = count($formatsDefaults);
+        $recordInfos['formats']['numDefault'] = count($formatRecords);
 
-        $structuresDefaults = $this->getRecords('Structure');
+        $structureRecords = $this->getRecords('structure');
         $recordInfos['structures']['numCurrent'] = $this->structureRepository->countAll();
-        $recordInfos['structures']['numDefault'] = count($structuresDefaults);
+        $recordInfos['structures']['numDefault'] = count($structureRecords);
 
-        $metadataDefaults = $this->getRecords('Metadata');
+        $metadataRecords = $this->getRecords('metadata');
         $recordInfos['metadata']['numCurrent'] = $this->metadataRepository->countAll();
-        $recordInfos['metadata']['numDefault'] = count($metadataDefaults);
+        $recordInfos['metadata']['numDefault'] = count($metadataRecords);
 
         $recordInfos['solrcore']['numCurrent'] = $this->solrCoreRepository->countAll();
 
@@ -493,17 +494,6 @@ class NewTenantController extends AbstractController
      */
     private function getRecords(string $recordType): array
     {
-        $filePath = GeneralUtility::getFileAbsFileName('EXT:dlf/Resources/Private/Data/' . $recordType . 'Defaults.json');
-        if (file_exists($filePath)) {
-            $fileContents = file_get_contents($filePath);
-            if (is_string($fileContents)) {
-                $records = json_decode($fileContents, true);
-
-                if (json_last_error() === JSON_ERROR_NONE) {
-                    return $records;
-                }
-            }
-        }
-        return [];
+        return GeneralUtility::makeInstance(YamlConfigurationProvider::class)->getTenantConfiguration($recordType);
     }
 }
