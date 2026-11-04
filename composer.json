@@ -48,7 +48,7 @@
   "require-dev": {
     "fluidtypo3/vhs": "^7.2",
     "friendsofphp/php-cs-fixer": "^3.95",
-    "phpstan/phpstan": "^1.12",
+    "phpstan/phpstan": "^2.2",
     "phpunit/phpunit": "^10.5",
     "spatie/phpunit-watcher": "^1.24",
     "typo3/cms-backend": "^12.4|^13.4",
