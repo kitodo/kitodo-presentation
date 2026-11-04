@@ -96,6 +96,22 @@ class ModsTest extends UnitTestCase
 
     #[Test]
     #[Group('extractMetadata')]
+    public function doesNotAddAuthorWithValueUriWhenNameIsMissing(): void
+    {
+        $xml = simplexml_load_string(
+            '<mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
+                <mods:name valueURI="https://example.org/author"/>
+            </mods:mods>'
+        );
+        $mods = new Mods();
+
+        $mods->extractMetadata($xml, $this->metadata, false);
+
+        self::assertSame([], $this->metadata['author']);
+    }
+
+    #[Test]
+    #[Group('extractMetadata')]
     public function extractPlaces(): void
     {
         $xml = simplexml_load_file(__DIR__ . '/../../Fixtures/Format/modsOriginInfo.xml');
