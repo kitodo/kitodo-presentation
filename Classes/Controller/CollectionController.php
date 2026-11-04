@@ -234,7 +234,12 @@ class CollectionController extends AbstractController
         foreach ($collections as $collection) {
             $solrQuery = '';
             if ($collection->getIndexSearch() != '') {
-                $solrQuery .= '(' . $collection->getIndexSearch() . ')';
+                // A virtual collection using a Solr local parameter such as a
+                // {!join} block may not be wrapped in parentheses (that makes the
+                // clause unparseable). Strip the leading local parameter blocks
+                // before wrapping, keeping only the reference query (mirrors
+                // SearchController::addCollectionsQuery / SolrSearch::stripJoinLocalParameters).
+                $solrQuery .= '(' . $this->stripJoinLocalParameters($collection->getIndexSearch()) . ')';
             } else {
                 $solrQuery .= 'collection:("' . Solr::escapeQuery($collection->getIndexName()) . '")';
             }
@@ -288,6 +293,22 @@ class CollectionController extends AbstractController
         }
 
         return $processedCollections;
+    }
+
+    /**
+     * Strip leading Solr local parameter blocks (e.g. {!join ...}) including any
+     * leading whitespace, so that only the reference query of a join-based
+     * virtual collection query string remains.
+     *
+     * @access private
+     *
+     * @param string $query the virtual collection query string
+     *
+     * @return string the query string without leading local parameter blocks
+     */
+    private function stripJoinLocalParameters(string $query): string
+    {
+        return trim(preg_replace('/^(\s*\{\![^}]*\})+/', '', $query));
     }
 
     /**

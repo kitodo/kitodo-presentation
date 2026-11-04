@@ -238,20 +238,7 @@ class PageViewController extends AbstractController
                     $score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
                     $score['url'] = $doc->getFileLocation($loc);
                     if ($this->settings['useInternalProxy']) {
-                        // Configure @action URL for form.
-                        $uri = $this->uriBuilder->reset()
-                            ->setTargetPageUid($this->pageUid)
-                            ->setCreateAbsoluteUri(!empty($this->settings['forceAbsoluteUrl']))
-                            ->setArguments(
-                                [
-                                    'eID' => 'tx_dlf_pageview_proxy',
-                                    'url' => $score['url'],
-                                    'uHash' => GeneralUtility::hmac($score['url'], 'PageViewProxy')
-                                ]
-                            )
-                            ->build();
-
-                        $score['url'] = $uri;
+                        $this->configureProxyUrl($score['url']);
                     }
                 }
             }
@@ -277,26 +264,33 @@ class PageViewController extends AbstractController
         $fulltext = [];
         // Get fulltext link.
         $useGroups = $this->useGroupsConfiguration->getFulltext();
-        if (array_key_exists($page, $this->document->getCurrentDocument()->physicalStructure)) {
-            $physicalStructureInfo = $this->document->getCurrentDocument()->physicalStructureInfo[$this->document->getCurrentDocument()->physicalStructure[$page]];
-            $files = $physicalStructureInfo['files'];
-            while ($useGroup = array_shift($useGroups)) {
-                if (!empty($files[$useGroup])) {
-                    $file = $this->document->getCurrentDocument()->getFileInfo($files[$useGroup]);
-                    $fulltext['url'] = $file['location'];
-                    if ($this->settings['useInternalProxy']) {
-                        $this->configureProxyUrl($fulltext['url']);
+        $currentDocument = $this->document->getCurrentDocument();
+        if (array_key_exists($page, $currentDocument->physicalStructure)) {
+            $physicalStructureInfo = $currentDocument->physicalStructureInfo[$currentDocument->physicalStructure[$page]];
+            if (array_key_exists('files', $physicalStructureInfo)) {
+                $files = $physicalStructureInfo['files'];
+                while ($useGroup = array_shift($useGroups)) {
+                    if (!empty($files[$useGroup])) {
+                        $file = $currentDocument->getFileInfo($files[$useGroup]);
+                        $fulltext['url'] = $file['location'];
+                        if ($this->settings['useInternalProxy']) {
+                            $this->configureProxyUrl($fulltext['url']);
+                        }
+                        $fulltext['mimetype'] = $file['mimeType'];
+                        break;
+                    } else {
+                        $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $useGroup . '" in document "' . $this->document->getLocation() . '"');
                     }
-                    $fulltext['mimetype'] = $file['mimeType'];
-                    break;
-                } else {
-                    $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $useGroup . '"');
                 }
+            } else {
+                $this->logger->notice('No files found for page "' . $page . '" in document "' . $this->document->getLocation() . '"');
             }
+        } else {
+            $this->logger->notice('Page "' . $page . '" not found in document "' . $this->document->getLocation() . '"');
         }
 
         if (empty($fulltext)) {
-            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . ($this->extConf['files']['useGroupsFulltext'] ?? '') . '"');
+            $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrps "' . ($this->extConf['files']['useGroupsFulltext'] ?? '') . '" in document "' . $this->document->getLocation() . '"');
         }
         return $fulltext;
     }

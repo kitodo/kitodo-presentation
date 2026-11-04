@@ -161,4 +161,49 @@ class PageViewProxyTest extends FunctionalTestCase
         self::assertLessThan(300, $response->getStatusCode());
         self::assertNotEmpty($response->getHeader('Access-Control-Allow-Methods'));
     }
+
+    #[Test]
+    public function cannotAccessFileUrlWithHeadRequest(): void
+    {
+        $response = $this->queryProxy([
+            'url' => 'file:///etc/passwd',
+        ], 'HEAD');
+
+        self::assertEquals(400, $response->getStatusCode());
+    }
+
+    #[Test]
+    public function cannotAccessUrlWithoutUrlHashUsingHead(): void
+    {
+        $response = $this->queryProxy([
+            'url' => 'http://web:8001/Tests/Fixtures/PageViewProxy/test.txt',
+        ], 'HEAD');
+
+        self::assertEquals(401, $response->getStatusCode());
+    }
+
+    #[Test]
+    public function cannotAccessUrlWithInvalidUrlHashUsingHead(): void
+    {
+        $response = $this->queryProxy([
+            'url' => 'http://web:8001/Tests/Fixtures/PageViewProxy/test.txt',
+            'uHash' => 'nottherealhash',
+        ], 'HEAD');
+
+        self::assertEquals(401, $response->getStatusCode());
+    }
+
+    #[Test]
+    public function canAccessUrlWithUrlHashUsingHead(): void
+    {
+        $targetUrl = 'http://web:8001/Tests/Fixtures/PageViewProxy/test.txt';
+        $uHash = GeneralUtility::hmac($targetUrl, 'PageViewProxy');
+
+        $response = $this->queryProxy([
+            'url' => $targetUrl,
+            'uHash' => $uHash,
+        ], 'HEAD');
+
+        self::assertEquals(200, $response->getStatusCode());
+    }
 }

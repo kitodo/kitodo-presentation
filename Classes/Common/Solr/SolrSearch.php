@@ -490,7 +490,11 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
 
         // if collections are given, we prepare the collection query string
         if (!empty($this->collections)) {
-            $params['filterquery'][]['query'] = $this->getCollectionFilterQuery($query);
+            $lFacet = false;
+            if (isset($this->searchParams['fq']) && is_array($this->searchParams['fq'])) {
+                $lFacet = true;
+            }
+            $params['filterquery'][]['query'] = $this->getCollectionFilterQuery($query, $lFacet);
         }
 
         // Set some query parameters.
@@ -843,29 +847,101 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
      * @access private
      *
      * @param string $query
+     * @param bool $lFacet when a facet is clicked
      *
      * @return string
      */
-    private function getCollectionFilterQuery(string $query): string
+    private function getCollectionFilterQuery(string $query, bool $lFacet): string
+    {
+        $listsRootDocumentsOnly = $this->listsRootDocumentsOnly($query, $lFacet);
+
+        $this->filterCollections();
+        [
+            $collectionsQueryString,
+            $virtualCollectionsQueryString,
+            $joinedCollectionQueryStrings,
+        ] = $this->collectCollectionQueries($listsRootDocumentsOnly);
+
+        // join-based virtual collections: combine the collected query strings into
+        // a single joined clause that has to lead the resulting filter query
+        $joinedCollectionQueryString = Solr::combineJoinedCollections($joinedCollectionQueryStrings, $this->logger);
+
+        if (empty($joinedCollectionQueryString)) {
+            // combine both query strings into a single filterquery via OR if both are given, otherwise pass either of those
+            return implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+        }
+
+        // A joined clause must lead the clause, so it is passed through unchanged;
+        // any regular/virtual collection query is OR-combined behind it (already
+        // parenthesised above, the join must not be parenthesised).
+        $remainder = implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+
+        return empty($remainder) ? $joinedCollectionQueryString : $joinedCollectionQueryString . ' OR ' . $remainder;
+    }
+
+    /**
+     * Check if plain browsing (no search term, no facet clicked) is requested;
+     * in that case only root documents are listed. A search of '*' is the
+     * site-wide browse query and is treated like no query at all.
+     *
+     * @access private
+     *
+     * @param string $query the search term
+     * @param bool $lFacet when a facet is clicked
+     *
+     * @return bool
+     */
+    private function listsRootDocumentsOnly(string $query, bool $lFacet): bool
+    {
+        return (empty($query) || $query === '*') && !$lFacet;
+    }
+
+    /**
+     * Collect the query strings of the configured collections and classify them
+     * into regular collections (index name), plain virtual collections (index
+     * search) and join-based virtual collections, each already wrapped in the
+     * parentheses the combined filter query requires.
+     *
+     * @access private
+     *
+     * @param bool $listsRootDocumentsOnly plain browsing restricts the root documents
+     *
+     * @return array{0: string, 1: string, 2: string[]} [collectionsQueryString, virtualCollectionsQueryString, joinedCollectionQueryStrings]
+     */
+    private function collectCollectionQueries(bool $listsRootDocumentsOnly): array
     {
         $collectionsQueryString = '';
         $virtualCollectionsQueryString = '';
-
-        $this->filterCollections();
+        $joinedCollectionQueryStrings = [];
 
         foreach ($this->collections as $collection) {
-            // check for virtual collections query string
-            if ($collection->getIndexSearch()) {
-                $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collection->getIndexSearch() . ')' : ' OR (' . $collection->getIndexSearch() . ')';
-            } else {
+            if (!$collection->getIndexSearch()) {
                 $collectionsQueryString .= empty($collectionsQueryString) ? '"' . $collection->getIndexName() . '"' : ' OR "' . $collection->getIndexName() . '"';
+                continue;
             }
+            if (!str_contains($collection->getIndexSearch(), '{!join')) {
+                $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? '(' . $collection->getIndexSearch() . ')' : ' OR (' . $collection->getIndexSearch() . ')';
+                continue;
+            }
+            // A Solr local parameter block such as a {!join} may only appear as the
+            // leading, unparenthesised token of a clause: wrapping it in parentheses,
+            // OR-combining it behind another query or combining it with a second join
+            // would make the whole clause unparseable. Join-based collections are therefore
+            // collected and merged into a single joined clause later; for plain browsing,
+            // which only lists the root documents that the reference part alone would
+            // already reach, the block is dropped instead.
+            if ($listsRootDocumentsOnly) {
+                $strippedIndexSearch = $this->stripJoinLocalParameters($collection->getIndexSearch());
+                $virtualCollectionsQueryString .= empty($virtualCollectionsQueryString) ? "(" . $strippedIndexSearch . ")" : ' OR (' . $strippedIndexSearch . ')';
+                continue;
+            }
+            $joinedCollectionQueryStrings[] = $collection->getIndexSearch();
         }
 
         // distinguish between simple collection browsing and actual searching within the collection(s)
         if (!empty($collectionsQueryString)) {
             $collectionsQueryString = '(collection_faceting:(' . $collectionsQueryString . ')';
-            if (empty($query) || $query === '*') {
+            if ($listsRootDocumentsOnly) {
                 $collectionsQueryString .= ' AND toplevel:true AND partof:0';
             }
             $collectionsQueryString .= ')';
@@ -874,10 +950,29 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         // virtual collections might query documents that are neither toplevel:true nor partof:0 and need to be searched separately
         if (!empty($virtualCollectionsQueryString)) {
             $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ')';
+            // like for regular collections: plain browsing (no search, no facet) lists root documents only
+            if ($listsRootDocumentsOnly) {
+                $virtualCollectionsQueryString = '(' . $virtualCollectionsQueryString . ' AND toplevel:true AND partof:0)';
+            }
         }
 
-        // combine both query strings into a single filterquery via OR if both are given, otherwise pass either of those
-        return implode(' OR ', array_filter([$collectionsQueryString, $virtualCollectionsQueryString]));
+        return [$collectionsQueryString, $virtualCollectionsQueryString, $joinedCollectionQueryStrings];
+    }
+
+    /**
+     * Strip leading Solr local parameter blocks (e.g. {!join ...}) including any
+     * leading whitespace, so that only the reference query of a join-based
+     * virtual collection query string remains.
+     *
+     * @access private
+     *
+     * @param string $query the virtual collection query string
+     *
+     * @return string the query string without leading local parameter blocks
+     */
+    private function stripJoinLocalParameters(string $query): string
+    {
+        return trim(preg_replace('/^(\s*\{\![^}]*\})+/', '', $query));
     }
 
     /**

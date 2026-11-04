@@ -125,7 +125,7 @@ TypoScript Basic Configuration
 Please include the Template "Basic Configuration (dlf)". This template adds
 jQuery to your page by setting the following typoscript:
 
-:typoscript:`page.includeJSlibs.jQuery`
+:typoscript:`page.includeJSFooterlibs.jQuery`
 
 
 Slug Configuration
@@ -172,7 +172,7 @@ Solr Installation
 This extension doesn't include Solr, but just a prepared configuration set.
 To setup Apache Solr, perform the following steps:
 
-1. Make sure you have Apache Solr 8.11 and running.
+1. Make sure you have Apache Solr 8.11 or 9.x installed and running.
 
    Download Solr from https://solr.apache.org/downloads.html.
    Other versions may work but are not tested.
@@ -181,18 +181,19 @@ To setup Apache Solr, perform the following steps:
 
 .. code-block:: bash
 
-      cp -r dlf/Configuration/ApacheSolr/configsets/dlf to $SOLR_HOME/configsets/
+      cp -r dlf/Configuration/ApacheSolr/configsets/dlf $SOLR_HOME/configsets/
 
-3. Get the Solr OCR Highlighting plugin and put it into contrib-directory.
+3. Get the Solr OCR Highlighting plugin and put it into the modules directory.
 
    The plugin is available on GitHub: https://github.com/dbmdz/solr-ocrhighlighting/releases.
    The documentation can be found here: https://dbmdz.github.io/solr-ocrhighlighting/.
 
    The Solr OCR Highlighting plugin is required for full text search as of Kitodo.Presentation 3.3.
+   Version 0.9.1 is the minimum version. Choose the build for your Solr major version (8 or 9).
 
 .. code-block:: bash
 
-      cp solr-ocrhighlighting-0.7.1.jar to contrib/ocrsearch/lib/
+      cp solr-ocrhighlighting-0.9.1.jar $SOLR_HOME/modules/ocrsearch/lib/
 
 4. Using basic authentication is optional but recommended.
 

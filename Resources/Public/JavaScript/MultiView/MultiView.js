@@ -53,7 +53,7 @@ iframes.forEach(iframe => {
     // Display necessary page controls
     document.querySelectorAll('.page-control > div a').forEach(link => {
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-      const pageControl = iframeDoc.querySelector('.page-control ' + link.dataset.pageControlSelector);
+      const pageControl = iframeDoc.querySelector(link.dataset.pageControlSelector);
       const div = link.closest('div');
       if(pageControl) {
         div.style.display = 'block';
@@ -80,7 +80,7 @@ multiViewControls.forEach(multiviewControl => {
 
     loadedIframes.forEach(iframe => {
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-      const pageControl = iframeDoc.querySelector('.page-control ' + clicked.dataset.pageControlSelector);
+      const pageControl = iframeDoc.querySelector(clicked.dataset.pageControlSelector);
       if(pageControl) {
         // Hide current page controls to decide again after iframe is loaded
         document.querySelectorAll('.page-control > div').forEach(div => {
