@@ -307,7 +307,7 @@ final class MetsDocument extends AbstractDocument
      * {@inheritDoc}
      * @see AbstractDocument::getFileInfo()
      */
-    public function getFileInfo($id): ?array
+    public function getFileInfo(string $id): ?array
     {
         $this->magicGetFileGrps();
         return $this->fileInfos[$id] ?? null;
@@ -319,9 +319,7 @@ final class MetsDocument extends AbstractDocument
     public function getFileLocation(string $id): string
     {
         $file = $this->getFileInfo($id);
-        if (
-            !empty($id)
-            && !empty($file)
+        if (!empty($file)
             && !empty($file['location'])
         ) {
             return (string) $file['location'];
@@ -378,8 +376,7 @@ final class MetsDocument extends AbstractDocument
     {
         $file = $this->getFileInfo($id);
         if (
-            !empty($id)
-            && !empty($file)
+            !empty($file)
             && !empty($file['mimeType'])
         ) {
             return (string) $file['mimeType'];
