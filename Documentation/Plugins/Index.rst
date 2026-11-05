@@ -346,6 +346,39 @@ FlexForm Configuration
       `t3tsref:data-type-page-id`
    :Default:
 
+Document Opener
+---------------
+
+The Document Opener plugin renders a compact URL field and an ``Open`` button.
+It can be placed like any other TYPO3 content element. Submitting the form opens
+the supplied METS, OAI-PMH or IIIF document URL on the configured viewer page
+using the :code:`tx_dlf[id]` request parameter.
+
+The target page can be selected in the plugin's FlexForm. If it is left empty,
+the plugin uses :typoscript:`plugin.tx_dlf_documentopener.settings.defaultTargetPid`,
+which the Basic Viewer configuration sets from
+:typoscript:`plugin.tx_dlf.basicViewer.viewerPid`.
+
+FlexForm Configuration
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Property:
+      Property
+   :Data Type:
+      Data type
+   :Default:
+      Default
+
+ - :Property:
+      targetPid
+   :Data Type:
+      :ref:`t3tsref:data-type-page-id`
+   :Default:
+
+
 Embedded 3D Viewer
 ------------------
 

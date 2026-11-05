@@ -83,6 +83,24 @@ $GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $a
     $iconsDirectory . 'tx-dlf-collection.svg'
 );
 
+// Plugin "documentopener".
+$plugin = 'dlf_documentopener';
+
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
+$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+    $plugin,
+    $flexFormsPathPrefix . 'DocumentOpener.xml'
+);
+
+\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+    'Dlf',
+    'DocumentOpener',
+    $langFile . 'documentOpener' . $title,
+    $iconsDirectory . 'tx-dlf-search.svg'
+);
+
 // Plugin "embedded3dviewer".
 $plugin = 'dlf_embedded3dviewer';
 

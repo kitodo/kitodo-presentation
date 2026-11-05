@@ -101,6 +101,15 @@
             <trans-unit id="collection.volumes">
                 <source><![CDATA[volumes]]></source>
             </trans-unit>
+            <trans-unit id="documentOpener.label">
+                <source><![CDATA[Enter a METS, OAI-PMH or IIIF document URL]]></source>
+            </trans-unit>
+            <trans-unit id="documentOpener.placeholder">
+                <source><![CDATA[https://example.org/document.xml]]></source>
+            </trans-unit>
+            <trans-unit id="documentOpener.submit">
+                <source><![CDATA[Open]]></source>
+            </trans-unit>
             <trans-unit id="feeds.new">
                 <source><![CDATA[NEW:]]></source>
             </trans-unit>

@@ -13,11 +13,16 @@
 
 <f:variable name="label"><f:translate key="toolbox.multiViewAddSource.label" extensionName="dlf" /></f:variable>
 
-<a href="#" title="{label}">{label}</a>
-<form class="tx-dlf-tools-multiviewaddsource" >
+<button class="tx-dlf-tools-multiviewaddsource-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="tx-dlf-tools-multiviewaddsource-form">
+    {label}
+</button>
+<form class="tx-dlf-tools-multiviewaddsource" id="tx-dlf-tools-multiviewaddsource-form" hidden>
     <p class="tx-dlf-tools-multiviewaddsource-add-document-description">{f:translate(key:'toolbox.multiViewAddSource.description', extensionName:'dlf')}</p>
     <label for="tx-dlf-tools-multiviewaddsource-location-field">{label}</label>
-    <f:form.textfield property="location" id="tx-dlf-tools-multiviewaddsource-location-field" placeholder="{f:translate(key:'toolbox.multiViewAddSource.placeholder', extensionName:'dlf')}" required="required" />
+    <f:form.textfield property="location" id="tx-dlf-tools-multiviewaddsource-location-field" type="url" placeholder="{f:translate(key:'toolbox.multiViewAddSource.placeholder', extensionName:'dlf')}" required="required" />
     <f:form.button>{f:translate(key:'toolbox.multiViewAddSource.submit', extensionName:'dlf')}</f:form.button>
 </form>
 

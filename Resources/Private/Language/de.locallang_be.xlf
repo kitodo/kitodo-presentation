@@ -109,6 +109,18 @@
                 <source><![CDATA[Kitodo: Collection]]></source>
                 <target><![CDATA[Kitodo: Kollektion]]></target>
             </trans-unit>
+            <trans-unit id="documentOpener.flexForm.targetPid.description" approved="yes">
+                <source><![CDATA[Page containing the document viewer. If empty, the viewer page from the Basic Viewer TypoScript configuration is used.]]></source>
+                <target><![CDATA[Seite mit der Dokumentenanzeige. Wenn das Feld leer ist, wird die Viewer-Seite aus der Basic-Viewer-TypoScript-Konfiguration verwendet.]]></target>
+            </trans-unit>
+            <trans-unit id="documentOpener.plugin.description" approved="yes">
+                <source><![CDATA[URL input for opening a METS, OAI-PMH or IIIF document in the viewer]]></source>
+                <target><![CDATA[URL-Eingabe zum Öffnen eines METS-, OAI-PMH- oder IIIF-Dokuments im Viewer]]></target>
+            </trans-unit>
+            <trans-unit id="documentOpener.plugin.title" approved="yes">
+                <source><![CDATA[Kitodo: Document Opener]]></source>
+                <target><![CDATA[Kitodo: Dokument öffnen]]></target>
+            </trans-unit>
             <trans-unit id="embedded3dViewer.flexForm.document">
                 <source><![CDATA[METS/MODS url containing the model]]></source>
             </trans-unit>
