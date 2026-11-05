@@ -140,11 +140,11 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     }
 
     #[Test]
-    public function canPdfDownloadTool()
+    public function canFileDownloadTool()
     {
         $settings = [
             'storagePid' => self::$storagePid,
-            'tools' => 'pdfDownloadTool'
+            'tools' => 'fileDownloadTool'
         ];
         $templateHtml = '<html>pageLinks:<f:for each="{pageLinks}" as="link">
             {link}</f:for>

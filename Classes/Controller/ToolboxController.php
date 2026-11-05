@@ -486,14 +486,14 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the PDF download tool (used in template)
+     * Renders the file download tool (used in template)
      * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
      * @return void
      */
-    private function renderPdfDownloadTool(): void
+    private function renderFileDownloadTool(): void
     {
         if (
             $this->isDocMissingOrEmpty()

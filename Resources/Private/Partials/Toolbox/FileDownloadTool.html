@@ -11,8 +11,8 @@
     LICENSE.txt file that was distributed with this source code.
 </f:comment>
 
-<li class="tx-dlf-tools-pdfdownload">
-    <span class="tx-dlf-tools-pdf-page">
+<li class="tx-dlf-tools-filedownload">
+    <span class="tx-dlf-tools-filedownload-page">
         <f:if condition="{double} === 0">
             <f:then>
                 <f:if condition="{pageLinks.0}">
@@ -29,15 +29,15 @@
             </f:else>
         </f:if>
     </span>
-    <span class="tx-dlf-tools-pdf-work">
+    <span class="tx-dlf-tools-filedownload-work">
         <f:if condition="{workLink}">
-            <f:link.external uri="{workLink}"><f:translate key="toolbox.pdfDownload.downloadWork"/> (PDF)</f:link.external>
+            <f:link.external uri="{workLink}"><f:translate key="toolbox.fileDownload.downloadWork"/> (PDF)</f:link.external>
         </f:if>
     </span>
-    <span class="tx-dlf-tools-score">
+    <span class="tx-dlf-tools-filedownload-score">
         <f:if condition="{scoreLinks}">
-            <a href="#" id="tx-dlf-score-midi-download" class="download-document"><f:translate key="toolbox.pdfDownload.downloadMidi"/> (MIDI)</a>
-            <a href="#" id="tx-dlf-score-download" class="download-document"><f:translate key="toolbox.pdfDownload.downloadScore"/> (PDF)</a>
+            <a href="#" id="tx-dlf-score-midi-download" class="download-document"><f:translate key="toolbox.fileDownload.downloadMidi"/> (MIDI)</a>
+            <a href="#" id="tx-dlf-score-download" class="download-document"><f:translate key="toolbox.fileDownload.downloadScore"/> (PDF)</a>
         </f:if>
     </span>
 </li>
