@@ -527,24 +527,26 @@ class ToolboxController extends AbstractController
         $pageLinkArray = [];
         $pageNumber = $this->requestData['page'] ?? 0;
         $useGroups = $this->useGroupsConfiguration->getDownload();
+        $physicalStructure = $this->currentDocument->physicalStructure;
+        $physicalStructureInfo = $this->currentDocument->physicalStructureInfo;
         // Get image link.
         while ($useGroup = array_shift($useGroups)) {
-            if (!empty($this->currentDocument->physicalStructure)) {
-                $firstFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$pageNumber]]['files'][$useGroup] ?? [];
-                if (!empty($firstFileGroupDownload)) {
-                    $firstPageLink = $this->currentDocument->getFileLocation($firstFileGroupDownload);
+            if (!empty($physicalStructure)) {
+                $firstFile = $physicalStructureInfo[$physicalStructure[$pageNumber]]['files'][$useGroup] ?? '';
+                if (!empty($firstFile)) {
+                    $firstPageLink = $this->currentDocument->getFileLocation($firstFile);
                     // Get second page, too, if double page view is activated.
-                    $nextPage = $pageNumber + 1;
-                    $secondFileGroupDownload = '';
-                    if (array_key_exists($nextPage, $this->currentDocument->physicalStructure)) {
-                        $secondFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$nextPage]]['files'][$useGroup];
-                    }
                     if (
                         $this->requestData['double']
                         && $pageNumber < $this->currentDocument->numPages
-                        && !empty($secondFileGroupDownload)
                     ) {
-                        $secondPageLink = $this->currentDocument->getFileLocation($secondFileGroupDownload);
+                        $nextPage = $pageNumber + 1;
+                        if (array_key_exists($nextPage, $physicalStructure)) {
+                            $secondFile = $physicalStructureInfo[$physicalStructure[$nextPage]]['files'][$useGroup] ?? '';
+                            if (!empty($secondFile)) {
+                                $secondPageLink = $this->currentDocument->getFileLocation($secondFile);
+                            }
+                        }
                     }
                     break;
                 }
