@@ -15,23 +15,23 @@
     <span class="tx-dlf-tools-filedownload-page">
         <f:if condition="{double} === 0">
             <f:then>
-                <f:if condition="{pageLinks.0}">
-                    <f:link.external uri="{pageLinks.0}"><f:translate key="toolbox.general.downloadSinglePage" /> (PDF)</f:link.external>
+                <f:if condition="{pageLink.0}">
+                    <f:link.external uri="{pageLink.0.url}"><f:translate key="toolbox.general.downloadSinglePage" /><f:if condition="{pageLink.0.isPdf}"> (PDF)</f:if></f:link.external>
                 </f:if>
             </f:then>
             <f:else>
-                <f:if condition="{pageLinks.0}">
-                    <f:link.external uri="{pageLinks.0}"><f:translate key="toolbox.general.downloadLeftPage" /> (PDF)</f:link.external>
+                <f:if condition="{pageLink.0}">
+                    <f:link.external uri="{pageLink.0.url}"><f:translate key="toolbox.general.downloadLeftPage" /><f:if condition="{pageLink.0.isPdf}"> (PDF)</f:if></f:link.external>
                 </f:if>
-                <f:if condition="{pageLinks.1}">
-                    <f:link.external uri="{pageLinks.1}"><f:translate key="toolbox.general.downloadRightPage" /> (PDF)</f:link.external>
+                <f:if condition="{pageLink.1}">
+                    <f:link.external uri="{pageLink.1.url}"><f:translate key="toolbox.general.downloadRightPage" /><f:if condition="{pageLink.1.isPdf}"> (PDF)</f:if></f:link.external>
                 </f:if>
             </f:else>
         </f:if>
     </span>
     <span class="tx-dlf-tools-filedownload-work">
         <f:if condition="{workLink}">
-            <f:link.external uri="{workLink}"><f:translate key="toolbox.fileDownload.downloadWork"/> (PDF)</f:link.external>
+            <f:link.external uri="{workLink.url}"><f:translate key="toolbox.fileDownload.downloadWork"/><f:if condition="{workLink.isPdf}"> (PDF)</f:if></f:link.external>
         </f:if>
     </span>
     <span class="tx-dlf-tools-filedownload-score">
