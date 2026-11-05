@@ -61,7 +61,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
                     'imageDownloadTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagedownloadtool',
                     'imageManipulationTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagemanipulationtool',
                     'modelDownloadTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.modeldownloadtool',
-                    'pdfDownloadTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.pdfdownloadtool',
+                    'fileDownloadTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.filedownloadtool',
                     'searchInDocumentTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.searchindocumenttool',
                 ]
             ]

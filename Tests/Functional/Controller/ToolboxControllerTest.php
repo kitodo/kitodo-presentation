@@ -140,15 +140,15 @@ class ToolboxControllerTest extends AbstractControllerTestCase
     }
 
     #[Test]
-    public function canPdfDownloadTool()
+    public function canFileDownloadTool()
     {
         $settings = [
             'storagePid' => self::$storagePid,
-            'tools' => 'pdfDownloadTool'
+            'tools' => 'fileDownloadTool'
         ];
-        $templateHtml = '<html>pageLinks:<f:for each="{pageLinks}" as="link">
-            {link}</f:for>
-            workLink:{workLink}
+        $templateHtml = '<html>pageLink:<f:for each="{pageLink}" as="link">
+            {link.url}</f:for>
+            workLink:{workLink.url}
         </html>';
         $controller = $this->setUpController(ToolboxController::class, $settings, $templateHtml);
         $request = $this->setUpRequest('main', ['tx_dlf' => [ 'id' => 2002, 'double' => 1, 'page' => 1 ] ]);
@@ -157,7 +157,7 @@ class ToolboxControllerTest extends AbstractControllerTestCase
 
         $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
-        $expected = '<html>pageLinks:
+        $expected = '<html>pageLink:
             http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000001.tif.pdf
             http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/00000002.tif.pdf
             workLink:http://web:8001/Tests/Fixtures/Controller/mets_local/jpegs/full.pdf
