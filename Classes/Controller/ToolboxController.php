@@ -179,7 +179,7 @@ class ToolboxController extends AbstractController
     private function getImage(int $page): array
     {
         // Get @USE value of METS fileGroup.
-        $image = $this->getFile($page, $this->useGroupsConfiguration->getImage());
+        $image = $this->getFile($page, $this->useGroupsConfiguration->getDownloadImage());
         if (isset($image['mimetype'])) {
             $fileExtension = Helper::getFileExtensionsForMimeType($image['mimetype']);
             if ($image['mimetype'] == 'image/jpg') {
@@ -344,7 +344,7 @@ class ToolboxController extends AbstractController
     {
         if (
             $this->isDocMissingOrEmpty()
-            || empty($this->useGroupsConfiguration->getImage())
+            || empty($this->useGroupsConfiguration->getDownloadImage())
         ) {
             // Quit without doing anything if required variables are not set.
             return;
@@ -497,7 +497,7 @@ class ToolboxController extends AbstractController
     {
         if (
             $this->isDocMissingOrEmpty()
-            || empty($this->useGroupsConfiguration->getDownload())
+            || empty($this->useGroupsConfiguration->getDownloadFile())
         ) {
             // Quit without doing anything if required variables are not set.
             return;
@@ -526,7 +526,7 @@ class ToolboxController extends AbstractController
         $secondPageLink = '';
         $pageLinkArray = [];
         $pageNumber = $this->requestData['page'] ?? 0;
-        $useGroups = $this->useGroupsConfiguration->getDownload();
+        $useGroups = $this->useGroupsConfiguration->getDownloadFile();
         $physicalStructure = $this->currentDocument->physicalStructure;
         $physicalStructureInfo = $this->currentDocument->physicalStructureInfo;
         // Get image link.
@@ -556,7 +556,7 @@ class ToolboxController extends AbstractController
             empty($firstPageLink)
             && empty($secondPageLink)
         ) {
-            $this->logger->warning('File not found in fileGrps "' . $this->extConf['files']['useGroupsDownload'] . '"');
+            $this->logger->warning('File not found in fileGrps "' . $this->extConf['files']['useGroupsDownloadFile'] . '"');
         }
 
         if (!empty($firstPageLink)) {
@@ -578,7 +578,7 @@ class ToolboxController extends AbstractController
     private function getWorkLink(): string
     {
         $workLink = '';
-        $useGroups = $this->useGroupsConfiguration->getDownload();
+        $useGroups = $this->useGroupsConfiguration->getDownloadFile();
         // Get work link.
         while ($useGroup = array_shift($useGroups)) {
             if (!empty($this->currentDocument->physicalStructure)) {
@@ -596,7 +596,7 @@ class ToolboxController extends AbstractController
             }
         }
         if (empty($workLink)) {
-            $this->logger->warning('File not found in fileGrps "' . $this->extConf['files']['useGroupsDownload'] . '"');
+            $this->logger->warning('File not found in fileGrps "' . $this->extConf['files']['useGroupsDownloadFile'] . '"');
         }
         return $workLink;
     }

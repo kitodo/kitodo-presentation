@@ -413,7 +413,7 @@ class PageViewController extends AbstractController
     {
         $image = [];
         // Get @USE value of METS fileGrp.
-        $useGroups = $this->useGroupsConfiguration->getImage();
+        $useGroups = $this->useGroupsConfiguration->getDisplayImage();
         // Reverse the order of the image groups
         // e.g. `MAX` is used first when configuration order is `DEFAULT,MAX`
         $useGroups = array_reverse($useGroups);
@@ -437,7 +437,7 @@ class PageViewController extends AbstractController
         }
 
         if (empty($image)) {
-            $this->logger->warning('No image file found for page "' . $page . '" in fileGrps "' . ($this->extConf['files']['useGroupsImage'] ?? '') . '"');
+            $this->logger->warning('No image file found for page "' . $page . '" in fileGrps "' . ($this->extConf['files']['useGroupsDisplayImage'] ?? '') . '"');
         }
         return $image;
     }
