@@ -51,8 +51,11 @@ class UseGroupsConfiguration
 
         $configKeys = [
             'useGroupsImage',
+            'useGroupsDisplayImage',
+            'useGroupsDownloadImage',
             'useGroupsThumbnail',
             'useGroupsDownload',
+            'useGroupsDownloadFile',
             'useGroupsFulltext',
             'useGroupsAudio',
             'useGroupsScore',
@@ -97,15 +100,74 @@ class UseGroupsConfiguration
     }
 
     /**
+     * Get the configuration for 'DisplayImage' use groups type.
+     *
+     * @access public
+     *
+     * @return string[]
+     */
+    public function getDisplayImage(): array
+    {
+        $config = $this->getByType('DisplayImage');
+
+        // needs to be kept until version 9.0.0
+        if (empty($config)) {
+            return $this->getImage();
+        }
+
+        return $config;
+    }
+
+    /**
+     * Get the configuration for 'DownloadImage' use groups type.
+     *
+     * @access public
+     *
+     * @return string[]
+     */
+    public function getDownloadImage(): array
+    {
+        $config = $this->getByType('DownloadImage');
+
+        // needs to be kept until version 9.0.0
+        if (empty($config)) {
+            return $this->getImage();
+        }
+
+        return $config;
+    }
+
+    /**
      * Get the configuration for 'Download' use groups type.
      *
      * @access public
+     *
+     * @deprecated 8.0.0 Setting is splitted so use 'getDownloadFile()'
      *
      * @return string[]
      */
     public function getDownload(): array
     {
         return $this->getByType('Download');
+    }
+
+    /**
+     * Get the configuration for 'DownloadFile' use groups type.
+     *
+     * @access public
+     *
+     * @return string[]
+     */
+    public function getDownloadFile(): array
+    {
+        $config = $this->getByType('DownloadFile');
+
+        // needs to be kept until version 9.0.0
+        if (empty($config)) {
+            return $this->getDownload();
+        }
+
+        return $config;
     }
 
     /**
@@ -124,6 +186,8 @@ class UseGroupsConfiguration
      * Get the configuration for 'Image' use groups type.
      *
      * @access public
+     *
+     * @deprecated 8.0.0 Setting is splitted so use 'getDisplayImage()' or 'getDownloadImage()'
      *
      * @return string[]
      */

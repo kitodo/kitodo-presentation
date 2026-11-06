@@ -28,12 +28,18 @@ general.useExternalApisForMetadata = 0
 general.requiredMetadataFields = document_format,record_id
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsAudio
 files.useGroupsAudio = AUDIO
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsDisplayImage
+files.useGroupsDisplayImage = DEFAULT,MAX
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsDownloadImage
+files.useGroupsDownloadImage = DEFAULT,MAX
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsImage
 files.useGroupsImage = DEFAULT,MAX
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsThumbnail
 files.useGroupsThumbnail = THUMBS
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsDownload
 files.useGroupsDownload = DOWNLOAD
+# cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsDownloadFile
+files.useGroupsDownloadFile = DOWNLOAD
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsFulltext
 files.useGroupsFulltext = FULLTEXT
 # cat=Files; type=string; label=LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:config.files.useGroupsScore

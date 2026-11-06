@@ -697,17 +697,29 @@
                 <target>Für die Indexierung von Dokumenten erforderliche Metadatenfelder</target>
                 <source>Metadata fields required for indexing documents</source>
             </trans-unit>
+            <trans-unit id="config.files.useGroupsDisplayImage">
+                <source>Display image file use groups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
+                <target>Bild anzeigen Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Seitenansichten nach aufsteigender Größe sortiert (Standard ist "DEFAULT,MAX")</target>
+            </trans-unit>
+            <trans-unit id="config.files.useGroupsDownloadImage">
+                <source>Download image file use groups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
+                <target>Bild herunterladen Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Seitenansichten nach aufsteigender Größe sortiert (Standard ist "DEFAULT,MAX")</target>
+            </trans-unit>
             <trans-unit id="config.files.useGroupsImage">
-                <target>Seiten Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Seitenansichten nach aufsteigender Größe sortiert (Standard ist "DEFAULT,MAX")</target>
-                <source>Page file use groups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
+                <source>Page file use groups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX") (will be removed in Kitodo.Presentation 9.0.0, please use Display image file use groups and Download image file use groups)</source>
+                <target>Seiten Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Seitenansichten nach aufsteigender Größe sortiert (Standard ist "DEFAULT,MAX") (wird in Kitodo.Presentation 9.0.0 entfernt, bitte verwenden Sie stattdessen die „Bild anzeigen Datei Nutzungsgruppen“ und „Bild herunterladen Datei Nutzungsgruppen“)</target>
             </trans-unit>
             <trans-unit id="config.files.useGroupsThumbnail">
                 <target>Vorschau Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Vorschaubilder nach absteigender Priorität sortiert (Standard ist "THUMBS")</target>
                 <source>Thumbnail file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "THUMBS")</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsDownload">
-                <target>Download Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Downloads nach absteigender Priorität sortiert (Standard ist "DOWNLOAD")</target>
                 <source>Download file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DOWNLOAD")</source>
+                <target>Download Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Downloads nach absteigender Priorität sortiert (Standard ist "DOWNLOAD") (wird in Kitodo.Presentation 9.0.0 entfernt, bitte verwenden Sie "Download Datei Nutzungsgruppen" (config.files.useGroupsDownloadFile))</target>
+            </trans-unit>
+            <trans-unit id="config.files.useGroupsDownloadFile">
+                <source>Download file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DOWNLOAD")</source>
+                <target>Download Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Downloads nach absteigender Priorität sortiert (Standard ist "DOWNLOAD")</target>
             </trans-unit>
             <trans-unit id="config.files.useGroupsFulltext">
                 <target>Volltext Datei Nutzungsgruppen: Komma-getrennte Liste der @USE Attributwerte der Volltexte nach absteigender Priorität sortiert (Standard ist "FULLTEXT")</target>
