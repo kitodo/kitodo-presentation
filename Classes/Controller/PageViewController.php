@@ -414,10 +414,9 @@ class PageViewController extends AbstractController
         $image = [];
         // Get @USE value of METS fileGrp.
         $useGroups = $this->useGroupsConfiguration->getImage();
-        // Reverse the order of the image groups
+        // Iterate backwards over the image groups
         // e.g. `MAX` is used first when configuration order is `DEFAULT,MAX`
-        $useGroups = array_reverse($useGroups);
-        foreach ($useGroups as $useGroup) {
+        while ($useGroup = @array_pop($useGroups)) {
             // Get file info for the specific page and file group
             $file = $this->fetchFileInfo($page, $useGroup, $specificDoc);
 
