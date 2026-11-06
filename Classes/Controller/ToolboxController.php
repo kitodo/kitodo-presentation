@@ -312,11 +312,14 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the score tool
+     * Renders the score tool (used in template)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
+     *
+     * @access private
      *
      * @return void
      */
-    public function renderScoreTool()
+    private function renderScoreTool(): void
     {
         if (
             $this->isDocMissingOrEmpty()
