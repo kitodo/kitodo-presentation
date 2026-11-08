@@ -98,7 +98,24 @@ PSR-15 middlewares in `Classes/Middleware/` (registered in `Configuration/Reques
 
 ## Conventions
 
-- Commit subjects are prefixed `[BUGFIX]`, `[FEATURE]`, `[MAINTENANCE]`, `[SECURITY]` or `[DOCUMENTATION]`.
-- Every PHP file starts with the Kitodo GPL-3.0-or-later license header (copy from any existing class). PHPDoc is expected on public methods.
-- `.editorconfig`: 4 spaces for PHP, 2 for JS/TS/YAML/TypoScript, tabs for JSON/XLF/SQL.
+The binding rules are the [Kitodo Coding Guidelines](https://github.com/kitodo/coding-guidelines) (German) and, through them, the [TYPO3 Coding Guidelines](https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/CodingGuidelines/Index.html). Points that matter most when editing this repository:
+
+- **One task per branch and pull request.** A branch fixes exactly one bug or implements one feature, is created from `main`, and must be kept up to date with `main` until merged. Purely cosmetic changes (formatting, reordering) or non-functional additions (docs, comments) to otherwise untouched code go in a separate branch, never mixed into a functional change. Bug fixes that also affect a supported release branch (`7.x`, see `SECURITY.md`) need a second PR there.
+- **Tests are mandatory.** Every changed or new behaviour must be covered by unit or functional tests that run in the existing GitHub workflow, and a bug fix should add a regression test. Review by release management starts only after PHPStan, php-cs-fixer and the test workflows pass.
+- **Code and documentation are in English.** Issues and mailing-list discussion may be in German.
+- **PHP style.** Follow TYPO3 CGL and PSR-12. One class per file, named after the class, in the `\Kitodo\Dlf` namespace matching the directory. Import foreign classes with `use` at the top and reference them unqualified. Declare parameter and return types everywhere. The guidelines require `declare(strict_types=1);` in every PHP file; only a few existing files have it yet, so add it to new files but do not sweep it into unrelated ones.
+- **PHPDoc.** Document every class, public method and class property; non-trivial private methods too. Use `@property[-read|-write]` on classes, `@param` then `@return` on methods, `@var` on properties, in that order.
+- **Plugins and modules** extend `AbstractController`. All URL parameters live in the `tx_dlf` namespace so plugins can read each other's input. New frontend plugins or backend modules normally belong in a separate extension depending on `kitodo/presentation`; only base functionality goes into `dlf`.
+- **Errors are logged.** Exceptions are handled or passed up to where they can be, and always logged at the appropriate level; the same goes for warnings and notices. Use getters and setters rather than public properties; always brace loops and conditionals.
+- **Commit messages.** Subjects are prefixed `[BUGFIX]`, `[FEATURE]`, `[MAINTENANCE]`, `[SECURITY]` or `[DOCUMENTATION]` and describe the change briefly but meaningfully. No changelog inside source files. Commits are signed off (`git commit -s`). Work materially shaped by an AI tool is declared with a trailer in the form used by the [Koha Coding Guidelines](https://wiki.koha-community.org/wiki/Coding_Guidelines), since the Kitodo guidelines have no rule for this yet, and the human author stays responsible for the change:
+
+  ```
+  Assisted-by: <ModelName> <Version> (<Vendor>)
+  Signed-off-by: Jane Doe <jane@example.org>
+  ```
+
+  Do not use `Co-Authored-By` for AI tools. Routine autocompletion or linting needs no trailer. When a model orchestrates sub-agents, declare only the orchestrating model.
+- Every PHP file starts with the Kitodo GPL-3.0-or-later license header (copy from any existing class).
+- `.editorconfig`: 4 spaces for PHP, 2 for JS/TS/YAML/TypoScript, tabs for JSON/XLF/SQL. UTF-8, Unix line endings, final newline.
 - Localized strings live in `Resources/Private/Language/locallang*.xlf`; new DB columns go in `ext_tables.sql` plus the matching `Configuration/TCA/` file.
+- Versioning follows SemVer. Features target the current or next stable release; about three months before a functional release, release management declares a feature freeze after which only fixes and maintenance are accepted. Announce larger development plans to release management early.
