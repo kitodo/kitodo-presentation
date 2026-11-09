@@ -510,10 +510,16 @@ abstract class AbstractDocument
      * @param string $location The URL of XML file or the IRI of the IIIF resource
      * @param mixed[] $settings
      * @param bool $forceReload Force reloading the document instead of returning the cached instance
+     * @param bool $isTrustedLocation Whether the location originates from a
+     *                               trusted source (a database record or the
+     *                               configuration) instead of user input.
+     *                               Untrusted locations are only fetched if
+     *                               their host is allowed to be fetched, which
+     *                               prevents server-side request forgery.
      *
      * @return AbstractDocument|null Instance of this class, either MetsDocument or IiifManifest
      */
-    public static function &getInstance(string $location, array $settings = [], bool $forceReload = false)
+    public static function &getInstance(string $location, array $settings = [], bool $forceReload = false, bool $isTrustedLocation = false)
     {
         // Create new instance depending on format (METS or IIIF) ...
         $documentFormat = null;
@@ -541,7 +547,18 @@ abstract class AbstractDocument
 
         // Try to load a file from the url
         if (GeneralUtility::isValidUrl($location)) {
-            $content = Helper::getUrl($location);
+            if (!$isTrustedLocation && !Helper::isUrlAllowed($location)) {
+                // A refused location is not a failed load, so it must not be
+                // remembered in the fail cache: otherwise an untrusted request
+                // for the location of a stored document would make the trusted
+                // loads of that document fail as well.
+                Helper::warning('Refused to load document from "' . $location . '" because its host is not allowed.');
+                return $instance;
+            }
+            // The host has been validated above (or the location is trusted),
+            // so the fetch is trusted; redirect targets are still validated
+            // by Helper::getUrl().
+            $content = Helper::getUrl($location, true);
             if (is_string($content)) {
                 $xml = Helper::getXmlFileAsString($content);
                 if ($xml !== false) {

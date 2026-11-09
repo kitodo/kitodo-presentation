@@ -31,8 +31,7 @@ class SolrPaginator extends AbstractPaginator
         SolrSearch $solrSearch,
         int $currentPageNumber = 1,
         int $itemsPerPage = 25
-    )
-    {
+    ) {
         $this->solrSearch = $solrSearch;
         $this->setCurrentPageNumber($currentPageNumber);
         $this->setItemsPerPage($itemsPerPage);

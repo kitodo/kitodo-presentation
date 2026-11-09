@@ -126,7 +126,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
         ];
         $templateHtml = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">{collection.label}</html>';
 
-        $actual = $this->getContentsShow($settings, $templateHtml);;
+        $actual = $this->getContentsShow($settings, $templateHtml);
         $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">Test Collection</html>';
         $this->assertEquals($expected, $actual);
     }
@@ -146,7 +146,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
         ];
         $templateHtml = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">{collection.label}</html>';
 
-        $actual = $this->getContentsShow($settings, $templateHtml);;
+        $actual = $this->getContentsShow($settings, $templateHtml);
         $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"></html>';
         $this->assertEquals($expected, $actual);
     }
@@ -166,7 +166,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
         ];
         $templateHtml = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"><f:for each="{documents.solrResults.documents}" as="page" iteration="docIterator">{page.title},</f:for></html>';
 
-        $actual = $this->getContentsShow($settings, $templateHtml);;
+        $actual = $this->getContentsShow($settings, $templateHtml);
         $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">10 Keyboard pieces - Go. S. 658,</html>';
         $this->assertEquals($expected, $actual);
     }
@@ -186,7 +186,7 @@ class CollectionControllerTest extends AbstractControllerTestCase
         ];
         $templateHtml = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"><f:for each="{documents.solrResults.documents}" as="page" iteration="docIterator">{page.title},</f:for></html>';
 
-        $actual = $this->getContentsShow($settings, $templateHtml);;
+        $actual = $this->getContentsShow($settings, $templateHtml);
         $expected = '<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"></html>';
         $this->assertEquals($expected, $actual);
     }
