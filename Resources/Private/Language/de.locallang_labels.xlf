@@ -585,13 +585,13 @@
                 <source>Model Download</source>
                 <target>Model-Download</target>
             </trans-unit>
-			<trans-unit id="tx_dlf_toolbox.multiviewaddsourcetool">
-				<source>Add Multiview Source</source>
-				<target>Quelle zur Multiview hinzufügen</target>
-			</trans-unit>
-            <trans-unit id="tx_dlf_toolbox.pdfdownloadtool">
-                <target>PDF-Download</target>
-                <source>PDF Download</source>
+            <trans-unit id="tx_dlf_toolbox.multiviewaddsourcetool">
+                <source>Add Multiview Source</source>
+                <target>Quelle zur Multiview hinzufügen</target>
+            </trans-unit>
+            <trans-unit id="tx_dlf_toolbox.filedownloadtool">
+                <source>File Download</source>
+                <target>Datei-Download</target>
             </trans-unit>
             <trans-unit id="tx_dlf_toolbox.searchindocumenttool">
                 <source>Search in Document</source>

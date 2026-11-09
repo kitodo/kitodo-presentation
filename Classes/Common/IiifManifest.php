@@ -307,7 +307,7 @@ final class IiifManifest extends AbstractDocument
     /**
      * @see AbstractDocument::getFileInfo()
      */
-    public function getFileInfo($id): ?array
+    public function getFileInfo(string $id): ?array
     {
         if (empty($this->fileInfos[$id]['location'])) {
             $this->fileInfos[$id]['location'] = $this->getFileLocation($id);
@@ -325,9 +325,6 @@ final class IiifManifest extends AbstractDocument
      */
     public function getFileLocation(string $id): string
     {
-        if ($id == null) {
-            return '';
-        }
         $resource = $this->iiif->getContainedResourceById($id);
         if (isset($resource)) {
             if ($resource instanceof CanvasInterface) {
