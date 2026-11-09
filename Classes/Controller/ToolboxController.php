@@ -396,6 +396,7 @@ class ToolboxController extends AbstractController
                     if (!empty($fileId)) {
                         $file['url'] = $this->currentDocument->getDownloadLocation($fileId);
                         $file['mimetype'] = $this->currentDocument->getFileMimeType($fileId);
+                        break;
                     } else {
                         $this->logger->warning('File not found in fileGrp "' . $fileGrp . '" in Document (' . $this->document->getLocation() . ')');
                     }
