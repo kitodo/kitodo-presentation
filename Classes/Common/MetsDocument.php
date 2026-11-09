@@ -1399,6 +1399,8 @@ final class MetsDocument extends AbstractDocument
 
                 if (array_key_exists($fileId, $fileUse)) {
                     $fileUseValue = $fileUse[$fileId];
+                } else {
+                    $fileUseValue = null;
                 }
 
                 // Check if file has valid @USE attribute.
