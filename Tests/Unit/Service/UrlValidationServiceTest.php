@@ -145,7 +145,8 @@ class UrlValidationServiceTest extends UnitTestCase
     {
         return [
             'exact host match is allowed' => ['http://web:8001/doc.xml', ['web'], true],
-            'non-matching public host is blocked' => ['http://93.184.216.34/doc.xml', ['web'], false],
+            'public host not in allow-list is still allowed' => ['http://93.184.216.34/doc.xml', ['web'], true],
+            'internal host not in allow-list is still blocked' => ['http://10.0.0.1/doc.xml', ['web'], false],
             'comma separated list, second entry matches' => ['http://intranet.example.org/doc.xml', ['web', 'intranet.example.org'], true],
             'wildcard matches a subdomain' => ['http://files.example.org/doc.xml', ['*.example.org'], true],
             'wildcard matches the base domain' => ['http://example.org/doc.xml', ['*.example.org'], true],

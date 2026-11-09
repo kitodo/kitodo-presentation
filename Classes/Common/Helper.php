@@ -530,7 +530,8 @@ class Helper
 
         try {
             $uri = new Uri($url);
-            return !empty($uri->getScheme());
+            // PSR-7 normalizes the scheme to lower case
+            return in_array($uri->getScheme(), ['http', 'https'], true);
         } catch (\InvalidArgumentException $e) {
             self::error($e->getMessage());
             return false;
@@ -769,6 +770,61 @@ class Helper
     protected const MAX_REDIRECTS = 5;
 
     /**
+     * Merge the given host patterns with the extension configuration setting
+     * "general.urlAllowList".
+     *
+     * @access protected
+     *
+     * @static
+     *
+     * @param string[] $allowedHosts Additional host patterns
+     *
+     * @return string[] All host patterns that may be fetched even if they do
+     *                  not resolve to a public address
+     */
+    protected static function getConfiguredAllowedHosts(array $allowedHosts = []): array
+    {
+        $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'general');
+        /** @var UrlValidationService $urlValidationService */
+        $urlValidationService = GeneralUtility::makeInstance(UrlValidationService::class);
+        return array_merge(
+            $allowedHosts,
+            $urlValidationService->parseHostList($extConf['urlAllowList'] ?? '')
+        );
+    }
+
+    /**
+     * Check whether an untrusted URL may be fetched server-side.
+     *
+     * This is the check that Helper::getUrl() applies to untrusted locations:
+     * the URL must be an http(s) URL whose host is either allow-listed (in
+     * $allowedHosts or in the extension configuration setting
+     * "general.urlAllowList") or resolves to a public address. Callers can
+     * use it to tell a location that is refused for policy reasons from a
+     * location that fails to load.
+     *
+     * @access public
+     *
+     * @static
+     *
+     * @param string $url The URL to check
+     * @param string[] $allowedHosts Additional host patterns that may be
+     *                               fetched even if they do not resolve to a
+     *                               public address
+     *
+     * @return bool Whether the URL may be fetched
+     */
+    public static function isUrlAllowed(string $url, array $allowedHosts = []): bool
+    {
+        if (!self::isValidHttpUrl($url)) {
+            return false;
+        }
+        /** @var UrlValidationService $urlValidationService */
+        $urlValidationService = GeneralUtility::makeInstance(UrlValidationService::class);
+        return $urlValidationService->isHostAllowed($url, self::getConfiguredAllowedHosts($allowedHosts));
+    }
+
+    /**
      * Replacement for the TYPO3 GeneralUtility::getUrl().
      *
      * This method respects the User Agent settings from extConf.
@@ -804,10 +860,7 @@ class Helper
 
         /** @var UrlValidationService $urlValidationService */
         $urlValidationService = GeneralUtility::makeInstance(UrlValidationService::class);
-        $allowedHosts = array_merge(
-            $allowedHosts,
-            $urlValidationService->parseHostList($extConf['urlAllowList'] ?? '')
-        );
+        $allowedHosts = self::getConfiguredAllowedHosts($allowedHosts);
 
         /** @var RequestFactory $requestFactory */
         $requestFactory = GeneralUtility::makeInstance(RequestFactory::class);
@@ -830,11 +883,6 @@ class Helper
             // of the remote server.
             if (!Helper::isValidHttpUrl($currentUrl)) {
                 self::warning('Refused to fetch URL "' . $currentUrl . '" because it is not a valid http(s) URL.');
-                return false;
-            }
-            $scheme = strtolower((string) parse_url($currentUrl, PHP_URL_SCHEME));
-            if (!in_array($scheme, ['http', 'https'], true)) {
-                self::warning('Refused to fetch URL "' . $currentUrl . '" because of its unsupported scheme.');
                 return false;
             }
             if (!$isTrustedLocation && !$urlValidationService->isHostAllowed($currentUrl, $allowedHosts)) {

@@ -109,8 +109,8 @@ class UrlValidationService
      */
     public function getHost(string $url): ?string
     {
-        $host = parse_url($url, PHP_URL_HOST);
-        if (!is_string($host) || $host === '') {
+        $host = (string) parse_url($url, PHP_URL_HOST);
+        if ($host === '') {
             return null;
         }
         return strtolower($host);
@@ -118,6 +118,10 @@ class UrlValidationService
 
     /**
      * Check whether the given URL may be fetched server-side.
+     *
+     * A URL may be fetched if its host is listed in $allowedHosts or if all
+     * addresses the host resolves to are public. The allow-list therefore
+     * only adds hosts; it never restricts public hosts.
      *
      * @access public
      *
@@ -133,10 +137,10 @@ class UrlValidationService
         if ($host === null) {
             return false;
         }
-        if (!empty($allowedHosts)) {
-            return $this->isHostInAllowList($host, $allowedHosts);
+        if ($this->isHostInAllowList($host, $allowedHosts)) {
+            return true;
         }
-        // default: reject hosts that resolve to private or reserved ranges
+        // hosts that are not allow-listed must resolve to public addresses
         return $this->resolvesToPublicAddress($host);
     }
 

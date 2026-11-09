@@ -98,24 +98,20 @@ a public one by default. Hosts that resolve to private or otherwise reserved
 address ranges (loopback, RFC 1918, link-local, CGNAT, multicast, etc.) are
 rejected, as are unresolvable hosts.
 
-Optionally, a validation configuration may define a ``hostAllowList``
-(a comma-separated list of hostnames or subdomain wildcards such as
-``*.example.org``). If it is set, only the listed hosts may be fetched; an
-entry for a host that would otherwise be rejected (for example an internal
-service) explicitly allows it.
+Optionally, a validation configuration may define a ``hostAllowList`` key
+(a comma-separated string or a YAML list of hostnames or subdomain wildcards
+such as ``*.example.org``). If it is set, only the listed hosts may be fetched;
+an entry for a host that would otherwise be rejected (for example an internal
+service) explicitly allows it. Unlike the extension configuration setting
+``general.urlAllowList``, this list is exclusive and also blocks public hosts
+that are not listed.
 
-   .. code-block::
+   .. code-block:: yaml
 
-      plugin.tx_dlf {
-          settings {
-              domDocumentValidation {
-                  typeA {
-                      hostAllowList = web, *.example.org
-                      ...
-                  },
-              }
-          }
-      }
+    hostAllowList: 'web, *.example.org'
+    1:
+      title: 'LLL:EXT:.../locallang.xlf:title'
+      ...
 
 For each validator, the title and description can be defined as XLF labels and are returned in the response according to the selected site language.
 

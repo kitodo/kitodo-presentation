@@ -547,7 +547,18 @@ abstract class AbstractDocument
 
         // Try to load a file from the url
         if (GeneralUtility::isValidUrl($location)) {
-            $content = Helper::getUrl($location, $isTrustedLocation);
+            if (!$isTrustedLocation && !Helper::isUrlAllowed($location)) {
+                // A refused location is not a failed load, so it must not be
+                // remembered in the fail cache: otherwise an untrusted request
+                // for the location of a stored document would make the trusted
+                // loads of that document fail as well.
+                Helper::warning('Refused to load document from "' . $location . '" because its host is not allowed.');
+                return $instance;
+            }
+            // The host has been validated above (or the location is trusted),
+            // so the fetch is trusted; redirect targets are still validated
+            // by Helper::getUrl().
+            $content = Helper::getUrl($location, true);
             if (is_string($content)) {
                 $xml = Helper::getXmlFileAsString($content);
                 if ($xml !== false) {
