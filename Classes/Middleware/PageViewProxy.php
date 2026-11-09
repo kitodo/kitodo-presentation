@@ -145,8 +145,7 @@ class PageViewProxy implements MiddlewareInterface
     protected function withCorsResponseHeaders(
         ResponseInterface $response,
         ServerRequestInterface $request
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         $origin = $request->getHeaderLine('Origin') ?: '*';
 
         return $response
@@ -171,8 +170,7 @@ class PageViewProxy implements MiddlewareInterface
         ResponseInterface $fromResponse,
         ResponseInterface $toResponse,
         array $headerNames
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         $result = $toResponse;
 
         foreach ($headerNames as $headerName) {

@@ -39,7 +39,9 @@ class AnnotationRequest
      */
     protected function requestAnnotations(string $url): array
     {
-        $jsonld = Helper::getUrl($url);
+        // The annotation server is configured by the administrator, so its URL
+        // is treated as a trusted location.
+        $jsonld = Helper::getUrl($url, true);
 
         if (is_string($jsonld)) {
             $annotationData = json_decode($jsonld, true);

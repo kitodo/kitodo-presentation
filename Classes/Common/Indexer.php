@@ -130,7 +130,7 @@ class Indexer
                 $parent = $documentRepository->findByUid($parentId);
                 if ($parent) {
                     // get XML document of parent
-                    $doc = AbstractDocument::getInstance($parent->getLocation(), ['storagePid' => $parent->getPid()], true);
+                    $doc = AbstractDocument::getInstance($parent->getLocation(), ['storagePid' => $parent->getPid()], true, isTrustedLocation: true);
                     if ($doc !== null) {
                         $parent->setCurrentDocument($doc);
                         $success = self::add($parent, $documentRepository);

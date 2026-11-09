@@ -52,7 +52,7 @@ class ItemsProcFuncTest extends FunctionalTestCase
                 ['Image Download', 'imageDownloadTool'],
                 ['Image Manipulation', 'imageManipulationTool'],
                 ['Model Download', 'modelDownloadTool'],
-                ['PDF Download', 'pdfDownloadTool'],
+                ['File Download', 'fileDownloadTool'],
                 ['Search in Document', 'searchInDocumentTool']
             ]
         ];

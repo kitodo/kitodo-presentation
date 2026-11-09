@@ -21,7 +21,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class YamlConfigurationProvider
 {
-
     /**
      * @access private
      * @var Logger This holds the logger
