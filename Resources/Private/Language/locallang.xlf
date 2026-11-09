@@ -464,13 +464,13 @@
             <trans-unit id="toolbox.multiViewAddSource.submit">
                 <source><![CDATA[Add now]]></source>
             </trans-unit>
-            <trans-unit id="toolbox.pdfDownload.downloadWork">
+            <trans-unit id="toolbox.fileDownload.downloadWork">
                 <source><![CDATA[Download whole work]]></source>
             </trans-unit>
-            <trans-unit id="toolbox.pdfDownload.downloadMidi">
+            <trans-unit id="toolbox.fileDownload.downloadMidi">
                 <source><![CDATA[Download midi file]]></source>
             </trans-unit>
-            <trans-unit id="toolbox.pdfDownload.downloadScore">
+            <trans-unit id="toolbox.fileDownload.downloadScore">
                 <source><![CDATA[Download score pdf file]]></source>
             </trans-unit>
             <trans-unit id="toolbox.rotate.left">

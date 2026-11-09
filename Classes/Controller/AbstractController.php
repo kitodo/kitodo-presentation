@@ -285,7 +285,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $this->document = $this->documentRepository->findOneBy(['recordId' => $this->requestData['recordId']]);
 
             if ($this->document !== null) {
-                $doc = Helper::getDocumentInstance($this->document->getLocation(), $this->settings);
+                $doc = Helper::getDocumentInstance($this->document->getLocation(), $this->settings, isTrustedLocation: true);
                 if ($doc !== null) {
                     $this->document->setCurrentDocument($doc);
                 } else {
@@ -789,7 +789,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
         $this->document = $this->documentRepository->findByUid($documentId);
 
         if ($this->document) {
-            $doc = Helper::getDocumentInstance($this->document->getLocation(), $this->settings);
+            $doc = Helper::getDocumentInstance($this->document->getLocation(), $this->settings, isTrustedLocation: true);
             if ($doc !== null) {
                 $doc->configPid = $this->document->getPid();
                 $this->buildMultiViewDocuments($this->document->getLocation(), $doc);

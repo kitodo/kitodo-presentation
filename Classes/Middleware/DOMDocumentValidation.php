@@ -15,7 +15,9 @@ namespace Kitodo\Dlf\Middleware;
 use DOMDocument;
 use Exception;
 use InvalidArgumentException;
+use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Configuration\YamlConfigurationProvider;
+use Kitodo\Dlf\Service\UrlValidationService;
 use Kitodo\Dlf\Validation\DOMDocumentValidationStack;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -27,10 +29,8 @@ use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
-use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Error\Message;
 use TYPO3\CMS\Extbase\Error\Result;
 
@@ -49,6 +49,29 @@ class DOMDocumentValidation implements MiddlewareInterface
     private const NOT_FOUND = 404;
 
     private ServerRequestInterface $request;
+
+    /**
+     * The service that decides whether a URL may be fetched server-side.
+     *
+     * @access protected
+     * @var UrlValidationService
+     */
+    protected UrlValidationService $urlValidationService;
+
+    /**
+     * Constructs an instance of this middleware.
+     *
+     * @access public
+     *
+     * @param UrlValidationService|null $urlValidationService The service that
+     *        decides whether a URL may be fetched server-side
+     *
+     * @return void
+     */
+    public function __construct(?UrlValidationService $urlValidationService = null)
+    {
+        $this->urlValidationService = $urlValidationService ?? GeneralUtility::makeInstance(UrlValidationService::class);
+    }
 
     /**
      * The main method of the middleware.
@@ -85,12 +108,33 @@ class DOMDocumentValidation implements MiddlewareInterface
             return $this->getJsonResponse('Validation type parameter is missing.', self::BAD_REQUEST);
         }
 
-        // load dom document from url
-        if (!GeneralUtility::isValidUrl($urlParam)) {
+        // retrieve the validation configuration before fetching the URL, so
+        // that requests for unknown validation types are rejected without
+        // issuing a server-side request
+        $validationConfiguration = GeneralUtility::makeInstance(YamlConfigurationProvider::class)->getValidationConfiguration((string) $typeParam);
+
+        if (empty($validationConfiguration)) {
+            $this->logger->debug('Validation configuration type in validationType parameter "' . $typeParam . '" does not exist.');
+            return $this->getJsonResponse('Validation type parameter does not exist.', self::NOT_FOUND);
+        }
+
+        // only http/https URLs may be fetched server-side, anything else
+        // could be used for server-side request forgery (SSRF)
+        if (!Helper::isValidHttpUrl((string) $urlParam)) {
             return $this->getJsonResponse('Parameter "' . $urlParam . '" is not a valid URL.', self::NOT_FOUND);
         }
 
-        $content = GeneralUtility::getUrl($urlParam);
+        // reject hosts that are not allowed to be fetched to prevent SSRF
+        if (!$this->isHostAllowed((string) $urlParam, $validationConfiguration)) {
+            $this->logger->warning('Attempt to validate document from non-allowed host: ' . $urlParam);
+            return $this->getJsonResponse('Host of the given URL is not allowed.', self::BAD_REQUEST);
+        }
+
+        // load dom document from url. The host has been validated above, so
+        // the location is passed as trusted here. Redirects are still
+        // validated by Helper::getUrl(), so that a redirect cannot be used to
+        // reach a host that would not be allowed.
+        $content = Helper::getUrl((string) $urlParam, true, $this->getAllowedHosts($validationConfiguration));
         if ($content === false) {
             return $this->getJsonResponse('Unable to load content from the URL.', self::NOT_FOUND);
         }
@@ -105,13 +149,8 @@ class DOMDocumentValidation implements MiddlewareInterface
             return $this->getJsonResponse("Content from the URL is not valid XML.", self::BAD_REQUEST);
         }
 
-        $validationConfiguration = GeneralUtility::makeInstance(YamlConfigurationProvider::class)->getValidationConfiguration($typeParam);
-
-        if (empty($validationConfiguration)) {
-            $this->logger->debug('Validation configuration type in validationType parameter "' . $typeParam . '" does not exist.');
-            return $this->getJsonResponse('Validation type parameter does not exist.', self::NOT_FOUND);
-        }
-
+        // the hostAllowList is middleware configuration, not a validator
+        unset($validationConfiguration['hostAllowList']);
         $validationConfiguration = $this->removeDisabledValidators($parameters, $validationConfiguration);
 
         $validation = GeneralUtility::makeInstance(DOMDocumentValidationStack::class, $validationConfiguration);
@@ -204,6 +243,47 @@ class DOMDocumentValidation implements MiddlewareInterface
             }
         }
         return $validationConfiguration;
+    }
+
+    /**
+     * Get the host patterns that may be fetched for the given validation
+     * configuration.
+     *
+     * @access protected
+     *
+     * @param mixed[] $validationConfiguration The validation configuration of the requested type
+     *
+     * @return string[] List of host patterns
+     */
+    protected function getAllowedHosts(array $validationConfiguration): array
+    {
+        // the YAML configuration may give the list as a string or as a list
+        return $this->urlValidationService->parseHostList($validationConfiguration['hostAllowList'] ?? '');
+    }
+
+    /**
+     * Check whether the host of the given URL may be fetched server-side.
+     *
+     * Unlike the extension-wide setting general.urlAllowList, a hostAllowList
+     * configured for a validation type is exclusive: if it is set, only the
+     * listed hosts may be fetched. Without it, hosts that resolve to a public
+     * address may be fetched.
+     *
+     * @access protected
+     *
+     * @param string $url The URL that is about to be fetched
+     * @param mixed[] $validationConfiguration The validation configuration of the requested type
+     *
+     * @return bool Whether the host of the given URL may be fetched
+     */
+    protected function isHostAllowed(string $url, array $validationConfiguration): bool
+    {
+        $allowedHosts = $this->getAllowedHosts($validationConfiguration);
+        if ($allowedHosts !== []) {
+            $host = $this->urlValidationService->getHost($url);
+            return $host !== null && $this->urlValidationService->isHostInAllowList($host, $allowedHosts);
+        }
+        return $this->urlValidationService->isHostAllowed($url);
     }
 
     /**
