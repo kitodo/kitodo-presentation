@@ -440,11 +440,11 @@
             <trans-unit id="tx_dlf_toolbox.modeldownloadtool">
                 <source>Model Download</source>
             </trans-unit>
-			<trans-unit id="tx_dlf_toolbox.multiviewaddsourcetool">
-				<source>Add Multiview Source</source>
-			</trans-unit>
-            <trans-unit id="tx_dlf_toolbox.pdfdownloadtool">
-                <source>PDF Download</source>
+            <trans-unit id="tx_dlf_toolbox.multiviewaddsourcetool">
+                <source>Add Multiview Source</source>
+            </trans-unit>
+            <trans-unit id="tx_dlf_toolbox.filedownloadtool">
+                <source>File Download</source>
             </trans-unit>
             <trans-unit id="tx_dlf_toolbox.searchindocumenttool">
                 <source>Search in Document</source>
