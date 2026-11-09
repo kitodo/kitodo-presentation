@@ -1,0 +1,28 @@
+name: Code Style
+
+on:
+  push:
+    branches: [ "main", "7.x" ]
+  pull_request:
+    branches: [ "main", "7.x" ]
+
+jobs:
+  psr12:
+    name: PSR-12 Code Style
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+
+      # php-cs-fixer is installed on its own instead of via `composer install`,
+      # so the style gate does not depend on the (runtime) lock file.
+      # PHP 8.2 is the minimum version supported by composer.json.
+      - name: Set up PHP and php-cs-fixer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: php-cs-fixer:3.95
+          coverage: none
+
+      - name: Check PSR-12 code style
+        run: php-cs-fixer check --show-progress=none --diff
