@@ -16,6 +16,7 @@ use Exception;
 use Kitodo\Dlf\Domain\Model\Structure;
 use Kitodo\Dlf\Domain\Repository\StructureRepository;
 use Kitodo\Dlf\Service\UrlValidationService;
+use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
@@ -770,6 +771,34 @@ class Helper
     protected const MAX_REDIRECTS = 5;
 
     /**
+     * The default maximum size in bytes that a remote file may have before
+     * it is refused by Helper::getUrl(). A value of 0 disables the limit.
+     *
+     * This prevents oversized remote files (e.g. operating system images)
+     * from exhausting the PHP process memory when an untrusted location is
+     * fetched.
+     *
+     * @access protected
+     *
+     * @static
+     *
+     * @var int
+     */
+    protected const DEFAULT_MAX_REMOTE_FILE_SIZE = 100 * 1024 * 1024;
+
+    /**
+     * The size in bytes in which the remote file is read while checking the
+     * size limit in Helper::getUrl().
+     *
+     * @access protected
+     *
+     * @static
+     *
+     * @var int
+     */
+    protected const REMOTE_FILE_SIZE_CHECK_CHUNK_SIZE = 64 * 1024;
+
+    /**
      * Merge the given host patterns with the extension configuration setting
      * "general.urlAllowList".
      *
@@ -827,7 +856,10 @@ class Helper
     /**
      * Replacement for the TYPO3 GeneralUtility::getUrl().
      *
-     * This method respects the User Agent settings from extConf.
+     * This method respects the User Agent settings from extConf and limits
+     * the size of the remote file according to the "maxRemoteFileSize"
+     * extension setting (0 disables the limit), so that oversized remote
+     * files cannot exhaust the PHP process memory.
      *
      * Only http(s) URLs are fetched, so that no stream wrapper such as
      * "file://" or "php://" can be used to read local files. Unless the
@@ -857,6 +889,7 @@ class Helper
     {
         // Get extension configuration.
         $extConf = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('dlf', 'general');
+        $maxSize = self::getMaxRemoteFileSize($extConf);
 
         /** @var UrlValidationService $urlValidationService */
         $urlValidationService = GeneralUtility::makeInstance(UrlValidationService::class);
@@ -872,6 +905,11 @@ class Helper
             // Redirects are followed manually below, so that every redirect
             // target can be validated before it is fetched.
             'allow_redirects' => false,
+            // Stream the response body so that its size can be checked while
+            // the content is being read. Without this, the whole body is
+            // buffered into memory before it can be inspected, which would
+            // make the size limit ineffective.
+            'stream' => true,
         ];
 
         $currentUrl = $url;
@@ -911,13 +949,91 @@ class Helper
                     self::warning('Refused to follow the redirect from "' . $currentUrl . '" to "' . $redirectUrl . '".');
                     return false;
                 }
+                // The body of the redirect response is not needed.
+                $response->getBody()->close();
                 $currentUrl = $redirectUrl;
                 continue;
             }
-            return $response->getBody()->getContents();
+            return self::readResponseBody($response, $currentUrl, $maxSize);
         }
         self::warning('Too many redirects while fetching URL "' . $url . '".');
         return false;
+    }
+
+    /**
+     * Read the body of a response while enforcing the maximum remote file size.
+     *
+     * A declared content length that already exceeds the limit is refused
+     * before the body is read at all. The body is then read in chunks, because
+     * a content length may be missing or lie about the actual size, so the
+     * amount of data that has actually been transferred is checked as well.
+     * This also stops the download as soon as the limit is exceeded.
+     *
+     * @access protected
+     *
+     * @static
+     *
+     * @param ResponseInterface $response The response whose body is read
+     * @param string $url The URL the response was fetched from (for logging)
+     * @param int $maxSize The maximum size in bytes, or 0 if the limit is disabled
+     *
+     * @return string|false The body or false if it exceeds the limit
+     */
+    protected static function readResponseBody(ResponseInterface $response, string $url, int $maxSize): string|false
+    {
+        $body = $response->getBody();
+
+        $declaredSize = (int) $response->getHeaderLine('Content-Length');
+        if ($maxSize !== 0 && $declaredSize > $maxSize) {
+            $body->close();
+            self::warning(
+                'Refused to fetch data from URL "' . $url . '" because its content length of'
+                . ' ' . $declaredSize . ' bytes exceeds the maximum allowed size of ' . $maxSize . ' bytes.'
+            );
+            return false;
+        }
+
+        $content = '';
+        while (!$body->eof()) {
+            $content .= $body->read(self::REMOTE_FILE_SIZE_CHECK_CHUNK_SIZE);
+            if ($maxSize !== 0 && strlen($content) > $maxSize) {
+                $body->close();
+                self::warning(
+                    'Refused to fetch data from URL "' . $url . '" because its size of'
+                    . ' ' . strlen($content) . ' bytes exceeds the maximum allowed size of ' . $maxSize . ' bytes.'
+                );
+                return false;
+            }
+        }
+        return $content;
+    }
+
+    /**
+     * Determine the maximum allowed size of a remote file from the extension
+     * configuration.
+     *
+     * The "maxRemoteFileSize" setting is given in bytes, where a value of 0
+     * disables the limit. Any other value that is not a positive integer
+     * falls back to the default value.
+     *
+     * @access protected
+     *
+     * @static
+     *
+     * @param mixed[] $extConf The "general" part of the extension configuration
+     *
+     * @return int The maximum size in bytes, or 0 if the limit is disabled
+     */
+    protected static function getMaxRemoteFileSize(array $extConf): int
+    {
+        $maxSize = $extConf['maxRemoteFileSize'] ?? self::DEFAULT_MAX_REMOTE_FILE_SIZE;
+        if (!is_int($maxSize) && (is_string($maxSize) || is_float($maxSize))) {
+            $maxSize = (int) $maxSize;
+        }
+        if (!is_int($maxSize) || $maxSize < 0) {
+            return self::DEFAULT_MAX_REMOTE_FILE_SIZE;
+        }
+        return $maxSize;
     }
 
     /**

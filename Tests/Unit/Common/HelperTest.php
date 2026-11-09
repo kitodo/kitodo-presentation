@@ -15,6 +15,8 @@ namespace Kitodo\Dlf\Tests\Unit\Common;
 use Kitodo\Dlf\Common\Helper;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Http\RequestFactory;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Log\LogManager;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -37,6 +39,11 @@ class HelperTest extends UnitTestCase
      * @var Logger|MockObject
      */
     protected Logger|MockObject $loggerMock;
+
+    /**
+     * @var RequestFactory|MockObject
+     */
+    protected RequestFactory|MockObject $requestFactoryMock;
 
     /**
      * Sets up the test environment.
@@ -350,5 +357,138 @@ XML;
             ),
             'IIP should be rejected when not in allowed DLF types'
         );
+    }
+
+    /**
+     * Get the content of the given URL with the RequestFactory replaced by a
+     * mock that returns a response with the given body and content length.
+     *
+     * @access private
+     *
+     * @param string $url The URL to fetch
+     * @param string $body The body of the response
+     * @param int|string $contentLength The value of the Content-Length header, or '' if absent
+     * @param mixed $maxRemoteFileSize The value of the "maxRemoteFileSize" extension setting
+     *
+     * @return mixed The result of Helper::getUrl()
+     */
+    private function getUrlWithMockedResponse(
+        string $url,
+        string $body,
+        int|string $contentLength = '',
+        mixed $maxRemoteFileSize = 0
+    ): mixed {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['dlf'] = [
+            'general' => ['maxRemoteFileSize' => $maxRemoteFileSize],
+        ];
+
+        $response = new Response();
+        if ($contentLength !== '') {
+            $response = $response->withHeader('Content-Length', (string) $contentLength);
+        }
+        $response->getBody()->write($body);
+        $response->getBody()->rewind();
+
+        $this->requestFactoryMock = $this->createMock(RequestFactory::class);
+        $this->requestFactoryMock
+            ->method('request')
+            ->with($url, 'GET', $this->callback(function (array $options): bool {
+                return ($options['stream'] ?? false) === true;
+            }))
+            ->willReturn($response);
+        GeneralUtility::addInstance(RequestFactory::class, $this->requestFactoryMock);
+
+        // The location is trusted so that no DNS lookup is needed for the host check.
+        return Helper::getUrl($url, true);
+    }
+
+    #[Test]
+    #[Group('getUrl')]
+    public function getUrlReturnsContentWithinSizeLimit(): void
+    {
+        $body = 'some content';
+        self::assertSame($body, $this->getUrlWithMockedResponse(
+            'https://example.org/file.xml',
+            $body,
+            strlen($body),
+            strlen($body)
+        ));
+    }
+
+    #[Test]
+    #[Group('getUrl')]
+    public function getUrlReturnsContentWhenSizeLimitDisabled(): void
+    {
+        $body = 'some very long content';
+        self::assertSame($body, $this->getUrlWithMockedResponse(
+            'https://example.org/file.xml',
+            $body,
+            strlen($body),
+            0
+        ));
+    }
+
+    #[Test]
+    #[Group('getUrl')]
+    public function getUrlRefusesContentLengthAboveLimit(): void
+    {
+        self::assertFalse($this->getUrlWithMockedResponse(
+            'https://example.org/file.xml',
+            'too large',
+            1024,
+            10
+        ));
+    }
+
+    #[Test]
+    #[Group('getUrl')]
+    public function getUrlRefusesContentWithoutContentLengthAboveLimit(): void
+    {
+        self::assertFalse($this->getUrlWithMockedResponse(
+            'https://example.org/file.xml',
+            'some content that is too large for the configured limit',
+            '',
+            10
+        ));
+    }
+
+    #[Test]
+    #[Group('getUrl')]
+    public function getUrlRefusesLyingContentLength(): void
+    {
+        // The declared content length is below the limit, but the actual
+        // body is larger.
+        self::assertFalse($this->getUrlWithMockedResponse(
+            'https://example.org/file.xml',
+            'some content that is larger than the declared content length',
+            5,
+            10
+        ));
+    }
+
+    #[Test]
+    #[Group('getUrl')]
+    public function getUrlAcceptsContentShorterThanContentLength(): void
+    {
+        $body = 'short';
+        self::assertSame($body, $this->getUrlWithMockedResponse(
+            'https://example.org/file.xml',
+            $body,
+            1024,
+            2048
+        ));
+    }
+
+    #[Test]
+    #[Group('getUrl')]
+    public function getUrlRejectsInvalidUrlsWithoutRequest(): void
+    {
+        $GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']['dlf'] = ['general' => []];
+        foreach (['not a url', 'file:///etc/hosts', 'mailto:example@example.org'] as $url) {
+            $this->requestFactoryMock = $this->createMock(RequestFactory::class);
+            $this->requestFactoryMock->expects(self::never())->method('request');
+            GeneralUtility::addInstance(RequestFactory::class, $this->requestFactoryMock);
+            self::assertFalse(Helper::getUrl($url));
+        }
     }
 }
