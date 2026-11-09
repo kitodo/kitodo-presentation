@@ -503,6 +503,9 @@
             <trans-unit id="config.general.userAgent">
                 <source>DLF User-Agent: (default is "Kitodo.Presentation")</source>
             </trans-unit>
+            <trans-unit id="config.general.urlAllowList">
+                <source>Hosts that may be fetched by the server: Comma-separated list of host names that the server may fetch, even if they do not resolve to a public address. Wildcards such as "*.example.org" are supported. Hosts that are not listed here must resolve to a public address, so that documents cannot make the server fetch resources from internal services.</source>
+            </trans-unit>
             <trans-unit id="config.general.forceAbsoluteUrlHttps">
                 <source>Use HTTPS for absolute links?: requires a valid Entry Point with "https://..." in Site Configuration (default is "FALSE")</source>
             </trans-unit>
