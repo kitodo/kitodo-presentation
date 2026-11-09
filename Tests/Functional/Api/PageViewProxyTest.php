@@ -66,7 +66,7 @@ class PageViewProxyTest extends FunctionalTestCase
         // Try to invoke the middleware directly when the test intends to target it,
         // because the test framework doesn't run the middleware pipeline.
         // Create a noop handler that returns 404 if middleware delegates
-        $handler = new class implements RequestHandlerInterface {
+        $handler = new class () implements RequestHandlerInterface {
             public function handle(ServerRequestInterface $request): ResponseInterface
             {
                 return GeneralUtility::makeInstance(Response::class)->withStatus(404);

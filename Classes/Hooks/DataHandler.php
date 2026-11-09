@@ -335,7 +335,7 @@ class DataHandler implements LoggerAwareInterface
             $this->logger->error('Document with UID ' . $id . ' not found in repository');
             return;
         }
-        $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
+        $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true, isTrustedLocation: true);
         if ($doc !== null) {
             $document->setCurrentDocument($doc);
             Indexer::add($document, $documentRepository);
