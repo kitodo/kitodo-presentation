@@ -1332,7 +1332,7 @@ TypoScript Configuration
       * imageManipulationTool
       * modelDownloadTool
       * multiViewAddSourceTool
-      * pdfDownloadTool
+      * fileDownloadTool
       * rotationTool
       * searchInDocumentTool
       * scoreTool

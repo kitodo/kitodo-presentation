@@ -94,8 +94,7 @@ class BaseCommand extends Command
         LibraryRepository $libraryRepository,
         SolrCoreRepository $solrCoreRepository,
         StructureRepository $structureRepository
-    )
-    {
+    ) {
         parent::__construct();
 
         $this->collectionRepository = $collectionRepository;
@@ -138,7 +137,7 @@ class BaseCommand extends Command
     {
         if (MathUtility::canBeInterpretedAsInteger($inputSolrId)) {
             return MathUtility::forceIntegerInRange((int) $inputSolrId, 0);
-        } else if (is_string($inputSolrId) && array_key_exists($inputSolrId, $solrCores)) {
+        } elseif (is_string($inputSolrId) && array_key_exists($inputSolrId, $solrCores)) {
             return $solrCores[$inputSolrId];
         }
         return null;
@@ -294,7 +293,7 @@ class BaseCommand extends Command
 
         if ($doc !== null && !empty($doc->parentHref)) {
             // find document object by record_id of parent
-            $parent = AbstractDocument::getInstance($doc->parentHref, ['storagePid' => $this->storagePid], true);
+            $parent = AbstractDocument::getInstance($doc->parentHref, ['storagePid' => $this->storagePid], true, isTrustedLocation: true);
 
             if ($parent->recordId) {
                 $parentDocument = $this->documentRepository->findOneBy(['recordId' => $parent->recordId]);
