@@ -393,6 +393,8 @@ class ToolboxController extends AbstractController
             }
 
             $physicalStructureInfo = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$page]] ?? null;
+            // Iterate backwards over the file groups
+            // e.g. `MAX` is used first when configuration order is `DEFAULT,MAX`
             while ($fileGrp = @array_pop($fileGrps)) {
                 if (isset($physicalStructureInfo['files'][$fileGrp])) {
                     $fileId = $physicalStructureInfo['files'][$fileGrp];
