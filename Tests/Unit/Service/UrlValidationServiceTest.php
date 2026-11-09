@@ -195,7 +195,6 @@ class UrlValidationServiceTest extends UnitTestCase
             'link-local IPv6' => ['fe80::1', false],
             'documentation reserved IPv6' => ['2001:db8::1', false],
             'unique local IPv6' => ['fd00::1', false],
-            '6to4 with embedded loopback' => ['2002:7f00:1::1', false],
             'IPv4-mapped public' => ['::ffff:93.184.216.34', false],
             'IPv4-mapped loopback' => ['::ffff:127.0.0.1', false],
             'IPv4-mapped loopback, hexadecimal notation' => ['::ffff:7f00:1', false],

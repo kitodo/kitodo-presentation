@@ -232,6 +232,10 @@ class UrlValidationService
      * IPv6 addresses such as ::ffff:127.0.0.1, which would otherwise allow
      * to bypass the IPv4 checks.
      *
+     * The list of special purpose ranges differs slightly between PHP
+     * versions, for example 6to4 addresses (2002::/16) are only rejected
+     * since PHP 8.3.
+     *
      * @access public
      *
      * @param string $address The IP address to check
