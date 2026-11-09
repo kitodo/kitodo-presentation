@@ -31,46 +31,6 @@ namespace Kitodo\Dlf\Service;
 class UrlValidationService
 {
     /**
-     * The IPv4 and IPv6 address ranges that are not globally routable and
-     * therefore must never be fetched by the server.
-     *
-     * This is an explicit list (instead of relying on
-     * FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE, whose coverage
-     * varies between PHP versions) so the result is deterministic and also
-     * covers ranges such as CGNAT (RFC 6598) and IPv6 documentation space.
-     *
-     * @var string[]
-     */
-    public const RESERVED_RANGES = [
-        // IPv4
-        '0.0.0.0/8',        // "this" network
-        '10.0.0.0/8',       // RFC 1918 private
-        '100.64.0.0/10',    // RFC 6598 carrier-grade NAT
-        '127.0.0.0/8',      // loopback
-        '169.254.0.0/16',   // link-local (incl. cloud metadata 169.254.169.254)
-        '172.16.0.0/12',    // RFC 1918 private
-        '192.0.0.0/24',     // IETF protocol assignments
-        '192.0.2.0/24',     // TEST-NET-1 (documentation)
-        '192.88.99.0/24',   // 6to4 relay anycast
-        '192.168.0.0/16',   // RFC 1918 private
-        '198.18.0.0/15',    // benchmarking
-        '198.51.100.0/24',  // TEST-NET-2 (documentation)
-        '203.0.113.0/24',   // TEST-NET-3 (documentation)
-        '224.0.0.0/4',      // multicast
-        '240.0.0.0/4',      // reserved / future use
-        '255.255.255.255/32', // broadcast
-        // IPv6
-        '::/128',           // unspecified
-        '::1/128',          // loopback
-        '64:ff9b::/96',     // NAT64 well-known prefix
-        '100::/64',         // discard-only
-        '2001:db8::/32',    // documentation
-        'fc00::/7',         // unique local address
-        'fe80::/10',        // link-local
-        'ff00::/8',         // multicast
-    ];
-
-    /**
      * Split a comma-separated list of host patterns into a list of hosts.
      *
      * @access public
@@ -266,9 +226,11 @@ class UrlValidationService
      * Check whether an IP address is a public address, i.e. not loopback,
      * private (RFC 1918), link-local, or otherwise reserved.
      *
-     * IPv4-mapped and IPv4-compatible IPv6 addresses (for example
-     * ::ffff:127.0.0.1) are unwrapped and checked as their IPv4 address,
-     * because otherwise the IPv4 checks could be bypassed.
+     * The decision is left to PHP: FILTER_FLAG_GLOBAL_RANGE only accepts
+     * addresses that are globally reachable according to the IANA special
+     * purpose address registries (RFC 6890). This also rejects IPv4-mapped
+     * IPv6 addresses such as ::ffff:127.0.0.1, which would otherwise allow
+     * to bypass the IPv4 checks.
      *
      * @access public
      *
@@ -278,73 +240,7 @@ class UrlValidationService
      */
     public function isPublicAddress(string $address): bool
     {
-        $ip = filter_var($address, FILTER_VALIDATE_IP);
-        if ($ip === false) {
-            return false;
-        }
-
-        $binary = inet_pton($ip);
-        if ($binary === false) {
-            return false;
-        }
-
-        // IPv4-mapped/compatible IPv6 addresses embed an IPv4 address in the
-        // last four bytes (e.g. ::ffff:127.0.0.1). Unwrap and check the IPv4
-        // address, because otherwise the IPv4 checks could be bypassed.
-        if (strlen($binary) === 16) {
-            if (substr($binary, 0, 10) === str_repeat("\x00", 10)
-                && ord($binary[10]) === 0xff
-                && ord($binary[11]) === 0xff) {
-                $ipv4 = inet_ntop(substr($binary, 12, 4));
-                return $ipv4 !== false && $this->isPublicAddress($ipv4);
-            }
-            if (substr($binary, 0, 12) === str_repeat("\x00", 12)) {
-                // deprecated IPv4-compatible form (::a.b.c.d)
-                $ipv4 = inet_ntop(substr($binary, 12, 4));
-                return $ipv4 !== false && $this->isPublicAddress($ipv4);
-            }
-        }
-
-        foreach (self::RESERVED_RANGES as $range) {
-            if ($this->isInRange($binary, $range)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Check whether a binary-packed IP address is contained in a CIDR range.
-     *
-     * @access public
-     *
-     * @param string $binaryIp The IP address packed with inet_pton()
-     * @param string $cidr A CIDR notation such as "10.0.0.0/8"
-     *
-     * @return bool Whether the address is in the given range
-     */
-    public function isInRange(string $binaryIp, string $cidr): bool
-    {
-        [$network, $prefix] = explode('/', $cidr, 2);
-        $networkBinary = inet_pton($network);
-        if ($networkBinary === false || strlen($binaryIp) !== strlen($networkBinary)) {
-            // invalid network or different address family (IPv4 vs IPv6)
-            return false;
-        }
-        $prefix = (int) $prefix;
-        $wholeBytes = intdiv($prefix, 8);
-        $remainingBits = $prefix % 8;
-
-        if ($wholeBytes > 0 && substr($binaryIp, 0, $wholeBytes) !== substr($networkBinary, 0, $wholeBytes)) {
-            return false;
-        }
-        if ($remainingBits === 0) {
-            return true;
-        }
-        $mask = 0xff << (8 - $remainingBits) & 0xff;
-        $ipByte = ord($binaryIp[$wholeBytes]);
-        $netByte = ord($networkBinary[$wholeBytes]);
-        return ($ipByte & $mask) === ($netByte & $mask);
+        return filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_GLOBAL_RANGE) !== false;
     }
 
     /**

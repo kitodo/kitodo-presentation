@@ -95,7 +95,7 @@ The ``url`` parameter is fetched server-side. To prevent the middleware from
 being abused for server-side request forgery (SSRF) or local file inclusion,
 only ``http`` and ``https`` URLs are accepted, and the host of the URL must be
 a public one by default. Hosts that resolve to private or otherwise reserved
-address ranges (loopback, RFC 1918, link-local, CGNAT, multicast, etc.) are
+address ranges (loopback, RFC 1918, link-local, CGNAT, etc.) are
 rejected, as are unresolvable hosts.
 
 Optionally, a validation configuration may define a ``hostAllowList`` key
