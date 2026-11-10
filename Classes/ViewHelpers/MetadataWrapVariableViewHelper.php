@@ -53,7 +53,7 @@ class MetadataWrapVariableViewHelper extends AbstractViewHelper
         $this->registerArgument('name', 'string', 'Name of variable to create', true);
     }
 
-    public function render(): void 
+    public function render(): void
     {
         $factory = GeneralUtility::makeInstance(TypoScriptStringFactory::class);
         $rootNode = $factory->parseFromString($this->renderChildren(), new AstBuilder(new NoopEventDispatcher()));
