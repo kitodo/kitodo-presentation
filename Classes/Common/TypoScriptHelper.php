@@ -37,8 +37,7 @@ class TypoScriptHelper
         private readonly IncludeTreeTraverser $includeTreeTraverser,
         private readonly ConditionVerdictAwareIncludeTreeTraverser $includeConditionVerdictAware,
         private readonly SysTemplateRepository $sysTemplateRepository,
-    )
-    {
+    ) {
         // empty
     }
 

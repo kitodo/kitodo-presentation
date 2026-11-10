@@ -136,7 +136,7 @@ class DataHandler implements LoggerAwareInterface
                 $resArray = $result->fetchAssociative();
                 if (is_array($resArray)) {
                     // Reset storing to current.
-                    $fieldArray['index_stored'] = $resArray['is_listed'];
+                    $fieldArray['index_stored'] = (int) $resArray['is_listed'];
                 }
             }
             // Index field in index if it should be used for auto-completion.
@@ -161,7 +161,7 @@ class DataHandler implements LoggerAwareInterface
 
                 if ($resArray = $result->fetchAssociative()) {
                     // Reset indexing to current.
-                    $fieldArray['index_indexed'] = $resArray['index_autocomplete'];
+                    $fieldArray['index_indexed'] = (int) $resArray['index_autocomplete'];
                 }
             }
         }
@@ -335,7 +335,7 @@ class DataHandler implements LoggerAwareInterface
             $this->logger->error('Document with UID ' . $id . ' not found in repository');
             return;
         }
-        $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true);
+        $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $document->getPid()], true, isTrustedLocation: true);
         if ($doc !== null) {
             $document->setCurrentDocument($doc);
             Indexer::add($document, $documentRepository);

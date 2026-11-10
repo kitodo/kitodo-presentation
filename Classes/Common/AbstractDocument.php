@@ -17,7 +17,6 @@ use Kitodo\Dlf\Domain\Model\Format;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Log\Logger;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
@@ -36,24 +35,24 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @abstract
  *
  * @property int $configPid this holds the PID for the configuration
- * @property-read array $formats this holds the configuration for all supported metadata encodings
+ * @property-read array<string, array<string, string>> $formats this holds the configuration for all supported metadata encodings
  * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
  * @property-read bool $hasFulltext flag with information if there are any fulltext files available
- * @property array $lastSearchedPhysicalPage the last searched logical and physical page
- * @property array $logicalUnits this holds the logical units
- * @property-read array $metadataArray this holds the documents' parsed metadata array
+ * @property array<string, mixed> $lastSearchedPhysicalPage the last searched logical and physical page
+ * @property mixed[] $logicalUnits this holds the logical units
+ * @property-read mixed[] $metadataArray this holds the documents' parsed metadata array
  * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
  * @property-read int $numPages the holds the total number of pages
  * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
- * @property-read array $physicalStructure this holds the physical structure
- * @property-read array $physicalStructureInfo this holds the physical structure metadata
+ * @property-read mixed[] $physicalStructure this holds the physical structure
+ * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
- * @property array $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
+ * @property array<string, string> $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read string $recordId the METS file's / IIIF manifest's record identifier
  * @property-read int $rootId this holds the UID of the root document or zero if not multi-volumed
- * @property-read array $smLinks this holds the smLinks between logical and physical structMap
+ * @property-read array<string, mixed[]> $smLinks this holds the smLinks between logical and physical structMap
  * @property bool $smLinksLoaded flag with information if the smLinks are loaded
- * @property-read array $tableOfContents this holds the logical structure
+ * @property-read array<int, mixed[]> $tableOfContents this holds the logical structure
  * @property bool $tableOfContentsLoaded flag with information if the table of contents is loaded
  * @property-read string $thumbnail this holds the document's thumbnail location
  * @property bool $thumbnailLoaded flag with information if the thumbnail is loaded
@@ -88,7 +87,7 @@ abstract class AbstractDocument
 
     /**
      * @access protected
-     * @var mixed[] Additional information about files (e.g., ADMID), indexed by ID.
+     * @var array<string, array<string, string>> Additional information about files (e.g., ADMID), indexed by ID.
      */
     protected array $fileInfos = [];
 
@@ -319,7 +318,7 @@ abstract class AbstractDocument
      *
      * @param string $id The "@ID" attribute of the file node (METS) or the "@id" property of the IIIF resource
      *
-     * @return mixed[]|null The set of file information
+     * @return array<string, string>|null The set of file information
      */
     abstract public function getFileInfo(string $id): ?array;
 
@@ -511,10 +510,16 @@ abstract class AbstractDocument
      * @param string $location The URL of XML file or the IRI of the IIIF resource
      * @param mixed[] $settings
      * @param bool $forceReload Force reloading the document instead of returning the cached instance
+     * @param bool $isTrustedLocation Whether the location originates from a
+     *                               trusted source (a database record or the
+     *                               configuration) instead of user input.
+     *                               Untrusted locations are only fetched if
+     *                               their host is allowed to be fetched, which
+     *                               prevents server-side request forgery.
      *
      * @return AbstractDocument|null Instance of this class, either MetsDocument or IiifManifest
      */
-    public static function &getInstance(string $location, array $settings = [], bool $forceReload = false)
+    public static function &getInstance(string $location, array $settings = [], bool $forceReload = false, bool $isTrustedLocation = false)
     {
         // Create new instance depending on format (METS or IIIF) ...
         $documentFormat = null;
@@ -542,7 +547,18 @@ abstract class AbstractDocument
 
         // Try to load a file from the url
         if (GeneralUtility::isValidUrl($location)) {
-            $content = Helper::getUrl($location);
+            if (!$isTrustedLocation && !Helper::isUrlAllowed($location)) {
+                // A refused location is not a failed load, so it must not be
+                // remembered in the fail cache: otherwise an untrusted request
+                // for the location of a stored document would make the trusted
+                // loads of that document fail as well.
+                Helper::warning('Refused to load document from "' . $location . '" because its host is not allowed.');
+                return $instance;
+            }
+            // The host has been validated above (or the location is trusted),
+            // so the fetch is trusted; redirect targets are still validated
+            // by Helper::getUrl().
+            $content = Helper::getUrl($location, true);
             if (is_string($content)) {
                 $xml = Helper::getXmlFileAsString($content);
                 if ($xml !== false) {
@@ -865,7 +881,7 @@ abstract class AbstractDocument
      *
      * @access protected
      *
-     * @return array<mixed, array<string, mixed[]>> Array of metadata with their corresponding logical structure node ID as key
+     * @return array<array<string, array<mixed>>|int> Array of metadata with their corresponding logical structure node ID as key
      */
     protected function magicGetMetadataArray(): array
     {
@@ -875,10 +891,10 @@ abstract class AbstractDocument
         }
         if (
             !$this->metadataArrayLoaded
-            || $this->metadataArray[0] != $this->configPid
+            || $this->metadataArray[0] != $this->configPid // @phpstan-ignore-line
         ) {
             $this->prepareMetadataArray();
-            $this->metadataArray[0] = $this->configPid;
+            $this->metadataArray[0] = $this->configPid; // @phpstan-ignore-line
             $this->metadataArrayLoaded = true;
         }
         return $this->metadataArray;

@@ -42,6 +42,31 @@ You should check the extension configuration!
 * open dlf
 * check and save the configuration
 
+Allowed hosts for server-side requests
+-------------------------------------
+
+To prevent server-side request forgery (SSRF), the server only fetches documents
+and document resources from hosts that are either publicly routable or listed in
+the extension configuration.
+
+The setting :code:`general.urlAllowList` is a comma-separated list of host names
+that the server may fetch even if they do not resolve to a public address.
+Wildcards such as :code:`*.example.org` are supported.
+
+   .. code-block::
+
+      general.urlAllowList = kitodo-production.example.org, *.iiif.example.org
+
+If a document is loaded from an internal host, or if a document references
+resources on an internal host (for example an IIIF image server or an
+annotation server), that host must be listed here. Otherwise the request is
+refused and a warning is written to the TYPO3 log.
+
+Note that hosts which resolve to private, loopback, link-local or otherwise
+reserved addresses are rejected by default. This includes the cloud metadata
+address :code:`169.254.169.254`. Redirects are validated in the same way, so a
+document cannot be used to reach an internal service through a redirect either.
+
 Tenant Configuration
 =======================
 

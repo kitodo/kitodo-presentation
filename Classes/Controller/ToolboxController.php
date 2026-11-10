@@ -193,7 +193,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the add document tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -211,7 +211,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the annotation tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -239,7 +239,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the audio video tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -267,7 +267,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the fulltext download tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -288,7 +288,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the fulltext tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -312,11 +312,14 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the score tool
+     * Renders the score tool (used in template)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
+     *
+     * @access private
      *
      * @return void
      */
-    public function renderScoreTool()
+    private function renderScoreTool(): void
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -334,7 +337,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the image download tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -390,12 +393,15 @@ class ToolboxController extends AbstractController
             }
 
             $physicalStructureInfo = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$page]] ?? null;
+            // Iterate backwards over the file groups
+            // e.g. `MAX` is used first when configuration order is `DEFAULT,MAX`
             while ($fileGrp = @array_pop($fileGrps)) {
                 if (isset($physicalStructureInfo['files'][$fileGrp])) {
                     $fileId = $physicalStructureInfo['files'][$fileGrp];
                     if (!empty($fileId)) {
                         $file['url'] = $this->currentDocument->getDownloadLocation($fileId);
                         $file['mimetype'] = $this->currentDocument->getFileMimeType($fileId);
+                        break;
                     } else {
                         $this->logger->warning('File not found in fileGrp "' . $fileGrp . '" in Document (' . $this->document->getLocation() . ')');
                     }
@@ -409,7 +415,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the image manipulation tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -427,7 +433,7 @@ class ToolboxController extends AbstractController
     /**
      * Renders the model download tool
      * Renders the model download tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -447,7 +453,7 @@ class ToolboxController extends AbstractController
     /**
      * Renders the viewer selection tool
      * Renders the viewer selection tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -486,14 +492,14 @@ class ToolboxController extends AbstractController
     }
 
     /**
-     * Renders the PDF download tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * Renders the file download tool (used in template)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
      * @return void
      */
-    private function renderPdfDownloadTool(): void
+    private function renderFileDownloadTool(): void
     {
         if (
             $this->isDocMissingOrEmpty()
@@ -506,7 +512,7 @@ class ToolboxController extends AbstractController
         $this->setPage();
 
         // Get single page downloads.
-        $this->view->assign('pageLinks', $this->getPageLink());
+        $this->view->assign('pageLink', $this->getPageLink());
         // Get work download.
         $this->view->assign('workLink', $this->getWorkLink());
 
@@ -518,52 +524,57 @@ class ToolboxController extends AbstractController
      *
      * @access private
      *
-     * @return array<int, string> Link to downloadable page
+     * @return array<int, array{url: string, isPdf: bool}> Link to downloadable page with its PDF flag
      */
     private function getPageLink(): array
     {
-        $firstPageLink = '';
-        $secondPageLink = '';
-        $pageLinkArray = [];
+        $firstPage = [];
+        $secondPage = [];
         $pageNumber = $this->requestData['page'] ?? 0;
         $useGroups = $this->useGroupsConfiguration->getDownload();
+        $currentDocument = $this->currentDocument;
+        $physicalStructure = $currentDocument->physicalStructure;
+        $physicalStructureInfo = $currentDocument->physicalStructureInfo;
         // Get image link.
         while ($useGroup = array_shift($useGroups)) {
-            if (!empty($this->currentDocument->physicalStructure)) {
-                $firstFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$pageNumber]]['files'][$useGroup] ?? [];
-                if (!empty($firstFileGroupDownload)) {
-                    $firstPageLink = $this->currentDocument->getFileLocation($firstFileGroupDownload);
+            if (!empty($physicalStructure)) {
+                $firstFile = $physicalStructureInfo[$physicalStructure[$pageNumber]]['files'][$useGroup] ?? '';
+                if (!empty($firstFile)) {
+                    $firstPage = $this->getFileInfo($firstFile);
                     // Get second page, too, if double page view is activated.
-                    $nextPage = $pageNumber + 1;
-                    $secondFileGroupDownload = '';
-                    if (array_key_exists($nextPage, $this->currentDocument->physicalStructure)) {
-                        $secondFileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$nextPage]]['files'][$useGroup];
-                    }
                     if (
                         $this->requestData['double']
-                        && $pageNumber < $this->currentDocument->numPages
-                        && !empty($secondFileGroupDownload)
+                        && $pageNumber < $currentDocument->numPages
                     ) {
-                        $secondPageLink = $this->currentDocument->getFileLocation($secondFileGroupDownload);
+                        $nextPage = $pageNumber + 1;
+                        if (array_key_exists($nextPage, $physicalStructure)) {
+                            $secondFile = $physicalStructureInfo[$physicalStructure[$nextPage]]['files'][$useGroup] ?? '';
+                            if (!empty($secondFile)) {
+                                $secondPage = $this->getFileInfo($secondFile);
+                            }
+                        }
                     }
                     break;
                 }
             }
         }
+
         if (
-            empty($firstPageLink)
-            && empty($secondPageLink)
+            empty($firstPage)
+            && empty($secondPage)
         ) {
             $this->logger->warning('File not found in fileGrps "' . $this->extConf['files']['useGroupsDownload'] . '"');
+            return [];
         }
 
-        if (!empty($firstPageLink)) {
-            $pageLinkArray[0] = $firstPageLink;
+        $pageLink = [];
+        if (!empty($firstPage)) {
+            $pageLink[0] = $firstPage;
         }
-        if (!empty($secondPageLink)) {
-            $pageLinkArray[1] = $secondPageLink;
+        if (!empty($secondPage)) {
+            $pageLink[1] = $secondPage;
         }
-        return $pageLinkArray;
+        return $pageLink;
     }
 
     /**
@@ -571,23 +582,26 @@ class ToolboxController extends AbstractController
      *
      * @access private
      *
-     * @return string Link to downloadable work
+     * @return array{}|array{url: string, isPdf: bool} Download link with its PDF flag
      */
-    private function getWorkLink(): string
+    private function getWorkLink(): array
     {
-        $workLink = '';
+        $workLink = [];
         $useGroups = $this->useGroupsConfiguration->getDownload();
+        $currentDocument = $this->currentDocument;
+        $physicalStructure = $currentDocument->physicalStructure;
+        $physicalStructureInfo = $currentDocument->physicalStructureInfo;
         // Get work link.
         while ($useGroup = array_shift($useGroups)) {
-            if (!empty($this->currentDocument->physicalStructure)) {
-                $fileGroupDownload = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[0]]['files'][$useGroup] ?? [];
-                if (!empty($fileGroupDownload)) {
-                    $workLink = $this->currentDocument->getFileLocation($fileGroupDownload);
+            if (!empty($physicalStructure)) {
+                $file = $physicalStructureInfo[$physicalStructure[0]]['files'][$useGroup] ?? '';
+                if (!empty($file)) {
+                    $workLink = $this->getFileInfo($file);
                     break;
                 } else {
-                    $details = $this->currentDocument->getLogicalStructure($this->currentDocument->getToplevelId());
+                    $details = $currentDocument->getLogicalStructure($currentDocument->getToplevelId());
                     if (!empty($details['files'][$useGroup])) {
-                        $workLink = $this->currentDocument->getFileLocation($details['files'][$useGroup]);
+                        $workLink = $this->getFileInfo($details['files'][$useGroup]);
                         break;
                     }
                 }
@@ -599,9 +613,27 @@ class ToolboxController extends AbstractController
         return $workLink;
     }
 
+
+    /**
+     * Get file info for given file id.
+     *
+     * @access private
+     *
+     * @param string $id
+     *
+     * @return array{url: string, isPdf: bool}
+     */
+    private function getFileInfo(string $id): array
+    {
+        return [
+            'url' => $this->currentDocument->getFileLocation($id),
+            'isPdf' => $this->currentDocument->getFileMimeType($id) === 'application/pdf',
+        ];
+    }
+
     /**
      * Renders the searchInDocument tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -668,7 +700,6 @@ class ToolboxController extends AbstractController
             $arr = explode('*', $this->settings['documentIdUrlSchema']);
 
             if (count($arr) == 2) {
-                /** @var non-empty-string $arr[0] */
                 $id = explode($arr[0], $id)[0];
             } elseif (count($arr) == 3) {
                 $sub = substr($id, strpos($id, $arr[0]) + strlen($arr[0]), strlen($id));
@@ -721,7 +752,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the rotation tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *
@@ -734,7 +765,7 @@ class ToolboxController extends AbstractController
 
     /**
      * Renders the zoom tool (used in template)
-     * @SuppressWarnings(PHPMD.UnusedPrivateMethod)
+     * @SuppressWarnings("PHPMD.UnusedPrivateMethod")
      *
      * @access private
      *

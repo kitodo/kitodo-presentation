@@ -48,7 +48,7 @@
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.95",
-    "phpstan/phpstan": "^1.12",
+    "phpstan/phpstan": "^2.2",
     "phpunit/phpunit": "^11.5",
     "spatie/phpunit-watcher": "^1.24",
     "typo3/cms-backend": "^13.4|^14.3",

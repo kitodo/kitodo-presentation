@@ -196,7 +196,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
                 // find document from repository by uid
                 $this->document = $this->documentRepository->findByUid((int) $requestData['id']);
                 if ($this->document) {
-                    $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $storagePid]);
+                    $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $storagePid], isTrustedLocation: true);
                 } else {
                     $this->logger->error('Invalid UID "' . $requestData['id'] . '" or PID "' . $storagePid . '" for document loading');
                 }
@@ -222,7 +222,7 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
         } elseif (!empty($requestData['recordId'])) {
             $this->document = $this->documentRepository->findOneBy(['recordId' => $requestData['recordId']]);
             if ($this->document !== null) {
-                $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $storagePid]);
+                $doc = AbstractDocument::getInstance($this->document->getLocation(), ['storagePid' => $storagePid], isTrustedLocation: true);
                 if ($doc !== null) {
                     $this->document->setCurrentDocument($doc);
                 } else {

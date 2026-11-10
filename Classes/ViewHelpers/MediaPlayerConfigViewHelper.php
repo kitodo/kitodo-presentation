@@ -35,8 +35,7 @@ class MediaPlayerConfigViewHelper extends AbstractViewHelper
         $this->registerArgument('settings', 'array', 'the settings array that is converted to JSON', true);
     }
 
-    public function render(): string
-    {
+    public function render(): string {
         $id = $this->arguments['id'];
         $inputSettings = $this->arguments['settings'];
 

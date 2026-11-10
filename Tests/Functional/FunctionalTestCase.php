@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Tests\Functional;
 
 use Dotenv\Dotenv;
 use GuzzleHttp\Client as HttpClient;
+use Kitodo\Dlf\Common\DocumentCacheManager;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
 use Kitodo\Dlf\Common\Solr\Solr;
@@ -65,7 +66,7 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
                     'imageDownloadTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagedownloadtool',
                     'imageManipulationTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagemanipulationtool',
                     'modelDownloadTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.modeldownloadtool',
-                    'pdfDownloadTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.pdfdownloadtool',
+                    'fileDownloadTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.filedownloadtool',
                     'searchInDocumentTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.searchindocumenttool',
                 ]
             ]
@@ -122,6 +123,11 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
 
         parent::setUp();
 
+        // The in-memory document pool is per-worker state that survives
+        // individual tests; reset it so that no document loaded by a
+        // previous test (possibly with different settings) leaks in.
+        DocumentCacheManager::resetPool();
+
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
 
         $this->baseUrl = 'http://web:8000/public/typo3temp/var/tests/functional-' . $this->identifier . '/';
@@ -153,7 +159,11 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         return [
             'general' => [
                 'useExternalApisForMetadata' => 0,
-                'requiredMetadataFields' => 'document_format'
+                'requiredMetadataFields' => 'document_format',
+                // The test fixtures are served by the local test server, which
+                // is not a publicly routable host and therefore has to be
+                // allowed explicitly.
+                'urlAllowList' => 'web,127.0.0.1,localhost'
             ],
             'files' => [
                 'useGroupsImage' => 'DEFAULT,MAX',

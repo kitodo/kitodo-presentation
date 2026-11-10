@@ -90,10 +90,8 @@ class PageViewProxy implements MiddlewareInterface
         $uriQuery = $request->getUri()->getQuery();
         if ((empty($parameters) || !isset($parameters['middleware'])) && $uriQuery !== '') {
             parse_str($uriQuery, $parsedQuery);
-            if (is_array($parsedQuery)) {
-                // merge with existing parameters taking precedence from $parameters
-                $parameters = array_merge($parsedQuery, $parameters);
-            }
+            // merge with existing parameters taking precedence from $parameters
+            $parameters = array_merge($parsedQuery, $parameters);
         }
 
         // Ensure downstream handlers can read the parsed query params
@@ -155,8 +153,7 @@ class PageViewProxy implements MiddlewareInterface
     protected function withCorsResponseHeaders(
         ResponseInterface $response,
         ServerRequestInterface $request
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         $origin = $request->getHeaderLine('Origin') ?: '*';
 
         return $response
@@ -181,8 +178,7 @@ class PageViewProxy implements MiddlewareInterface
         ResponseInterface $fromResponse,
         ResponseInterface $toResponse,
         array $headerNames
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         $result = $toResponse;
 
         foreach ($headerNames as $headerName) {

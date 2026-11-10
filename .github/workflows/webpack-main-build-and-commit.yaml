@@ -1,5 +1,5 @@
 name: Webpack Build Production & Commit (Node.js)
-description: 'This workflow triggers a Node.js build on push or manually: it reads the Node version from Build/.nvmrc, checks out the code, installs dependencies via npm ci, runs the production Webpack build, and commits the built assets back to the repository.'
+description: 'This workflow triggers a Node.js build on push or manually: it reads the Node version from Build/.nvmrc, checks out the code, installs dependencies via npm ci (without install scripts), runs the production Webpack build, and commits the built assets back to the repository.'
 
 on:
   push:
@@ -19,9 +19,13 @@ jobs:
         with:
           node-version-file: 'Build/.nvmrc'
 
+      # Install scripts are skipped because the Webpack build does not need
+      # them. The only relevant one belongs to "canvas", which is used for the
+      # Jest tests: it downloads a prebuilt binary and otherwise tries to
+      # compile it, which fails on the runner whenever the download fails.
       - name: Install Dependencies from package-lock.json
         working-directory: Build
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Run Webpack Build for Production
         working-directory: Build

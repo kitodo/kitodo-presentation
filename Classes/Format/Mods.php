@@ -182,11 +182,14 @@ class Mods implements MetadataInterface
             $this->metadata['author'][$i] = trim(implode(', ', $name));
         }
 
-        if (!empty($authors[$i]->getValueURI())) {
+        if (
+            !empty($authors[$i]->getValueURI())
+            && isset($this->metadata['author'][$i])
+        ) {
             $displayName = $this->metadata['author'][$i];
             $this->metadata['author'][$i] = [
                 'name' => $displayName,
-                'url' => (string) $authors[$i]->getValueURI()
+                'url' => $authors[$i]->getValueURI()
             ];
         }
     }

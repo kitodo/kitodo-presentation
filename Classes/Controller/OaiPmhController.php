@@ -191,13 +191,13 @@ class OaiPmhController extends AbstractController
 
         $metadata[] = ['dc:identifier' => $record['record_id']];
 
-        $this->addDublinCoreData($metadata, 'dc:identifier', $record['purl']);
-        $this->addDublinCoreData($metadata, 'dc:identifier', $record['prod_id']);
-        $this->addDublinCoreData($metadata, 'dc:identifier', $record['urn']);
-        $this->addDublinCoreData($metadata, 'dc:title', $record['title']);
-        $this->addDublinCoreData($metadata, 'dc:creator', $record['author']);
-        $this->addDublinCoreData($metadata, 'dc:date', $record['year']);
-        $this->addDublinCoreData($metadata, 'dc:coverage', $record['place']);
+        $this->addDublinCoreData($metadata, 'dc:identifier', $record['purl'] ?? null);
+        $this->addDublinCoreData($metadata, 'dc:identifier', $record['prod_id'] ?? null);
+        $this->addDublinCoreData($metadata, 'dc:identifier', $record['urn'] ?? null);
+        $this->addDublinCoreData($metadata, 'dc:title', $record['title'] ?? null);
+        $this->addDublinCoreData($metadata, 'dc:creator', $record['author'] ?? null);
+        $this->addDublinCoreData($metadata, 'dc:date', $record['year'] ?? null);
+        $this->addDublinCoreData($metadata, 'dc:coverage', $record['place'] ?? null);
 
         $record[] = ['dc:format' => $record['application/mets+xml'] ?? ''];
         $record[] = ['dc:type' => $record['Text'] ?? ''];
@@ -208,11 +208,11 @@ class OaiPmhController extends AbstractController
                 $metadata[] = ['dc:relation' => $document->getRecordId()];
             }
         }
-        $this->addDublinCoreData($metadata, 'dc:rights', $record['license']);
-        $this->addDublinCoreData($metadata, 'dc:rights', $record['terms']);
-        $this->addDublinCoreData($metadata, 'dc:rights', $record['restrictions']);
-        $this->addDublinCoreData($metadata, 'dc:rights', $record['out_of_print']);
-        $this->addDublinCoreData($metadata, 'dc:rights', $record['rights_info']);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['license'] ?? null);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['terms'] ?? null);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['restrictions'] ?? null);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['out_of_print'] ?? null);
+        $this->addDublinCoreData($metadata, 'dc:rights', $record['rights_info'] ?? null);
 
         return $metadata;
     }

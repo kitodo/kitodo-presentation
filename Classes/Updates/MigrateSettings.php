@@ -179,7 +179,7 @@ class MigrateSettings implements UpgradeWizardInterface
                 foreach ($fields as $field) {
                     // change the index attribute if it doesn't start with 'settings.' yet
                     if (!str_contains($field['index'], 'settings.')) {
-                        $field['index'] = 'settings.' . $field['index']; // @phpstan-ignore-line
+                        $field['index'] = 'settings.' . $field['index'];
                     }
                 }
             }

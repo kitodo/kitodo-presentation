@@ -271,12 +271,14 @@ class PageViewController extends AbstractController
                 while ($useGroup = array_shift($useGroups)) {
                     if (!empty($files[$useGroup])) {
                         $file = $currentDocument->getFileInfo($files[$useGroup]);
-                        $fulltext['url'] = $file['location'];
-                        if ($this->settings['useInternalProxy']) {
-                            $this->configureProxyUrl($fulltext['url']);
+                        if ($file !== null) {
+                            $fulltext['url'] = $file['location'];
+                            if ($this->settings['useInternalProxy']) {
+                                $this->configureProxyUrl($fulltext['url']);
+                            }
+                            $fulltext['mimetype'] = $file['mimeType'];
+                            break;
                         }
-                        $fulltext['mimetype'] = $file['mimeType'];
-                        break;
                     } else {
                         $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $useGroup . '" in document "' . $this->document->getLocation() . '"');
                     }
@@ -411,10 +413,9 @@ class PageViewController extends AbstractController
         $image = [];
         // Get @USE value of METS fileGrp.
         $useGroups = $this->useGroupsConfiguration->getImage();
-        // Reverse the order of the image groups
+        // Iterate backwards over the image groups
         // e.g. `MAX` is used first when configuration order is `DEFAULT,MAX`
-        $useGroups = array_reverse($useGroups);
-        foreach ($useGroups as $useGroup) {
+        while ($useGroup = @array_pop($useGroups)) {
             // Get file info for the specific page and file group
             $file = $this->fetchFileInfo($page, $useGroup, $specificDoc);
 
