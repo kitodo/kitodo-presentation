@@ -22,7 +22,7 @@ class IsArrayViewHelper extends AbstractViewHelper
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-        $this->registerArgument('subject', 'string', 'The subject');
+        $this->registerArgument('subject', 'mixed', 'The subject');
     }
 
     public function render(): bool
