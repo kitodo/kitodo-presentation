@@ -527,13 +527,22 @@
             <trans-unit id="config.general.requiredMetadataFields">
                 <source>Metadata fields required for indexing documents</source>
             </trans-unit>
+            <trans-unit id="config.files.useGroupsDisplayImage">
+                <source>Display image file use groups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
+            </trans-unit>
+            <trans-unit id="config.files.useGroupsDownloadImage">
+                <source>Download image file use groups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
+            </trans-unit>
             <trans-unit id="config.files.useGroupsImage">
-                <source>Page file use groups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
+                <source>Page file use groups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX") (will be removed in Kitodo.Presentation 9.0.0, please use Display image file use groups and Download image file use groups)</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsThumbnail">
                 <source>Thumbnail file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "THUMBS")</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsDownload">
+                <source>Download file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DOWNLOAD") (will be removed in Kitodo.Presentation 9.0.0, please use Download file use groups(config.files.useGroupsDownloadFile))</source>
+            </trans-unit>
+            <trans-unit id="config.files.useGroupsDownloadFile">
                 <source>Download file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DOWNLOAD")</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsFulltext">
