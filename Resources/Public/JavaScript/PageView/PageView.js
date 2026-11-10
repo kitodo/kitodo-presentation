@@ -67,7 +67,7 @@ var dlfViewer = function (settings) {
      * @private
      */
     this.dic = $.extend({
-      'overview-map': 'Overview Map',
+        'overview-map': 'Overview Map',
     }, dlfUtils.parseDataDic(document.getElementById(this.div)));
 
     /**
@@ -110,7 +110,7 @@ var dlfViewer = function (settings) {
 
     this.measureCoords = dlfUtils.exists(settings.measureCoords) ? settings.measureCoords : [];
 
-    this.measureIdToIndex =  dlfUtils.exists(settings.measureIdToIndex) ? settings.measureIdToIndex : [];
+    this.measureIdToIndex = dlfUtils.exists(settings.measureIdToIndex) ? settings.measureIdToIndex : [];
 
     this.measureLayer = undefined;
 
@@ -197,7 +197,7 @@ var dlfViewer = function (settings) {
      *
      * @private
      */
-     this.highlightWords = null;
+    this.highlightWords = null;
 
     /**
      * @type {object|undefined}
@@ -268,7 +268,7 @@ var dlfViewer = function (settings) {
      *
      * @public
      */
-     this.tk = null;
+    this.tk = null;
 
     /**
      * @type {boolean|false}
@@ -355,7 +355,7 @@ dlfViewer.prototype.makeLoadingIndicator = function (progressElementId) {
             this.progress(key, 0, 0);
         },
         progress(key, value, total) {
-            this.values[key] = { value, total };
+            this.values[key] = {value, total};
             this.update();
         },
         done(key) {
@@ -381,7 +381,7 @@ dlfViewer.prototype.countPages = function () {
  * Methods inits and binds the custom controls to the dlfViewer. Right now that are the
  * fulltext, score, and the image manipulation control
  */
-dlfViewer.prototype.addCustomControls = function(image) {
+dlfViewer.prototype.addCustomControls = function (image) {
     var fulltextControl = undefined,
         fulltextDownloadControl = undefined,
         annotationControl = undefined,
@@ -410,11 +410,11 @@ dlfViewer.prototype.addCustomControls = function(image) {
 
         var i = 0, xLow = 0, xHigh = 0, yLow = 0, yHigh = 0;
 
-        listItems.each(function(index) {
+        listItems.each(function (index) {
             var annotationId = $(this).data('annotation-id');
             var dataRanges = $(this).data('range-facsimile').split(";");
 
-            $.each(dataRanges, function(key, value) {
+            $.each(dataRanges, function (key, value) {
 
                 var splitValue = value.split(","),
                     x1 = splitValue[0],
@@ -445,16 +445,16 @@ dlfViewer.prototype.addCustomControls = function(image) {
         let clicked = null;
         map.on('singleclick', function (evt) {
             if (clicked !== null) {
-                $('[data-annotation-id="'+clicked.getId()+'"]').removeClass('active');
-                $('[data-annotation-id="'+clicked.getId()+'"]').removeAttr('open');
+                $('[data-annotation-id="' + clicked.getId() + '"]').removeClass('active');
+                $('[data-annotation-id="' + clicked.getId() + '"]').removeAttr('open');
                 clicked.setStyle(undefined);
                 clicked = null;
             }
-            map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+            map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
                 if (feature !== null) {
                     feature.setStyle(dlfViewerOLStyles.selectStyle());
-                    $('[data-annotation-id="'+feature.getId()+'"]').addClass('active');
-                    $('[data-annotation-id="'+feature.getId()+'"]').attr('open', '');
+                    $('[data-annotation-id="' + feature.getId() + '"]').addClass('active');
+                    $('[data-annotation-id="' + feature.getId() + '"]').attr('open', '');
                     clicked = feature;
                     return true;
                 }
@@ -464,7 +464,7 @@ dlfViewer.prototype.addCustomControls = function(image) {
         let selected = null;
         map.on('pointermove', function (e) {
             if (selected !== null) {
-                $('[data-annotation-id="'+selected.getId()+'"]').removeClass('hover')
+                $('[data-annotation-id="' + selected.getId() + '"]').removeClass('hover')
                 selected.setStyle(undefined);
                 selected = null;
 
@@ -476,7 +476,7 @@ dlfViewer.prototype.addCustomControls = function(image) {
             map.forEachFeatureAtPixel(e.pixel, function (f) {
                 selected = f;
                 dlfViewerOLStyles.hoverStyle().getFill().setColor(f.get('COLOR') || '#eeeeee');
-                $('[data-annotation-id="'+selected.getId()+'"]').addClass('hover');
+                $('[data-annotation-id="' + selected.getId() + '"]').addClass('hover');
                 f.setStyle(dlfViewerOLStyles.hoverStyle());
                 return true;
             });
@@ -485,7 +485,7 @@ dlfViewer.prototype.addCustomControls = function(image) {
         //
         // Hover event on html annotation
         //
-        $('[data-range-facsimile]').each(function(index) {
+        $('[data-range-facsimile]').each(function (index) {
             $(this).on('mouseenter', function (evt) {
                 var feature = annotationLayer.getSource().getFeatureById($(this).data('annotation-id'));
                 if (feature !== null) {
@@ -555,7 +555,7 @@ dlfViewer.prototype.addCustomControls = function(image) {
 
             var i = 0, xLow = 0, xHigh = 0, yLow = 0, yHigh = 0;
 
-            $.each(this.measureCoords, function(key, value) {
+            $.each(this.measureCoords, function (key, value) {
                 var splitValue = value.split(","),
                     x1 = splitValue[0],
                     y1 = splitValue[1],
@@ -603,7 +603,7 @@ dlfViewer.prototype.addCustomControls = function(image) {
                     context.verovioMeasureActive = null;
                 }
 
-                map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+                map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
                     if (feature !== null) {
                         // show ajax spinner if exists
                         if ($('#overlay .ajax-spinner')) {
@@ -611,7 +611,7 @@ dlfViewer.prototype.addCustomControls = function(image) {
                         }
 
                         context.facsimileMeasureActive = feature;
-                        context.verovioMeasureActive = $('#tx-dlf-score-'+context.counter+' #' + feature.getId() + ' rect').addClass('active');
+                        context.verovioMeasureActive = $('#tx-dlf-score-' + context.counter + ' #' + feature.getId() + ' rect').addClass('active');
                         if (context.measureIdToIndex[feature.getId()]) {
                             dlfUtils.appendUrlParameterAndReload('measure', context.measureIdToIndex[feature.getId()]);
                         }
@@ -636,15 +636,15 @@ dlfViewer.prototype.addCustomControls = function(image) {
                     dlfViewerOLStyles.hoverStyle().getFill().setColor(f.get('COLOR') || '#eeeeee');
                     f.setStyle(dlfViewerOLStyles.hoverStyle());
 
-                    context.verovioMeasureHover = $('#tx-dlf-score-'+context.counter+' #' + context.facsimileMeasureHover.getId() + ' rect').addClass('hover');
+                    context.verovioMeasureHover = $('#tx-dlf-score-' + context.counter + ' #' + context.facsimileMeasureHover.getId() + ' rect').addClass('hover');
                     return true;
                 });
             });
         }
 
-	} else {
-		$('#tx-dlf-tools-score').remove();
-	}
+    } else {
+        $('#tx-dlf-tools-score').remove();
+    }
 
 
     if (this.annotationContainers[0] !== undefined && this.annotationContainers[0].annotationContainers !== undefined
@@ -655,8 +655,7 @@ dlfViewer.prototype.addCustomControls = function(image) {
             $(fulltextControl).on("activate-fulltext", $.proxy(annotationControl.deactivate, annotationControl));
             $(annotationControl).on("activate-annotations", $.proxy(fulltextControl.deactivate, fulltextControl));
         }
-    }
-    else {
+    } else {
         $('#tx-dlf-tools-annotation').remove();
     }
 
@@ -698,7 +697,7 @@ dlfViewer.prototype.addCustomControls = function(image) {
  * @param {number} height
  * @returns {void}
  */
-dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, width, height) {
+dlfViewer.prototype.addHighlightField = function (highlightField, imageIndex, width, height) {
 
     this.highlightFields.push(highlightField);
 
@@ -722,7 +721,7 @@ dlfViewer.prototype.addHighlightField = function(highlightField, imageIndex, wid
  *
  * @private
  */
-dlfViewer.prototype.createControls_ = function(controlNames, layers) {
+dlfViewer.prototype.createControls_ = function (controlNames, layers) {
     var controls = [];
 
     for (var i in controlNames) {
@@ -747,7 +746,7 @@ dlfViewer.prototype.createControls_ = function(controlNames, layers) {
  *
  * @protected
  */
-dlfViewer.prototype.createControl = function(controlName, layers) {
+dlfViewer.prototype.createControl = function (controlName, layers) {
     switch (controlName) {
         case "OverviewMap": {
             var extent = ol.extent.createEmpty();
@@ -793,8 +792,8 @@ dlfViewer.prototype.createControl = function(controlName, layers) {
  *
  * @see dlfUtils.searchFeatureCollectionForWords
  */
-dlfViewer.prototype.searchFeatures = function(stringFeatures, value) {
-  return dlfUtils.searchFeatureCollectionForWords(stringFeatures, value);
+dlfViewer.prototype.searchFeatures = function (stringFeatures, value) {
+    return dlfUtils.searchFeatureCollectionForWords(stringFeatures, value);
 };
 
 /**
@@ -802,8 +801,8 @@ dlfViewer.prototype.searchFeatures = function(stringFeatures, value) {
  *
  * @param {string} highlightWords
  */
-dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
-    if(highlightWords != null) {
+dlfViewer.prototype.displayHighlightWord = function (highlightWords = null) {
+    if (highlightWords != null) {
         this.highlightWords = highlightWords;
     }
 
@@ -831,19 +830,19 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
         for (var i = 0; i < this.highlightFields.length; i++) {
 
             var field = this.highlightFields[i],
-              coordinates = [[
-                  [field[0], field[1]],
-                  [field[2], field[1]],
-                  [field[2], field[3]],
-                  [field[0], field[3]],
-                  [field[0], field[1]],
-              ]],
-              offset = this.highlightFieldParams.index === 1 ? this.images[0].width : 0;
+                coordinates = [[
+                    [field[0], field[1]],
+                    [field[2], field[1]],
+                    [field[2], field[3]],
+                    [field[0], field[3]],
+                    [field[0], field[1]],
+                ]],
+                offset = this.highlightFieldParams.index === 1 ? this.images[0].width : 0;
             var feature = dlfUtils.scaleToImageSize([new ol.Feature(new ol.geom.Polygon(coordinates))],
-              this.images[this.highlightFieldParams.index],
-              this.highlightFieldParams.width,
-              this.highlightFieldParams.height,
-              offset);
+                this.images[this.highlightFieldParams.index],
+                this.highlightFieldParams.width,
+                this.highlightFieldParams.height,
+                offset);
 
             // add feature to layer and map
             this.highlightLayer.getSource().addFeatures(feature);
@@ -873,7 +872,8 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
                     }
                 });
             });
-    };
+    }
+    ;
 };
 
 /**
@@ -883,29 +883,29 @@ dlfViewer.prototype.displayHighlightWord = function(highlightWords = null) {
  *
  * @private
  */
-dlfViewer.prototype.init = function(controlNames) {
+dlfViewer.prototype.init = function (controlNames) {
 
     if (!dlfUtils.hasContent(this.imageUrls))
         throw new Error('Missing image source objects.');
 
     this.initLayer(this.imageUrls)
-        .done($.proxy(function(layers){
+        .done($.proxy(function (layers) {
 
             // Initiate loading fulltexts
             this.initLoadFulltexts();
 
-          if (this.score !== '') {
-            // Initiate loading scores
-            this.initLoadScores(this.images[0]);
-          }
+            if (this.score !== '') {
+                // Initiate loading scores
+                this.initLoadScores(this.images[0]);
+            }
 
             var controls = controlNames.length > 0 || controlNames[0] === ""
                 ? this.createControls_(controlNames, layers)
                 : [];
-                //: [ new ol.control.MousePosition({
-                //        coordinateFormat: ol.coordinate.createStringXY(4),
-                //        undefinedHTML: '&nbsp;'
-                //    })];
+            //: [ new ol.control.MousePosition({
+            //        coordinateFormat: ol.coordinate.createStringXY(4),
+            //        undefinedHTML: '&nbsp;'
+            //    })];
             this.view = dlfUtils.createOlView(this.images);
             // The map container normally gets its height from the theme CSS.
             // Without one (e.g. a fresh installation), it is 0 pixels tall
@@ -937,12 +937,12 @@ dlfViewer.prototype.init = function(controlNames) {
 
             // Position image according to user preferences
             var lonCk = dlfUtils.getCookie("tx-dlf-pageview-centerLon"),
-              latCk = dlfUtils.getCookie("tx-dlf-pageview-centerLat"),
-              zoomCk = dlfUtils.getCookie("tx-dlf-pageview-zoomLevel");
+                latCk = dlfUtils.getCookie("tx-dlf-pageview-centerLat"),
+                zoomCk = dlfUtils.getCookie("tx-dlf-pageview-zoomLevel");
             if (!dlfUtils.isMultiViewEmbedded() && !dlfUtils.isNullEmptyUndefinedOrNoNumber(lonCk) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(latCk) && !dlfUtils.isNullEmptyUndefinedOrNoNumber(zoomCk)) {
                 var lon = Number(lonCk),
-                  lat = Number(latCk),
-                  zoom = Number(zoomCk);
+                    lat = Number(latCk),
+                    zoom = Number(zoomCk);
 
                 // make sure, zoom center is on viewport
                 var center = this.map.getView().getCenter();
@@ -951,7 +951,7 @@ dlfViewer.prototype.init = function(controlNames) {
                 }
             }
 
-            var saveViewParams = $.proxy(function() {
+            var saveViewParams = $.proxy(function () {
                 var zoom = this.map.getZoom() !== undefined ? this.map.getZoom() : '',
                     center = this.map.getView().getCenter() !== undefined ? this.map.getView().getCenter() : ['', ''];
 
@@ -961,7 +961,7 @@ dlfViewer.prototype.init = function(controlNames) {
             }, this);
             this.map.on('moveend', saveViewParams);
 
-          this.addCustomControls(this.images[0]);
+            this.addCustomControls(this.images[0]);
 
             // highlight word in case a highlight field is registered
             this.displayHighlightWord();
@@ -970,7 +970,7 @@ dlfViewer.prototype.init = function(controlNames) {
             $(window).trigger("map-loadend", window);
 
             // append listener for saving view params in case of flipping pages
-            $(window).on("unload", $.proxy(function() {
+            $(window).on("unload", $.proxy(function () {
                 // check if image manipulation control exists and if yes deactivate it first for proper recognition of
                 // the actual map view
                 if (this.imageManipulationControl !== undefined && this.imageManipulationControl.isActive()) {
@@ -980,21 +980,21 @@ dlfViewer.prototype.init = function(controlNames) {
                 saveViewParams();
             }, this));
         }, this))
-        .fail($.proxy(function() {
+        .fail($.proxy(function () {
             this.showImageLoadError();
         }, this));
-        this.source = new ol.source.Vector();
-        // crop selection style
-        this.selection = new ol.interaction.DragBox({
-            condition: ol.events.condition.noModifierKeys,
-            style: new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: [0, 0, 255, 1]
-                })
+    this.source = new ol.source.Vector();
+    // crop selection style
+    this.selection = new ol.interaction.DragBox({
+        condition: ol.events.condition.noModifierKeys,
+        style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: [0, 0, 255, 1]
             })
-        });
+        })
+    });
 
-        this.initCropping();
+    this.initCropping();
 };
 
 /**
@@ -1003,7 +1003,7 @@ dlfViewer.prototype.init = function(controlNames) {
  *
  * @private
  */
-dlfViewer.prototype.showImageLoadError = function() {
+dlfViewer.prototype.showImageLoadError = function () {
     var mapContainer = document.getElementById(this.div);
     if (!mapContainer) {
         return;
@@ -1034,8 +1034,8 @@ dlfViewer.prototype.showImageLoadError = function() {
     mapContainer.appendChild(message);
 };
 
-dlfViewer.prototype.updateLayerSize = function() {
-  this.map.updateSize();
+dlfViewer.prototype.updateLayerSize = function () {
+    this.map.updateSize();
 };
 
 /**
@@ -1046,26 +1046,26 @@ dlfViewer.prototype.updateLayerSize = function() {
  *
  * @private
  */
-dlfViewer.prototype.initLayer = function(imageSourceObjs) {
+dlfViewer.prototype.initLayer = function (imageSourceObjs) {
 
     // use deferred for async behavior
     var deferredResponse = new $.Deferred(),
-      /**
-       * @param {array.<{src: *, width: *, height: *}>} imageSourceData
-       * @param {array.<ol.layer.Layer>} layers
-       */
-      resolveCallback = $.proxy(function(imageSourceData, layers) {
+        /**
+         * @param {array.<{src: *, width: *, height: *}>} imageSourceData
+         * @param {array.<ol.layer.Layer>} layers
+         */
+        resolveCallback = $.proxy(function (imageSourceData, layers) {
             this.images = imageSourceData;
             deferredResponse.resolve(layers);
         }, this);
 
     dlfUtils.fetchImageData(imageSourceObjs, this.loadingIndicator)
-      .done(function(imageSourceData) {
-          resolveCallback(imageSourceData, dlfUtils.createOlLayers(imageSourceData));
-      })
-      .fail(function() {
-          deferredResponse.reject();
-      });
+        .done(function (imageSourceData) {
+            resolveCallback(imageSourceData, dlfUtils.createOlLayers(imageSourceData));
+        })
+        .fail(function () {
+            deferredResponse.reject();
+        });
 
     return deferredResponse;
 };
@@ -1076,9 +1076,9 @@ dlfViewer.prototype.initLayer = function(imageSourceObjs) {
  * @private
  */
 dlfViewer.prototype.initLoadScores = function (image) {
-  this.config = dlfScoreUtil.fetchScoreDataFromServer(image, this.score, this.pagebeginning);
-  this.scoresLoaded_ = this.config.promise;
-  this.tk = this.config.toolkit;
+    this.config = dlfScoreUtil.fetchScoreDataFromServer(image, this.score, this.pagebeginning);
+    this.scoresLoaded_ = this.config.promise;
+    this.tk = this.config.toolkit;
 };
 
 /**
@@ -1146,7 +1146,7 @@ dlfViewer.prototype.initCropping = function () {
 
     value = 'LineString';
     maxPoints = 2;
-    geometryFunction = function(coordinates, geometry) {
+    geometryFunction = function (coordinates, geometry) {
         var start = coordinates[0];
         var end = coordinates[1];
         var geomCoordinates = [
@@ -1240,7 +1240,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
         dlfViewer.ovView.setCenter(mousePosition);
     });
 
-    var adjustViews = function(sourceView, destMap) {
+    var adjustViews = function (sourceView, destMap) {
             var rotateDiff = sourceView.getRotation() !== destMap.getView().getRotation();
             var centerDiff = sourceView.getCenter() !== destMap.getView().getCenter();
 
@@ -1248,7 +1248,7 @@ dlfViewer.prototype.addMagnifier = function (rotation) {
                 destMap.getView().setRotation(sourceView.getRotation());
             }
         },
-        adjustViewHandler = function(event) {
+        adjustViewHandler = function (event) {
             adjustViews(event.target, ovMap);
         };
 
