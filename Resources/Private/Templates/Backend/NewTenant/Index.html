@@ -53,8 +53,8 @@
                     </f:then>
                     <f:else>
                         <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.structureMissing\')}', message: '{f:translate(key: \'newTenant.structureMissingMsg\')}', alert: 'warning'}" />
-                        <f:form action="addStructure" name="structure">
-                            <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createStructure')}" class="btn btn-primary"/>
+                        <f:form action="addMissingStructure" name="structure">
+                            <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createMissingStructure')}" class="btn btn-primary"/>
                         </f:form>
                     </f:else>
                 </f:if>
@@ -85,13 +85,13 @@
                     </f:then>
                     <f:else>
                         <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.metadataMissing\')}', message: '{f:translate(key: \'newTenant.metadataMissingMsg\')}', alert: 'warning'}" />
-                        <f:form action="addMetadata" name="metadata">
+                        <f:form action="addMissingMetadata" name="metadata">
                             <f:if condition="{formatsAvailable} == '0'">
                                 <f:then>
-                                    <f:form.button name="submit" class="btn btn-primary" disabled="disabled"><f:translate key="newTenant.createMetadata" /></f:form.button>
+                                    <f:form.button name="submit" class="btn btn-primary" disabled="disabled"><f:translate key="newTenant.createMissingMetadata" /></f:form.button>
                                 </f:then>
                                 <f:else>
-                                    <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createMetadata')}" class="btn btn-primary" />
+                                    <f:form.submit name="submit" value="{f:translate(key: 'newTenant.createMissingMetadata')}" class="btn btn-primary" />
                                 </f:else>
                             </f:if>
                         </f:form>
