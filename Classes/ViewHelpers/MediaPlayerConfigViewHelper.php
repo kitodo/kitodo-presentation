@@ -35,7 +35,8 @@ class MediaPlayerConfigViewHelper extends AbstractViewHelper
         $this->registerArgument('settings', 'array', 'the settings array that is converted to JSON', true);
     }
 
-    public function render(): string {
+    public function render(): string 
+    {
         $id = $this->arguments['id'];
         $inputSettings = $this->arguments['settings'];
 
@@ -117,7 +118,7 @@ CONFIG;
         // Get default language labels
         $localizationFactory = GeneralUtility::makeInstance(LocalizationFactory::class);
         $defaultTranslations = $localizationFactory->getParsedData($translationFile, 'default');
-        
+
         /** @var array<string>|null $translationKeys */
         $translationKeys = null;
         if (isset($defaultTranslations['default']) && is_array($defaultTranslations['default'])) {
@@ -129,7 +130,7 @@ CONFIG;
         }
 
         $phrases = [];
-        if (is_array($translationKeys)) {   
+        if (is_array($translationKeys)) {
             foreach ($translationKeys as $translationKey) {
                 // Translate each available key as per the current language.
                 // - This falls back to default language if a key isn't translated

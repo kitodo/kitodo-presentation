@@ -33,7 +33,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SearchSuggest implements MiddlewareInterface
 {
-
     protected HashService $hashService;
 
     /**
