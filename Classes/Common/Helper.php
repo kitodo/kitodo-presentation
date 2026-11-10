@@ -21,6 +21,7 @@ use TYPO3\CMS\Core\Configuration\ConfigurationManager;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\Stream;
 use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Http\RequestFactory;
@@ -35,6 +36,7 @@ use TYPO3\CMS\Core\Resource\MimeTypeDetector;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Domain\Repository\PageRepository;
@@ -787,18 +789,6 @@ class Helper
     protected const DEFAULT_MAX_REMOTE_FILE_SIZE = 100 * 1024 * 1024;
 
     /**
-     * The size in bytes in which the remote file is read while checking the
-     * size limit in Helper::getUrl().
-     *
-     * @access protected
-     *
-     * @static
-     *
-     * @var int
-     */
-    protected const REMOTE_FILE_SIZE_CHECK_CHUNK_SIZE = 64 * 1024;
-
-    /**
      * Merge the given host patterns with the extension configuration setting
      * "general.urlAllowList".
      *
@@ -905,12 +895,22 @@ class Helper
             // Redirects are followed manually below, so that every redirect
             // target can be validated before it is fetched.
             'allow_redirects' => false,
-            // Stream the response body so that its size can be checked while
-            // the content is being read. Without this, the whole body is
-            // buffered into memory before it can be inspected, which would
-            // make the size limit ineffective.
-            'stream' => true,
         ];
+        // A declared content length that exceeds the limit is refused before
+        // the body is transferred at all. The HTTP client aborts the request
+        // when this callback throws.
+        $declaredSize = 0;
+        if ($maxSize !== 0) {
+            $configuration['on_headers'] = static function (ResponseInterface $response) use ($maxSize, &$declaredSize): void {
+                $declaredSize = (int) $response->getHeaderLine('Content-Length');
+                if ($declaredSize > $maxSize) {
+                    throw new \OverflowException(
+                        'The declared content length of ' . $declaredSize . ' bytes exceeds the maximum allowed size of '
+                        . $maxSize . ' bytes.'
+                    );
+                }
+            };
+        }
 
         $currentUrl = $url;
         for ($redirects = 0; $redirects <= self::MAX_REDIRECTS; $redirects++) {
@@ -927,10 +927,31 @@ class Helper
                 self::warning('Refused to fetch URL "' . $currentUrl . '" because its host is not allowed.');
                 return false;
             }
+            // The body is written to a size limited sink while it is being
+            // transferred. A content length may be missing or lie about the
+            // actual size, so the HTTP client aborts the transfer as soon as
+            // more bytes than allowed have been received, without buffering
+            // the whole body in memory first. Unlike the "stream" option this
+            // works with both the curl and the PHP stream handler and keeps
+            // the overall request timeout in effect.
+            $sink = new SizeLimitedStream(new Stream('php://temp', 'r+'), $maxSize);
+            $configuration['sink'] = $sink;
             try {
                 $response = $requestFactory->request($currentUrl, 'GET', $configuration);
             } catch (\Exception $e) {
-                self::warning('Could not fetch data from URL "' . $currentUrl . '". Error: ' . $e->getMessage() . '.');
+                if ($maxSize !== 0 && $declaredSize > $maxSize) {
+                    self::warning(
+                        'Refused to fetch data from URL "' . $currentUrl . '" because its content length of'
+                        . ' ' . $declaredSize . ' bytes exceeds the maximum allowed size of ' . $maxSize . ' bytes.'
+                    );
+                } elseif ($sink->isLimitExceeded()) {
+                    self::warning(
+                        'Refused to fetch data from URL "' . $currentUrl . '" because its size of at least'
+                        . ' ' . $sink->getBytesWritten() . ' bytes exceeds the maximum allowed size of ' . $maxSize . ' bytes.'
+                    );
+                } else {
+                    self::warning('Could not fetch data from URL "' . $currentUrl . '". Error: ' . $e->getMessage() . '.');
+                }
                 return false;
             }
             $statusCode = $response->getStatusCode();
@@ -949,63 +970,17 @@ class Helper
                     self::warning('Refused to follow the redirect from "' . $currentUrl . '" to "' . $redirectUrl . '".');
                     return false;
                 }
-                // The body of the redirect response is not needed.
-                $response->getBody()->close();
                 $currentUrl = $redirectUrl;
                 continue;
             }
-            return self::readResponseBody($response, $currentUrl, $maxSize);
+            $body = $response->getBody();
+            if ($body->isSeekable()) {
+                $body->rewind();
+            }
+            return $body->getContents();
         }
         self::warning('Too many redirects while fetching URL "' . $url . '".');
         return false;
-    }
-
-    /**
-     * Read the body of a response while enforcing the maximum remote file size.
-     *
-     * A declared content length that already exceeds the limit is refused
-     * before the body is read at all. The body is then read in chunks, because
-     * a content length may be missing or lie about the actual size, so the
-     * amount of data that has actually been transferred is checked as well.
-     * This also stops the download as soon as the limit is exceeded.
-     *
-     * @access protected
-     *
-     * @static
-     *
-     * @param ResponseInterface $response The response whose body is read
-     * @param string $url The URL the response was fetched from (for logging)
-     * @param int $maxSize The maximum size in bytes, or 0 if the limit is disabled
-     *
-     * @return string|false The body or false if it exceeds the limit
-     */
-    protected static function readResponseBody(ResponseInterface $response, string $url, int $maxSize): string|false
-    {
-        $body = $response->getBody();
-
-        $declaredSize = (int) $response->getHeaderLine('Content-Length');
-        if ($maxSize !== 0 && $declaredSize > $maxSize) {
-            $body->close();
-            self::warning(
-                'Refused to fetch data from URL "' . $url . '" because its content length of'
-                . ' ' . $declaredSize . ' bytes exceeds the maximum allowed size of ' . $maxSize . ' bytes.'
-            );
-            return false;
-        }
-
-        $content = '';
-        while (!$body->eof()) {
-            $content .= $body->read(self::REMOTE_FILE_SIZE_CHECK_CHUNK_SIZE);
-            if ($maxSize !== 0 && strlen($content) > $maxSize) {
-                $body->close();
-                self::warning(
-                    'Refused to fetch data from URL "' . $url . '" because its size of'
-                    . ' ' . strlen($content) . ' bytes exceeds the maximum allowed size of ' . $maxSize . ' bytes.'
-                );
-                return false;
-            }
-        }
-        return $content;
     }
 
     /**
@@ -1013,8 +988,9 @@ class Helper
      * configuration.
      *
      * The "maxRemoteFileSize" setting is given in bytes, where a value of 0
-     * disables the limit. Any other value that is not a positive integer
-     * falls back to the default value.
+     * disables the limit. Any value that cannot be interpreted as a
+     * non-negative integer (e.g. an empty or non-numeric string) falls back
+     * to the default value instead of silently disabling the limit.
      *
      * @access protected
      *
@@ -1026,14 +1002,11 @@ class Helper
      */
     protected static function getMaxRemoteFileSize(array $extConf): int
     {
-        $maxSize = $extConf['maxRemoteFileSize'] ?? self::DEFAULT_MAX_REMOTE_FILE_SIZE;
-        if (!is_int($maxSize) && (is_string($maxSize) || is_float($maxSize))) {
-            $maxSize = (int) $maxSize;
-        }
-        if (!is_int($maxSize) || $maxSize < 0) {
+        $maxSize = $extConf['maxRemoteFileSize'] ?? null;
+        if (!MathUtility::canBeInterpretedAsInteger($maxSize) || (int) $maxSize < 0) {
             return self::DEFAULT_MAX_REMOTE_FILE_SIZE;
         }
-        return $maxSize;
+        return (int) $maxSize;
     }
 
     /**
