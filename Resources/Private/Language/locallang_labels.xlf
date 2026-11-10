@@ -515,6 +515,9 @@
             <trans-unit id="config.general.failCacheLifetime">
                 <source>Cache lifetime for failed document loads (seconds): Remember URLs that cannot be loaded as METS / IIIF for this many seconds so they are not fetched over the network again on every request. A value of 0 uses the default of 300 seconds.</source>
             </trans-unit>
+            <trans-unit id="config.general.maxRemoteFileSize">
+                <source>Maximum size of a remote file (bytes): Documents and other resources are not loaded from URLs that exceed this size, so that oversized files (e.g. operating system images) cannot exhaust the server's memory. A value of 0 disables the limit. (default is "104857600", i.e. 100 MiB)</source>
+            </trans-unit>
             <trans-unit id="config.general.publishNewCollections">
                 <source>Publish new collections?: Should new collections automatically be published in the OAI-PMH interface? (default is "TRUE")</source>
             </trans-unit>
