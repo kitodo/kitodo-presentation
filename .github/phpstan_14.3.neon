@@ -8,12 +8,6 @@ parameters:
       message: '#Call to an undefined method DOMXPath|SimpleXMLElement::getName\(\)\.#'
       path: ../Classes/Common/MetsDocument.php
     -
-      message: '#Call to an undefined method TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController::getFromCache\(\)\.#'
-      path: ../Classes/Common/TypoScriptHelper.php
-    -
-      message: '#Call to an undefined method TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController::releaseLocks\(\)\.#'
-      path: ../Classes/Common/TypoScriptHelper.php
-    -
       message: '#PHPDoc tag @var with type Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\CanvasInterface is not subtype of native type Ubl\\Iiif\\Presentation\\Common\\Model\\AbstractIiifEntity\|null.#'
       path: ../Classes/Controller/PageViewController.php
     -
