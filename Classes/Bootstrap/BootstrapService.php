@@ -275,7 +275,8 @@ class BootstrapService
             $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides']['pi_flexform']['config'] ?? []
         );
         try {
-            $identifier = $this->flexFormTools->getDataStructureIdentifier($fieldTca, 'tt_content', 'pi_flexform', ['CType' => $cType]);
+            // Typo3 v13 resolves the data structure by the pointer fields "list_type,CType".
+            $identifier = $this->flexFormTools->getDataStructureIdentifier($fieldTca, 'tt_content', 'pi_flexform', ['CType' => $cType, 'list_type' => '']);
             $dataStructure = $this->flexFormTools->parseDataStructureByIdentifier($identifier);
         } catch (\Exception $e) {
             // Plugin has no FlexForm.
