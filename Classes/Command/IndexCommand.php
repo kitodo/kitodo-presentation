@@ -15,7 +15,6 @@ namespace Kitodo\Dlf\Command;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\DocumentCacheManager;
 use Kitodo\Dlf\Common\Indexer;
-use Kitodo\Dlf\Domain\Model\Document;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -154,7 +153,7 @@ class IndexCommand extends BaseCommand
         } elseif (GeneralUtility::isValidUrl($input->getOption('doc'))) {
             $doc = AbstractDocument::getInstance($input->getOption('doc'), ['storagePid' => $this->storagePid], true, isTrustedLocation: true);
 
-            $document = $this->getDocumentFromUrl($doc, $input->getOption('doc'));
+            $document = $this->ingestService->getDocumentFromUrl($doc, $input->getOption('doc'));
         }
 
         if ($doc === null) {
@@ -201,38 +200,5 @@ class IndexCommand extends BaseCommand
             $io->info('Document with UID "' . $document->getUid() . '" is already in database. If you want to keep the database and index consistent you need to remove it.');
             return Command::FAILURE;
         }
-    }
-
-    /**
-     * Get document from given URL. Find it in database, if not found create the new one.
-     *
-     * @access private
-     *
-     * @param AbstractDocument $doc
-     * @param string $url
-     *
-     * @return Document
-     */
-    private function getDocumentFromUrl($doc, string $url): Document
-    {
-        $document = null;
-
-        if (!empty($doc->recordId)) {
-            $document = $this->documentRepository->findOneBy(['recordId' => $doc->recordId]);
-        } else {
-            $document = $this->documentRepository->findOneBy(['location' => $url]);
-        }
-
-        if ($document === null) {
-            // create new Document object
-            $document = GeneralUtility::makeInstance(Document::class);
-        }
-
-        // now there must exist a document object
-        if ($document) {
-            $document->setLocation($url);
-        }
-
-        return $document;
     }
 }
