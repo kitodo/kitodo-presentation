@@ -89,9 +89,9 @@ class BootstrapService
      * @param string $scenarioName Name of the scenario file without extension
      * @param string $baseUrl Scheme and host prepended to the base path of the scenario, e.g. "http://localhost:1380"
      *
-     * @return int UID of the root page of the created site
+     * @return array<string, positive-int> UIDs of the created pages indexed by their scenario key, including "root" and "storage"
      */
-    public function bootstrap(string $scenarioName, string $baseUrl = ''): int
+    public function bootstrap(string $scenarioName, string $baseUrl = ''): array
     {
         if (!array_key_exists($scenarioName, $this->getScenarios())) {
             throw new \InvalidArgumentException('Unknown demo scenario "' . $scenarioName . '"', 1762870001);
@@ -147,7 +147,7 @@ class BootstrapService
 
         $this->createContent($solrCoreUid);
 
-        return $this->pageUids['root'];
+        return $this->pageUids;
     }
 
     /**

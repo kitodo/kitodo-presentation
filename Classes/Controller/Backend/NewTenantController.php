@@ -12,6 +12,7 @@
 
 namespace Kitodo\Dlf\Controller\Backend;
 
+use Kitodo\Dlf\Bootstrap\BootstrapService;
 use Kitodo\Dlf\Controller\AbstractController;
 use Kitodo\Dlf\Domain\Repository\FormatRepository;
 use Kitodo\Dlf\Domain\Repository\MetadataRepository;
@@ -21,8 +22,11 @@ use Kitodo\Dlf\Service\TenantService;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 
 /**
  * Controller class for the backend module 'New Tenant'.
@@ -137,6 +141,24 @@ class NewTenantController extends AbstractController
     }
 
     /**
+     * @access protected
+     * @var BootstrapService
+     */
+    protected BootstrapService $bootstrapService;
+
+    /**
+     * @access public
+     *
+     * @param BootstrapService $bootstrapService
+     *
+     * @return void
+     */
+    public function injectBootstrapService(BootstrapService $bootstrapService): void
+    {
+        $this->bootstrapService = $bootstrapService;
+    }
+
+    /**
      * Returns a response object with either the given html string or the current rendered view as content.
      *
      * @access protected
@@ -161,6 +183,7 @@ class NewTenantController extends AbstractController
             ]
         );
         $moduleTemplate->assignMultiple($extraData);
+        $moduleTemplate->assign('scenarios', $this->bootstrapService->getScenarios());
         $moduleTemplate->setFlashMessageQueue($messageQueue);
         $template = $isError ? 'Backend/NewTenant/Error' : 'Backend/NewTenant/Index';
         return $moduleTemplate->renderResponse($template);
@@ -240,6 +263,38 @@ class NewTenantController extends AbstractController
     }
 
     /**
+     * Action creating (or replacing) the demo site of the given scenario
+     *
+     * @access public
+     *
+     * @param string $scenario Name of the scenario, see BootstrapService::getScenarios()
+     *
+     * @return ResponseInterface the response
+     */
+    public function bootstrapAction(string $scenario): ResponseInterface
+    {
+        $langPrefix = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:';
+        $storagePid = 0;
+        try {
+            // Use scheme and host of the backend, since sites with a matching host take precedence over sites without.
+            $pageUids = $this->bootstrapService->bootstrap($scenario, $this->request->getAttribute('normalizedParams')->getSiteUrl());
+            $storagePid = $pageUids['storage'];
+            $message = LocalizationUtility::translate($langPrefix . 'bootstrap.success', null, [$scenario, $pageUids['root']]);
+            $severity = ContextualFeedbackSeverity::OK;
+            BackendUtility::setUpdateSignal('updatePageTree');
+        } catch (\Exception $e) {
+            $message = LocalizationUtility::translate($langPrefix . 'bootstrap.failure', null, [$scenario, $e->getMessage()]);
+            $severity = ContextualFeedbackSeverity::ERROR;
+        }
+        GeneralUtility::makeInstance(FlashMessageService::class)
+            ->getMessageQueueByIdentifier()
+            ->enqueue(new FlashMessage((string) $message, '', $severity, true));
+
+        // Continue with the new storage folder to show its records. The current page may have been deleted with the previous demo site.
+        return $this->redirectToUri($this->uriBuilder->reset()->setArguments(['id' => $storagePid])->uriFor('index'));
+    }
+
+    /**
      * Main function of the module
      *
      * @access public
@@ -270,7 +325,7 @@ class NewTenantController extends AbstractController
 
         $recordInfos['solrcore']['numCurrent'] = $this->solrCoreRepository->countAll();
 
-        $viewData = ['recordInfos' => $recordInfos];
+        $viewData = ['recordInfos' => $recordInfos, 'pageUid' => $this->pid];
 
         return $this->templateResponse(false, $viewData);
     }

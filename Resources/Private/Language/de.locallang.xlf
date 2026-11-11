@@ -317,6 +317,14 @@
                 <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.]]></source>
                 <target><![CDATA[Die Standard-Namensräume für MODS, TEIHDR und/oder ALTO konnten nicht definiert werden.]]></target>
             </trans-unit>
+            <trans-unit id="newTenant.initialize" approved="yes">
+                <source><![CDATA[Initialize Records and Solr]]></source>
+                <target><![CDATA[Datensätze und Solr initialisieren]]></target>
+            </trans-unit>
+            <trans-unit id="newTenant.initializeMsg" approved="yes">
+                <source><![CDATA[This section creates the default records (formats, structures and metadata) and a Solr core for the tenant in the currently selected storage folder.]]></source>
+                <target><![CDATA[Dieser Abschnitt legt die Standard-Datensätze (Formate, Strukturen und Metadaten) sowie einen Solr Kern für den Mandanten im aktuell ausgewählten Ordner an.]]></target>
+            </trans-unit>
             <trans-unit id="newTenant.metadataFound" approved="yes">
                 <source><![CDATA[Metadata found!]]></source>
                 <target><![CDATA[Metadaten gefunden!]]></target>

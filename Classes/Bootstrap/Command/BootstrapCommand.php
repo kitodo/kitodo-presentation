@@ -71,9 +71,9 @@ class BootstrapCommand extends Command
             ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
 
         $scenario = (string) $input->getArgument('scenario');
-        $rootPageUid = $this->bootstrapService->bootstrap($scenario, (string) $input->getOption('base-url'));
+        $pageUids = $this->bootstrapService->bootstrap($scenario, (string) $input->getOption('base-url'));
 
-        $io->success('Created demo site for scenario "' . $scenario . '" with root page ' . $rootPageUid . '.');
+        $io->success('Created demo site for scenario "' . $scenario . '" with root page ' . $pageUids['root'] . '.');
         return Command::SUCCESS;
     }
 }
