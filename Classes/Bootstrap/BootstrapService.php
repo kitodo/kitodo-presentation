@@ -12,9 +12,16 @@
 
 namespace Kitodo\Dlf\Bootstrap;
 
+use Kitodo\Dlf\Common\AbstractDocument;
+use Kitodo\Dlf\Common\DocumentCacheManager;
+use Kitodo\Dlf\Common\Indexer;
+use Kitodo\Dlf\Common\Solr\Solr;
 use Kitodo\Dlf\Domain\Model\SolrCore;
+use Kitodo\Dlf\Domain\Repository\DocumentRepository;
 use Kitodo\Dlf\Domain\Repository\SolrCoreRepository;
+use Kitodo\Dlf\Service\IngestService;
 use Kitodo\Dlf\Service\TenantService;
+use TYPO3\CMS\Core\Cache\CacheManager;
 use TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools;
 use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
 use TYPO3\CMS\Core\Configuration\SiteWriter;
@@ -74,11 +81,14 @@ class BootstrapService
 
     public function __construct(
         protected readonly TenantService $tenantService,
+        protected readonly IngestService $ingestService,
+        protected readonly DocumentRepository $documentRepository,
         protected readonly SolrCoreRepository $solrCoreRepository,
         protected readonly SiteFinder $siteFinder,
         protected readonly SiteWriter $siteWriter,
         protected readonly FlexFormTools $flexFormTools,
-        protected readonly YamlFileLoader $yamlFileLoader
+        protected readonly YamlFileLoader $yamlFileLoader,
+        protected readonly CacheManager $cacheManager
     ) {
     }
 
@@ -129,6 +139,16 @@ class BootstrapService
             throw new \InvalidArgumentException('Demo scenario "' . $scenarioName . '" has no page with key "storage"', 1762870002);
         }
 
+        $this->tenantService->addAll($this->pageUids['storage']);
+        $this->solrCoreRepository->useStoragePid($this->pageUids['storage']);
+        /** @var SolrCore|null $solrCore */
+        $solrCore = $this->solrCoreRepository->findAll()->getFirst();
+        $solrCoreUid = $solrCore?->getUid() ?? 0;
+
+        // Write the site configuration and settings directly after each other, since Typo3 caches the site settings
+        // when the site is first accessed, but does not invalidate them when the settings are written later.
+        // The frontend caches are flushed afterward, since the TypoScript constants derived from the settings of a
+        // previously created demo site would be used otherwise.
         $this->siteWriter->write($siteIdentifier, [
             'rootPageId' => $this->pageUids['root'],
             'base' => rtrim($baseUrl, '/') . $scenario['basePath'],
@@ -145,13 +165,6 @@ class BootstrapService
                 ],
             ],
         ]);
-
-        $this->tenantService->addAll($this->pageUids['storage']);
-        $this->solrCoreRepository->useStoragePid($this->pageUids['storage']);
-        /** @var SolrCore|null $solrCore */
-        $solrCore = $this->solrCoreRepository->findAll()->getFirst();
-        $solrCoreUid = $solrCore?->getUid() ?? 0;
-
         $this->siteWriter->writeSettings($siteIdentifier, [
             'plugin' => [
                 'tx_dlf' => [
@@ -162,12 +175,70 @@ class BootstrapService
                 ],
             ],
         ]);
+        $this->cacheManager->flushCachesInGroup('pages');
 
         $this->createContent($solrCoreUid);
 
-        $this->createDocuments($scenarioName, $scenario, $baseUrl);
+        $metsUrls = $this->createDocuments($scenarioName, $scenario, $baseUrl);
+        $this->indexDocuments($metsUrls, $solrCoreUid);
 
         return $this->pageUids;
+    }
+
+    /**
+     * Save the given documents to the storage folder and add them to the Solr index, like the command "kitodo:index".
+     *
+     * @access protected
+     *
+     * @param string[] $metsUrls URLs of the METS files
+     * @param int $solrCoreUid
+     *
+     * @return void
+     *
+     * @throws \RuntimeException if a document could not be indexed
+     */
+    protected function indexDocuments(array $metsUrls, int $solrCoreUid): void
+    {
+        if (empty($metsUrls)) {
+            return;
+        }
+        $storagePid = $this->pageUids['storage'];
+        $this->ingestService->initialize($storagePid);
+        foreach ($metsUrls as $metsUrl) {
+            $doc = AbstractDocument::getInstance($metsUrl, ['storagePid' => $storagePid], true, isTrustedLocation: true);
+            if ($doc === null) {
+                throw new \RuntimeException('Demo document "' . $metsUrl . '" could not be loaded', 1762870006);
+            }
+            $document = $this->ingestService->getDocumentFromUrl($doc, $metsUrl);
+            $document->setSolrcore($solrCoreUid);
+            $document->setCurrentDocument($doc);
+            if (!$this->ingestService->saveToDatabase($document) || !Indexer::add($document, $this->documentRepository)) {
+                throw new \RuntimeException('Demo document "' . $metsUrl . '" could not be indexed', 1762870007);
+            }
+        }
+        GeneralUtility::makeInstance(DocumentCacheManager::class)->flush();
+        $this->checkSolrIndex($solrCoreUid, count($metsUrls));
+    }
+
+    /**
+     * Check that the Solr core returns the expected number of toplevel documents, so that they can be searched.
+     *
+     * @access protected
+     *
+     * @param int $solrCoreUid
+     * @param int $expectedCount
+     *
+     * @return void
+     *
+     * @throws \RuntimeException if Solr returns a different number of documents
+     */
+    protected function checkSolrIndex(int $solrCoreUid, int $expectedCount): void
+    {
+        $solr = Solr::getInstance($solrCoreUid);
+        $numFound = $solr->service->select($solr->service->createSelect(['query' => 'toplevel:true', 'rows' => 0]))->getNumFound();
+        if ($numFound !== $expectedCount) {
+            throw new \RuntimeException('Solr returns ' . $numFound . ' instead of ' . $expectedCount . ' demo documents', 1762870008);
+        }
     }
 
     /**
