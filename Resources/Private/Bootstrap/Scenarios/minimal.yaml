@@ -1,0 +1,50 @@
+# Minimal demo: search, result list and page view. See README.md for the file format.
+
+label: 'Minimal demo'
+siteSet: kitodo/presentation-demo-minimal
+basePath: /demo-minimal/
+
+root:
+  title: 'Kitodo.Presentation Minimal Demo'
+  backend_layout: pagets__Default
+  backend_layout_next_level: pagets__Default
+
+pages:
+  storage:
+    title: 'Kitodo Storage'
+    doktype: 254
+
+  search:
+    title: 'Search'
+    content:
+      - CType: dlf_search
+        header: 'Search'
+        settings:
+          solrcore: '{solrCore}'
+          targetPid: '{page:search}'
+          targetPidPageView: '{page:pageview}'
+      - CType: dlf_listview
+        header: 'Results'
+        settings:
+          solrcore: '{solrCore}'
+          targetPidPageView: '{page:pageview}'
+
+  pageview:
+    title: 'Page View'
+    content:
+      - CType: dlf_navigation
+        colPos: 0
+        settings:
+          targetPid: '{page:search}'
+      - CType: dlf_pageview
+        colPos: 0
+      - CType: dlf_tableofcontents
+        colPos: 1
+        header: 'Table of contents'
+        settings:
+          targetPid: '{page:pageview}'
+      - CType: dlf_metadata
+        colPos: 1
+        header: 'Metadata'
+        settings:
+          targetPid: '{page:pageview}'
