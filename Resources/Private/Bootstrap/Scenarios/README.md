@@ -43,13 +43,15 @@ pages:
 
 ### Top-level keys
 
-| Key        | Required | Description                                                                         |
-|------------|----------|-------------------------------------------------------------------------------------|
-| `label`    | no       | Label shown in the scenario selection. Defaults to the scenario name.               |
-| `siteSet`  | yes      | Site set added as dependency to the site configuration, see `Configuration/Sets/`.  |
-| `basePath` | yes      | Base path of the site, e.g. `/demo-minimal/`. Prefixed with `--base-url` if given.  |
-| `root`     | no       | Fields of the root page, see [Page fields](#page-fields).                           |
-| `pages`    | yes      | Subpages of the root page, see [Pages](#pages).                                     |
+| Key                         | Required | Description                                                                                  |
+|-----------------------------|----------|----------------------------------------------------------------------------------------------|
+| `label`                     | no       | Label shown in the scenario selection. Defaults to the scenario name.                        |
+| `siteSet`                   | yes      | Site set added as dependency to the site configuration, see `Configuration/Sets/`.           |
+| `basePath`                  | yes      | Base path of the site, e.g. `/demo-minimal/`. Prefixed with `--base-url` if given.           |
+| `root`                      | no       | Fields of the root page, see [Page fields](#page-fields).                                    |
+| `pages`                     | yes      | Subpages of the root page, see [Pages](#pages).                                              |
+| `documents`                 | no       | Demo documents of the scenario, see [Documents](#documents).                                 |
+| `generatePlaceholderImages` | no       | Generate the page images of the documents, see [Documents](#documents). Defaults to `false`. |
 
 ### Pages
 
@@ -112,6 +114,22 @@ created:
 | `{page:<key>}` | UID of the page with the given key, e.g. `{page:search}`.  |
 | `{page:root}`  | UID of the root page.                                      |
 | `{solrCore}`   | UID of the Solr core record in the storage folder.         |
+
+### Documents
+
+Each entry of `documents` refers to a directory in `Resources/Private/Bootstrap/Documents/`, which contains the METS
+file of the document (`mets.xml`) and optionally its files (e.g. images). The directory is copied to
+`fileadmin/kitodo-demo/<scenario>/<name>/`, and the placeholder `{documentUrl}` in the METS file is replaced with the
+public URL of the copied directory. Since the METS file is loaded via HTTP, a base URL (`--base-url`) is required.
+
+| Key        | Required | Description                                                                              |
+|------------|----------|------------------------------------------------------------------------------------------|
+| `name`     | yes      | Name of the document's directory.                                                        |
+| `pageSize` | no       | Width and height of generated placeholder images, e.g. `[1400, 1000]`. Defaults to `[1000, 1400]`. |
+
+With `generatePlaceholderImages: true`, a SVG image labeled with the page number and the document's title is generated
+for every SVG file (`MIMETYPE="image/svg+xml"`) referenced by a page of the METS file with a URL starting with
+`{documentUrl}/`. Files of the file group `THUMBS` are scaled down to a maximum size of 150 pixels.
 
 ## Site settings
 

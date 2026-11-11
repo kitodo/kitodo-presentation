@@ -18,6 +18,7 @@ use Kitodo\Dlf\Service\TenantService;
 use TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools;
 use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
 use TYPO3\CMS\Core\Configuration\SiteWriter;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\SiteFinder;
@@ -41,6 +42,23 @@ class BootstrapService
     protected const SCENARIO_PATH = 'EXT:dlf/Resources/Private/Bootstrap/Scenarios/';
 
     protected const SITE_IDENTIFIER_PREFIX = 'kitodo-demo-';
+
+    protected const DOCUMENTS_PATH = 'EXT:dlf/Resources/Private/Bootstrap/Documents/';
+
+    /**
+     * Placeholder in the METS files of the demo documents, which is replaced with the public URL of the document's directory.
+     */
+    protected const DOCUMENT_URL_PLACEHOLDER = '{documentUrl}';
+
+    /**
+     * SVG of a placeholder image with the arguments: drawing width and height, image width and height, page number, title
+     */
+    protected const PLACEHOLDER_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %1$d %2$d" width="%3$d" height="%4$d">'
+        . '<rect width="100%%" height="100%%" fill="#fff"/>'
+        . '<g fill="#333" font-family="sans-serif" text-anchor="middle">'
+        . '<text x="50%%" y="%5$d" font-size="140">Page %6$s</text>'
+        . '<text x="50%%" y="%7$d" font-size="44">%8$s</text>'
+        . '</g></svg>';
 
     /**
      * @access protected
@@ -147,7 +165,102 @@ class BootstrapService
 
         $this->createContent($solrCoreUid);
 
+        $this->createDocuments($scenarioName, $scenario, $baseUrl);
+
         return $this->pageUids;
+    }
+
+    /**
+     * Copy the documents of the scenario to the public "kitodo-demo" directory of the fileadmin,
+     * replace the document URL placeholder in their METS files and generate placeholder images if configured.
+     *
+     * @access protected
+     *
+     * @param string $scenarioName
+     * @param mixed[] $scenario
+     * @param string $baseUrl
+     *
+     * @return string[] URLs of the METS files of the copied documents
+     */
+    protected function createDocuments(string $scenarioName, array $scenario, string $baseUrl): array
+    {
+        $relativeDir = $GLOBALS['TYPO3_CONF_VARS']['BE']['fileadminDir'] . 'kitodo-demo/' . $scenarioName . '/';
+        $targetDir = Environment::getPublicPath() . '/' . $relativeDir;
+        GeneralUtility::rmdir($targetDir, true);
+
+        $metsUrls = [];
+        foreach ($scenario['documents'] ?? [] as $document) {
+            if ($baseUrl === '') {
+                // The METS files are loaded via HTTP, which requires an absolute URL.
+                throw new \InvalidArgumentException('Demo scenario "' . $scenarioName . '" with documents requires a base URL', 1762870005);
+            }
+            $documentDir = $targetDir . $document['name'] . '/';
+            $documentUrl = rtrim($baseUrl, '/') . '/' . $relativeDir . $document['name'];
+            GeneralUtility::copyDirectory(GeneralUtility::getFileAbsFileName(self::DOCUMENTS_PATH . $document['name']), $documentDir);
+
+            $mets = (string) file_get_contents($documentDir . 'mets.xml');
+            if (!empty($scenario['generatePlaceholderImages'])) {
+                $this->generatePlaceholderImages($mets, $documentDir, $document['pageSize'] ?? [1000, 1400]);
+            }
+            GeneralUtility::writeFile($documentDir . 'mets.xml', str_replace(self::DOCUMENT_URL_PLACEHOLDER, $documentUrl, $mets), true);
+            $metsUrls[] = $documentUrl . '/mets.xml';
+        }
+        return $metsUrls;
+    }
+
+    /**
+     * Generate a SVG placeholder image for every SVG file of the given METS file, labeled with the page number
+     * and the title of the document. Images of the file group "THUMBS" are scaled down to thumbnail size.
+     *
+     * @access protected
+     *
+     * @param string $mets Content of the METS file
+     * @param string $documentDir Directory the image paths relative to the document URL placeholder are resolved against
+     * @param int[] $pageSize Width and height of the page images
+     *
+     * @return void
+     */
+    protected function generatePlaceholderImages(string $mets, string $documentDir, array $pageSize): void
+    {
+        [$width, $height] = $pageSize;
+        $thumbnailScale = 150 / max($width, $height);
+
+        $dom = new \DOMDocument();
+        $dom->loadXML($mets);
+        $xpath = new \DOMXPath($dom);
+        $xpath->registerNamespace('mets', 'http://www.loc.gov/METS/');
+        $xpath->registerNamespace('xlink', 'http://www.w3.org/1999/xlink');
+        $title = htmlspecialchars($xpath->evaluate('string(//mets:structMap[@TYPE="LOGICAL"]/mets:div/@LABEL)'));
+
+        foreach ($xpath->query('//mets:structMap[@TYPE="PHYSICAL"]//mets:div[@TYPE="page"]') ?: [] as $page) {
+            if (!$page instanceof \DOMElement) {
+                continue;
+            }
+            foreach ($xpath->query('mets:fptr/@FILEID', $page) ?: [] as $fileId) {
+                $file = ($xpath->query('//mets:file[@ID="' . $fileId->nodeValue . '"][@MIMETYPE="image/svg+xml"]') ?: null)?->item(0);
+                if (!$file instanceof \DOMElement || !$file->parentNode instanceof \DOMElement) {
+                    continue;
+                }
+                $href = (string) $xpath->evaluate('string(mets:FLocat/@xlink:href)', $file);
+                if (!str_starts_with($href, self::DOCUMENT_URL_PLACEHOLDER . '/')) {
+                    continue;
+                }
+                $scale = $file->parentNode->getAttribute('USE') === 'THUMBS' ? $thumbnailScale : 1;
+                $path = $documentDir . substr($href, strlen(self::DOCUMENT_URL_PLACEHOLDER . '/'));
+                GeneralUtility::mkdir_deep(dirname($path));
+                GeneralUtility::writeFile($path, sprintf(
+                    self::PLACEHOLDER_SVG,
+                    $width,
+                    $height,
+                    (int) round($width * $scale),
+                    (int) round($height * $scale),
+                    intdiv($height, 2),
+                    $page->getAttribute('ORDER'),
+                    intdiv($height, 2) + 100,
+                    $title
+                ), true);
+            }
+        }
     }
 
     /**

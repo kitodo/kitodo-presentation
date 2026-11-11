@@ -9,6 +9,14 @@ root:
   backend_layout: pagets__Default
   backend_layout_next_level: pagets__Default
 
+generatePlaceholderImages: true
+documents:
+  - name: monograph
+  - name: manuscript
+  - name: letter
+  - name: map
+    pageSize: [1400, 1000]
+
 pages:
   storage:
     title: 'Kitodo Storage'
