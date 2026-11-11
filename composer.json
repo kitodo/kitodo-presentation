@@ -35,6 +35,7 @@
     "typo3/cms-core": "^13.4|^14.3",
     "typo3/cms-extbase": "^13.4|^14.3",
     "typo3/cms-extensionmanager": "^13.4|^14.3",
+    "typo3/cms-fluid-styled-content": "^13.4|^14.3",
     "typo3/cms-install": "^13.4|^14.3",
     "typo3/cms-reports": "^13.4|^14.3",
     "typo3/cms-scheduler": "^13.4|^14.3",
@@ -53,7 +54,6 @@
     "spatie/phpunit-watcher": "^1.24",
     "typo3/cms-backend": "^13.4|^14.3",
     "typo3/cms-fluid": "^13.4|^14.3",
-    "typo3/cms-fluid-styled-content": "^13.4|^14.3",
     "typo3/cms-frontend": "^13.4|^14.3",
     "typo3/testing-framework": "^9.7",
     "vlucas/phpdotenv": "^5.6"
