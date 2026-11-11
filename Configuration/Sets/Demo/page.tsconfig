@@ -1,18 +1,50 @@
 mod.web_layout.BackendLayouts {
-    Default {
-        title = Kitodo.Presentation Demo
+    Viewer {
+        title = Kitodo.Presentation Demo: Viewer
         config.backend_layout {
             colCount = 2
+            rowCount = 2
+            rows {
+                1.columns.1 {
+                    name = Header
+                    colPos = 2
+                    colspan = 2
+                }
+                2.columns {
+                    1 {
+                        name = Sidebar
+                        colPos = 1
+                    }
+                    2 {
+                        name = Main
+                        colPos = 0
+                    }
+                }
+            }
+        }
+    }
+    SearchResultList < .Viewer
+    SearchResultList {
+        title = Kitodo.Presentation Demo: Search result list
+        config.backend_layout.rows.2.columns {
+            1 {
+                name = Main
+                colPos = 0
+            }
+            2 {
+                name = Sidebar
+                colPos = 1
+            }
+        }
+    }
+    Home {
+        title = Kitodo.Presentation Demo: Home
+        config.backend_layout {
+            colCount = 1
             rowCount = 1
-            rows.1.columns {
-                1 {
-                    name = Sidebar
-                    colPos = 1
-                }
-                2 {
-                    name = Main
-                    colPos = 0
-                }
+            rows.1.columns.1 {
+                name = Main
+                colPos = 0
             }
         }
     }

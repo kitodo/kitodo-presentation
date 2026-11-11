@@ -1,0 +1,31 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>
+    (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+
+    This file is part of the Kitodo and TYPO3 projects.
+
+    @license GNU General Public License version 3 or later.
+    For the full copyright and license information, please read the
+    LICENSE.txt file that was distributed with this source code.
+
+    Page template of the search result list of the Kitodo.Presentation demo site sets, with the sidebar on the right.
+</f:comment>
+
+<f:render partial="Menu" arguments="{_all}" />
+
+<header id="demo-header" class="demo-header">
+    <f:format.raw>{contentHeader}</f:format.raw>
+</header>
+
+<div class="demo-columns">
+    <main id="demo-main" class="demo-main">
+        <f:format.raw>{contentMain}</f:format.raw>
+    </main>
+    <aside id="demo-sidebar" class="demo-sidebar">
+        <f:format.raw>{contentSidebar}</f:format.raw>
+    </aside>
+</div>
+
+</html>

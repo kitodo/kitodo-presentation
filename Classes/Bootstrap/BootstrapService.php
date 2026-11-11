@@ -53,6 +53,11 @@ class BootstrapService
     protected const DOCUMENTS_PATH = 'EXT:dlf/Resources/Private/Bootstrap/Documents/';
 
     /**
+     * Columns (colPos) of the backend layouts of the demo site sets indexed by their slot name
+     */
+    protected const SLOTS = ['main' => 0, 'sidebar' => 1, 'header' => 2];
+
+    /**
      * Placeholder in the METS files of the demo documents, which is replaced with the public URL of the document's directory.
      */
     protected const DOCUMENT_URL_PLACEHOLDER = '{documentUrl}';
@@ -177,7 +182,7 @@ class BootstrapService
         ]);
         $this->cacheManager->flushCachesInGroup('pages');
 
-        $this->createContent($solrCoreUid);
+        $this->createContent($solrCoreUid, $scenario['pluginSettings'] ?? []);
 
         $metsUrls = $this->createDocuments($scenarioName, $scenario, $baseUrl);
         $this->indexDocuments($metsUrls, $solrCoreUid);
@@ -384,6 +389,10 @@ class BootstrapService
         foreach ($pages as $key => $page) {
             $this->contentByPage[$key] = $page['content'] ?? [];
             unset($page['content'], $page['children']);
+            if (isset($page['backend_layout']) && !str_contains($page['backend_layout'], '__')) {
+                // Backend layout of the demo site sets given by its name only
+                $page['backend_layout'] = 'pagets__' . $page['backend_layout'];
+            }
             $data['pages']['NEW' . $key] = array_merge(['hidden' => 0], $page, ['pid' => $pid]);
         }
         // Process in reverse order, since every new page is inserted as first page of its parent.
@@ -407,10 +416,11 @@ class BootstrapService
      * @access protected
      *
      * @param int $solrCoreUid
+     * @param mixed[] $pluginSettings Settings applied to all plugins having a setting with the same name
      *
      * @return void
      */
-    protected function createContent(int $solrCoreUid): void
+    protected function createContent(int $solrCoreUid, array $pluginSettings): void
     {
         $data = [];
         $count = 0;
@@ -419,8 +429,16 @@ class BootstrapService
                 $settings = $contentElement['settings'] ?? [];
                 unset($contentElement['settings']);
                 $contentElement['pid'] = $this->pageUids[$pageKey];
+                if (isset($contentElement['slot'])) {
+                    if (!isset(self::SLOTS[$contentElement['slot']])) {
+                        throw new \InvalidArgumentException('Unknown slot "' . $contentElement['slot'] . '" of demo content element', 1762870009);
+                    }
+                    $contentElement['colPos'] = self::SLOTS[$contentElement['slot']];
+                    unset($contentElement['slot']);
+                }
+                $defaults = $this->getFlexFormDefaults($contentElement['CType']);
                 $flexFormValues = [];
-                foreach (array_merge($this->getFlexFormDefaults($contentElement['CType']), $settings) as $name => $value) {
+                foreach (array_merge($defaults, array_intersect_key($pluginSettings, $defaults), $settings) as $name => $value) {
                     $flexFormValues['settings.' . $name] = ['vDEF' => $value];
                 }
                 if (!empty($flexFormValues)) {

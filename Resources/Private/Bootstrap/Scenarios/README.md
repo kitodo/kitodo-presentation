@@ -24,21 +24,27 @@ label: 'Minimal demo'
 siteSet: kitodo/presentation-demo-minimal
 basePath: /demo-minimal/
 
+pluginSettings:
+  solrcore: '{solrCore}'
+
 root:
   title: 'Kitodo.Presentation Minimal Demo'
-  backend_layout_next_level: pagets__Default
+  backend_layout: Home
+  content:
+    - CType: dlf_search
+      settings:
+        targetPid: '{page:results}'
 
 pages:
   storage:
     title: 'Kitodo Storage'
     doktype: 254
-  search:
-    title: 'Search'
+  results:
+    title: 'Search Results'
+    backend_layout: SearchResultList
     content:
-      - CType: dlf_search
-        settings:
-          solrcore: '{solrCore}'
-          targetPid: '{page:search}'
+      - CType: dlf_listview
+        slot: main
 ```
 
 ### Top-level keys
@@ -48,6 +54,7 @@ pages:
 | `label`                     | no       | Label shown in the scenario selection. Defaults to the scenario name.                        |
 | `siteSet`                   | yes      | Site set added as dependency to the site configuration, see `Configuration/Sets/`.           |
 | `basePath`                  | yes      | Base path of the site, e.g. `/demo-minimal/`. Prefixed with `--base-url` if given.           |
+| `pluginSettings`            | no       | Settings applied to all plugins, see [Content elements](#content-elements).                  |
 | `root`                      | no       | Fields of the root page, see [Page fields](#page-fields).                                    |
 | `pages`                     | yes      | Subpages of the root page, see [Pages](#pages).                                              |
 | `documents`                 | no       | Demo documents of the scenario, see [Documents](#documents).                                 |
@@ -67,40 +74,54 @@ Pages are created in the order they are listed.
 
 Any field of the table `pages` can be set, e.g.:
 
-| Field                       | Description                                                              |
-|-----------------------------|--------------------------------------------------------------------------|
-| `title`                     | Title of the page.                                                       |
-| `doktype`                   | Page type, e.g. `254` for a folder. Defaults to `1` (standard page).     |
-| `backend_layout`            | Backend layout of this page, e.g. `pagets__Default`.                     |
-| `backend_layout_next_level` | Backend layout of all subpages, e.g. `pagets__Default`.                  |
+| Field            | Description                                                              |
+|------------------|--------------------------------------------------------------------------|
+| `title`          | Title of the page.                                                       |
+| `doktype`        | Page type, e.g. `254` for a folder. Defaults to `1` (standard page).     |
+| `backend_layout` | Backend layout of this page, see below.                                  |
+| `nav_hide`       | `1` hides the page in the menu, e.g. for a viewer page.                  |
 
 Pages are visible (`hidden: 0`) unless specified otherwise. The root page is always marked as site root.
 
+The demo site sets (`Configuration/Sets/Demo/page.tsconfig`) provide the following backend layouts, which can be given
+by their name (e.g. `backend_layout: Home` for `pagets__Home`):
+
+| Backend layout     | Slots                                                                       |
+|--------------------|-----------------------------------------------------------------------------|
+| `Viewer`           | `header` at the top, below it `sidebar` on the left and `main` on the right |
+| `SearchResultList` | `header` at the top, below it `main` on the left and `sidebar` on the right |
+| `Home`             | `main` with horizontally centered content                                   |
+
 In addition, a page supports the following keys:
 
-| Key        | Description                                                                 |
-|------------|-----------------------------------------------------------------------------|
-| `children` | Subpages of this page, in the same format as `pages`.                       |
+| Key        | Description                                                                       |
+|------------|-----------------------------------------------------------------------------------|
+| `children` | Subpages of this page, in the same format as `pages`.                             |
 | `content`  | List of content elements of this page, see [Content elements](#content-elements). |
 
 ### Content elements
 
 Each entry of `content` is a content element. Content elements are created in the order they are listed within
-each column.
+each slot.
 
 Any field of the table `tt_content` can be set, e.g.:
 
 | Field    | Description                                                                  |
 |----------|------------------------------------------------------------------------------|
 | `CType`  | Type of the content element, e.g. `dlf_search` for the Kitodo search plugin. |
-| `colPos` | Column of the backend layout, e.g. `0` (Main) or `1` (Sidebar).               |
 | `header` | Header shown above the content element.                                      |
 
-In addition, a content element supports the following key:
+In addition, a content element supports the following keys:
 
 | Key        | Description                                                                                                                                                                                  |
 |------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `slot`     | Slot of the backend layout the content element is shown in: `main` (default), `sidebar` or `header`. Alternatively, the column can be set by `colPos` (`0`, `1` or `2`).                    |
 | `settings` | FlexForm values of the plugin without the `settings.` prefix, e.g. `targetPid` for `settings.targetPid`. Values not given are set to the defaults of the plugin's FlexForm, as when adding the plugin in the backend. |
+
+The top-level `pluginSettings` are applied to every plugin whose FlexForm contains a setting with the same name, e.g.
+`solrcore` to the search, list view and collection plugins. The `settings` of a content element take precedence.
+Settings whose meaning differs between plugins should be set per content element, e.g. `targetPid`, which refers to
+the list view for the search plugin, but to the page view for the table of contents.
 
 The available settings of each plugin are defined in `Configuration/FlexForms/`.
 

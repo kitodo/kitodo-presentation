@@ -1,13 +1,8 @@
-# Minimal demo: search, result list and page view. See README.md for the file format.
+# Minimal demo: search and collections, search results with facets and a viewer. See README.md for the file format.
 
 label: 'Minimal demo'
 siteSet: kitodo/presentation-demo-minimal
 basePath: /demo-minimal/
-
-root:
-  title: 'Kitodo.Presentation Minimal Demo'
-  backend_layout: pagets__Default
-  backend_layout_next_level: pagets__Default
 
 generatePlaceholderImages: true
 documents:
@@ -17,42 +12,68 @@ documents:
   - name: map
     pageSize: [1400, 1000]
 
+pluginSettings:
+  solrcore: '{solrCore}'
+  targetPidPageView: '{page:viewer}'
+
+root:
+  title: 'Kitodo.Presentation Minimal Demo'
+  backend_layout: Home
+  content:
+    - CType: dlf_search
+      settings:
+        targetPid: '{page:results}'
+    - CType: dlf_collection
+      header: 'Collections'
+      settings:
+        targetPid: '{page:results}'
+
 pages:
   storage:
     title: 'Kitodo Storage'
     doktype: 254
 
-  search:
-    title: 'Search'
+  results:
+    title: 'Search Results'
+    backend_layout: SearchResultList
     content:
       - CType: dlf_search
-        header: 'Search'
+        slot: header
         settings:
-          solrcore: '{solrCore}'
-          targetPid: '{page:search}'
-          targetPidPageView: '{page:pageview}'
+          targetPid: '{page:results}'
       - CType: dlf_listview
-        header: 'Results'
+        slot: main
+      # Second search plugin showing only the facets, its search form is hidden by CSS.
+      - CType: dlf_search
+        slot: sidebar
+        header: 'Facets'
         settings:
-          solrcore: '{solrCore}'
-          targetPidPageView: '{page:pageview}'
+          targetPid: '{page:results}'
+          facets: 'type,collection,author,year,place,language'
 
-  pageview:
-    title: 'Page View'
+  viewer:
+    title: 'Viewer'
+    backend_layout: Viewer
+    # Only useful with a selected document
+    nav_hide: 1
     content:
       - CType: dlf_navigation
-        colPos: 0
+        slot: header
         settings:
-          targetPid: '{page:search}'
-      - CType: dlf_pageview
-        colPos: 0
+          targetPid: '{page:results}'
+      - CType: dlf_toolbox
+        slot: header
+        settings:
+          tools: 'zoomTool,rotationTool,imageManipulationTool,imageDownloadTool'
       - CType: dlf_tableofcontents
-        colPos: 1
+        slot: sidebar
         header: 'Table of contents'
         settings:
-          targetPid: '{page:pageview}'
+          targetPid: '{page:viewer}'
       - CType: dlf_metadata
-        colPos: 1
+        slot: sidebar
         header: 'Metadata'
         settings:
-          targetPid: '{page:pageview}'
+          targetPid: '{page:viewer}'
+      - CType: dlf_pageview
+        slot: main
