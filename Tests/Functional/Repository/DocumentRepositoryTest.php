@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\Tests\Functional\Repository;
 
-use Doctrine\DBAL\Result;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\MetsDocument;
 use Kitodo\Dlf\Domain\Model\Document;
@@ -21,9 +20,9 @@ use Kitodo\Dlf\Domain\Model\Structure;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
-use TYPO3\CMS\Extbase\Persistence\Generic\LazyObjectStorage;
 
 class DocumentRepositoryTest extends FunctionalTestCase
 {
@@ -218,7 +217,7 @@ class DocumentRepositoryTest extends FunctionalTestCase
     {
         $document = $this->documentRepository->findByUid(1001);
         $collections = $document->getCollections();
-        self::assertInstanceOf(LazyObjectStorage::class, $collections);
+        self::assertInstanceOf(ObjectStorage::class, $collections);
 
         $collectionsByLabel = [];
         foreach ($collections as $collection) {

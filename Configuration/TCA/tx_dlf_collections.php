@@ -10,6 +10,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+$t3ver = (new TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+
 return [
     'ctrl' => [
         'title'     => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_collections',
@@ -29,7 +31,7 @@ return [
         ],
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfcollections.png',
         'rootLevel' => 0,
-        'searchFields' => 'label,index_name,oai_name,fe_cruser_id',
+        ...($t3ver >= 14 ? [] : ['searchFields' => 'label,index_name,oai_name,fe_cruser_id']),
     ],
     'interface' => [
     ],
@@ -140,6 +142,7 @@ return [
                 'rows' => 5,
                 'eval' => 'trim',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'oai_name' => [
@@ -169,6 +172,7 @@ return [
                 'wrap' => 'virtual',
                 'default' => '',
                 'enableRichtext' => true,
+                'searchable' => false,
             ],
         ],
         'thumbnail' => [

@@ -63,14 +63,14 @@ class TokenRepositoryTest extends FunctionalTestCase
         $outputCsvFile = __DIR__ . '/../../Fixtures/Repository/tokenTemp.csv';
 
         $inputCsvData = file_get_contents($inputCsvFile);
-        $csvData = str_getcsv($inputCsvData, "\n");
+        $csvData = str_getcsv($inputCsvData, "\n", "\"", "\\");
 
         $expireTime = 3600;
         $i = 1;
 
         foreach ($csvData as $key => &$row) {
             if ($key > 1) {
-                $columns = str_getcsv($row, ",");
+                $columns = str_getcsv($row, ",", "\"", "\\");
                 if ($i % 2 == 0) {
                     $columns[3] = time() - $expireTime - rand(10, 3600);
                 } else {

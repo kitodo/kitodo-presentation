@@ -78,9 +78,9 @@ class PageGridControllerTest extends AbstractControllerTestCase
         ];
 
         $templatePath = ExtensionManagementUtility::extPath('dlf') . 'Resources/Private/Templates/PageGrid/Main.html';
-        $view = $this->setUpTemplateView($templatePath);
-        $controller = $this->setUpController(PageGridController::class, $settings, '', $view);
         $request = $this->setUpTemplateRequest('main', ['tx_dlf' => ['id' => 2001]]);
+        $view = $this->setUpTemplateView($templatePath, $request);
+        $controller = $this->setUpController(PageGridController::class, $settings, '', $view);
 
         $response = $controller->processRequest($request);
 

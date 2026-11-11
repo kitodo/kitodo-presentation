@@ -13,10 +13,6 @@
 namespace Kitodo\Dlf\Controller;
 
 use Psr\Http\Message\ResponseInterface;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use Ubl\Iiif\Presentation\Common\Model\Resources\CanvasInterface;
-use Ubl\Iiif\Presentation\Common\Model\Resources\ManifestInterface;
-use Ubl\Iiif\Presentation\Common\Vocabulary\Motivation;
 
 /**
  * Controller class for the plugin 'Multi View'.
@@ -49,7 +45,7 @@ class MultiViewController extends AbstractController
 
         $page = $this->requestData['page'] ?? 0;
 
-        $currentUrl = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
+        $currentUrl = $this->request->getAttribute('normalizedParams')->getRequestUrl();
         if (is_string($currentUrl)) {
             $parts = parse_url($currentUrl);
             $currentPath = $parts['path'] ?? '/';
