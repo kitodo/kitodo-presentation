@@ -1,0 +1,19 @@
+mod.web_layout.BackendLayouts {
+    Default {
+        title = Kitodo.Presentation Demo
+        config.backend_layout {
+            colCount = 2
+            rowCount = 1
+            rows.1.columns {
+                1 {
+                    name = Sidebar
+                    colPos = 1
+                }
+                2 {
+                    name = Main
+                    colPos = 0
+                }
+            }
+        }
+    }
+}

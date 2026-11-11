@@ -1,0 +1,16 @@
+# Pages using these layouts render plain XML instead of HTML, see setup.typoscript
+mod.web_layout.BackendLayouts {
+    Feeds {
+        title = Kitodo.Presentation Demo: RSS Feed
+        config.backend_layout {
+            colCount = 1
+            rowCount = 1
+            rows.1.columns.1 {
+                name = Main
+                colPos = 0
+            }
+        }
+    }
+    OaiPmh < .Feeds
+    OaiPmh.title = Kitodo.Presentation Demo: OAI-PMH
+}

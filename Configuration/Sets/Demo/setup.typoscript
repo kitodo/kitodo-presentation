@@ -1,0 +1,26 @@
+@import 'EXT:dlf/Configuration/TypoScript/setup.typoscript'
+
+page = PAGE
+page {
+    # The map of the PageView plugin needs an explicit height.
+    cssInline.10 = TEXT
+    cssInline.10.value = .demo-columns { display: flex; gap: 2em; } .demo-main { flex: 1; } .tx-dlf-map { height: 600px; }
+
+    10 = PAGEVIEW
+    10 {
+        paths.10 = EXT:dlf/Resources/Private/Bootstrap/Templates/
+
+        variables {
+            contentMain < styles.content.get
+
+            contentSidebar < styles.content.get
+            contentSidebar.select.where = {#colPos}=1
+        }
+
+        dataProcessing.10 = menu
+        dataProcessing.10 {
+            levels = 2
+            as = mainMenu
+        }
+    }
+}

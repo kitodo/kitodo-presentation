@@ -1,0 +1,43 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>
+    (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+
+    This file is part of the Kitodo and TYPO3 projects.
+
+    @license GNU General Public License version 3 or later.
+    For the full copyright and license information, please read the
+    LICENSE.txt file that was distributed with this source code.
+
+    Minimal page template of the Kitodo.Presentation demo site sets, used for manual and automated testing.
+</f:comment>
+
+<nav id="demo-menu">
+    <ul>
+        <li><f:link.page pageUid="{site.rootPageId}">Home</f:link.page></li>
+        <f:for each="{mainMenu}" as="item">
+            <li>
+                <a href="{item.link}"{f:if(condition: item.current, then: ' aria-current="page"')}>{item.title}</a>
+                <f:if condition="{item.children}">
+                    <ul>
+                        <f:for each="{item.children}" as="child">
+                            <li><a href="{child.link}"{f:if(condition: child.current, then: ' aria-current="page"')}>{child.title}</a></li>
+                        </f:for>
+                    </ul>
+                </f:if>
+            </li>
+        </f:for>
+    </ul>
+</nav>
+
+<div class="demo-columns">
+    <aside id="demo-sidebar" class="demo-sidebar">
+        <f:format.raw>{contentSidebar}</f:format.raw>
+    </aside>
+    <main id="demo-main" class="demo-main">
+        <f:format.raw>{contentMain}</f:format.raw>
+    </main>
+</div>
+
+</html>

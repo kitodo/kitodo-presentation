@@ -1,0 +1,8 @@
+# The Feeds and OAI-PMH configurations replace the whole page, so they are restricted to pages using the respective layout.
+[tree.pagelayout == "pagets__Feeds"]
+    @import 'EXT:dlf/Configuration/TypoScript/Plugins/Feeds/setup.typoscript'
+[END]
+
+[tree.pagelayout == "pagets__OaiPmh"]
+    @import 'EXT:dlf/Configuration/TypoScript/Plugins/OaiPmh/setup.typoscript'
+[END]
