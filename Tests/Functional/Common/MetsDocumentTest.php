@@ -154,7 +154,7 @@ class MetsDocumentTest extends FunctionalTestCase
     {
         $doc = $this->doc('av_beispiel.xml');
 
-        $chapterThreePage = $doc->physicalStructureInfo[$doc->physicalStructure[3]];
+        $chapterThreePage = $doc->getPhysicalStructureInfo()[$doc->getPhysicalStructure()[3]];
         self::assertArrayMatches([
             'DEFAULT' => 'FILE_0000_DEFAULT_MP4',
         ], $chapterThreePage['files']);

@@ -146,16 +146,17 @@ class ToolboxController extends AbstractController
     {
         $currentPhysPage = '';
         $scoreFile = '';
+        $physicalStructure = $this->currentDocument->getPhysicalStructure();
         if ($this->requestData['page']) {
-            $currentPhysPage = $this->currentDocument->physicalStructure[$this->requestData['page']];
-        } elseif (!empty($this->currentDocument->physicalStructure)) {
-            $currentPhysPage = $this->currentDocument->physicalStructure[1];
+            $currentPhysPage = $physicalStructure[$this->requestData['page']];
+        } elseif (!empty($physicalStructure)) {
+            $currentPhysPage = $physicalStructure[1];
         }
 
         if (!empty($currentPhysPage)) {
             $useGroups = $this->useGroupsConfiguration->getScore();
             foreach ($useGroups as $useGroup) {
-                $currentPhysicalPage = $this->currentDocument->physicalStructureInfo[$currentPhysPage];
+                $currentPhysicalPage = $this->currentDocument->getPhysicalStructureInfo()[$currentPhysPage];
                 if (is_array($currentPhysicalPage) && array_key_exists('files', $currentPhysicalPage)) {
                     $files = $currentPhysicalPage['files'];
                     if (is_array($files) && array_key_exists($useGroup, $files)) {
@@ -226,7 +227,7 @@ class ToolboxController extends AbstractController
 
         $this->setPage();
 
-        $annotationContainers = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$this->requestData['page']]]['annotationContainers'];
+        $annotationContainers = $this->currentDocument->getPhysicalStructureInfo()[$this->currentDocument->getPhysicalStructure()[$this->requestData['page']]]['annotationContainers'];
         if (
             $annotationContainers != null
             && count($annotationContainers) > 0
@@ -386,13 +387,13 @@ class ToolboxController extends AbstractController
     private function getFile(int $page, array $fileGrps): array
     {
         $file = [];
-        if (!empty($this->currentDocument->physicalStructure)) {
-            if (!array_key_exists($page, $this->currentDocument->physicalStructure)) {
+        if (!empty($this->currentDocument->getPhysicalStructure())) {
+            if (!array_key_exists($page, $this->currentDocument->getPhysicalStructure())) {
                 $this->logger->warning('Page number "' . $page . '" not found in Document (' . $this->document->getLocation() . ') mets:structMap');
                 return $file;
             }
 
-            $physicalStructureInfo = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$page]] ?? null;
+            $physicalStructureInfo = $this->currentDocument->getPhysicalStructureInfo()[$this->currentDocument->getPhysicalStructure()[$page]] ?? null;
             // Iterate backwards over the file groups
             // e.g. `MAX` is used first when configuration order is `DEFAULT,MAX`
             while ($fileGrp = @array_pop($fileGrps)) {
@@ -533,8 +534,8 @@ class ToolboxController extends AbstractController
         $pageNumber = $this->requestData['page'] ?? 0;
         $useGroups = $this->useGroupsConfiguration->getDownload();
         $currentDocument = $this->currentDocument;
-        $physicalStructure = $currentDocument->physicalStructure;
-        $physicalStructureInfo = $currentDocument->physicalStructureInfo;
+        $physicalStructure = $currentDocument->getPhysicalStructure();
+        $physicalStructureInfo = $currentDocument->getPhysicalStructureInfo();
         // Get image link.
         while ($useGroup = array_shift($useGroups)) {
             if (!empty($physicalStructure)) {
@@ -589,8 +590,8 @@ class ToolboxController extends AbstractController
         $workLink = [];
         $useGroups = $this->useGroupsConfiguration->getDownload();
         $currentDocument = $this->currentDocument;
-        $physicalStructure = $currentDocument->physicalStructure;
-        $physicalStructureInfo = $currentDocument->physicalStructureInfo;
+        $physicalStructure = $currentDocument->getPhysicalStructure();
+        $physicalStructureInfo = $currentDocument->getPhysicalStructureInfo();
         // Get work link.
         while ($useGroup = array_shift($useGroups)) {
             if (!empty($physicalStructure)) {
@@ -739,8 +740,8 @@ class ToolboxController extends AbstractController
         $useGroups = $this->useGroupsConfiguration->getFulltext();
         $currentDocument = $this->document->getCurrentDocument();
         while ($useGroup = array_shift($useGroups)) {
-            if (isset($this->requestData['page']) && !empty($currentDocument->physicalStructure)) {
-                $pagePhysicalStructureInfo = $currentDocument->physicalStructureInfo[$currentDocument->physicalStructure[$this->requestData['page']]] ?? [];
+            if (isset($this->requestData['page']) && !empty($currentDocument->getPhysicalStructure())) {
+                $pagePhysicalStructureInfo = $currentDocument->getPhysicalStructureInfo()[$currentDocument->getPhysicalStructure()[$this->requestData['page']]] ?? [];
                 $files = $pagePhysicalStructureInfo['files'] ?? [];
                 if (!empty($files[$useGroup])) {
                     return false;

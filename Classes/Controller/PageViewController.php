@@ -175,9 +175,9 @@ class PageViewController extends AbstractController
         $measureCoordsFromCurrentSite = [];
         $measureCounterToMeasureId = [];
         $measureIdToIndex = [];
-        if (array_key_exists($page, $doc->physicalStructure)) {
-            $currentPhysId = $doc->physicalStructure[$page];
-            $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'] ?? null;
+        if (array_key_exists($page, $doc->getPhysicalStructure())) {
+            $currentPhysId = $doc->getPhysicalStructure()[$page];
+            $defaultFileId = $doc->getPhysicalStructureInfo()[$currentPhysId]['files']['DEFAULT'] ?? null;
             if ($doc instanceof MetsDocument) {
                 if (isset($defaultFileId)) {
                     $musicalStruct = $doc->musicalStructureInfo;
@@ -222,9 +222,9 @@ class PageViewController extends AbstractController
         if ($doc instanceof MetsDocument) {
             $useGroups = $this->useGroupsConfiguration->getScore();
 
-            if (array_key_exists($page, $doc->physicalStructure)) {
-                $pageId = $doc->physicalStructure[$page];
-                $files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
+            if (array_key_exists($page, $doc->getPhysicalStructure())) {
+                $pageId = $doc->getPhysicalStructure()[$page];
+                $files = $doc->getPhysicalStructureInfo()[$pageId]['files'] ?? [];
 
                 foreach ($useGroups as $useGroup) {
                     if (isset($files[$useGroup])) {
@@ -265,8 +265,8 @@ class PageViewController extends AbstractController
         // Get fulltext link.
         $useGroups = $this->useGroupsConfiguration->getFulltext();
         $currentDocument = $this->document->getCurrentDocument();
-        if (array_key_exists($page, $currentDocument->physicalStructure)) {
-            $physicalStructureInfo = $currentDocument->physicalStructureInfo[$currentDocument->physicalStructure[$page]];
+        if (array_key_exists($page, $currentDocument->getPhysicalStructure())) {
+            $physicalStructureInfo = $currentDocument->getPhysicalStructureInfo()[$currentDocument->getPhysicalStructure()[$page]];
             if (array_key_exists('files', $physicalStructureInfo)) {
                 $files = $physicalStructureInfo['files'];
                 while ($useGroup = array_shift($useGroups)) {
@@ -353,7 +353,7 @@ class PageViewController extends AbstractController
     {
         $currentDocument = $this->document->getCurrentDocument();
         if ($currentDocument instanceof IiifManifest) {
-            $canvasId = $currentDocument->physicalStructure[$page];
+            $canvasId = $currentDocument->getPhysicalStructure()[$page];
             $iiif = $currentDocument->getIiif();
             if ($iiif instanceof ManifestInterface) {
                 $canvas = $iiif->getContainedResourceById($canvasId);
@@ -455,10 +455,14 @@ class PageViewController extends AbstractController
         $currentDocument = $this->document->getCurrentDocument();
         // Get the physical structure info for the specified page
         if ($specificDoc) {
-            $physicalStructureInfo = $specificDoc->physicalStructureInfo[$specificDoc->physicalStructure[$page]];
+            $physicalStructure = $specificDoc->getPhysicalStructure();
+            if (array_key_exists($page, $physicalStructure)) {
+                $physicalStructureInfo = $specificDoc->getPhysicalStructureInfo()[$physicalStructure[$page]];
+            }
         } else {
-            if (array_key_exists($page, $currentDocument->physicalStructure)) {
-                $physicalStructureInfo = $currentDocument->physicalStructureInfo[$currentDocument->physicalStructure[$page]];
+            $physicalStructure = $currentDocument->getPhysicalStructure();
+            if (array_key_exists($page, $physicalStructure)) {
+                $physicalStructureInfo = $currentDocument->getPhysicalStructureInfo()[$physicalStructure[$page]];
             }
         }
 
