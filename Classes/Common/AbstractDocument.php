@@ -1038,7 +1038,7 @@ abstract class AbstractDocument
      */
     protected function magicGetNumPages(): int
     {
-        $this->getPhysicalStructure();
+        $this->loadPhysicalStructure();
         return $this->numPages;
     }
 
