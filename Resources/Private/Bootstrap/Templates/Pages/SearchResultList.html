@@ -15,11 +15,13 @@
 
 <f:render partial="Menu" arguments="{_all}" />
 
-<header id="demo-header" class="demo-header">
-    <f:format.raw>{contentHeader}</f:format.raw>
-</header>
+<f:if condition="{contentHeader}">
+    <header id="demo-header" class="demo-header">
+        <f:format.raw>{contentHeader}</f:format.raw>
+    </header>
+</f:if>
 
-<div class="demo-columns">
+<div class="demo-columns demo-results">
     <main id="demo-main" class="demo-main">
         <f:format.raw>{contentMain}</f:format.raw>
     </main>
@@ -27,5 +29,7 @@
         <f:format.raw>{contentSidebar}</f:format.raw>
     </aside>
 </div>
+
+<f:render partial="Footer" arguments="{_all}" />
 
 </html>

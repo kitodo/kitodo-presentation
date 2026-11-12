@@ -50,6 +50,8 @@ pages:
         settings:
           targetPid: '{page:results}'
           facets: 'type,collection,author,year,place,language'
+          # Selected facets are marked as current and can be removed by clicking them again.
+          resetFacets: 1
 
   viewer:
     title: 'Viewer'
@@ -57,14 +59,17 @@ pages:
     # Only useful with a selected document
     nav_hide: 1
     content:
-      - CType: dlf_navigation
-        slot: header
-        settings:
-          targetPid: '{page:results}'
+      # Toolbox above and navigation below the page view
       - CType: dlf_toolbox
-        slot: header
+        slot: main
         settings:
           tools: 'zoomTool,rotationTool,imageManipulationTool,imageDownloadTool'
+      - CType: dlf_pageview
+        slot: main
+      - CType: dlf_navigation
+        slot: main
+        settings:
+          targetPid: '{page:results}'
       - CType: dlf_tableofcontents
         slot: sidebar
         header: 'Table of contents'
@@ -75,5 +80,3 @@ pages:
         header: 'Metadata'
         settings:
           targetPid: '{page:viewer}'
-      - CType: dlf_pageview
-        slot: main

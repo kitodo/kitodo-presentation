@@ -1,0 +1,35 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* Metadata plugin: field labels above their values. */
+
+.frame-type-dlf_metadata dl {
+    margin: 0;
+}
+
+.frame-type-dlf_metadata dt {
+    font-size: var(--demo-font-size-small);
+    color: var(--demo-muted);
+}
+
+/* Linked values (e.g. the title) are rendered without "dd" and get the same spacing. */
+.frame-type-dlf_metadata dd,
+.frame-type-dlf_metadata dl > a {
+    margin: 0 0 var(--demo-space-s);
+}
+
+.frame-type-dlf_metadata dl > a {
+    display: block;
+}
+
+/* Several values of the same field are kept together. */
+.frame-type-dlf_metadata dd:has(+ dd) {
+    margin-bottom: 0;
+}

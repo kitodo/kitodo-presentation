@@ -1,0 +1,44 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* Table of contents plugin: nested entries with their page label on the right, the current entry is highlighted. */
+
+.tx-dlf-tableofcontents ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tx-dlf-tableofcontents ul ul {
+    padding-left: var(--demo-space-m);
+}
+
+.tx-dlf-tableofcontents li > a {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--demo-space-m);
+    padding: calc(var(--demo-space-xs) / 2) var(--demo-space-xs);
+    border-radius: var(--demo-radius);
+    color: var(--demo-text);
+}
+
+.tx-dlf-tableofcontents li > a:hover {
+    background: var(--demo-hover);
+    text-decoration: none;
+}
+
+.tx-dlf-tableofcontents-pagination {
+    color: var(--demo-muted);
+}
+
+.tx-dlf-tableofcontents-current > a {
+    font-weight: 600;
+    background: var(--demo-hover);
+}

@@ -13,7 +13,7 @@
 
 <nav id="demo-menu">
     <ul>
-        <li><f:link.page pageUid="{site.rootPageId}">Home</f:link.page></li>
+        <li><a href="{f:uri.page(pageUid: site.rootPageId)}"{f:if(condition: '{page.id} == {site.rootPageId}', then: ' aria-current="page"')}>Home</a></li>
         <f:for each="{mainMenu}" as="item">
             <li>
                 <a href="{item.link}"{f:if(condition: item.current, then: ' aria-current="page"')}>{item.title}</a>

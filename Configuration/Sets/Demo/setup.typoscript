@@ -2,35 +2,19 @@
 
 page = PAGE
 page {
-    cssInline.10 = TEXT
-    cssInline.10.value (
-        .demo-home { display: flex; flex-direction: column; align-items: center; }
-        .demo-columns { display: flex; gap: 2em; }
-        .demo-sidebar { flex: 0 0 20em; }
-        .demo-main { flex: 1; }
-        /* Search results with index (list marker), thumbnail and metadata side by side. */
-        .tx-dlf-abstracts > li { margin-bottom: 1em; }
-        .tx-dlf-abstracts > li > a { display: flex; gap: 1em; align-items: center; }
-        .tx-dlf-abstracts dl { display: grid; grid-template-columns: auto 1fr; gap: 0 0.5em; margin: 0; }
-        .tx-dlf-abstracts dt { font-weight: bold; }
-        .tx-dlf-abstracts dd { margin: 0; }
-        /* The search plugin in the sidebar only shows the facets. */
-        .demo-sidebar .tx-dlf-search-form { display: none; }
-        /* Navigation and toolbox links as buttons, unavailable actions are rendered as "span". */
-        .frame-type-dlf_navigation, .frame-type-dlf_toolbox { display: flex; flex-wrap: wrap; gap: 0.4em; margin-bottom: 0.4em; }
-        .frame-type-dlf_navigation > *, .frame-type-dlf_toolbox > * { list-style: none; }
-        .frame-type-dlf_navigation :is(a, span, select), .frame-type-dlf_toolbox :is(a, span) { display: inline-block; padding: 0.2em 0.6em; border: 1px solid #999; border-radius: 3px; color: inherit; text-decoration: none; }
-        .frame-type-dlf_navigation span, .frame-type-dlf_toolbox span { color: #999; border-color: #ddd; }
-        /* The map of the PageView plugin needs an explicit height, the background shows the edges of white pages. */
-        .tx-dlf-map { height: 600px; background: #eee; }
-        /* Viewer filling the window: the map takes the remaining space, the sidebar scrolls on its own. */
-        body:has(.demo-viewer) { margin: 0; }
-        .demo-viewer { display: flex; flex-direction: column; height: 100vh; padding: 0 0.5em; box-sizing: border-box; }
-        .demo-viewer .demo-columns { flex: 1; min-height: 0; }
-        .demo-viewer .demo-sidebar { overflow-y: auto; }
-        .demo-viewer .demo-main { position: relative; }
-        .demo-viewer .tx-dlf-map { position: absolute; inset: 0; height: auto; }
-    )
+    # One CSS file per plugin (usable as blueprint when using the plugin), and the layout of the demo page templates.
+    # The layout is included last, since it overrides plugin styles in the context of the demo pages.
+    includeCSS {
+        demoCollection = EXT:dlf/Resources/Public/Bootstrap/Css/Collection.css
+        demoListView = EXT:dlf/Resources/Public/Bootstrap/Css/ListView.css
+        demoMetadata = EXT:dlf/Resources/Public/Bootstrap/Css/Metadata.css
+        demoNavigation = EXT:dlf/Resources/Public/Bootstrap/Css/Navigation.css
+        demoPageView = EXT:dlf/Resources/Public/Bootstrap/Css/PageView.css
+        demoSearch = EXT:dlf/Resources/Public/Bootstrap/Css/Search.css
+        demoTableOfContents = EXT:dlf/Resources/Public/Bootstrap/Css/TableOfContents.css
+        demoToolbox = EXT:dlf/Resources/Public/Bootstrap/Css/Toolbox.css
+        demoLayout = EXT:dlf/Resources/Public/Bootstrap/Css/Layout.css
+    }
 
     10 = PAGEVIEW
     10 {
@@ -51,5 +35,8 @@ page {
             levels = 2
             as = mainMenu
         }
+
+        # Versions and git commit shown in the footer
+        dataProcessing.20 = Kitodo\Dlf\Bootstrap\DebugInformationProcessor
     }
 }
