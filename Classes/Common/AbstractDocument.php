@@ -727,9 +727,9 @@ abstract class AbstractDocument
      *
      * @param string $id
      *
-     * @return mixed[]|string The files of physical structure metadata for given id
+     * @return mixed[] The files of physical structure metadata for given id
      */
-    public function getPhysicalStructureNodeFiles(string $id): array|string
+    public function getPhysicalStructureNodeFiles(string $id): array
     {
         if (!empty($id)) {
             return $this->getPhysicalStructureInfo()[$id]['files'] ?? [];
@@ -745,7 +745,7 @@ abstract class AbstractDocument
      *
      * @param int $page
      *
-     * @return mixed[]The files of physical structure metadata for given page assigned
+     * @return mixed[] The files of physical structure metadata for given page assigned
      * to physical structure
      */
     public function getPhysicalStructureNodeFilesByPage(int $page): array
