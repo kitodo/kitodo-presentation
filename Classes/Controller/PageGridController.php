@@ -86,7 +86,7 @@ class PageGridController extends AbstractController
     protected function getEntry(int $number, array $fileGrpThumbs): array
     {
         $currentDocument = $this->document->getCurrentDocument();
-        $physicalStructureNode = $currentDocument->getPhysicalStructureNode($currentDocument->getPhysicalStructure()[$number]);
+        $physicalStructureNode = $currentDocument->getPhysicalStructureNodeByPage($number);
         $entry = [];
         // Set pagination.
         $entry['pagination'] = htmlspecialchars($physicalStructureNode['orderlabel']);

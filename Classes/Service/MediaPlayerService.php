@@ -148,15 +148,7 @@ class MediaPlayerService
      */
     public static function findFiles(AbstractDocument $doc, int $pageNo, array $useGroups): array
     {
-        $physicalStructure = $doc->getPhysicalStructure();
-        $pagePhysKey = $physicalStructure[$pageNo] ?? null;
-
-        // Return early if the page doesn't exist
-        if (!$pagePhysKey) {
-            return [];
-        }
-
-        $physicalStructureNode = $doc->getPhysicalStructureNode($pagePhysKey);
+        $physicalStructureNode = $doc->getPhysicalStructureNodeByPage($pageNo);
 
         // Return early if the node for page doesn't exist
         if (empty($physicalStructureNode)) {

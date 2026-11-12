@@ -645,11 +645,30 @@ abstract class AbstractDocument
      *
      * @access public
      *
+     * @param string $id
+     *
      * @return mixed[] The physical structure metadata for given id
      */
     public function getPhysicalStructureNode(string $id): array
     {
-        return $this->getPhysicalStructureInfo()[$id] ?? [];
+        if (!empty($id)) {
+            return $this->getPhysicalStructureInfo()[$id] ?? [];
+        }
+        return [];
+    }
+
+    /**
+     * Returns metadata for the document's physical structure node by page assigned to physical structure.
+     *
+     * @access public
+     *
+     * @param int $page
+     *
+     * @return mixed[] The physical structure metadata for given page assigned to physical structure
+     */
+    public function getPhysicalStructureNodeByPage(int $page): array
+    {
+        return $this->getPhysicalStructureNode($this->getPhysicalStructure()[$page] ?? '');
     }
 
     /**
