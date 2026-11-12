@@ -1817,17 +1817,15 @@ final class MetsDocument extends AbstractDocument
                 // Load smLinks.
                 $this->magicGetSmLinks();
                 // Get thumbnail location.
+                $physicalId = $this->smLinks['l2p'][$strctId][0] ?? '';
                 $useGroups = $this->useGroupsConfiguration->getThumbnail();
                 while ($useGroup = array_shift($useGroups)) {
-                    if (
-                        $this->getPhysicalStructure()
-                        && !empty($this->smLinks['l2p'][$strctId])
-                        && !empty($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$useGroup])
-                    ) {
-                        $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$useGroup]);
-                        break;
-                    } elseif (isset($this->physicalStructure[1]) && !empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$useGroup])) {
-                        $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$useGroup]);
+                    $fileId = $this->getPhysicalStructureNodeFile($physicalId, $useGroup);
+                    if (empty($fileId)) {
+                        $fileId = $this->getPhysicalStructureNodeFileByPage(1, $useGroup);
+                    }
+                    if (!empty($fileId)) {
+                        $this->thumbnail = $this->getFileLocation($fileId);
                         break;
                     }
                 }
