@@ -19,7 +19,7 @@
     <span data-demo-debug="extension-version">Kitodo.Presentation {debugInformation.extensionVersion}</span>
     <f:comment>Only available if Kitodo.Presentation is installed from a git repository</f:comment>
     <f:if condition="{debugInformation.gitCommit}">
-        <span data-demo-debug="git" data-commit="{debugInformation.gitCommit}" title="{debugInformation.gitCommit}">Git <f:if condition="{debugInformation.gitBranch}">Branch "{debugInformation.gitBranch}" </f:if>({debugInformation.gitCommit -> f:format.crop(maxCharacters: 10, append: '', respectWordBoundaries: false)})</span>
+        <span data-demo-debug="git" data-commit="{debugInformation.gitCommit}" title="{debugInformation.gitCommit}">Git <f:if condition="{debugInformation.gitBranch}">Branch "{debugInformation.gitBranch}" </f:if>({debugInformation.gitCommit -> f:format.crop(maxCharacters: 7, append: '', respectWordBoundaries: false)})</span>
     </f:if>
 </footer>
 
