@@ -10,7 +10,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-namespace Kitodo\Dlf\Bootstrap\Command;
+namespace Kitodo\Dlf\Command;
 
 use Kitodo\Dlf\Bootstrap\BootstrapService;
 use Symfony\Component\Console\Attribute\AsCommand;
