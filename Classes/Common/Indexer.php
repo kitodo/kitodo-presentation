@@ -158,7 +158,7 @@ class Indexer
                 if ($document->getCurrentDocument()->hasFulltext) {
                     foreach ($document->getCurrentDocument()->getPhysicalStructure() as $pageNumber => $xmlId) {
                         if ($success) {
-                            $success = self::processPhysical($document, $pageNumber, $document->getCurrentDocument()->getPhysicalStructureInfo()[$xmlId]);
+                            $success = self::processPhysical($document, $pageNumber, $document->getCurrentDocument()->getPhysicalStructureNode($xmlId));
                         } else {
                             break;
                         }

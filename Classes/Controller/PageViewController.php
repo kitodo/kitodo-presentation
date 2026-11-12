@@ -177,7 +177,7 @@ class PageViewController extends AbstractController
         $measureIdToIndex = [];
         if (array_key_exists($page, $doc->getPhysicalStructure())) {
             $currentPhysId = $doc->getPhysicalStructure()[$page];
-            $defaultFileId = $doc->getPhysicalStructureInfo()[$currentPhysId]['files']['DEFAULT'] ?? null;
+            $defaultFileId = $doc->getPhysicalStructureNode($currentPhysId)['files']['DEFAULT'] ?? null;
             if ($doc instanceof MetsDocument) {
                 if (isset($defaultFileId)) {
                     $musicalStruct = $doc->musicalStructureInfo;
@@ -224,7 +224,7 @@ class PageViewController extends AbstractController
 
             if (array_key_exists($page, $doc->getPhysicalStructure())) {
                 $pageId = $doc->getPhysicalStructure()[$page];
-                $files = $doc->getPhysicalStructureInfo()[$pageId]['files'] ?? [];
+                $files = $doc->getPhysicalStructureNode($pageId)['files'] ?? [];
 
                 foreach ($useGroups as $useGroup) {
                     if (isset($files[$useGroup])) {
@@ -266,9 +266,9 @@ class PageViewController extends AbstractController
         $useGroups = $this->useGroupsConfiguration->getFulltext();
         $currentDocument = $this->document->getCurrentDocument();
         if (array_key_exists($page, $currentDocument->getPhysicalStructure())) {
-            $physicalStructureInfo = $currentDocument->getPhysicalStructureInfo()[$currentDocument->getPhysicalStructure()[$page]];
-            if (array_key_exists('files', $physicalStructureInfo)) {
-                $files = $physicalStructureInfo['files'];
+            $physicalStructureNode = $currentDocument->getPhysicalStructureNode($currentDocument->getPhysicalStructure()[$page]);
+            if (array_key_exists('files', $physicalStructureNode)) {
+                $files = $physicalStructureNode['files'];
                 while ($useGroup = array_shift($useGroups)) {
                     if (!empty($files[$useGroup])) {
                         $file = $currentDocument->getFileInfo($files[$useGroup]);
@@ -457,17 +457,17 @@ class PageViewController extends AbstractController
         if ($specificDoc) {
             $physicalStructure = $specificDoc->getPhysicalStructure();
             if (array_key_exists($page, $physicalStructure)) {
-                $physicalStructureInfo = $specificDoc->getPhysicalStructureInfo()[$physicalStructure[$page]];
+                $physicalStructureNode = $specificDoc->getPhysicalStructureNode($physicalStructure[$page]);
             }
         } else {
             $physicalStructure = $currentDocument->getPhysicalStructure();
             if (array_key_exists($page, $physicalStructure)) {
-                $physicalStructureInfo = $currentDocument->getPhysicalStructureInfo()[$physicalStructure[$page]];
+                $physicalStructureNode = $currentDocument->getPhysicalStructureNode($physicalStructure[$page]);
             }
         }
 
         // Get the files for the specified file group
-        $files = $physicalStructureInfo['files'] ?? null;
+        $files = $physicalStructureNode['files'] ?? null;
         if ($files && !empty($files[$fileGrpImages])) {
             // Get the file info for the specified file group
             if ($specificDoc) {

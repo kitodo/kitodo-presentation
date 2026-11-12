@@ -1208,7 +1208,7 @@ final class MetsDocument extends AbstractDocument
 
         if ($this->hasFulltext) {
             $useGroups = $this->useGroupsConfiguration->getFulltext();
-            $physicalStructureNode = $this->getPhysicalStructureInfo()[$id] ?? null;
+            $physicalStructureNode = $this->getPhysicalStructureNode($id);
             $fileLocations = [];
 
             if (!empty($physicalStructureNode)) {

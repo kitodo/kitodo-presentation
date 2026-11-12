@@ -184,9 +184,9 @@ class DocumentAnnotation
         ) {
             $physicalIdentifiers = $this->document->getCurrentDocument()->smLinks['l2p'][$logicalId];
             foreach ($physicalIdentifiers as $physicalIdentifier) {
-                $physicalStructureInfo = $this->document->getCurrentDocument()->getPhysicalStructureInfo();
-                if (array_key_exists($physicalIdentifier, $physicalStructureInfo)) {
-                    $order = $physicalStructureInfo[$physicalIdentifier]['order'];
+                $physicalStructureNode = $this->document->getCurrentDocument()->getPhysicalStructureNode($physicalIdentifier);
+                if (!empty($physicalStructureNode)) {
+                    $order = $physicalStructureNode['order'];
                     if (is_numeric($order)) {
                         $pages[] = $order;
                     }

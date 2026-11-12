@@ -86,17 +86,17 @@ class PageGridController extends AbstractController
     protected function getEntry(int $number, array $fileGrpThumbs): array
     {
         $currentDocument = $this->document->getCurrentDocument();
-        $physicalStructureInfo = $currentDocument->getPhysicalStructureInfo()[$currentDocument->getPhysicalStructure()[$number]];
+        $physicalStructureNode = $currentDocument->getPhysicalStructureNode($currentDocument->getPhysicalStructure()[$number]);
         $entry = [];
         // Set pagination.
-        $entry['pagination'] = htmlspecialchars($physicalStructureInfo['orderlabel']);
+        $entry['pagination'] = htmlspecialchars($physicalStructureNode['orderlabel']);
         $entry['page'] = $number;
         $entry['thumbnail'] = '';
 
         // Get thumbnail or placeholder.
         foreach ($fileGrpThumbs as $thumb) {
-            if (array_key_exists($thumb, $physicalStructureInfo['files'])) {
-                $fileId = $physicalStructureInfo['files'][$thumb];
+            if (array_key_exists($thumb, $physicalStructureNode['files'])) {
+                $fileId = $physicalStructureNode['files'][$thumb];
                 $entry['thumbnail'] = $currentDocument->getFileLocation($fileId);
                 break;
             }

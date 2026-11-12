@@ -120,7 +120,7 @@ class NavigationController extends AbstractController
 
         $pageOptions = [];
         for ($i = 1; $i <= $currentDocument->numPages; $i++) {
-            $orderLabel = $currentDocument->getPhysicalStructureInfo()[$currentDocument->getPhysicalStructure()[$i]]['orderlabel'];
+            $orderLabel = $currentDocument->getPhysicalStructureNode($currentDocument->getPhysicalStructure()[$i])['orderlabel'];
             $pageOptions[$i] = '[' . $i . ']' . ($orderLabel ? ' - ' . htmlspecialchars($orderLabel) : '');
         }
 

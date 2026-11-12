@@ -641,6 +641,18 @@ abstract class AbstractDocument
     }
 
     /**
+     * Returns metadata for the document's physical structure node by its id.
+     *
+     * @access public
+     *
+     * @return mixed[] The physical structure metadata for given id
+     */
+    public function getPhysicalStructureNode(string $id): array
+    {
+        return $this->getPhysicalStructureInfo()[$id] ?? [];
+    }
+
+    /**
      * This determines a title for the given document
      *
      * @access public

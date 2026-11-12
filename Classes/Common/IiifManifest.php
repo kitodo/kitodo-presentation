@@ -821,7 +821,7 @@ final class IiifManifest extends AbstractDocument
             // Load extension configuration.
             $useGroups = $this->useGroupsConfiguration->getFulltext();
 
-            $physicalStructureNode = $this->getPhysicalStructureInfo()[$id];
+            $physicalStructureNode = $this->getPhysicalStructureNode($id);
             if (!empty($physicalStructureNode)) {
                 while ($useGroup = array_shift($useGroups)) {
                     if (!empty($physicalStructureNode['files'][$useGroup])) {
