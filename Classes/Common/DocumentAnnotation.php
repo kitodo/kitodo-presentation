@@ -236,17 +236,15 @@ class DocumentAnnotation
     protected function getPagesByFileId(string $fileId): array
     {
         $pages = [];
-        foreach ($this->document->getCurrentDocument()->getPhysicalStructureInfo() as $physicalInfo) {
+        $physicalStructureInfo = $this->document->getCurrentDocument()->getPhysicalStructureInfo();
+        foreach ($physicalStructureInfo as $physicalInfo) {
+            $files = $physicalInfo['files'] ?? null;
             if (
-                array_key_exists('files', $physicalInfo) &&
-                is_array($physicalInfo['files']) &&
                 $physicalInfo['type'] !== 'physSequence'
+                && is_array($files)
+                && in_array($fileId, $files, true)
             ) {
-                foreach ($physicalInfo['files'] as $file) {
-                    if ($file === $fileId) {
-                        $pages[] = $physicalInfo['order'];
-                    }
-                }
+                $pages[] = $physicalInfo['order'];
             }
         }
         return $pages;
