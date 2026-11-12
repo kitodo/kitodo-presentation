@@ -815,15 +815,14 @@ final class IiifManifest extends AbstractDocument
         if ($this->hasFulltext) {
             // Load extension configuration.
             $useGroups = $this->useGroupsConfiguration->getFulltext();
-
-            $physicalStructureNode = $this->getPhysicalStructureNode($id);
-            if (!empty($physicalStructureNode)) {
+            $files = $this->getPhysicalStructureNodeFiles($id);
+            if (!empty($files)) {
                 while ($useGroup = array_shift($useGroups)) {
-                    if (!empty($physicalStructureNode['files'][$useGroup])) {
+                    if (!empty($files[$useGroup])) {
                         $rawText = GeneralUtility::makeInstance(FullTextReader::class, $this->formats)->getFromXml(
                             $id,
-                            [$useGroup => $this->getFileLocation($physicalStructureNode['files'][$useGroup])],
-                            $physicalStructureNode
+                            [$useGroup => $this->getFileLocation($files[$useGroup])],
+                            $files
                         );
                         break;
                     }
@@ -832,7 +831,7 @@ final class IiifManifest extends AbstractDocument
                     /** @var IiifResourceInterface $iiifResource */
                     $iiifResource = $this->iiif->getContainedResourceById($id);
                     // Get annotation containers
-                    $annotationContainerIds = $physicalStructureNode['annotationContainers'];
+                    $annotationContainerIds = $this->getPhysicalStructureNode($id)['annotationContainers'];
                     if (!empty($annotationContainerIds)) {
                         $annotationTexts = $this->getAnnotationTexts($annotationContainerIds, $iiifResource->getId());
                         $rawText .= implode(' ', $annotationTexts);

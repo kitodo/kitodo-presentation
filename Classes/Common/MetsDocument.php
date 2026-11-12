@@ -670,15 +670,13 @@ final class MetsDocument extends AbstractDocument
         $useGroups = $this->useGroupsConfiguration->getThumbnail();
         $thumbnail = null;
 
-        if (!empty($this->getPhysicalStructure())) {
-            // There is a physical structure (no anchor or year mets).
-            while ($useGroup = array_shift($useGroups) && $thumbnail == null) {
-                if (empty($id)) {
-                    $thumbnail = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$useGroup] ?? null;
-                } else {
-                    $parentId = $this->smLinks['l2p'][$id][0] ?? null;
-                    $thumbnail = $this->physicalStructureInfo[$parentId]['files'][$useGroup] ?? null;
-                }
+        // There is a physical structure (no anchor or year mets).
+        while (($useGroup = array_shift($useGroups)) !== null && !empty($thumbnail)) {
+            if (empty($id)) {
+                $thumbnail = $this->getPhysicalStructureNodeFileByPage(1, $useGroup);
+            } else {
+                $parentId = $this->smLinks['l2p'][$id][0] ?? '';
+                $thumbnail = $this->getPhysicalStructureNodeFile($parentId, $useGroup);
             }
         }
         return $thumbnail;
@@ -1208,14 +1206,13 @@ final class MetsDocument extends AbstractDocument
 
         if ($this->hasFulltext) {
             $useGroups = $this->useGroupsConfiguration->getFulltext();
-            $physicalStructureNode = $this->getPhysicalStructureNode($id);
+            $files = $this->getPhysicalStructureNodeFiles($id);
             $fileLocations = [];
 
-            if (!empty($physicalStructureNode)) {
-                while ($useGroup = array_shift($useGroups)) {
-                    if (in_array($useGroup, array_keys($physicalStructureNode['files'] ?? []))) {
-                        $fileLocations[$useGroup] = $this->getFileLocation($physicalStructureNode['files'][$useGroup]);
-                    }
+            while ($useGroup = array_shift($useGroups)) {
+                $file = $files[$useGroup] ?? null;
+                if (!empty($file)) {
+                    $fileLocations[$useGroup] = $this->getFileLocation($file);
                 }
             }
 
@@ -1224,7 +1221,7 @@ final class MetsDocument extends AbstractDocument
                 return $fullText;
             }
 
-            $fullText = GeneralUtility::makeInstance(FullTextReader::class, $this->formats)->getFromXml($id, $fileLocations, $physicalStructureNode);
+            $fullText = GeneralUtility::makeInstance(FullTextReader::class, $this->formats)->getFromXml($id, $fileLocations, $files);
         }
 
         return $fullText;
