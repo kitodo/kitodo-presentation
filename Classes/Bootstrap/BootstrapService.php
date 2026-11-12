@@ -39,10 +39,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * Requires a backend user with admin privileges, since all records are created via DataHandler.
  *
+ * PlaceholderImageInfos: Title of a document and its images with their path relative to the document's directory,
+ * whether they belong to the file group "THUMBS", and the page number (ORDER) and label (ORDERLABEL) of their page.
+ *
  * @package TYPO3
  * @subpackage dlf
  *
  * @access public
+ *
+ * @phpstan-type PlaceholderImageInfos array{
+ *     title: string,
+ *     images: list<array{path: string, isThumbnail: bool, order: string, label: ?string}>
+ * }
  */
 class BootstrapService
 {
@@ -63,13 +71,15 @@ class BootstrapService
     protected const DOCUMENT_URL_PLACEHOLDER = '{documentUrl}';
 
     /**
-     * SVG of a placeholder image with the arguments: drawing width and height, image width and height, page number, title
+     * SVG of a placeholder image with the arguments: drawing width and height, image width and height,
+     * vertical position and text of the page number, the title and the page label
      */
     protected const PLACEHOLDER_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %1$d %2$d" width="%3$d" height="%4$d">'
         . '<rect width="100%%" height="100%%" fill="#fff"/>'
         . '<g fill="#333" font-family="sans-serif" text-anchor="middle">'
         . '<text x="50%%" y="%5$d" font-size="140">Page %6$s</text>'
         . '<text x="50%%" y="%7$d" font-size="44">%8$s</text>'
+        . '<text x="50%%" y="%9$d" font-size="44">%10$s</text>'
         . '</g></svg>';
 
     /**
@@ -276,7 +286,7 @@ class BootstrapService
 
             $mets = (string) file_get_contents($documentDir . 'mets.xml');
             if (!empty($scenario['generatePlaceholderImages'])) {
-                $this->generatePlaceholderImages($mets, $documentDir, $document['pageSize'] ?? [1000, 1400]);
+                $this->generatePlaceholderImages($this->getPlaceholderImageInfos($mets), $documentDir, $document['pageSize'] ?? [1000, 1400]);
             }
             GeneralUtility::writeFile($documentDir . 'mets.xml', str_replace(self::DOCUMENT_URL_PLACEHOLDER, $documentUrl, $mets), true);
             $metsUrls[] = $documentUrl . '/mets.xml';
@@ -285,29 +295,24 @@ class BootstrapService
     }
 
     /**
-     * Generate a SVG placeholder image for every SVG file of the given METS file, labeled with the page number
-     * and the title of the document. Images of the file group "THUMBS" are scaled down to thumbnail size.
+     * Extract the information required to generate placeholder images from the given METS file: the title of the
+     * document and every SVG file referenced by a page with a URL relative to the document URL placeholder.
      *
      * @access protected
      *
      * @param string $mets Content of the METS file
-     * @param string $documentDir Directory the image paths relative to the document URL placeholder are resolved against
-     * @param int[] $pageSize Width and height of the page images
      *
-     * @return void
+     * @return PlaceholderImageInfos
      */
-    protected function generatePlaceholderImages(string $mets, string $documentDir, array $pageSize): void
+    protected function getPlaceholderImageInfos(string $mets): array
     {
-        [$width, $height] = $pageSize;
-        $thumbnailScale = 150 / max($width, $height);
-
         $dom = new \DOMDocument();
         $dom->loadXML($mets);
         $xpath = new \DOMXPath($dom);
         $xpath->registerNamespace('mets', 'http://www.loc.gov/METS/');
         $xpath->registerNamespace('xlink', 'http://www.w3.org/1999/xlink');
-        $title = htmlspecialchars($xpath->evaluate('string(//mets:structMap[@TYPE="LOGICAL"]/mets:div/@LABEL)'));
 
+        $images = [];
         foreach ($xpath->query('//mets:structMap[@TYPE="PHYSICAL"]//mets:div[@TYPE="page"]') ?: [] as $page) {
             if (!$page instanceof \DOMElement) {
                 continue;
@@ -321,21 +326,55 @@ class BootstrapService
                 if (!str_starts_with($href, self::DOCUMENT_URL_PLACEHOLDER . '/')) {
                     continue;
                 }
-                $scale = $file->parentNode->getAttribute('USE') === 'THUMBS' ? $thumbnailScale : 1;
-                $path = $documentDir . substr($href, strlen(self::DOCUMENT_URL_PLACEHOLDER . '/'));
-                GeneralUtility::mkdir_deep(dirname($path));
-                GeneralUtility::writeFile($path, sprintf(
-                    self::PLACEHOLDER_SVG,
-                    $width,
-                    $height,
-                    (int) round($width * $scale),
-                    (int) round($height * $scale),
-                    intdiv($height, 2),
-                    $page->getAttribute('ORDER'),
-                    intdiv($height, 2) + 100,
-                    $title
-                ), true);
+                $images[] = [
+                    'path' => substr($href, strlen(self::DOCUMENT_URL_PLACEHOLDER . '/')),
+                    'isThumbnail' => $file->parentNode->getAttribute('USE') === 'THUMBS',
+                    'order' => $page->getAttribute('ORDER'),
+                    'label' => $page->hasAttribute('ORDERLABEL') ? $page->getAttribute('ORDERLABEL') : null,
+                ];
             }
+        }
+
+        return [
+            'title' => (string) $xpath->evaluate('string(//mets:structMap[@TYPE="LOGICAL"]/mets:div/@LABEL)'),
+            'images' => $images,
+        ];
+    }
+
+    /**
+     * Generate the given SVG placeholder images, labeled with the page number, the title of the document and the page
+     * label. Thumbnails are scaled down to a maximum size of 150 pixels.
+     *
+     * @access protected
+     *
+     * @param PlaceholderImageInfos $infos Images to generate, see getPlaceholderImageInfos()
+     * @param string $documentDir Directory the image paths are relative to
+     * @param int[] $pageSize Width and height of the page images
+     *
+     * @return void
+     */
+    protected function generatePlaceholderImages(array $infos, string $documentDir, array $pageSize): void
+    {
+        [$width, $height] = $pageSize;
+        $thumbnailScale = 150 / max($width, $height);
+
+        foreach ($infos['images'] as $image) {
+            $scale = $image['isThumbnail'] ? $thumbnailScale : 1;
+            $path = $documentDir . $image['path'];
+            GeneralUtility::mkdir_deep(dirname($path));
+            GeneralUtility::writeFile($path, sprintf(
+                self::PLACEHOLDER_SVG,
+                $width,
+                $height,
+                (int) round($width * $scale),
+                (int) round($height * $scale),
+                intdiv($height, 2),
+                htmlspecialchars($image['order']),
+                intdiv($height, 2) + 100,
+                htmlspecialchars($infos['title']),
+                intdiv($height, 2) + 170,
+                $image['label'] !== null ? 'Label: ' . htmlspecialchars($image['label']) : ''
+            ), true);
         }
     }
 

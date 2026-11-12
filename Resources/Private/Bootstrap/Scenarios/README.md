@@ -148,7 +148,7 @@ public URL of the copied directory. Since the METS file is loaded via HTTP, a ba
 | `name`     | yes      | Name of the document's directory.                                                        |
 | `pageSize` | no       | Width and height of generated placeholder images, e.g. `[1400, 1000]`. Defaults to `[1000, 1400]`. |
 
-With `generatePlaceholderImages: true`, a SVG image labeled with the page number and the document's title is generated
+With `generatePlaceholderImages: true`, a SVG image labeled with the page number (`ORDER`), the document's title and the page label (`ORDERLABEL`) is generated
 for every SVG file (`MIMETYPE="image/svg+xml"`) referenced by a page of the METS file with a URL starting with
 `{documentUrl}/`. Files of the file group `THUMBS` are scaled down to a maximum size of 150 pixels.
 
