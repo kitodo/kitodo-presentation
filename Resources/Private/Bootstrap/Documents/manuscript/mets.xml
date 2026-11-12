@@ -39,18 +39,18 @@
     </mets:dmdSec>
     <mets:fileSec>
         <mets:fileGrp USE="DEFAULT">
-            <mets:file ID="FILE_0001_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/00000001.svg"/></mets:file>
-            <mets:file ID="FILE_0002_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/00000002.svg"/></mets:file>
-            <mets:file ID="FILE_0003_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/00000003.svg"/></mets:file>
-            <mets:file ID="FILE_0004_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/00000004.svg"/></mets:file>
-            <mets:file ID="FILE_0005_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/00000005.svg"/></mets:file>
-            <mets:file ID="FILE_0006_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/00000006.svg"/></mets:file>
-            <mets:file ID="FILE_0007_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/00000007.svg"/></mets:file>
-            <mets:file ID="FILE_0008_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/00000008.svg"/></mets:file>
-            <mets:file ID="FILE_0009_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/00000009.svg"/></mets:file>
-            <mets:file ID="FILE_0010_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/00000010.svg"/></mets:file>
-            <mets:file ID="FILE_0011_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/00000011.svg"/></mets:file>
-            <mets:file ID="FILE_0012_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/00000012.svg"/></mets:file>
+            <mets:file ID="FILE_0001_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000001.svg"/></mets:file>
+            <mets:file ID="FILE_0002_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000002.svg"/></mets:file>
+            <mets:file ID="FILE_0003_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000003.svg"/></mets:file>
+            <mets:file ID="FILE_0004_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000004.svg"/></mets:file>
+            <mets:file ID="FILE_0005_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000005.svg"/></mets:file>
+            <mets:file ID="FILE_0006_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000006.svg"/></mets:file>
+            <mets:file ID="FILE_0007_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000007.svg"/></mets:file>
+            <mets:file ID="FILE_0008_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000008.svg"/></mets:file>
+            <mets:file ID="FILE_0009_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000009.svg"/></mets:file>
+            <mets:file ID="FILE_0010_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000010.svg"/></mets:file>
+            <mets:file ID="FILE_0011_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000011.svg"/></mets:file>
+            <mets:file ID="FILE_0012_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000012.svg"/></mets:file>
         </mets:fileGrp>
         <mets:fileGrp USE="THUMBS">
             <mets:file ID="FILE_0001_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/00000001.svg"/></mets:file>

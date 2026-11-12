@@ -48,7 +48,7 @@
     </mets:dmdSec>
     <mets:fileSec>
         <mets:fileGrp USE="DEFAULT">
-            <mets:file ID="FILE_0001_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/00000001.svg"/></mets:file>
+            <mets:file ID="FILE_0001_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000001.svg"/></mets:file>
         </mets:fileGrp>
         <mets:fileGrp USE="THUMBS">
             <mets:file ID="FILE_0001_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/00000001.svg"/></mets:file>
