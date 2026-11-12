@@ -393,18 +393,6 @@ abstract class AbstractDocument
     abstract public function getMetadata(string $id): array;
 
     /**
-     * This builds an array of the document's physical structure
-     *
-     * @access public
-     *
-     * @abstract
-     *
-     * @return mixed[] Array of physical elements' id, type, label and file representations ordered
-     * by "@ORDER" attribute / IIIF Sequence's Canvases
-     */
-    abstract public function getPhysicalStructure(): array;
-
-    /**
      * This returns the ID of the toplevel logical structure node
      *
      * @access public
@@ -452,6 +440,17 @@ abstract class AbstractDocument
      * @return void
      */
     abstract protected function init(string $location, array $settings): void;
+
+    /**
+     * This loads physical structure and physical structure info if it has not been loaded yet.
+     *
+     * @access protected
+     *
+     * @abstract
+     *
+     * @return void
+     */
+    abstract protected function loadPhysicalStructure(): void;
 
     /**
      * Format specific part of building the document's metadata array
@@ -625,6 +624,20 @@ abstract class AbstractDocument
     }
 
     /**
+     * This builds an array of the document's physical structure
+     *
+     * @access public
+     *
+     * @return mixed[] Array of physical elements' id, type, label and file representations ordered
+     * by "@ORDER" attribute / IIIF Sequence's Canvases
+     */
+    public function getPhysicalStructure(): array
+    {
+        $this->loadPhysicalStructure();
+        return $this->physicalStructure;
+    }
+
+    /**
      * Returns metadata for the document's physical structure.
      *
      * @access public
@@ -633,10 +646,7 @@ abstract class AbstractDocument
      */
     public function getPhysicalStructureInfo(): array
     {
-        // Is there no physical structure array yet?
-        if (!$this->physicalStructureLoaded) {
-            $this->getPhysicalStructure();
-        }
+        $this->loadPhysicalStructure();
         return $this->physicalStructureInfo;
     }
 

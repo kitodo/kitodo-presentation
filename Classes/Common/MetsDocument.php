@@ -423,34 +423,34 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::getPhysicalStructure()
+     * {@inheritDoc}
+     * @see AbstractDocument::loadPhysicalStructure()
      */
-    public function getPhysicalStructure(): array
+    protected function loadPhysicalStructure(): void
     {
-        // Is there no physical structure array yet?
-        if (!$this->physicalStructureLoaded) {
-            if ($this->mets !== null) {
-                // Does the document have a structMap node of type "PHYSICAL"?
-                $elementNodes = $this->mets->xpath(self::STRUCTURE_MAP_PHYSICAL . '[@TYPE="physSequence"]/mets:div');
-                if (!empty($elementNodes)) {
-                    // Get file groups.
-                    $fileUse = $this->magicGetFileGrps();
-                    // Get the physical sequence's metadata.
-                    $physicalNodes = $this->mets->xpath(self::STRUCTURE_MAP_PHYSICAL . '[@TYPE="physSequence"]');
-                    if (!empty($physicalNodes)) {
-                        $firstNode = $physicalNodes[0];
-                        $id = (string) $firstNode['ID'];
-                        $this->assignPhysicalStructureInfo($id, $firstNode);
-                        $this->getFileRepresentation($id, $firstNode);
-                        $this->physicalStructure = array_merge([$id], $this->getPhysicalElements($elementNodes, $fileUse));
-                    }
-                }
-            }
-            $this->physicalStructureLoaded = true;
-
+        if ($this->physicalStructureLoaded) {
+            return;
         }
 
-        return $this->physicalStructure;
+        if ($this->mets !== null) {
+            // Does the document have a structMap node of type "PHYSICAL"?
+            $elementNodes = $this->mets->xpath(self::STRUCTURE_MAP_PHYSICAL . '[@TYPE="physSequence"]/mets:div');
+            if (!empty($elementNodes)) {
+                // Get file groups.
+                $fileUse = $this->magicGetFileGrps();
+                // Get the physical sequence's metadata.
+                $physicalNodes = $this->mets->xpath(self::STRUCTURE_MAP_PHYSICAL . '[@TYPE="physSequence"]');
+                if (!empty($physicalNodes)) {
+                    $firstNode = $physicalNodes[0];
+                    $id = (string) $firstNode['ID'];
+                    $this->assignPhysicalStructureInfo($id, $firstNode);
+                    $this->getFileRepresentation($id, $firstNode);
+                    $this->physicalStructure = array_merge([$id], $this->getPhysicalElements($elementNodes, $fileUse));
+                }
+            }
+        }
+
+        $this->physicalStructureLoaded = true;
     }
 
     /**

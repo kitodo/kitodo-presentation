@@ -399,16 +399,13 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::getPhysicalStructure()
+     * {@inheritDoc}
+     * @see AbstractDocument::loadPhysicalStructure()
      */
-    public function getPhysicalStructure(): array
+    protected function loadPhysicalStructure(): void
     {
-        if ($this->physicalStructureLoaded) {
-            return $this->physicalStructure;
-        }
-
-        if (!($this->iiif instanceof ManifestInterface)) {
-            return [];
+        if ($this->physicalStructureLoaded || !($this->iiif instanceof ManifestInterface)) {
+            return;
         }
 
         $iiifId = $this->iiif->getId();
@@ -437,9 +434,7 @@ final class IiifManifest extends AbstractDocument
             array_unshift($elements, $iiifId);
             $this->physicalStructure = $elements;
         }
-
         $this->physicalStructureLoaded = true;
-        return $this->physicalStructure;
     }
 
     /**
