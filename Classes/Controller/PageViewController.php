@@ -176,9 +176,9 @@ class PageViewController extends AbstractController
         $measureCounterToMeasureId = [];
         $measureIdToIndex = [];
 
-        $defaultFileId = $doc->getPhysicalStructureNodeByPage($page)['files']['DEFAULT'] ?? null;
         if ($doc instanceof MetsDocument) {
-            if (isset($defaultFileId)) {
+            $defaultFileId = $doc->getPhysicalStructureNodeFileByPage($page, 'DEFAULT');
+            if (!empty($defaultFileId)) {
                 $musicalStruct = $doc->musicalStructureInfo;
                 $i = 0;
                 foreach ($musicalStruct as $measureData) {
@@ -211,7 +211,7 @@ class PageViewController extends AbstractController
     protected function getScore(int $page, ?MetsDocument $specificDoc = null): array
     {
         $score = [];
-        $loc = '';
+        $file = '';
         if ($specificDoc) {
             $doc = $specificDoc;
         } else {
@@ -219,19 +219,17 @@ class PageViewController extends AbstractController
         }
         if ($doc instanceof MetsDocument) {
             $useGroups = $this->useGroupsConfiguration->getScore();
-            $files = $doc->getPhysicalStructureNodeByPage($page)['files'] ?? [];
-
             foreach ($useGroups as $useGroup) {
-                if (isset($files[$useGroup])) {
-                    $loc = $files[$useGroup];
+                $file = $doc->getPhysicalStructureNodeFileByPage($page, $useGroup);
+                if (!empty($file)) {
                     break;
                 }
             }
 
-            if (!empty($loc)) {
-                $score['mimetype'] = $doc->getFileMimeType($loc);
-                $score['pagebeginning'] = $doc->getPageBeginning($doc->getPhysicalStructure()[$page], $loc);
-                $score['url'] = $doc->getFileLocation($loc);
+            if (!empty($file)) {
+                $score['mimetype'] = $doc->getFileMimeType($file);
+                $score['pagebeginning'] = $doc->getPageBeginning($doc->getPhysicalStructure()[$page], $file);
+                $score['url'] = $doc->getFileLocation($file);
                 if ($this->settings['useInternalProxy']) {
                     $this->configureProxyUrl($score['url']);
                 }
@@ -259,26 +257,21 @@ class PageViewController extends AbstractController
         // Get fulltext link.
         $useGroups = $this->useGroupsConfiguration->getFulltext();
         $currentDocument = $this->document->getCurrentDocument();
-        $physicalStructureNode = $currentDocument->getPhysicalStructureNodeByPage($page);
-        if (array_key_exists('files', $physicalStructureNode)) {
-            $files = $physicalStructureNode['files'];
-            while ($useGroup = array_shift($useGroups)) {
-                if (!empty($files[$useGroup])) {
-                    $file = $currentDocument->getFileInfo($files[$useGroup]);
-                    if ($file !== null) {
-                        $fulltext['url'] = $file['location'];
-                        if ($this->settings['useInternalProxy']) {
-                            $this->configureProxyUrl($fulltext['url']);
-                        }
-                        $fulltext['mimetype'] = $file['mimeType'];
-                        break;
+        while ($useGroup = array_shift($useGroups)) {
+            $file = $currentDocument->getPhysicalStructureNodeFileByPage($page, $useGroup);
+            if (!empty($file)) {
+                $fileInfo = $currentDocument->getFileInfo($file);
+                if ($fileInfo !== null) {
+                    $fulltext['url'] = $fileInfo['location'];
+                    if ($this->settings['useInternalProxy']) {
+                        $this->configureProxyUrl($fulltext['url']);
                     }
-                } else {
-                    $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $useGroup . '" in document "' . $this->document->getLocation() . '"');
+                    $fulltext['mimetype'] = $fileInfo['mimeType'];
+                    break;
                 }
+            } else {
+                $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $useGroup . '" in document "' . $this->document->getLocation() . '"');
             }
-        } else {
-            $this->logger->notice('No files found for page "' . $page . '" in document "' . $this->document->getLocation() . '"');
         }
 
         if (empty($fulltext)) {
@@ -445,19 +438,18 @@ class PageViewController extends AbstractController
         $currentDocument = $this->document->getCurrentDocument();
         // Get the physical structure info for the specified page
         if ($specificDoc) {
-            $physicalStructureNode = $specificDoc->getPhysicalStructureNodeByPage($page);
+            $file = $specificDoc->getPhysicalStructureNodeFileByPage($page, $fileGrpImages);
         } else {
-            $physicalStructureNode = $currentDocument->getPhysicalStructureNodeByPage($page);
+            $file = $currentDocument->getPhysicalStructureNodeFileByPage($page, $fileGrpImages);
         }
 
         // Get the files for the specified file group
-        $files = $physicalStructureNode['files'] ?? null;
-        if ($files && !empty($files[$fileGrpImages])) {
+        if (!empty($file)) {
             // Get the file info for the specified file group
             if ($specificDoc) {
-                return $specificDoc->getFileInfo($files[$fileGrpImages]);
+                return $specificDoc->getFileInfo($file);
             } else {
-                return $currentDocument->getFileInfo($files[$fileGrpImages]);
+                return $currentDocument->getFileInfo($file);
             }
         }
 

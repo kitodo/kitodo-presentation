@@ -177,6 +177,20 @@ class MetsDocumentTest extends FunctionalTestCase
     }
 
     #[Test]
+    public function canReadChapterAreaFiles()
+    {
+        $doc = $this->doc('av_beispiel.xml');
+
+        $chapterThreePageFiles = $doc->getPhysicalStructureNodeFilesByPage(3);
+        self::assertArrayMatches([
+            'DEFAULT' => 'FILE_0000_DEFAULT_MP4',
+        ], $chapterThreePageFiles);
+
+        $chapterThreePageFile = $doc->getPhysicalStructureNodeFileByPage(3, 'DEFAULT');
+        self::assertEquals('FILE_0000_DEFAULT_MP4', $chapterThreePageFile);
+    }
+
+    #[Test]
     public function doesNotOverwriteFirstDmdSec()
     {
         $doc = $this->doc('two_dmdsec.xml');

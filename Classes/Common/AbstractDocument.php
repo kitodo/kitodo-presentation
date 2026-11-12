@@ -682,6 +682,78 @@ abstract class AbstractDocument
     }
 
     /**
+     * Returns file for the document's physical structure node by its id
+     * and fileGrp '@USE' attribute.
+     *
+     * @access public
+     *
+     * @param string $id
+     * @param string $useGroup
+     *
+     * @return string The file of physical structure metadata for given id
+     * and '@USE' attribute
+     */
+    public function getPhysicalStructureNodeFile(string $id, string $useGroup): string
+    {
+        if (!empty($useGroup)) {
+            return $this->getPhysicalStructureNodeFiles($id)[$useGroup] ?? '';
+        }
+        return '';
+    }
+
+    /**
+     * Returns file for the document's physical structure node by page assigned
+     * to physical structure and fileGrp '@USE' attribute.
+     *
+     * @access public
+     *
+     * @param int $page
+     * @param string $useGroup
+     *
+     * @return string The file of physical structure metadata for given page assigned
+     * to physical structure and '@USE' attribute
+     */
+    public function getPhysicalStructureNodeFileByPage(int $page, string $useGroup): string
+    {
+        return $this->getPhysicalStructureNodeFile($this->getPhysicalStructure()[$page] ?? '', $useGroup);
+
+    }
+
+    /**
+     * Returns files for the document's physical structure node by its id
+     * and optionally fileGrp '@USE' attribute.
+     *
+     * @access public
+     *
+     * @param string $id
+     *
+     * @return mixed[]|string The files of physical structure metadata for given id
+     */
+    public function getPhysicalStructureNodeFiles(string $id): array|string
+    {
+        if (!empty($id)) {
+            return $this->getPhysicalStructureInfo()[$id]['files'] ?? [];
+        }
+        return [];
+    }
+
+    /**
+     * Returns files for the document's physical structure node by page assigned
+     * to physical structure.
+     *
+     * @access public
+     *
+     * @param int $page
+     *
+     * @return mixed[]The files of physical structure metadata for given page assigned
+     * to physical structure
+     */
+    public function getPhysicalStructureNodeFilesByPage(int $page): array
+    {
+        return $this->getPhysicalStructureNodeFiles($this->getPhysicalStructure()[$page] ?? '');
+    }
+
+    /**
      * This determines a title for the given document
      *
      * @access public
