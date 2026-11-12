@@ -175,21 +175,19 @@ class PageViewController extends AbstractController
         $measureCoordsFromCurrentSite = [];
         $measureCounterToMeasureId = [];
         $measureIdToIndex = [];
-        if (array_key_exists($page, $doc->physicalStructure)) {
-            $currentPhysId = $doc->physicalStructure[$page];
-            $defaultFileId = $doc->physicalStructureInfo[$currentPhysId]['files']['DEFAULT'] ?? null;
-            if ($doc instanceof MetsDocument) {
-                if (isset($defaultFileId)) {
-                    $musicalStruct = $doc->musicalStructureInfo;
-                    $i = 0;
-                    foreach ($musicalStruct as $measureData) {
-                        if (isset($measureData['files']['DEFAULT']) && $defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
-                            $measureCoordsFromCurrentSite[$measureData['files']['SCORE']['begin']] = $measureData['files']['DEFAULT']['coords'];
-                            $measureCounterToMeasureId[$i] = $measureData['files']['SCORE']['begin'];
-                            $measureIdToIndex[$measureData['files']['SCORE']['begin']] = $i;
-                        }
-                        $i++;
+
+        $defaultFileId = $doc->getPhysicalStructureNodeByPage($page)['files']['DEFAULT'] ?? null;
+        if ($doc instanceof MetsDocument) {
+            if (isset($defaultFileId)) {
+                $musicalStruct = $doc->musicalStructureInfo;
+                $i = 0;
+                foreach ($musicalStruct as $measureData) {
+                    if (isset($measureData['files']['DEFAULT']) && $defaultFileId == $measureData['files']['DEFAULT']['fileid']) {
+                        $measureCoordsFromCurrentSite[$measureData['files']['SCORE']['begin']] = $measureData['files']['DEFAULT']['coords'];
+                        $measureCounterToMeasureId[$i] = $measureData['files']['SCORE']['begin'];
+                        $measureIdToIndex[$measureData['files']['SCORE']['begin']] = $i;
                     }
+                    $i++;
                 }
             }
         }
@@ -221,25 +219,21 @@ class PageViewController extends AbstractController
         }
         if ($doc instanceof MetsDocument) {
             $useGroups = $this->useGroupsConfiguration->getScore();
+            $files = $doc->getPhysicalStructureNodeByPage($page)['files'] ?? [];
 
-            if (array_key_exists($page, $doc->physicalStructure)) {
-                $pageId = $doc->physicalStructure[$page];
-                $files = $doc->physicalStructureInfo[$pageId]['files'] ?? [];
-
-                foreach ($useGroups as $useGroup) {
-                    if (isset($files[$useGroup])) {
-                        $loc = $files[$useGroup];
-                        break;
-                    }
+            foreach ($useGroups as $useGroup) {
+                if (isset($files[$useGroup])) {
+                    $loc = $files[$useGroup];
+                    break;
                 }
+            }
 
-                if (!empty($loc)) {
-                    $score['mimetype'] = $doc->getFileMimeType($loc);
-                    $score['pagebeginning'] = $doc->getPageBeginning($pageId, $loc);
-                    $score['url'] = $doc->getFileLocation($loc);
-                    if ($this->settings['useInternalProxy']) {
-                        $this->configureProxyUrl($score['url']);
-                    }
+            if (!empty($loc)) {
+                $score['mimetype'] = $doc->getFileMimeType($loc);
+                $score['pagebeginning'] = $doc->getPageBeginning($doc->getPhysicalStructure()[$page], $loc);
+                $score['url'] = $doc->getFileLocation($loc);
+                if ($this->settings['useInternalProxy']) {
+                    $this->configureProxyUrl($score['url']);
                 }
             }
         }
@@ -265,30 +259,26 @@ class PageViewController extends AbstractController
         // Get fulltext link.
         $useGroups = $this->useGroupsConfiguration->getFulltext();
         $currentDocument = $this->document->getCurrentDocument();
-        if (array_key_exists($page, $currentDocument->physicalStructure)) {
-            $physicalStructureInfo = $currentDocument->physicalStructureInfo[$currentDocument->physicalStructure[$page]];
-            if (array_key_exists('files', $physicalStructureInfo)) {
-                $files = $physicalStructureInfo['files'];
-                while ($useGroup = array_shift($useGroups)) {
-                    if (!empty($files[$useGroup])) {
-                        $file = $currentDocument->getFileInfo($files[$useGroup]);
-                        if ($file !== null) {
-                            $fulltext['url'] = $file['location'];
-                            if ($this->settings['useInternalProxy']) {
-                                $this->configureProxyUrl($fulltext['url']);
-                            }
-                            $fulltext['mimetype'] = $file['mimeType'];
-                            break;
+        $physicalStructureNode = $currentDocument->getPhysicalStructureNodeByPage($page);
+        if (array_key_exists('files', $physicalStructureNode)) {
+            $files = $physicalStructureNode['files'];
+            while ($useGroup = array_shift($useGroups)) {
+                if (!empty($files[$useGroup])) {
+                    $file = $currentDocument->getFileInfo($files[$useGroup]);
+                    if ($file !== null) {
+                        $fulltext['url'] = $file['location'];
+                        if ($this->settings['useInternalProxy']) {
+                            $this->configureProxyUrl($fulltext['url']);
                         }
-                    } else {
-                        $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $useGroup . '" in document "' . $this->document->getLocation() . '"');
+                        $fulltext['mimetype'] = $file['mimeType'];
+                        break;
                     }
+                } else {
+                    $this->logger->notice('No full-text file found for page "' . $page . '" in fileGrp "' . $useGroup . '" in document "' . $this->document->getLocation() . '"');
                 }
-            } else {
-                $this->logger->notice('No files found for page "' . $page . '" in document "' . $this->document->getLocation() . '"');
             }
         } else {
-            $this->logger->notice('Page "' . $page . '" not found in document "' . $this->document->getLocation() . '"');
+            $this->logger->notice('No files found for page "' . $page . '" in document "' . $this->document->getLocation() . '"');
         }
 
         if (empty($fulltext)) {
@@ -353,7 +343,7 @@ class PageViewController extends AbstractController
     {
         $currentDocument = $this->document->getCurrentDocument();
         if ($currentDocument instanceof IiifManifest) {
-            $canvasId = $currentDocument->physicalStructure[$page];
+            $canvasId = $currentDocument->getPhysicalStructure()[$page];
             $iiif = $currentDocument->getIiif();
             if ($iiif instanceof ManifestInterface) {
                 $canvas = $iiif->getContainedResourceById($canvasId);
@@ -455,15 +445,13 @@ class PageViewController extends AbstractController
         $currentDocument = $this->document->getCurrentDocument();
         // Get the physical structure info for the specified page
         if ($specificDoc) {
-            $physicalStructureInfo = $specificDoc->physicalStructureInfo[$specificDoc->physicalStructure[$page]];
+            $physicalStructureNode = $specificDoc->getPhysicalStructureNodeByPage($page);
         } else {
-            if (array_key_exists($page, $currentDocument->physicalStructure)) {
-                $physicalStructureInfo = $currentDocument->physicalStructureInfo[$currentDocument->physicalStructure[$page]];
-            }
+            $physicalStructureNode = $currentDocument->getPhysicalStructureNodeByPage($page);
         }
 
         // Get the files for the specified file group
-        $files = $physicalStructureInfo['files'] ?? null;
+        $files = $physicalStructureNode['files'] ?? null;
         if ($files && !empty($files[$fileGrpImages])) {
             // Get the file info for the specified file group
             if ($specificDoc) {
