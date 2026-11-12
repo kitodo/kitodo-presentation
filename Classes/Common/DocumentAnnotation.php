@@ -326,8 +326,9 @@ class DocumentAnnotation
         $measureIndex = 1;
         $startOrder = 0;
         $endOrder = 0;
-        if ($this->document->getCurrentDocument() instanceof MetsDocument) {
-            foreach ($this->document->getCurrentDocument()->musicalStructureInfo as $key => $musicalInfo) {
+        $currentDocument = $this->document->getCurrentDocument();
+        if ($currentDocument instanceof MetsDocument) {
+            foreach ($currentDocument->musicalStructureInfo as $musicalInfo) {
                 if ($musicalInfo['type'] === 'measure' && is_array($musicalInfo['files'])) {
                     foreach ($musicalInfo['files'] as $file) {
                         if ($file['fileid'] === $fileId && $file['type'] === 'IDREF') {
@@ -362,7 +363,7 @@ class DocumentAnnotation
                 }
             }
             foreach ($measures as $measure) {
-                $measurePages[$measure['order']] = $this->document->getCurrentDocument()->musicalStructure[$measure['order']]['page'];
+                $measurePages[$measure['order']] = $currentDocument->musicalStructure[$measure['order']]['page'];
             }
         }
         return $measurePages;
