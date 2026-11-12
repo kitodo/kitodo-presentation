@@ -73,7 +73,7 @@ class TableOfContentsController extends AbstractController
         $menuArray = [];
         // Does the document have physical elements or is it an external file?
         if (
-            !empty($this->document->getCurrentDocument()->physicalStructure)
+            !empty($this->document->getCurrentDocument()->getPhysicalStructure())
             || !MathUtility::canBeInterpretedAsInteger($this->requestData['id'])
         ) {
             $this->getAllLogicalUnits();
@@ -283,7 +283,7 @@ class TableOfContentsController extends AbstractController
      */
     private function getAllLogicalUnits(): void
     {
-        $physicalStructure = $this->document->getCurrentDocument()->physicalStructure;
+        $physicalStructure = $this->document->getCurrentDocument()->getPhysicalStructure();
 
         if (isset($this->requestData['page']) &&
             !empty($this->requestData['page'])
