@@ -51,8 +51,8 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
  * @property-read int $numPages the holds the total number of pages
  * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
- * @property-read mixed[] $physicalStructure this holds the physical structure
- * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata
+ * @property-read mixed[] $physicalStructure this holds ordered physical node IDs; deprecated, use getPhysicalStructure()
+ * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata; deprecated, use getPhysicalStructure()
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
  * @property array<string, string> $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read string $recordId the METS file's / IIIF manifest's record identifier
@@ -176,7 +176,7 @@ final class IiifManifest extends AbstractDocument
      */
     private function initializeManifestStructure(string $iiifId): void
     {
-        $this->physicalStructureInfo[$iiifId] = [
+        $this->physicalStructure[$iiifId] = [
             'id' => $iiifId,
             'dmdId' => $iiifId,
             'label' => $this->iiif->getLabelForDisplay(),
@@ -204,12 +204,12 @@ final class IiifManifest extends AbstractDocument
         $thumbnailUrl = $canvas->getThumbnailUrl();
 
         // Put thumbnails in thumbnail filegroup if empty
-        if (!empty($thumbnailUrl) && empty($this->physicalStructureInfo[$iiifId]['files'][$fileUseThumbs[0]])) {
-            $this->physicalStructureInfo[$iiifId]['files'][$fileUseThumbs[0]] = $thumbnailUrl;
+        if (!empty($thumbnailUrl) && empty($this->physicalStructure[$iiifId]['files'][$fileUseThumbs[0]])) {
+            $this->physicalStructure[$iiifId]['files'][$fileUseThumbs[0]] = $thumbnailUrl;
         }
 
         // Base structural metadata info
-        $this->physicalStructureInfo[$canvasId] = [
+        $this->physicalStructure[$canvasId] = [
             'id' => $canvasId,
             'dmdId' => null,
             'label'  => $canvas->getLabelForDisplay(),
@@ -225,7 +225,7 @@ final class IiifManifest extends AbstractDocument
 
         if (!empty($thumbnailUrl)) {
             $thumbKey = $fileUseThumbs[0] ?? $fileUseThumbs;
-            $this->physicalStructureInfo[$canvasId]['files'][$thumbKey] = $thumbnailUrl;
+            $this->physicalStructure[$canvasId]['files'][$thumbKey] = $thumbnailUrl;
         }
 
         $this->setFileUseDownload($canvasId, $canvas);
@@ -248,9 +248,9 @@ final class IiifManifest extends AbstractDocument
             return;
         }
 
-        $this->physicalStructureInfo[$canvasId]['annotationContainers'] = [];
+        $this->physicalStructure[$canvasId]['annotationContainers'] = [];
         foreach ($containers as $annotationContainer) {
-            $this->physicalStructureInfo[$canvasId]['annotationContainers'][] = $annotationContainer->getId();
+            $this->physicalStructure[$canvasId]['annotationContainers'][] = $annotationContainer->getId();
 
             if ($this->getIndexAnnotations() === 1) {
                 $this->hasFulltext = true;
@@ -286,7 +286,7 @@ final class IiifManifest extends AbstractDocument
 
         if ($body instanceof ContentResourceInterface) {
             foreach ($fileUses as $fileUse) {
-                $this->physicalStructureInfo[$canvasId]['files'][$fileUse] = $body->getId();
+                $this->physicalStructure[$canvasId]['files'][$fileUse] = $body->getId();
             }
         }
     }
@@ -399,6 +399,41 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
+     * {@inheritDoc}
+     * @see AbstractDocument::loadPhysicalStructure()
+     */
+    protected function loadPhysicalStructure(): void
+    {
+        if ($this->physicalStructureLoaded || !($this->iiif instanceof ManifestInterface)) {
+            return;
+        }
+
+        $iiifId = $this->iiif->getId();
+        $this->initializeManifestStructure($iiifId);
+
+        $this->setFileUseDownload($iiifId, $this->iiif);
+        $this->setFileUseFulltext($iiifId, $this->iiif);
+
+        $canvases = $this->iiif->getDefaultCanvases();
+        if (!empty($canvases)) {
+            $canvasOrder = 0;
+
+            $fileUseThumbs = $this->useGroupsConfiguration->getThumbnail();
+            $fileUses = $this->useGroupsConfiguration->getImage();
+
+            foreach ($canvases as $canvas) {
+                $canvasOrder++;
+                $canvasId = $canvas->getId();
+
+                $this->processCanvas($iiifId, $canvasId, $canvas, $fileUseThumbs, $fileUses);
+            }
+
+            $this->numPages = $canvasOrder;
+        }
+        $this->physicalStructureLoaded = true;
+    }
+
+    /**
      * Get the details about a IIIF resource (manifest or range) in the logical structure
      *
      * @access protected
@@ -432,8 +467,6 @@ final class IiifManifest extends AbstractDocument
 
         // Load structural mapping
         $this->magicGetSmLinks();
-        // Load physical structure.
-        $this->magicGetPhysicalStructure();
 
         $this->applyStartCanvasInfo($details, $resource);
 
@@ -776,19 +809,16 @@ final class IiifManifest extends AbstractDocument
         }
         $this->ensureHasFulltextIsSet();
         if ($this->hasFulltext) {
-            // Load physical structure ...
-            $this->magicGetPhysicalStructure();
-            // ... and extension configuration.
+            // Load extension configuration.
             $useGroups = $this->useGroupsConfiguration->getFulltext();
-
-            $physicalStructureNode = $this->physicalStructureInfo[$id];
-            if (!empty($physicalStructureNode)) {
+            $files = $this->getPhysicalStructureNodeFiles($id);
+            if (!empty($files)) {
                 while ($useGroup = array_shift($useGroups)) {
-                    if (!empty($physicalStructureNode['files'][$useGroup])) {
+                    if (!empty($files[$useGroup])) {
                         $rawText = GeneralUtility::makeInstance(FullTextReader::class, $this->formats)->getFromXml(
                             $id,
-                            [$useGroup => $this->getFileLocation($physicalStructureNode['files'][$useGroup])],
-                            $physicalStructureNode
+                            [$useGroup => $this->getFileLocation($files[$useGroup])],
+                            $files
                         );
                         break;
                     }
@@ -797,7 +827,7 @@ final class IiifManifest extends AbstractDocument
                     /** @var IiifResourceInterface $iiifResource */
                     $iiifResource = $this->iiif->getContainedResourceById($id);
                     // Get annotation containers
-                    $annotationContainerIds = $physicalStructureNode['annotationContainers'];
+                    $annotationContainerIds = $this->getPhysicalStructureNode($id)['annotationContainers'];
                     if (!empty($annotationContainerIds)) {
                         $annotationTexts = $this->getAnnotationTexts($annotationContainerIds, $iiifResource->getId());
                         $rawText .= implode(' ', $annotationTexts);
@@ -1014,7 +1044,7 @@ final class IiifManifest extends AbstractDocument
         if (!empty($useGroups)) {
             $docPdfRendering = $iiif->getRenderingUrlsForFormat('application/pdf');
             if (!empty($docPdfRendering)) {
-                $this->physicalStructureInfo[$iiifId]['files'][$useGroups[0]] = $docPdfRendering[0];
+                $this->physicalStructure[$iiifId]['files'][$useGroups[0]] = $docPdfRendering[0];
             }
         }
     }
@@ -1040,7 +1070,7 @@ final class IiifManifest extends AbstractDocument
             }
             if (!empty($alto)) {
                 $this->mimeTypes[$alto[0]] = 'application/alto+xml';
-                $this->physicalStructureInfo[$iiifId]['files'][$useGroups[0]] = $alto[0];
+                $this->physicalStructure[$iiifId]['files'][$useGroups[0]] = $alto[0];
                 $this->hasFulltext = true;
                 $this->hasFulltextSet = true;
             }
@@ -1082,50 +1112,6 @@ final class IiifManifest extends AbstractDocument
     }
 
     // magic methods inherited from AbstractDocument
-
-    /**
-     * @see AbstractDocument::magicGetPhysicalStructure()
-     */
-    protected function magicGetPhysicalStructure(): array
-    {
-        if ($this->physicalStructureLoaded) {
-            return $this->physicalStructure;
-        }
-
-        if (!($this->iiif instanceof ManifestInterface)) {
-            return [];
-        }
-
-        $iiifId = $this->iiif->getId();
-        $this->initializeManifestStructure($iiifId);
-
-        $this->setFileUseDownload($iiifId, $this->iiif);
-        $this->setFileUseFulltext($iiifId, $this->iiif);
-
-        $canvases = $this->iiif->getDefaultCanvases();
-        if (!empty($canvases)) {
-            $elements = [];
-            $canvasOrder = 0;
-
-            $fileUseThumbs = $this->useGroupsConfiguration->getThumbnail();
-            $fileUses = $this->useGroupsConfiguration->getImage();
-
-            foreach ($canvases as $canvas) {
-                $canvasOrder++;
-                $canvasId = $canvas->getId();
-                $elements[$canvasOrder] = $canvasId;
-
-                $this->processCanvas($iiifId, $canvasId, $canvas, $fileUseThumbs, $fileUses);
-            }
-
-            $this->numPages = $canvasOrder;
-            array_unshift($elements, $iiifId);
-            $this->physicalStructure = $elements;
-        }
-
-        $this->physicalStructureLoaded = true;
-        return $this->physicalStructure;
-    }
 
     /**
      * @see AbstractDocument::magicGetSmLinks()
