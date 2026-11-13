@@ -1,0 +1,283 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* Base design and page layouts of the demo site sets, see Resources/Private/Bootstrap/Templates/Pages/. */
+
+/* Design variables, also used by the plugin CSS files */
+:root {
+    /* Colors */
+    --demo-text: #1f2328;
+    --demo-muted: #667085;
+    --demo-border: #d0d5dd;
+    --demo-background: #f6f7f9;
+    --demo-hover: #eef1f5;
+    --demo-accent: #1f5f99;
+    --demo-accent-dark: #174a78;
+
+    /* Typography */
+    --demo-font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Liberation Sans", sans-serif;
+    --demo-font-size: 15px;
+    --demo-font-size-small: 0.85em;
+    --demo-font-size-heading: 1.1rem;
+
+    /* Spacing */
+    --demo-space-xs: 0.25em;
+    --demo-space-s: 0.5em;
+    --demo-space-m: 1em;
+    --demo-space-l: 2em;
+
+    /* Shapes, buttons and input fields */
+    --demo-border-width: 1px;
+    --demo-radius: 4px;
+    --demo-control-padding: 0.3em 0.7em;
+
+    /* Sizes */
+    --demo-sidebar-width: 20em;
+    --demo-content-width: 30em;
+    --demo-thumbnail-size: 150px;
+}
+
+/* Base */
+/* At least the height of the window, so that the footer can be placed at the bottom of short pages */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    font-family: var(--demo-font-family);
+    font-size: var(--demo-font-size);
+    line-height: 1.5;
+    color: var(--demo-text);
+}
+
+a {
+    color: var(--demo-accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h2 {
+    margin: 0 0 var(--demo-space-s);
+    font-size: var(--demo-font-size-heading);
+    font-weight: 600;
+}
+
+input[type="text"], select {
+    padding: var(--demo-control-padding);
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    font: inherit;
+    background: #fff;
+}
+
+input[type="text"]:focus, select:focus {
+    outline: 2px solid var(--demo-accent);
+    outline-offset: -1px;
+}
+
+input[type="submit"], button {
+    padding: var(--demo-control-padding);
+    border: var(--demo-border-width) solid var(--demo-accent);
+    border-radius: var(--demo-radius);
+    font: inherit;
+    color: #fff;
+    background: var(--demo-accent);
+    cursor: pointer;
+}
+
+input[type="submit"]:hover, button:hover {
+    background: var(--demo-accent-dark);
+}
+
+/* Menu as top bar */
+#demo-menu ul {
+    display: flex;
+    gap: var(--demo-space-l);
+    margin: 0;
+    padding: var(--demo-space-s) var(--demo-space-m);
+    list-style: none;
+    border-bottom: var(--demo-border-width) solid var(--demo-border);
+}
+
+#demo-menu a[aria-current="page"] {
+    font-weight: 600;
+    color: var(--demo-text);
+}
+
+/* Header as toolbar */
+.demo-header {
+    padding: var(--demo-space-s) var(--demo-space-m);
+    border-bottom: var(--demo-border-width) solid var(--demo-border);
+    background: var(--demo-background);
+}
+
+/* Content of the header centered with the same width as on the home page, e.g. the search form */
+.demo-header > .frame {
+    width: var(--demo-content-width);
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* Space between content elements in the sidebar */
+.demo-sidebar > .frame + .frame {
+    margin-top: var(--demo-space-l);
+}
+
+/* Footer with debug information */
+.demo-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: auto;
+    gap: var(--demo-space-l);
+    padding: var(--demo-space-xs) var(--demo-space-m);
+    border-top: var(--demo-border-width) solid var(--demo-border);
+    font-size: var(--demo-font-size-small);
+    color: var(--demo-muted);
+}
+
+/* Home: centered content */
+.demo-home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--demo-space-l);
+    padding: var(--demo-space-l) var(--demo-space-m);
+}
+
+.demo-home > .frame {
+    width: var(--demo-content-width);
+    max-width: 100%;
+}
+
+/* Search result list and viewer: sidebar and main column */
+.demo-columns {
+    display: flex;
+    padding: var(--demo-space-m);
+}
+
+.demo-sidebar {
+    flex: 0 0 var(--demo-sidebar-width);
+}
+
+.demo-main {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Search result list: the search plugin in the sidebar only shows the facets. */
+.demo-sidebar .tx-dlf-search-form {
+    display: none;
+}
+
+/*
+ * Search result list: the elements of the list view are placed directly in a grid, so that the heading, the number
+ * of hits and the sorting form are shown in one row, and the facets start at the same height as the list of results
+ * (second row).
+ */
+.demo-results {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto var(--demo-sidebar-width);
+    align-items: start;
+    gap: 0 var(--demo-space-m);
+}
+
+.demo-results > .demo-main,
+.demo-results > .demo-main > .frame,
+.demo-results .tx-dlf-listview {
+    display: contents;
+}
+
+.demo-results .tx-dlf-listview > * {
+    grid-column: 1 / 5;
+}
+
+.demo-results .tx-dlf-listview > :is(.tx-dlf-listview-label, .tx-dlf-search-numHits, .tx-dlf-sortinfo, .tx-dlf-search-form) {
+    grid-row: 1;
+    align-self: baseline;
+}
+
+.demo-results .tx-dlf-listview > .tx-dlf-listview-label {
+    grid-column: 1;
+}
+
+.demo-results .tx-dlf-listview > .tx-dlf-search-numHits {
+    grid-column: 2;
+}
+
+.demo-results .tx-dlf-listview > .tx-dlf-sortinfo {
+    grid-column: 3;
+}
+
+.demo-results .tx-dlf-listview > .tx-dlf-search-form {
+    grid-column: 4;
+}
+
+.demo-results > .demo-sidebar {
+    grid-column: 5;
+    grid-row: 2 / span 99;
+    margin-left: var(--demo-space-m);
+}
+
+/* Viewer filling the window: the map takes the remaining space, the sidebar scrolls on its own. */
+.demo-viewer {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.demo-viewer .demo-columns {
+    flex: 1;
+    min-height: 0;
+    padding: 0;
+}
+
+.demo-viewer .demo-sidebar {
+    overflow-y: auto;
+    padding: var(--demo-space-m);
+    border-right: var(--demo-border-width) solid var(--demo-border);
+}
+
+/* Main column of the viewer: toolbox, page view and navigation stacked, the page view takes the remaining height. */
+.demo-viewer .demo-main {
+    display: flex;
+    flex-direction: column;
+}
+
+.demo-viewer .demo-main > .frame-type-dlf_pageview {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+}
+
+.demo-viewer .tx-dlf-map {
+    position: absolute;
+    inset: 0;
+    height: auto;
+}
+
+/* Toolbox above and navigation below the page view, centered */
+.demo-viewer .demo-main > :is(.frame-type-dlf_toolbox, .frame-type-dlf_navigation) {
+    justify-content: center;
+    padding: var(--demo-space-s) var(--demo-space-m);
+    font-size: 0.9em;
+    background: var(--demo-background);
+}
+
+.demo-viewer .demo-main > .frame-type-dlf_toolbox {
+    border-bottom: var(--demo-border-width) solid var(--demo-border);
+}
+
+.demo-viewer .demo-main > .frame-type-dlf_navigation {
+    border-top: var(--demo-border-width) solid var(--demo-border);
+}

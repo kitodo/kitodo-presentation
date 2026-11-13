@@ -1,0 +1,4 @@
+name: kitodo/presentation-demo
+label: 'Kitodo.Presentation Demo: Base'
+dependencies:
+  - typo3/fluid-styled-content

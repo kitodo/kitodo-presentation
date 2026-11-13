@@ -1,0 +1,133 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* List view plugin: search results with index (list marker), thumbnail and metadata side by side, and pagination. */
+
+/* Heading ("Search for ...") and information about the results in the same unobtrusive style */
+.tx-dlf-listview-label,
+.tx-dlf-search-numHits,
+.tx-dlf-sortinfo {
+    margin: 0 0 var(--demo-space-m);
+    font-size: 1em;
+    font-weight: normal;
+    color: var(--demo-muted);
+}
+
+.tx-dlf-listview .tx-dlf-search-form {
+    margin-bottom: var(--demo-space-m);
+}
+
+.tx-dlf-listview .tx-dlf-search-form label {
+    margin-right: var(--demo-space-xs);
+}
+
+.tx-dlf-listview .tx-dlf-search-form select + label {
+    margin-left: var(--demo-space-m);
+}
+
+.tx-dlf-abstracts {
+    margin: 0;
+    padding-left: var(--demo-space-l);
+}
+
+.tx-dlf-abstracts > li {
+    padding: var(--demo-space-s) 0;
+    border-bottom: var(--demo-border-width) solid var(--demo-border);
+    color: var(--demo-muted);
+}
+
+/* Inline box aligned to the top, so that the list marker is shown next to the top of the entry. */
+.tx-dlf-abstracts > li > a {
+    display: inline-flex;
+    vertical-align: top;
+    width: 100%;
+    box-sizing: border-box;
+    gap: var(--demo-space-m);
+    align-items: flex-start;
+    padding: var(--demo-space-xs);
+    border-radius: var(--demo-radius);
+    color: var(--demo-text);
+    text-decoration: none;
+}
+
+.tx-dlf-abstracts > li > a:hover {
+    background: var(--demo-hover);
+}
+
+/* Thumbnails of different aspect ratio centered in boxes of the same size */
+.tx-dlf-listview-thumbnail {
+    display: flex;
+    flex: 0 0 var(--demo-thumbnail-size);
+    justify-content: center;
+}
+
+.tx-dlf-listview-thumbnail img {
+    display: block;
+    box-sizing: border-box;
+    max-width: 100%;
+    max-height: var(--demo-thumbnail-size);
+    border: var(--demo-border-width) solid var(--demo-border);
+}
+
+.tx-dlf-abstracts dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0 var(--demo-space-m);
+    margin: 0;
+}
+
+.tx-dlf-abstracts dt {
+    color: var(--demo-muted);
+}
+
+.tx-dlf-abstracts dd {
+    margin: 0;
+}
+
+.tx-dlf-abstracts dd.tx-dlf-title {
+    font-weight: 600;
+    color: var(--demo-accent);
+}
+
+.tx-dlf-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--demo-space-xs);
+    margin: var(--demo-space-m) 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tx-dlf-pagination a,
+.tx-dlf-pagination span {
+    display: inline-block;
+    min-width: 1em;
+    padding: var(--demo-control-padding);
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    text-align: center;
+}
+
+.tx-dlf-pagination a:hover {
+    background: var(--demo-hover);
+    text-decoration: none;
+}
+
+.tx-dlf-pagination .tx-dlf-pagination-current a {
+    color: #fff;
+    border-color: var(--demo-accent);
+    background: var(--demo-accent);
+}
+
+.tx-dlf-pagination .disabled span {
+    color: var(--demo-muted);
+    opacity: 0.6;
+}

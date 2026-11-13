@@ -1,0 +1,42 @@
+@import 'EXT:dlf/Configuration/TypoScript/setup.typoscript'
+
+page = PAGE
+page {
+    # One CSS file per plugin (usable as blueprint when using the plugin), and the layout of the demo page templates.
+    # The layout is included last, since it overrides plugin styles in the context of the demo pages.
+    includeCSS {
+        demoCollection = EXT:dlf/Resources/Public/Bootstrap/Css/Collection.css
+        demoListView = EXT:dlf/Resources/Public/Bootstrap/Css/ListView.css
+        demoMetadata = EXT:dlf/Resources/Public/Bootstrap/Css/Metadata.css
+        demoNavigation = EXT:dlf/Resources/Public/Bootstrap/Css/Navigation.css
+        demoPageView = EXT:dlf/Resources/Public/Bootstrap/Css/PageView.css
+        demoSearch = EXT:dlf/Resources/Public/Bootstrap/Css/Search.css
+        demoTableOfContents = EXT:dlf/Resources/Public/Bootstrap/Css/TableOfContents.css
+        demoToolbox = EXT:dlf/Resources/Public/Bootstrap/Css/Toolbox.css
+        demoLayout = EXT:dlf/Resources/Public/Bootstrap/Css/Layout.css
+    }
+
+    10 = PAGEVIEW
+    10 {
+        paths.10 = EXT:dlf/Resources/Private/Bootstrap/Templates/
+
+        variables {
+            contentMain < styles.content.get
+
+            contentSidebar < styles.content.get
+            contentSidebar.select.where = {#colPos}=1
+
+            contentHeader < styles.content.get
+            contentHeader.select.where = {#colPos}=2
+        }
+
+        dataProcessing.10 = menu
+        dataProcessing.10 {
+            levels = 2
+            as = mainMenu
+        }
+
+        # Versions and git commit shown in the footer
+        dataProcessing.20 = Kitodo\Dlf\Bootstrap\DebugInformationProcessor
+    }
+}

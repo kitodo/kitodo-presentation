@@ -1,0 +1,15 @@
+categories:
+  kitodo:
+    label: 'Kitodo.Presentation'
+
+settings:
+  plugin.tx_dlf.persistence.storagePid:
+    label: 'Storage folder containing the Kitodo.Presentation records'
+    category: kitodo
+    type: int
+    default: 0
+  plugin.tx_dlf.persistence.solrCoreUid:
+    label: 'UID of the Solr core record'
+    category: kitodo
+    type: int
+    default: 0

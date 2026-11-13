@@ -1,0 +1,82 @@
+# Minimal demo: search and collections, search results with facets and a viewer. See README.md for the file format.
+
+label: 'Minimal demo'
+siteSet: kitodo/presentation-demo-minimal
+basePath: /demo-minimal/
+
+generatePlaceholderImages: true
+documents:
+  - name: monograph
+  - name: manuscript
+  - name: letter
+  - name: map
+    pageSize: [1400, 1000]
+
+pluginSettings:
+  solrcore: '{solrCore}'
+  targetPidPageView: '{page:viewer}'
+
+root:
+  title: 'Kitodo.Presentation Minimal Demo'
+  backend_layout: Home
+  content:
+    - CType: dlf_search
+      settings:
+        targetPid: '{page:results}'
+    - CType: dlf_collection
+      header: 'Collections'
+      settings:
+        targetPid: '{page:results}'
+
+pages:
+  storage:
+    title: 'Kitodo Storage'
+    doktype: 254
+
+  results:
+    title: 'Search Results'
+    backend_layout: SearchResultList
+    content:
+      - CType: dlf_search
+        slot: header
+        settings:
+          targetPid: '{page:results}'
+      - CType: dlf_listview
+        slot: main
+      # Second search plugin showing only the facets, its search form is hidden by CSS.
+      - CType: dlf_search
+        slot: sidebar
+        header: 'Facets'
+        settings:
+          targetPid: '{page:results}'
+          facets: 'type,collection,author,year,place,language'
+          # Selected facets are marked as current and can be removed by clicking them again.
+          resetFacets: 1
+
+  viewer:
+    title: 'Viewer'
+    backend_layout: Viewer
+    # Only useful with a selected document
+    nav_hide: 1
+    content:
+      # Toolbox above and navigation below the page view
+      - CType: dlf_toolbox
+        slot: main
+        settings:
+          tools: 'zoomTool,rotationTool,imageManipulationTool,imageDownloadTool'
+      - CType: dlf_pageview
+        slot: main
+      - CType: dlf_navigation
+        slot: main
+        settings:
+          targetPid: '{page:results}'
+      - CType: dlf_tableofcontents
+        slot: sidebar
+        header: 'Table of contents'
+        settings:
+          targetPid: '{page:viewer}'
+      - CType: dlf_metadata
+        slot: sidebar
+        header: 'Metadata'
+        settings:
+          targetPid: '{page:viewer}'

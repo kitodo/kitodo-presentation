@@ -1,0 +1,168 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* Toolbox plugin: tool links as buttons in a wrapping row, unavailable tools are rendered as "span" without link. */
+
+.frame-type-dlf_toolbox {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--demo-space-s);
+}
+
+.frame-type-dlf_toolbox > * {
+    list-style: none;
+}
+
+.frame-type-dlf_toolbox a,
+.frame-type-dlf_toolbox > li > span:not(:has(a)):not(:empty) {
+    display: inline-block;
+    padding: var(--demo-control-padding);
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    color: var(--demo-text);
+    background: #fff;
+    text-decoration: none;
+}
+
+.frame-type-dlf_toolbox a:hover {
+    background: var(--demo-hover);
+    text-decoration: none;
+}
+
+.frame-type-dlf_toolbox > li > span:not(:has(a)) {
+    color: var(--demo-muted);
+    background: transparent;
+    opacity: 0.6;
+}
+
+/*
+ * Icons instead of text for tools with a title, which is shown as tooltip.
+ * The text is kept in the markup, but hidden by a font size of 0, so the icon defines the size of the button.
+ */
+.frame-type-dlf_toolbox :is(.tx-dlf-tools-zoom-in, .tx-dlf-tools-zoom-out, .tx-dlf-tools-fullscreen, .tx-dlf-tools-rotate-left, .tx-dlf-tools-rotate-right, .tx-dlf-tools-rotate-reset, .tx-dlf-tools-imagemanipulation) a[title] {
+    padding: 0;
+    font-size: 0;
+}
+
+.frame-type-dlf_toolbox :is(.tx-dlf-tools-zoom-in, .tx-dlf-tools-zoom-out, .tx-dlf-tools-fullscreen, .tx-dlf-tools-rotate-left, .tx-dlf-tools-rotate-right, .tx-dlf-tools-rotate-reset, .tx-dlf-tools-imagemanipulation) a[title]::before {
+    display: inline-block;
+    min-width: 1.2em;
+    padding: var(--demo-control-padding);
+    font-size: var(--demo-font-size);
+    text-align: center;
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-zoom-in a[title]::before {
+    content: "\2295";
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-zoom-out a[title]::before {
+    content: "\2296";
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-fullscreen a[title]::before {
+    content: "\2922";
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-rotate-left a[title]::before {
+    content: "\21BA";
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-rotate-right a[title]::before {
+    content: "\21BB";
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-rotate-reset a[title]::before {
+    content: "\2191";
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-imagemanipulation a[title]::before {
+    content: "\2600";
+}
+
+/*
+ * Image manipulation tool: panel with sliders (jQuery UI slider, whose stylesheet is not included) shown below the
+ * toolbox. The name of each slider is taken from its title, its current value is shown right of the slider.
+ */
+.frame-type-dlf_toolbox .tx-dlf-tools-imagemanipulation {
+    position: relative;
+}
+
+/* Tool button while the panel is open */
+.frame-type-dlf_toolbox .tx-dlf-tools-imagemanipulation a.active {
+    background: var(--demo-hover);
+}
+
+.frame-type-dlf_toolbox .image-manipulation {
+    position: absolute;
+    top: calc(100% + var(--demo-space-s));
+    left: 50%;
+    z-index: 1010;
+    transform: translateX(-50%);
+}
+
+.image-manipulation .slider-container {
+    display: grid;
+    gap: var(--demo-space-m);
+    padding: var(--demo-space-m);
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    background: #fff;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+}
+
+.image-manipulation .slider {
+    position: relative;
+    width: 200px;
+    height: 4px;
+    margin: calc(var(--demo-space-m) * 1.5) 4em 0 0;
+    border-radius: 2px;
+    background: var(--demo-border);
+}
+
+.image-manipulation .slider::before {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    margin-bottom: var(--demo-space-xs);
+    font-size: var(--demo-font-size-small);
+    color: var(--demo-muted);
+    content: attr(title);
+}
+
+.image-manipulation .ui-slider-handle {
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+    border-radius: 50%;
+    background: var(--demo-accent);
+    cursor: grab;
+}
+
+/* The JavaScript moves the value along with the handle by an inline style, which only "!important" can override. */
+.image-manipulation .tooltip {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + var(--demo-space-m)) !important;
+    transform: translateY(-50%);
+    font-size: var(--demo-font-size-small);
+    color: var(--demo-muted);
+}
+
+.image-manipulation .checkbox input {
+    margin-right: var(--demo-space-xs);
+}
+
+.image-manipulation .reset-btn {
+    justify-self: start;
+}

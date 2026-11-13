@@ -13,14 +13,15 @@
 namespace Kitodo\Dlf\Tests\Unit\ViewHelpers;
 
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
+use Kitodo\Dlf\ViewHelpers\JsFooterViewHelper;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Fluid\View\FluidViewFactory;
 
-/**
- * @covers JsFooterViewHelper
- */
+#[CoversClass(JsFooterViewHelper::class)]
 class JsFooterViewHelperTest extends FunctionalTestCase
 {
     /**
@@ -28,6 +29,9 @@ class JsFooterViewHelperTest extends FunctionalTestCase
      */
     protected bool $initializeDatabase = false;
 
+    /**
+     * Test rendering includes JavaScript footer inline code.
+     */
     #[Test]
     public function pageRendererCallsAddJsFooterInlineCode(): void
     {
@@ -40,8 +44,8 @@ class JsFooterViewHelperTest extends FunctionalTestCase
 
         GeneralUtility::setSingletonInstance(PageRenderer::class, $pageRendererProphecy);
 
-        $view = new StandaloneView();
-        $view->setTemplateSource(
+        $view = $this->get(FluidViewFactory::class)->create(new ViewFactoryData());
+        $view->getRenderingContext()->getTemplatePaths()->setTemplateSource(
             '<html xmlns:kitodo="http://typo3.org/ns/Kitodo/Dlf/ViewHelpers">
                 <kitodo:jsFooter inlineCode="$(document).ready(function() {});" />
             </html>'

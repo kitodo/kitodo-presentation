@@ -12,7 +12,6 @@
 
 namespace Kitodo\Dlf\ViewHelpers;
 
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -23,25 +22,14 @@ class IsArrayViewHelper extends AbstractViewHelper
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-        $this->registerArgument('subject', 'string', 'The subject');
+        $this->registerArgument('subject', 'mixed', 'The subject');
     }
 
-    /**
-     * @access public
-     *
-     * @static
-     *
-     * @param mixed[] $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     *
-     * @return bool
-     */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext): bool
+    public function render(): bool
     {
-        $subject = $arguments['subject'];
+        $subject = $this->arguments['subject'];
         if ($subject === null) {
-            $subject = $renderChildrenClosure();
+            $subject = $this->renderChildren();
         }
 
         return \is_array($subject);

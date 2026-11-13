@@ -1,0 +1,26 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>
+    (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+
+    This file is part of the Kitodo and TYPO3 projects.
+
+    @license GNU General Public License version 3 or later.
+    For the full copyright and license information, please read the
+    LICENSE.txt file that was distributed with this source code.
+
+    Footer with debug information, see Kitodo\Dlf\Bootstrap\DebugInformationProcessor.
+</f:comment>
+
+<footer id="demo-footer" class="demo-footer">
+    <span data-demo-debug="typo3-version">Typo3 {debugInformation.typo3Version}</span>
+    <span data-demo-debug="php-version">PHP {debugInformation.phpVersion}</span>
+    <span data-demo-debug="extension-version">Kitodo.Presentation {debugInformation.extensionVersion}</span>
+    <f:comment>Only available if Kitodo.Presentation is installed from a git repository</f:comment>
+    <f:if condition="{debugInformation.gitCommit}">
+        <span data-demo-debug="git" data-commit="{debugInformation.gitCommit}" title="{debugInformation.gitCommit}">Git <f:if condition="{debugInformation.gitBranch}">Branch "{debugInformation.gitBranch}" </f:if>({debugInformation.gitCommit -> f:format.crop(maxCharacters: 7, append: '', respectWordBoundaries: false)})</span>
+    </f:if>
+</footer>
+
+</html>

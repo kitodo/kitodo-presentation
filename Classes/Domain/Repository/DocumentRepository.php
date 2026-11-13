@@ -593,10 +593,11 @@ class DocumentRepository extends AbstractRepository
 
         /** @var Document $doc */
         foreach ($result as $doc) {
+            $uid = $doc->getStructure()?->getUid();
             $resArray = [
                 'uid' => $doc->getUid(),
                 'title' => $doc->getTitle(),
-                'structure' => $documentStructures[$doc->getStructure()?->getUid()] ?? null,
+                'structure' => $uid !== null ? ($documentStructures[$uid] ?? null) : null,
                 'thumbnail' => $doc->getThumbnail(),
                 'volumeSorting' => $doc->getVolumeSorting(),
                 'metsOrderlabel' => $doc->getMetsOrderlabel(),

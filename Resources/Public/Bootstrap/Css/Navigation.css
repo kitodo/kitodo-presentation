@@ -1,0 +1,104 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* Navigation plugin: links as buttons in a wrapping row, unavailable actions are rendered as "span" without link. */
+
+.frame-type-dlf_navigation {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--demo-space-s);
+}
+
+.frame-type-dlf_navigation > * {
+    list-style: none;
+}
+
+.frame-type-dlf_navigation a,
+.frame-type-dlf_navigation span:not(:has(a)),
+.frame-type-dlf_navigation select {
+    display: inline-block;
+    padding: var(--demo-control-padding);
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    color: var(--demo-text);
+    background: #fff;
+    text-decoration: none;
+}
+
+.frame-type-dlf_navigation a:hover {
+    background: var(--demo-hover);
+    text-decoration: none;
+}
+
+.frame-type-dlf_navigation span:not(:has(a)) {
+    color: var(--demo-muted);
+    background: transparent;
+    opacity: 0.6;
+}
+
+.frame-type-dlf_navigation label {
+    margin-right: var(--demo-space-xs);
+}
+
+/*
+ * Icons instead of text for page navigation, both for links and unavailable actions.
+ * The text is kept in the markup, but hidden by a font size of 0, so the icon defines the size of the button.
+ */
+.frame-type-dlf_navigation :is(.tx-dlf-navigation-double, .tx-dlf-navigation-single, .tx-dlf-navigation-double\+, .tx-dlf-navigation-first, .tx-dlf-navigation-back, .tx-dlf-navigation-prev, .tx-dlf-navigation-next, .tx-dlf-navigation-fwd, .tx-dlf-navigation-last) > :is(a, span) {
+    padding: 0;
+    font-size: 0;
+}
+
+.frame-type-dlf_navigation :is(.tx-dlf-navigation-double, .tx-dlf-navigation-single, .tx-dlf-navigation-double\+, .tx-dlf-navigation-first, .tx-dlf-navigation-back, .tx-dlf-navigation-prev, .tx-dlf-navigation-next, .tx-dlf-navigation-fwd, .tx-dlf-navigation-last) > :is(a, span)::before {
+    display: inline-block;
+    min-width: 1.2em;
+    padding: var(--demo-control-padding);
+    font-size: var(--demo-font-size);
+    text-align: center;
+}
+
+.frame-type-dlf_navigation .tx-dlf-navigation-double > :is(a, span)::before {
+    content: "\25EB";
+}
+
+/* Shown instead of the double page button in double page mode */
+.frame-type-dlf_navigation .tx-dlf-navigation-single > :is(a, span)::before {
+    content: "\25A1";
+}
+
+/* Adjust recto/verso in double page mode, the class name contains a "+" */
+.frame-type-dlf_navigation .tx-dlf-navigation-double\+ > :is(a, span)::before {
+    content: "\21C4";
+}
+
+.frame-type-dlf_navigation .tx-dlf-navigation-first > :is(a, span)::before {
+    content: "\21E4";
+}
+
+.frame-type-dlf_navigation .tx-dlf-navigation-back > :is(a, span)::before {
+    content: "\00AB";
+}
+
+.frame-type-dlf_navigation .tx-dlf-navigation-prev > :is(a, span)::before {
+    content: "\2039";
+}
+
+.frame-type-dlf_navigation .tx-dlf-navigation-next > :is(a, span)::before {
+    content: "\203A";
+}
+
+.frame-type-dlf_navigation .tx-dlf-navigation-fwd > :is(a, span)::before {
+    content: "\00BB";
+}
+
+.frame-type-dlf_navigation .tx-dlf-navigation-last > :is(a, span)::before {
+    content: "\21E5";
+}

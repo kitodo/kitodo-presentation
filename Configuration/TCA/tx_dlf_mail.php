@@ -10,6 +10,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+$t3ver = (new TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+
 return [
     'ctrl' => [
         'title'     => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_mail',
@@ -18,7 +20,7 @@ return [
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfemail.png',
         'rootLevel' => 0,
-        'searchFields' => 'label,name,mail',
+        ...($t3ver >= 14 ? [] : ['searchFields' => 'label,name,mail']),
     ],
     'interface' => [
     ],

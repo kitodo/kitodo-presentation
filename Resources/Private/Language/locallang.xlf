@@ -236,6 +236,12 @@
             <trans-unit id="newTenant.formatNotFoundMsg">
                 <source><![CDATA[The namespace definitions for MODS, TEIHDR and/or ALTO do not exist and could not be created.]]></source>
             </trans-unit>
+            <trans-unit id="newTenant.initialize">
+                <source><![CDATA[Initialize Records and Solr]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.initializeMsg">
+                <source><![CDATA[This section creates the default records (formats, structures and metadata) and a Solr core for the tenant in the currently selected storage folder.]]></source>
+            </trans-unit>
             <trans-unit id="newTenant.metadataFound">
                 <source><![CDATA[Metadata found!]]></source>
             </trans-unit>

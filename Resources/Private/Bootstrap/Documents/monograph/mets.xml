@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Demo document of the Kitodo.Presentation bootstrap mechanism, see Resources/Private/Bootstrap/Scenarios/README.md.
+    The placeholder {documentUrl} is replaced with the public URL of this document's directory.
+-->
+<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/mods.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
+    <mets:dmdSec ID="DMDLOG_0000">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:recordInfo>
+                        <mods:recordIdentifier source="kitodo-demo">kitodo-demo-monograph</mods:recordIdentifier>
+                    </mods:recordInfo>
+                    <mods:titleInfo>
+                        <mods:title>A Demo Monograph</mods:title>
+                        <mods:subTitle>with placeholder pages for testing Kitodo.Presentation</mods:subTitle>
+                    </mods:titleInfo>
+                    <mods:name type="personal">
+                        <mods:displayForm>Doe, Jane</mods:displayForm>
+                        <mods:namePart type="family">Doe</mods:namePart>
+                        <mods:namePart type="given">Jane</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">aut</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name type="corporate">
+                        <mods:displayForm>Kitodo Demo Library</mods:displayForm>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">own</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:originInfo eventType="publication">
+                        <mods:place>
+                            <mods:placeTerm type="text">Leipzig</mods:placeTerm>
+                        </mods:place>
+                        <mods:publisher>Demo Press</mods:publisher>
+                        <mods:dateIssued encoding="iso8601" keyDate="yes">1850</mods:dateIssued>
+                    </mods:originInfo>
+                    <mods:language>
+                        <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+                    </mods:language>
+                    <mods:classification>Natural History</mods:classification>
+                    <mods:classification>Travel</mods:classification>
+                    <mods:physicalDescription>
+                        <mods:extent>8 pages</mods:extent>
+                    </mods:physicalDescription>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:fileSec>
+        <mets:fileGrp USE="DEFAULT">
+            <mets:file ID="FILE_0001_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000001.svg"/></mets:file>
+            <mets:file ID="FILE_0002_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000002.svg"/></mets:file>
+            <mets:file ID="FILE_0003_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000003.svg"/></mets:file>
+            <mets:file ID="FILE_0004_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000004.svg"/></mets:file>
+            <mets:file ID="FILE_0005_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000005.svg"/></mets:file>
+            <mets:file ID="FILE_0006_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000006.svg"/></mets:file>
+            <mets:file ID="FILE_0007_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000007.svg"/></mets:file>
+            <mets:file ID="FILE_0008_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000008.svg"/></mets:file>
+        </mets:fileGrp>
+        <mets:fileGrp USE="THUMBS">
+            <mets:file ID="FILE_0001_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/00000001.svg"/></mets:file>
+            <mets:file ID="FILE_0002_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/00000002.svg"/></mets:file>
+            <mets:file ID="FILE_0003_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/00000003.svg"/></mets:file>
+            <mets:file ID="FILE_0004_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/00000004.svg"/></mets:file>
+            <mets:file ID="FILE_0005_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/00000005.svg"/></mets:file>
+            <mets:file ID="FILE_0006_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/00000006.svg"/></mets:file>
+            <mets:file ID="FILE_0007_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/00000007.svg"/></mets:file>
+            <mets:file ID="FILE_0008_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/00000008.svg"/></mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap TYPE="LOGICAL">
+        <mets:div ID="LOG_0000" DMDID="DMDLOG_0000" TYPE="monograph" LABEL="A Demo Monograph">
+            <mets:div ID="LOG_0001" TYPE="title_page" LABEL="Title page"/>
+            <mets:div ID="LOG_0002" TYPE="preface" LABEL="Preface"/>
+            <mets:div ID="LOG_0003" TYPE="chapter" LABEL="Chapter 1"/>
+            <mets:div ID="LOG_0004" TYPE="chapter" LABEL="Chapter 2"/>
+            <mets:div ID="LOG_0005" TYPE="chapter" LABEL="Chapter 3"/>
+        </mets:div>
+    </mets:structMap>
+    <mets:structMap TYPE="PHYSICAL">
+        <mets:div ID="PHYS_0000" TYPE="physSequence">
+            <mets:div ID="PHYS_0001" ORDER="1" ORDERLABEL="I" TYPE="page"><mets:fptr FILEID="FILE_0001_DEFAULT"/><mets:fptr FILEID="FILE_0001_THUMBS"/></mets:div>
+            <mets:div ID="PHYS_0002" ORDER="2" ORDERLABEL="II" TYPE="page"><mets:fptr FILEID="FILE_0002_DEFAULT"/><mets:fptr FILEID="FILE_0002_THUMBS"/></mets:div>
+            <mets:div ID="PHYS_0003" ORDER="3" ORDERLABEL="1" TYPE="page"><mets:fptr FILEID="FILE_0003_DEFAULT"/><mets:fptr FILEID="FILE_0003_THUMBS"/></mets:div>
+            <mets:div ID="PHYS_0004" ORDER="4" ORDERLABEL="2" TYPE="page"><mets:fptr FILEID="FILE_0004_DEFAULT"/><mets:fptr FILEID="FILE_0004_THUMBS"/></mets:div>
+            <mets:div ID="PHYS_0005" ORDER="5" ORDERLABEL="3" TYPE="page"><mets:fptr FILEID="FILE_0005_DEFAULT"/><mets:fptr FILEID="FILE_0005_THUMBS"/></mets:div>
+            <mets:div ID="PHYS_0006" ORDER="6" ORDERLABEL="4" TYPE="page"><mets:fptr FILEID="FILE_0006_DEFAULT"/><mets:fptr FILEID="FILE_0006_THUMBS"/></mets:div>
+            <mets:div ID="PHYS_0007" ORDER="7" ORDERLABEL="5" TYPE="page"><mets:fptr FILEID="FILE_0007_DEFAULT"/><mets:fptr FILEID="FILE_0007_THUMBS"/></mets:div>
+            <mets:div ID="PHYS_0008" ORDER="8" ORDERLABEL="6" TYPE="page"><mets:fptr FILEID="FILE_0008_DEFAULT"/><mets:fptr FILEID="FILE_0008_THUMBS"/></mets:div>
+        </mets:div>
+    </mets:structMap>
+    <mets:structLink>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0001"/>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0002"/>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0003"/>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0004"/>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0005"/>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0006"/>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0007"/>
+        <mets:smLink xlink:from="LOG_0000" xlink:to="PHYS_0008"/>
+        <mets:smLink xlink:from="LOG_0001" xlink:to="PHYS_0001"/>
+        <mets:smLink xlink:from="LOG_0002" xlink:to="PHYS_0002"/>
+        <mets:smLink xlink:from="LOG_0003" xlink:to="PHYS_0003"/>
+        <mets:smLink xlink:from="LOG_0003" xlink:to="PHYS_0004"/>
+        <mets:smLink xlink:from="LOG_0004" xlink:to="PHYS_0005"/>
+        <mets:smLink xlink:from="LOG_0004" xlink:to="PHYS_0006"/>
+        <mets:smLink xlink:from="LOG_0005" xlink:to="PHYS_0007"/>
+        <mets:smLink xlink:from="LOG_0005" xlink:to="PHYS_0008"/>
+    </mets:structLink>
+</mets:mets>

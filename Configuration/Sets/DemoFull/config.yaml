@@ -1,0 +1,4 @@
+name: kitodo/presentation-demo-full
+label: 'Kitodo.Presentation Demo: Full'
+dependencies:
+  - kitodo/presentation-demo

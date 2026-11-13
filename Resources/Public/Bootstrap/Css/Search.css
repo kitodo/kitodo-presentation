@@ -1,0 +1,74 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* Search plugin: search form in one row and facets as grouped lists. */
+
+.frame-type-dlf_search .tx-dlf-search-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--demo-space-s);
+    max-width: 40em;
+}
+
+/* Wrappers of hidden fields would add gaps. */
+.frame-type-dlf_search .tx-dlf-search-form > div:not(:has(> :not(input[type="hidden"]))) {
+    display: none;
+}
+
+/* The container of search suggestions is filled by JavaScript and shown as a dropdown, not as part of the row. */
+.frame-type-dlf_search .tx-dlf-search-form #tx-dlf-search-suggest {
+    display: block;
+    position: absolute;
+}
+
+.frame-type-dlf_search .tx-dlf-search-form input[type="text"] {
+    flex: 1 1 12em;
+    min-width: 0;
+}
+
+.tx-dlf-search-facets ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tx-dlf-search-facets > ul > li {
+    margin-bottom: var(--demo-space-m);
+}
+
+.tx-dlf-search-facets .tx-dlf-facet-title {
+    display: block;
+    margin-bottom: var(--demo-space-xs);
+    padding: 0 var(--demo-space-xs);
+    font-size: var(--demo-font-size-small);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--demo-muted);
+}
+
+.tx-dlf-search-facets li li a {
+    display: block;
+    padding: calc(var(--demo-space-xs) / 2) var(--demo-space-xs);
+    border-radius: var(--demo-radius);
+}
+
+.tx-dlf-search-facets li li a:hover {
+    background: var(--demo-hover);
+    text-decoration: none;
+}
+
+/* Selected facet (requires the setting "resetFacets"), clicking it removes the facet again */
+.tx-dlf-search-facets .tx-dlf-search-cur > a {
+    font-weight: 600;
+    color: var(--demo-text);
+    background: var(--demo-hover);
+}

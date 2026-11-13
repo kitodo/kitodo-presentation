@@ -53,7 +53,7 @@ class StructureRepository extends AbstractRepository
                     'tx_dlf_structures.index_name',
                     $queryBuilder->expr()->literal($type)
                 ),
-                Helper::whereExpression('tx_dlf_structures')
+                ...Helper::whereExpression('tx_dlf_structures')
             )
             ->setMaxResults(1);
 

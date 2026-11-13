@@ -18,7 +18,6 @@ use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Common\MetsDocument;
 use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Http\RedirectResponse;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use Ubl\Iiif\Presentation\Common\Model\Resources\CanvasInterface;
 use Ubl\Iiif\Presentation\Common\Model\Resources\ManifestInterface;
