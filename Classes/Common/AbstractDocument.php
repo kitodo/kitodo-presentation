@@ -176,15 +176,9 @@ abstract class AbstractDocument
 
     /**
      * @access protected
-     * @var mixed[] This holds the physical structure
+     * @var array<string, mixed[]> This holds physical structure metadata, keyed by node ID
      */
     protected array $physicalStructure = [];
-
-    /**
-     * @access protected
-     * @var mixed[] This holds the physical structure metadata
-     */
-    protected array $physicalStructureInfo = [];
 
     /**
      * @access protected
@@ -611,7 +605,7 @@ abstract class AbstractDocument
             return $this->lastSearchedPhysicalPage['physicalPage'];
         } else {
             $physicalPage = 0;
-            foreach ($this->physicalStructureInfo as $page) {
+            foreach ($this->getPhysicalStructureInfo() as $page) {
                 if (str_contains($page['orderlabel'], $logicalPage)) {
                     $this->lastSearchedPhysicalPage['logicalPage'] = $logicalPage;
                     $this->lastSearchedPhysicalPage['physicalPage'] = $physicalPage;
@@ -634,7 +628,14 @@ abstract class AbstractDocument
     public function getPhysicalStructure(): array
     {
         $this->loadPhysicalStructure();
-        return $this->physicalStructure;
+        $physicalStructure = $this->physicalStructure;
+        uasort(
+            $physicalStructure,
+            static fn (array $first, array $second): int => ($first['type'] === 'physSequence' ? -1 : 0)
+                <=> ($second['type'] === 'physSequence' ? -1 : 0)
+                ?: (int) ($first['order'] ?? 0) <=> (int) ($second['order'] ?? 0)
+        );
+        return array_column($physicalStructure, 'id');
     }
 
     /**
@@ -647,7 +648,7 @@ abstract class AbstractDocument
     public function getPhysicalStructureInfo(): array
     {
         $this->loadPhysicalStructure();
-        return $this->physicalStructureInfo;
+        return $this->physicalStructure;
     }
 
     /**
@@ -1199,7 +1200,7 @@ abstract class AbstractDocument
         }
         $method = 'magicGet' . ucfirst($var);
         if (
-            !property_exists($this, $var)
+            (!property_exists($this, $var) && $var !== 'physicalStructureInfo')
             || !method_exists($this, $method)
         ) {
             $this->logger->warning('There is no getter function for property "' . $var . '"');

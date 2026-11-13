@@ -176,7 +176,7 @@ final class IiifManifest extends AbstractDocument
      */
     private function initializeManifestStructure(string $iiifId): void
     {
-        $this->physicalStructureInfo[$iiifId] = [
+        $this->physicalStructure[$iiifId] = [
             'id' => $iiifId,
             'dmdId' => $iiifId,
             'label' => $this->iiif->getLabelForDisplay(),
@@ -204,12 +204,12 @@ final class IiifManifest extends AbstractDocument
         $thumbnailUrl = $canvas->getThumbnailUrl();
 
         // Put thumbnails in thumbnail filegroup if empty
-        if (!empty($thumbnailUrl) && empty($this->physicalStructureInfo[$iiifId]['files'][$fileUseThumbs[0]])) {
-            $this->physicalStructureInfo[$iiifId]['files'][$fileUseThumbs[0]] = $thumbnailUrl;
+        if (!empty($thumbnailUrl) && empty($this->physicalStructure[$iiifId]['files'][$fileUseThumbs[0]])) {
+            $this->physicalStructure[$iiifId]['files'][$fileUseThumbs[0]] = $thumbnailUrl;
         }
 
         // Base structural metadata info
-        $this->physicalStructureInfo[$canvasId] = [
+        $this->physicalStructure[$canvasId] = [
             'id' => $canvasId,
             'dmdId' => null,
             'label'  => $canvas->getLabelForDisplay(),
@@ -225,7 +225,7 @@ final class IiifManifest extends AbstractDocument
 
         if (!empty($thumbnailUrl)) {
             $thumbKey = $fileUseThumbs[0] ?? $fileUseThumbs;
-            $this->physicalStructureInfo[$canvasId]['files'][$thumbKey] = $thumbnailUrl;
+            $this->physicalStructure[$canvasId]['files'][$thumbKey] = $thumbnailUrl;
         }
 
         $this->setFileUseDownload($canvasId, $canvas);
@@ -248,9 +248,9 @@ final class IiifManifest extends AbstractDocument
             return;
         }
 
-        $this->physicalStructureInfo[$canvasId]['annotationContainers'] = [];
+        $this->physicalStructure[$canvasId]['annotationContainers'] = [];
         foreach ($containers as $annotationContainer) {
-            $this->physicalStructureInfo[$canvasId]['annotationContainers'][] = $annotationContainer->getId();
+            $this->physicalStructure[$canvasId]['annotationContainers'][] = $annotationContainer->getId();
 
             if ($this->getIndexAnnotations() === 1) {
                 $this->hasFulltext = true;
@@ -286,7 +286,7 @@ final class IiifManifest extends AbstractDocument
 
         if ($body instanceof ContentResourceInterface) {
             foreach ($fileUses as $fileUse) {
-                $this->physicalStructureInfo[$canvasId]['files'][$fileUse] = $body->getId();
+                $this->physicalStructure[$canvasId]['files'][$fileUse] = $body->getId();
             }
         }
     }
@@ -416,7 +416,6 @@ final class IiifManifest extends AbstractDocument
 
         $canvases = $this->iiif->getDefaultCanvases();
         if (!empty($canvases)) {
-            $elements = [];
             $canvasOrder = 0;
 
             $fileUseThumbs = $this->useGroupsConfiguration->getThumbnail();
@@ -425,14 +424,11 @@ final class IiifManifest extends AbstractDocument
             foreach ($canvases as $canvas) {
                 $canvasOrder++;
                 $canvasId = $canvas->getId();
-                $elements[$canvasOrder] = $canvasId;
 
                 $this->processCanvas($iiifId, $canvasId, $canvas, $fileUseThumbs, $fileUses);
             }
 
             $this->numPages = $canvasOrder;
-            array_unshift($elements, $iiifId);
-            $this->physicalStructure = $elements;
         }
         $this->physicalStructureLoaded = true;
     }
@@ -1048,7 +1044,7 @@ final class IiifManifest extends AbstractDocument
         if (!empty($useGroups)) {
             $docPdfRendering = $iiif->getRenderingUrlsForFormat('application/pdf');
             if (!empty($docPdfRendering)) {
-                $this->physicalStructureInfo[$iiifId]['files'][$useGroups[0]] = $docPdfRendering[0];
+                $this->physicalStructure[$iiifId]['files'][$useGroups[0]] = $docPdfRendering[0];
             }
         }
     }
@@ -1074,7 +1070,7 @@ final class IiifManifest extends AbstractDocument
             }
             if (!empty($alto)) {
                 $this->mimeTypes[$alto[0]] = 'application/alto+xml';
-                $this->physicalStructureInfo[$iiifId]['files'][$useGroups[0]] = $alto[0];
+                $this->physicalStructure[$iiifId]['files'][$useGroups[0]] = $alto[0];
                 $this->hasFulltext = true;
                 $this->hasFulltextSet = true;
             }
