@@ -283,22 +283,25 @@ class TableOfContentsController extends AbstractController
      */
     private function getAllLogicalUnits(): void
     {
-        $physicalStructure = $this->document->getCurrentDocument()->getPhysicalStructure();
+        $currentDocument = $this->document->getCurrentDocument();
+        $physicalStructure = $currentDocument->getPhysicalStructure();
 
         if (isset($this->requestData['page']) &&
             !empty($this->requestData['page'])
             && !empty($physicalStructure)
         ) {
             $page = $this->requestData['page'];
-            $structureMapLinks = $this->document->getCurrentDocument()->smLinks;
+            $structureMapLinks = $currentDocument->smLinks;
+            $firstPhysicalId = $currentDocument->getPhysicalStructureNodeByPage(0)['id'] ?? '';
+            $pagePhysicalId = $currentDocument->getPhysicalStructureNodeByPage((int) $page)['id'] ?? '';
 
             $this->activeEntries = array_merge(
-                (array) ($structureMapLinks['p2l'][$physicalStructure[0]] ?? []),
-                (array) ($structureMapLinks['p2l'][$physicalStructure[$page]] ?? [])
+                (array) ($structureMapLinks['p2l'][$firstPhysicalId] ?? []),
+                (array) ($structureMapLinks['p2l'][$pagePhysicalId] ?? [])
             );
             if (
                 !empty($this->requestData['double'])
-                && $page < $this->document->getCurrentDocument()->numPages
+                && $page < $currentDocument->numPages
             ) {
                 $this->activeEntries = array_merge(
                     $this->activeEntries,

@@ -380,7 +380,7 @@ class ToolboxController extends AbstractController
     {
         $file = [];
         if (!empty($this->currentDocument->getPhysicalStructure())) {
-            if (!array_key_exists($page, $this->currentDocument->getPhysicalStructure())) {
+            if (empty($this->currentDocument->getPhysicalStructureNodeByPage($page))) {
                 $this->logger->warning('Page number "' . $page . '" not found in Document (' . $this->document->getLocation() . ') mets:structMap');
                 return $file;
             }

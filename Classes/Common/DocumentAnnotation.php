@@ -135,7 +135,7 @@ class DocumentAnnotation
                         }
                     } elseif ($annotationTarget->getObjectId()) {
                         $objectTargetPages = [];
-                        foreach ($this->document->getCurrentDocument()->getPhysicalStructureInfo() as $physInfo) {
+                        foreach ($this->document->getCurrentDocument()->getPhysicalStructure() as $physInfo) {
                             $order = $physInfo['order'];
                             if ($order) {
                                 $objectTargetPages[] = $order;
@@ -208,7 +208,7 @@ class DocumentAnnotation
     protected function getPagesByPhysicalId(string $physicalId): array
     {
         $pages = [];
-        $physicalStructureInfo = $this->document->getCurrentDocument()->getPhysicalStructureInfo();
+        $physicalStructureInfo = $this->document->getCurrentDocument()->getPhysicalStructure();
         foreach ($physicalStructureInfo as $physicalInfo) {
             $order = $physicalInfo['order'];
             if (is_numeric($order)) {
@@ -236,7 +236,7 @@ class DocumentAnnotation
     protected function getPagesByFileId(string $fileId): array
     {
         $pages = [];
-        $physicalStructureInfo = $this->document->getCurrentDocument()->getPhysicalStructureInfo();
+        $physicalStructureInfo = $this->document->getCurrentDocument()->getPhysicalStructure();
         foreach ($physicalStructureInfo as $physicalInfo) {
             $files = $physicalInfo['files'] ?? null;
             if (
@@ -263,7 +263,7 @@ class DocumentAnnotation
     protected function getAudioPagesByFileId(string $fileId, $range = null): array
     {
         $tracks = [];
-        foreach ($this->document->getCurrentDocument()->getPhysicalStructureInfo() as $physicalInfo) {
+        foreach ($this->document->getCurrentDocument()->getPhysicalStructure() as $physicalInfo) {
             if (array_key_exists('tracks', $physicalInfo) && is_array($physicalInfo['tracks'])) {
                 foreach ($physicalInfo['tracks'] as $track) {
                     if ($track['fileid'] === $fileId && $track['betype'] === 'TIME') {

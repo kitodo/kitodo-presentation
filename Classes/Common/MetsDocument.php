@@ -47,8 +47,8 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property-read int $numPages the holds the total number of pages
  * @property-read int $numMeasures This holds the total number of measures
  * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
- * @property-read mixed[] $physicalStructure this holds the physical structure; deprecated, use getPhysicalStructure()
- * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata; deprecated, use getPhysicalStructureInfo()
+ * @property-read mixed[] $physicalStructure this holds ordered physical node IDs; deprecated, use getPhysicalStructure()
+ * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata; deprecated, use getPhysicalStructure()
  * @property-read mixed[] $musicalStructure This holds the musical structure
  * @property-read mixed[] $musicalStructureInfo This holds the musical structure metadata
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
@@ -566,7 +566,7 @@ final class MetsDocument extends AbstractDocument
             // Link logical structure to the first corresponding physical page/track.
             $details['points'] = max((int) array_search(
                 $this->smLinks['l2p'][$details['id']][0],
-                $this->getPhysicalStructure(),
+                array_column($this->getPhysicalStructure(), 'id'),
                 true
             ), 1);
             $details['thumbnailId'] = $this->getThumbnail($details['id']);
@@ -595,9 +595,9 @@ final class MetsDocument extends AbstractDocument
     {
         if (array_key_exists($id, $this->smLinks['l2p'])) {
             $firstElement = $this->smLinks['l2p'][$id][0] ?? null;
-            $physicalStructureInfo = $this->getPhysicalStructureInfo();
-            if (!empty($firstElement) && array_key_exists($firstElement, $physicalStructureInfo)) {
-                return $physicalStructureInfo[$firstElement]['orderlabel'];
+            $physicalStructure = $this->getPhysicalStructure();
+            if (!empty($firstElement) && array_key_exists($firstElement, $physicalStructure)) {
+                return $physicalStructure[$firstElement]['orderlabel'];
             }
         }
         return null;
@@ -629,9 +629,9 @@ final class MetsDocument extends AbstractDocument
             }
 
             $firstElement = $this->smLinks['l2p'][$logInfo['id']][0];
-            $physicalStructureInfo = $this->getPhysicalStructureInfo();
-            if (array_key_exists($firstElement, $physicalStructureInfo)) {
-                $physInfo = $physicalStructureInfo[$firstElement];
+            $physicalStructure = $this->getPhysicalStructure();
+            if (array_key_exists($firstElement, $physicalStructure)) {
+                $physInfo = $physicalStructure[$firstElement];
                 $fileIds = $physInfo['all_files'][$mediaplayerUseGroup] ?? [];
 
                 $chapter = null;
@@ -1410,7 +1410,13 @@ final class MetsDocument extends AbstractDocument
      */
     private function assignPhysicalStructureElements(array $elementNodes, array $fileUse): void
     {
+        $orderedElementNodes = [];
         foreach ($elementNodes as $elementNode) {
+            $orderedElementNodes[(int) $elementNode['ORDER']] = $elementNode;
+        }
+        ksort($orderedElementNodes);
+
+        foreach ($orderedElementNodes as $elementNode) {
             $id = (string) $elementNode['ID'];
             $this->assignPhysicalStructureInfo($id, $elementNode);
 
@@ -1470,7 +1476,7 @@ final class MetsDocument extends AbstractDocument
         }
 
         // Set total number of pages/tracks.
-        $this->numPages = count($elementNodes);
+        $this->numPages = count($orderedElementNodes);
     }
 
     /**
@@ -1949,7 +1955,7 @@ final class MetsDocument extends AbstractDocument
                         // Get the track/page info (begin and extent time).
                         $this->musicalStructure = [];
                         $measurePages = [];
-                        foreach ($this->getPhysicalStructureInfo() as $physicalId => $page) {
+                        foreach ($this->getPhysicalStructure() as $physicalId => $page) {
                             if (isset($page['files']['DEFAULT'])) {
                                 $measurePages[$physicalId] = $page['files']['DEFAULT'];
                             }
@@ -1961,7 +1967,11 @@ final class MetsDocument extends AbstractDocument
                                     $this->musicalStructure[$measureInfo['order']] = [
                                         'measureid' => $measureId,
                                         'physicalid' => $physicalId,
-                                        'page' => array_search($physicalId, $this->getPhysicalStructure())
+                                        'page' => array_search(
+                                            $physicalId,
+                                            array_column($this->getPhysicalStructure(), 'id'),
+                                            true
+                                        )
                                     ];
                                 }
                             }

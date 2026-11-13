@@ -51,8 +51,8 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
  * @property-read int $numPages the holds the total number of pages
  * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
- * @property-read mixed[] $physicalStructure this holds the physical structure; deprecated, use getPhysicalStructure()
- * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata; deprecated, use getPhysicalStructureInfo()
+ * @property-read mixed[] $physicalStructure this holds ordered physical node IDs; deprecated, use getPhysicalStructure()
+ * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata; deprecated, use getPhysicalStructure()
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
  * @property array<string, string> $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read string $recordId the METS file's / IIIF manifest's record identifier

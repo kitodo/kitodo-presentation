@@ -44,8 +44,8 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
  * @property-read int $numPages the holds the total number of pages
  * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
- * @property-read mixed[] $physicalStructure this holds the physical structure; deprecated, use getPhysicalStructure()
- * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata; deprecated, use getPhysicalStructureInfo()
+ * @property-read mixed[] $physicalStructure this holds ordered physical node IDs; deprecated, use getPhysicalStructure()
+ * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata; deprecated, use getPhysicalStructure()
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
  * @property array<string, string> $rawTextArray this holds the documents' raw text pages with their corresponding structMap//div's ID (METS) or Range / Manifest / Sequence ID (IIIF) as array key
  * @property-read string $recordId the METS file's / IIIF manifest's record identifier
@@ -605,7 +605,7 @@ abstract class AbstractDocument
             return $this->lastSearchedPhysicalPage['physicalPage'];
         } else {
             $physicalPage = 0;
-            foreach ($this->getPhysicalStructureInfo() as $page) {
+            foreach ($this->getPhysicalStructure() as $page) {
                 if (str_contains($page['orderlabel'], $logicalPage)) {
                     $this->lastSearchedPhysicalPage['logicalPage'] = $logicalPage;
                     $this->lastSearchedPhysicalPage['physicalPage'] = $physicalPage;
@@ -618,34 +618,13 @@ abstract class AbstractDocument
     }
 
     /**
-     * This builds an array of the document's physical structure
+     * Returns the document's physical structure metadata keyed by node ID.
      *
      * @access public
      *
-     * @return mixed[] Array of physical elements' id, type, label and file representations ordered
-     * by "@ORDER" attribute / IIIF Sequence's Canvases
+     * @return mixed[] Physical structure metadata keyed by node ID, ordered by "@ORDER" / IIIF canvases
      */
     public function getPhysicalStructure(): array
-    {
-        $this->loadPhysicalStructure();
-        $physicalStructure = $this->physicalStructure;
-        uasort(
-            $physicalStructure,
-            static fn (array $first, array $second): int => ($first['type'] === 'physSequence' ? -1 : 0)
-                <=> ($second['type'] === 'physSequence' ? -1 : 0)
-                ?: (int) ($first['order'] ?? 0) <=> (int) ($second['order'] ?? 0)
-        );
-        return array_column($physicalStructure, 'id');
-    }
-
-    /**
-     * Returns metadata for the document's physical structure.
-     *
-     * @access public
-     *
-     * @return mixed[] The physical structure metadata
-     */
-    public function getPhysicalStructureInfo(): array
     {
         $this->loadPhysicalStructure();
         return $this->physicalStructure;
@@ -663,7 +642,7 @@ abstract class AbstractDocument
     public function getPhysicalStructureNode(string $id): array
     {
         if (!empty($id)) {
-            return $this->getPhysicalStructureInfo()[$id] ?? [];
+            return $this->getPhysicalStructure()[$id] ?? [];
         }
         return [];
     }
@@ -679,7 +658,7 @@ abstract class AbstractDocument
      */
     public function getPhysicalStructureNodeByPage(int $page): array
     {
-        return $this->getPhysicalStructureNode($this->getPhysicalStructure()[$page] ?? '');
+        return array_values($this->getPhysicalStructure())[$page] ?? [];
     }
 
     /**
@@ -716,7 +695,8 @@ abstract class AbstractDocument
      */
     public function getPhysicalStructureNodeFileByPage(int $page, string $useGroup): string
     {
-        return $this->getPhysicalStructureNodeFile($this->getPhysicalStructure()[$page] ?? '', $useGroup);
+        $node = $this->getPhysicalStructureNodeByPage($page);
+        return $this->getPhysicalStructureNodeFile($node['id'] ?? '', $useGroup);
 
     }
 
@@ -733,7 +713,7 @@ abstract class AbstractDocument
     public function getPhysicalStructureNodeFiles(string $id): array
     {
         if (!empty($id)) {
-            return $this->getPhysicalStructureInfo()[$id]['files'] ?? [];
+            return $this->getPhysicalStructure()[$id]['files'] ?? [];
         }
         return [];
     }
@@ -751,7 +731,8 @@ abstract class AbstractDocument
      */
     public function getPhysicalStructureNodeFilesByPage(int $page): array
     {
-        return $this->getPhysicalStructureNodeFiles($this->getPhysicalStructure()[$page] ?? '');
+        $node = $this->getPhysicalStructureNodeByPage($page);
+        return $this->getPhysicalStructureNodeFiles($node['id'] ?? '');
     }
 
     /**
@@ -1064,7 +1045,7 @@ abstract class AbstractDocument
      */
     protected function magicGetPhysicalStructure(): array
     {
-        return $this->getPhysicalStructure();
+        return array_column($this->getPhysicalStructure(), 'id');
     }
 
     /**
@@ -1076,7 +1057,7 @@ abstract class AbstractDocument
      */
     protected function magicGetPhysicalStructureInfo(): array
     {
-        return $this->getPhysicalStructureInfo();
+        return $this->getPhysicalStructure();
     }
 
     /**
@@ -1194,7 +1175,7 @@ abstract class AbstractDocument
     {
         if ($var === 'physicalStructure' || $var === 'physicalStructureInfo') {
             trigger_error(
-                'Accessing the "' . $var . '" property is deprecated; use get' . ucfirst($var) . '() instead. This access will be removed in version 9.0.0.',
+                'Accessing the "' . $var . '" property is deprecated; use getPhysicalStructure() instead. This access will be removed in version 9.0.0.',
                 E_USER_DEPRECATED
             );
         }

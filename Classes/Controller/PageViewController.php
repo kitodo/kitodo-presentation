@@ -228,7 +228,7 @@ class PageViewController extends AbstractController
 
             if (!empty($file)) {
                 $score['mimetype'] = $doc->getFileMimeType($file);
-                $score['pagebeginning'] = $doc->getPageBeginning($doc->getPhysicalStructure()[$page], $file);
+                $score['pagebeginning'] = $doc->getPageBeginning($doc->getPhysicalStructureNodeByPage($page)['id'] ?? '', $file);
                 $score['url'] = $doc->getFileLocation($file);
                 if ($this->settings['useInternalProxy']) {
                     $this->configureProxyUrl($score['url']);
@@ -336,7 +336,7 @@ class PageViewController extends AbstractController
     {
         $currentDocument = $this->document->getCurrentDocument();
         if ($currentDocument instanceof IiifManifest) {
-            $canvasId = $currentDocument->getPhysicalStructure()[$page];
+            $canvasId = $currentDocument->getPhysicalStructureNodeByPage($page)['id'] ?? '';
             $iiif = $currentDocument->getIiif();
             if ($iiif instanceof ManifestInterface) {
                 $canvas = $iiif->getContainedResourceById($canvasId);
