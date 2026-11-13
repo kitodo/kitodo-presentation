@@ -430,7 +430,7 @@ final class IiifManifest extends AbstractDocument
                 $this->processCanvas($iiifId, $canvasId, $canvas, $fileUseThumbs, $fileUses);
             }
 
-            $this->numPages = $canvasOrder;
+            $this->totalPages = $canvasOrder;
             array_unshift($elements, $iiifId);
             $this->physicalStructure = $elements;
         }

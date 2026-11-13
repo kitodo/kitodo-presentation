@@ -298,7 +298,7 @@ class TableOfContentsController extends AbstractController
             );
             if (
                 !empty($this->requestData['double'])
-                && $page < $this->document->getCurrentDocument()->numPages
+                && $page < $this->document->getCurrentDocument()->getTotalPages()
             ) {
                 $this->activeEntries = array_merge(
                     $this->activeEntries,

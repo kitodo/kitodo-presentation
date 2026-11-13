@@ -1471,7 +1471,7 @@ final class MetsDocument extends AbstractDocument
         // Sort array by keys (= @ORDER).
         ksort($elements);
         // Set total number of pages/tracks.
-        $this->numPages = count($elements);
+        $this->totalPages = count($elements);
 
         return $elements;
     }

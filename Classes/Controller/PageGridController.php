@@ -46,9 +46,9 @@ class PageGridController extends AbstractController
 
         $entryArray = [];
 
-        $numPages = $this->document->getCurrentDocument()->numPages;
+        $totalPages = $this->document->getCurrentDocument()->getTotalPages();
         // Iterate through visible page set and display thumbnails.
-        for ($i = 1; $i <= $numPages; $i++) {
+        for ($i = 1; $i <= $totalPages; $i++) {
             $foundEntry = $this->getEntry($i, $this->useGroupsConfiguration->getThumbnail());
             $foundEntry['state'] = 'no';
             $entryArray[] = $foundEntry;

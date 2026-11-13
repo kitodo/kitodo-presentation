@@ -120,7 +120,7 @@ class PageViewController extends AbstractController
         $this->images[0] = $this->getImage($page);
         $this->fulltexts[0] = $this->getFulltext($page);
         $this->annotationContainers[0] = $this->getAnnotationContainers($page);
-        if ($this->requestData['double'] && $page < $this->document->getCurrentDocument()->numPages) {
+        if ($this->requestData['double'] && $page < $this->document->getCurrentDocument()->getTotalPages()) {
             $this->images[1] = $this->getImage($page + 1);
             $this->fulltexts[1] = $this->getFulltext($page + 1);
             $this->annotationContainers[1] = $this->getAnnotationContainers($page + 1);

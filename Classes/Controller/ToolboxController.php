@@ -529,7 +529,7 @@ class ToolboxController extends AbstractController
                 // Get second page, too, if double page view is activated.
                 if (
                     $this->requestData['double']
-                    && $pageNumber < $currentDocument->numPages
+                    && $pageNumber < $currentDocument->getTotalPages()
                 ) {
                     $nextPage = $pageNumber + 1;
                     $secondFile = $currentDocument->getPhysicalStructureNodeFileByPage($nextPage, $useGroup);

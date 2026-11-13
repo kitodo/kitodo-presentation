@@ -42,7 +42,7 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property mixed[] $logicalUnits this holds the logical units
  * @property-read mixed[] $metadataArray this holds the documents' parsed metadata array
  * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
- * @property-read int $numPages the holds the total number of pages
+ * @property-read int $numPages the holds the total number of pages; deprecated, use getTotalPages()
  * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
  * @property-read mixed[] $physicalStructure this holds the physical structure; deprecated, use getPhysicalStructure()
  * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata; deprecated, use getPhysicalStructureInfo()
@@ -166,7 +166,7 @@ abstract class AbstractDocument
      * @access protected
      * @var int The holds the total number of pages
      */
-    protected int $numPages = 0;
+    protected int $totalPages = 0;
 
     /**
      * @access protected
@@ -822,6 +822,19 @@ abstract class AbstractDocument
     }
 
     /**
+     * This returns the total number of pages and/or tracks
+     *
+     * @access public
+     *
+     * @return int The total number of pages and/or tracks
+     */
+    public function getTotalPages(): int
+    {
+        $this->loadPhysicalStructure();
+        return $this->totalPages;
+    }
+
+    /**
      * Traverse a logical (sub-) structure tree to find the structure with the requested logical id and return its depth.
      *
      * @access protected
@@ -1038,8 +1051,7 @@ abstract class AbstractDocument
      */
     protected function magicGetNumPages(): int
     {
-        $this->loadPhysicalStructure();
-        return $this->numPages;
+        return $this->getTotalPages();
     }
 
     /**
@@ -1197,9 +1209,15 @@ abstract class AbstractDocument
                 E_USER_DEPRECATED
             );
         }
+        if ($var === 'numPages') {
+            trigger_error(
+                'Accessing the "' . $var . '" property is deprecated; use getTotalPages() instead. This access will be removed in version 9.0.0.',
+                E_USER_DEPRECATED
+            );
+        }
         $method = 'magicGet' . ucfirst($var);
         if (
-            !property_exists($this, $var)
+            (!property_exists($this, $var) && $var !== 'numPages')
             || !method_exists($this, $method)
         ) {
             $this->logger->warning('There is no getter function for property "' . $var . '"');
