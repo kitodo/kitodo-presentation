@@ -342,7 +342,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
      */
     protected function isDocMissingOrEmpty(): bool
     {
-        return $this->isDocMissing() || $this->document->getCurrentDocument()->numPages < 1;
+        return $this->isDocMissing() || $this->document->getCurrentDocument()->getTotalPages() < 1;
     }
 
     /**
@@ -631,7 +631,7 @@ abstract class AbstractController extends ActionController implements LoggerAwar
             $this->requestData['page'] = 1;
         }
 
-        $this->requestData['page'] = MathUtility::forceIntegerInRange($this->requestData['page'], 1, $this->document->getCurrentDocument()->numPages, 1);
+        $this->requestData['page'] = MathUtility::forceIntegerInRange($this->requestData['page'], 1, $this->document->getCurrentDocument()->getTotalPages(), 1);
     }
 
     /**

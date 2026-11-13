@@ -154,7 +154,7 @@ class MetsDocumentTest extends FunctionalTestCase
     {
         $doc = $this->doc('av_beispiel.xml');
 
-        $chapterThreePage = $doc->physicalStructureInfo[$doc->physicalStructure[3]];
+        $chapterThreePage = $doc->getPhysicalStructureNodeByPage(3);
         self::assertArrayMatches([
             'DEFAULT' => 'FILE_0000_DEFAULT_MP4',
         ], $chapterThreePage['files']);
@@ -174,6 +174,20 @@ class MetsDocumentTest extends FunctionalTestCase
                 ],
             ],
         ], $chapterThreePage['fileInfos']);
+    }
+
+    #[Test]
+    public function canReadChapterAreaFiles()
+    {
+        $doc = $this->doc('av_beispiel.xml');
+
+        $chapterThreePageFiles = $doc->getPhysicalStructureNodeFilesByPage(3);
+        self::assertArrayMatches([
+            'DEFAULT' => 'FILE_0000_DEFAULT_MP4',
+        ], $chapterThreePageFiles);
+
+        $chapterThreePageFile = $doc->getPhysicalStructureNodeFileByPage(3, 'DEFAULT');
+        self::assertEquals('FILE_0000_DEFAULT_MP4', $chapterThreePageFile);
     }
 
     #[Test]

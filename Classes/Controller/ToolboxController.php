@@ -144,24 +144,17 @@ class ToolboxController extends AbstractController
      */
     private function getScoreFile(): string
     {
-        $currentPhysPage = '';
         $scoreFile = '';
-        if ($this->requestData['page']) {
-            $currentPhysPage = $this->currentDocument->physicalStructure[$this->requestData['page']];
-        } elseif (!empty($this->currentDocument->physicalStructure)) {
-            $currentPhysPage = $this->currentDocument->physicalStructure[1];
-        }
+        $useGroups = $this->useGroupsConfiguration->getScore();
+        foreach ($useGroups as $useGroup) {
+            if ($this->requestData['page']) {
+                $file = $this->currentDocument->getPhysicalStructureNodeFileByPage((int) $this->requestData['page'], $useGroup);
+            } else {
+                $file = $this->currentDocument->getPhysicalStructureNodeFileByPage(1, $useGroup);
+            }
 
-        if (!empty($currentPhysPage)) {
-            $useGroups = $this->useGroupsConfiguration->getScore();
-            foreach ($useGroups as $useGroup) {
-                $currentPhysicalPage = $this->currentDocument->physicalStructureInfo[$currentPhysPage];
-                if (is_array($currentPhysicalPage) && array_key_exists('files', $currentPhysicalPage)) {
-                    $files = $currentPhysicalPage['files'];
-                    if (is_array($files) && array_key_exists($useGroup, $files)) {
-                        $scoreFile = $files[$useGroup];
-                    }
-                }
+            if (!empty($file)) {
+                $scoreFile = $file;
             }
         }
         return $scoreFile;
@@ -226,7 +219,7 @@ class ToolboxController extends AbstractController
 
         $this->setPage();
 
-        $annotationContainers = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$this->requestData['page']]]['annotationContainers'];
+        $annotationContainers = $this->currentDocument->getPhysicalStructureNodeByPage((int) $this->requestData['page'])['annotationContainers'];
         if (
             $annotationContainers != null
             && count($annotationContainers) > 0
@@ -386,27 +379,22 @@ class ToolboxController extends AbstractController
     private function getFile(int $page, array $fileGrps): array
     {
         $file = [];
-        if (!empty($this->currentDocument->physicalStructure)) {
-            if (!array_key_exists($page, $this->currentDocument->physicalStructure)) {
+        if (!empty($this->currentDocument->getPhysicalStructure())) {
+            if (!array_key_exists($page, $this->currentDocument->getPhysicalStructure())) {
                 $this->logger->warning('Page number "' . $page . '" not found in Document (' . $this->document->getLocation() . ') mets:structMap');
                 return $file;
             }
 
-            $physicalStructureInfo = $this->currentDocument->physicalStructureInfo[$this->currentDocument->physicalStructure[$page]] ?? null;
             // Iterate backwards over the file groups
             // e.g. `MAX` is used first when configuration order is `DEFAULT,MAX`
             while ($fileGrp = @array_pop($fileGrps)) {
-                if (isset($physicalStructureInfo['files'][$fileGrp])) {
-                    $fileId = $physicalStructureInfo['files'][$fileGrp];
-                    if (!empty($fileId)) {
-                        $file['url'] = $this->currentDocument->getDownloadLocation($fileId);
-                        $file['mimetype'] = $this->currentDocument->getFileMimeType($fileId);
-                        break;
-                    } else {
-                        $this->logger->warning('File not found in fileGrp "' . $fileGrp . '" in Document (' . $this->document->getLocation() . ')');
-                    }
+                $fileId = $this->currentDocument->getPhysicalStructureNodeFileByPage($page, $fileGrp);
+                if (!empty($fileId)) {
+                    $file['url'] = $this->currentDocument->getDownloadLocation($fileId);
+                    $file['mimetype'] = $this->currentDocument->getFileMimeType($fileId);
+                    break;
                 } else {
-                    $this->logger->warning('fileGrp "' . $fileGrp . '" not found in Document (' . $this->document->getLocation() . ') mets:fileSec');
+                    $this->logger->warning('File not found in fileGrp "' . $fileGrp . '" in Document (' . $this->document->getLocation() . ')');
                 }
             }
         }
@@ -533,29 +521,23 @@ class ToolboxController extends AbstractController
         $pageNumber = $this->requestData['page'] ?? 0;
         $useGroups = $this->useGroupsConfiguration->getDownload();
         $currentDocument = $this->currentDocument;
-        $physicalStructure = $currentDocument->physicalStructure;
-        $physicalStructureInfo = $currentDocument->physicalStructureInfo;
         // Get image link.
         while ($useGroup = array_shift($useGroups)) {
-            if (!empty($physicalStructure)) {
-                $firstFile = $physicalStructureInfo[$physicalStructure[$pageNumber]]['files'][$useGroup] ?? '';
-                if (!empty($firstFile)) {
-                    $firstPage = $this->getFileInfo($firstFile);
-                    // Get second page, too, if double page view is activated.
-                    if (
-                        $this->requestData['double']
-                        && $pageNumber < $currentDocument->numPages
-                    ) {
-                        $nextPage = $pageNumber + 1;
-                        if (array_key_exists($nextPage, $physicalStructure)) {
-                            $secondFile = $physicalStructureInfo[$physicalStructure[$nextPage]]['files'][$useGroup] ?? '';
-                            if (!empty($secondFile)) {
-                                $secondPage = $this->getFileInfo($secondFile);
-                            }
-                        }
+            $firstFile = $currentDocument->getPhysicalStructureNodeFileByPage($pageNumber, $useGroup);
+            if (!empty($firstFile)) {
+                $firstPage = $this->getFileInfo($firstFile);
+                // Get second page, too, if double page view is activated.
+                if (
+                    $this->requestData['double']
+                    && $pageNumber < $currentDocument->getTotalPages()
+                ) {
+                    $nextPage = $pageNumber + 1;
+                    $secondFile = $currentDocument->getPhysicalStructureNodeFileByPage($nextPage, $useGroup);
+                    if (!empty($secondFile)) {
+                        $secondPage = $this->getFileInfo($secondFile);
                     }
-                    break;
                 }
+                break;
             }
         }
 
@@ -589,21 +571,17 @@ class ToolboxController extends AbstractController
         $workLink = [];
         $useGroups = $this->useGroupsConfiguration->getDownload();
         $currentDocument = $this->currentDocument;
-        $physicalStructure = $currentDocument->physicalStructure;
-        $physicalStructureInfo = $currentDocument->physicalStructureInfo;
         // Get work link.
         while ($useGroup = array_shift($useGroups)) {
-            if (!empty($physicalStructure)) {
-                $file = $physicalStructureInfo[$physicalStructure[0]]['files'][$useGroup] ?? '';
-                if (!empty($file)) {
-                    $workLink = $this->getFileInfo($file);
+            $file = $currentDocument->getPhysicalStructureNodeFileByPage(0, $useGroup);
+            if (!empty($file)) {
+                $workLink = $this->getFileInfo($file);
+                break;
+            } else {
+                $details = $currentDocument->getLogicalStructure($currentDocument->getToplevelId());
+                if (!empty($details['files'][$useGroup])) {
+                    $workLink = $this->getFileInfo($details['files'][$useGroup]);
                     break;
-                } else {
-                    $details = $currentDocument->getLogicalStructure($currentDocument->getToplevelId());
-                    if (!empty($details['files'][$useGroup])) {
-                        $workLink = $this->getFileInfo($details['files'][$useGroup]);
-                        break;
-                    }
                 }
             }
         }
@@ -737,12 +715,10 @@ class ToolboxController extends AbstractController
     private function isFullTextEmpty(): bool
     {
         $useGroups = $this->useGroupsConfiguration->getFulltext();
-        $currentDocument = $this->document->getCurrentDocument();
         while ($useGroup = array_shift($useGroups)) {
-            if (isset($this->requestData['page']) && !empty($currentDocument->physicalStructure)) {
-                $pagePhysicalStructureInfo = $currentDocument->physicalStructureInfo[$currentDocument->physicalStructure[$this->requestData['page']]] ?? [];
-                $files = $pagePhysicalStructureInfo['files'] ?? [];
-                if (!empty($files[$useGroup])) {
+            if (isset($this->requestData['page'])) {
+                $file = $this->document->getCurrentDocument()->getPhysicalStructureNodeFileByPage((int) $this->requestData['page'], $useGroup);
+                if (!empty($file)) {
                     return false;
                 }
             }

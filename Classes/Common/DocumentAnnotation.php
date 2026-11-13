@@ -135,7 +135,7 @@ class DocumentAnnotation
                         }
                     } elseif ($annotationTarget->getObjectId()) {
                         $objectTargetPages = [];
-                        foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $physInfo) {
+                        foreach ($this->document->getCurrentDocument()->getPhysicalStructureInfo() as $physInfo) {
                             $order = $physInfo['order'];
                             if ($order) {
                                 $objectTargetPages[] = $order;
@@ -184,8 +184,9 @@ class DocumentAnnotation
         ) {
             $physicalIdentifiers = $this->document->getCurrentDocument()->smLinks['l2p'][$logicalId];
             foreach ($physicalIdentifiers as $physicalIdentifier) {
-                if (array_key_exists($physicalIdentifier, $this->document->getCurrentDocument()->physicalStructureInfo)) {
-                    $order = $this->document->getCurrentDocument()->physicalStructureInfo[$physicalIdentifier]['order'];
+                $physicalStructureNode = $this->document->getCurrentDocument()->getPhysicalStructureNode($physicalIdentifier);
+                if (!empty($physicalStructureNode)) {
+                    $order = $physicalStructureNode['order'];
                     if (is_numeric($order)) {
                         $pages[] = $order;
                     }
@@ -207,17 +208,18 @@ class DocumentAnnotation
     protected function getPagesByPhysicalId(string $physicalId): array
     {
         $pages = [];
-        foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $physicalInfo) {
+        $physicalStructureInfo = $this->document->getCurrentDocument()->getPhysicalStructureInfo();
+        foreach ($physicalStructureInfo as $physicalInfo) {
             $order = $physicalInfo['order'];
             if (is_numeric($order)) {
                 $pages[] = $order;
             }
         }
-        if (array_key_exists($physicalId, $this->document->getCurrentDocument()->physicalStructureInfo)) {
-            if ($this->document->getCurrentDocument()->physicalStructureInfo[$physicalId]['type'] === 'physSequence') {
+        if (array_key_exists($physicalId, $physicalStructureInfo)) {
+            if ($physicalStructureInfo[$physicalId]['type'] === 'physSequence') {
                 return $pages;
             }
-            return [$this->document->getCurrentDocument()->physicalStructureInfo[$physicalId]['order']];
+            return [$physicalStructureInfo[$physicalId]['order']];
         }
         return [];
     }
@@ -234,17 +236,15 @@ class DocumentAnnotation
     protected function getPagesByFileId(string $fileId): array
     {
         $pages = [];
-        foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $physicalInfo) {
+        $physicalStructureInfo = $this->document->getCurrentDocument()->getPhysicalStructureInfo();
+        foreach ($physicalStructureInfo as $physicalInfo) {
+            $files = $physicalInfo['files'] ?? null;
             if (
-                array_key_exists('files', $physicalInfo) &&
-                is_array($physicalInfo['files']) &&
                 $physicalInfo['type'] !== 'physSequence'
+                && is_array($files)
+                && in_array($fileId, $files, true)
             ) {
-                foreach ($physicalInfo['files'] as $file) {
-                    if ($file === $fileId) {
-                        $pages[] = $physicalInfo['order'];
-                    }
-                }
+                $pages[] = $physicalInfo['order'];
             }
         }
         return $pages;
@@ -263,7 +263,7 @@ class DocumentAnnotation
     protected function getAudioPagesByFileId(string $fileId, $range = null): array
     {
         $tracks = [];
-        foreach ($this->document->getCurrentDocument()->physicalStructureInfo as $physicalInfo) {
+        foreach ($this->document->getCurrentDocument()->getPhysicalStructureInfo() as $physicalInfo) {
             if (array_key_exists('tracks', $physicalInfo) && is_array($physicalInfo['tracks'])) {
                 foreach ($physicalInfo['tracks'] as $track) {
                     if ($track['fileid'] === $fileId && $track['betype'] === 'TIME') {
