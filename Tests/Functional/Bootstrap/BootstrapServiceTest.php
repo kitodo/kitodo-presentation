@@ -23,7 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class BootstrapServiceTest extends FunctionalTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

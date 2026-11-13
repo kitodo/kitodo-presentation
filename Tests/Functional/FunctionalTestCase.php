@@ -127,6 +127,10 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         // individual tests; reset it so that no document loaded by a
         // previous test (possibly with different settings) leaks in.
         DocumentCacheManager::resetPool();
+        // The same applies to the static caches of the indexer.
+        Helper::resetIndexNameCache();
+        Indexer::resetProcessedDocs();
+        Indexer::resetIndexConf();
 
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
 
