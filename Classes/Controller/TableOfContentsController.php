@@ -292,21 +292,24 @@ class TableOfContentsController extends AbstractController
         ) {
             $page = $this->requestData['page'];
             $structureMapLinks = $currentDocument->smLinks;
-            $firstPhysicalId = $currentDocument->getPhysicalStructureNodeByPage(0)['id'] ?? '';
-            $pagePhysicalId = $currentDocument->getPhysicalStructureNodeByPage((int) $page)['id'] ?? '';
+            $firstPhysicalNode = $currentDocument->getPhysicalStructureNodeByPage(0)['id'] ?? '';
+            $pagePhysicalNode = $currentDocument->getPhysicalStructureNodeByPage((int) $page)['id'] ?? '';
 
             $this->activeEntries = array_merge(
-                (array) ($structureMapLinks['p2l'][$firstPhysicalId] ?? []),
-                (array) ($structureMapLinks['p2l'][$pagePhysicalId] ?? [])
+                (array) ($structureMapLinks['p2l'][$firstPhysicalNode] ?? []),
+                (array) ($structureMapLinks['p2l'][$pagePhysicalNode] ?? [])
             );
             if (
                 !empty($this->requestData['double'])
                 && $page < $currentDocument->numPages
             ) {
-                $this->activeEntries = array_merge(
-                    $this->activeEntries,
-                    (array) ($structureMapLinks['p2l'][$physicalStructure[$page + 1]] ?? [])
-                );
+                $nextPhysicalNode = $currentDocument->getPhysicalStructureNodeByPage((int) $page + 1);
+                if (!empty($nextPhysicalNode['id'])) {
+                    $this->activeEntries = array_merge(
+                        $this->activeEntries,
+                        (array) ($structureMapLinks['p2l'][$nextPhysicalNode['id']] ?? [])
+                    );
+                }
             }
         }
     }
