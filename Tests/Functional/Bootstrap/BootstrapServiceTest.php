@@ -23,6 +23,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class BootstrapServiceTest extends FunctionalTestCase
 {
+    // Required by the site set of the demo sites (kitodo/presentation-demo)
+    protected array $coreExtensionsToLoad = [
+        'fluid_styled_content',
+    ];
+
     public function setUp(): void
     {
         parent::setUp();
@@ -63,6 +68,51 @@ class BootstrapServiceTest extends FunctionalTestCase
         // check that child pages are child of root page
         foreach (['storage', 'results', 'viewer'] as $key) {
             self::assertSame($pageUids['root'], (int) $pages[$pageUids[$key]]['pid'], 'Page "' . $key . '" is not a child of the root page.');
+        }
+    }
+
+    #[Test]
+    public function canBootstrapShowcaseScenario(): void
+    {
+        $bootstrapService = $this->get(BootstrapService::class);
+
+        // start bootstrapping of showcase scenario
+        $pageUids = $bootstrapService->bootstrap('showcase', rtrim($this->baseUrl, '/'));
+
+        // check that the RSS feed and OAI-PMH pages were created with their backend layouts
+        foreach (['feeds' => 'pagets__Feeds', 'oai' => 'pagets__OaiPmh'] as $key => $backendLayout) {
+            self::assertArrayHasKey($key, $pageUids, 'Page "' . $key . '" was not created.');
+            $page = $this->getConnectionPool()->getConnectionForTable('pages')
+                ->select(['backend_layout'], 'pages', ['uid' => $pageUids[$key]])
+                ->fetchAssociative();
+            self::assertSame($backendLayout, $page['backend_layout'] ?? null);
+        }
+
+        // check that the title record of the multi-volume work was added by the ingest of its volumes
+        $documents = $this->getConnectionPool()->getConnectionForTable('tx_dlf_documents')
+            ->select(['uid', 'record_id', 'partof'], 'tx_dlf_documents', ['pid' => $pageUids['storage'], 'deleted' => 0])
+            ->fetchAllAssociative();
+        $documentsByRecordId = array_column($documents, null, 'record_id');
+        self::assertArrayHasKey('kitodo-demo-encyclopedia', $documentsByRecordId, 'Title record of the multi-volume work was not added.');
+        foreach (['kitodo-demo-encyclopedia-volume1', 'kitodo-demo-encyclopedia-volume2'] as $volume) {
+            self::assertSame(
+                (int) $documentsByRecordId['kitodo-demo-encyclopedia']['uid'],
+                (int) ($documentsByRecordId[$volume]['partof'] ?? 0),
+                'Volume "' . $volume . '" is not part of the multi-volume work.'
+            );
+        }
+
+        // check that the RSS feed and OAI-PMH plugins use the library of the documents (placeholder "{library}")
+        $libraryUid = (int) $this->getConnectionPool()->getConnectionForTable('tx_dlf_libraries')
+            ->select(['uid'], 'tx_dlf_libraries', ['pid' => $pageUids['storage'], 'deleted' => 0])
+            ->fetchOne();
+        self::assertGreaterThan(0, $libraryUid);
+        foreach (['dlf_feeds' => 'feeds', 'dlf_oaipmh' => 'oai'] as $cType => $key) {
+            $flexForm = $this->getConnectionPool()->getConnectionForTable('tt_content')
+                ->select(['pi_flexform'], 'tt_content', ['CType' => $cType, 'pid' => $pageUids[$key], 'deleted' => 0])
+                ->fetchOne();
+            $settings = GeneralUtility::xml2array((string) $flexForm)['data']['sDEF']['lDEF'] ?? [];
+            self::assertSame((string) $libraryUid, $settings['settings.library']['vDEF'] ?? null, 'Library of "' . $cType . '" was not set.');
         }
     }
 }
