@@ -5,10 +5,12 @@ page {
     # One CSS file per plugin (usable as blueprint when using the plugin), and the layout of the demo page templates.
     # The layout is included last, since it overrides plugin styles in the context of the demo pages.
     includeCSS {
+        demoCalendar = EXT:dlf/Resources/Public/Bootstrap/Css/Calendar.css
         demoCollection = EXT:dlf/Resources/Public/Bootstrap/Css/Collection.css
         demoListView = EXT:dlf/Resources/Public/Bootstrap/Css/ListView.css
         demoMetadata = EXT:dlf/Resources/Public/Bootstrap/Css/Metadata.css
         demoNavigation = EXT:dlf/Resources/Public/Bootstrap/Css/Navigation.css
+        demoPageGrid = EXT:dlf/Resources/Public/Bootstrap/Css/PageGrid.css
         demoPageView = EXT:dlf/Resources/Public/Bootstrap/Css/PageView.css
         demoSearch = EXT:dlf/Resources/Public/Bootstrap/Css/Search.css
         demoTableOfContents = EXT:dlf/Resources/Public/Bootstrap/Css/TableOfContents.css
@@ -28,6 +30,12 @@ page {
 
             contentHeader < styles.content.get
             contentHeader.select.where = {#colPos}=2
+
+            contentCalendar < styles.content.get
+            contentCalendar.select.where = {#colPos}=3
+
+            contentPages < styles.content.get
+            contentPages.select.where = {#colPos}=4
         }
 
         dataProcessing.10 = menu
@@ -40,3 +48,18 @@ page {
         dataProcessing.20 = Kitodo\Dlf\Bootstrap\DebugInformationProcessor
     }
 }
+
+# Newspapers, ephemera and their years have no pages, so the viewer template shows the calendar instead of the page view.
+[getDocumentType({$plugin.tx_dlf.persistence.storagePid}) in ['newspaper', 'ephemera', 'year']]
+    page.10.variables.isCalendar = TEXT
+    page.10.variables.isCalendar.value = 1
+[END]
+
+# The RSS feed and OAI-PMH configurations replace the whole page, so they are restricted to pages using the respective layout.
+[tree.pagelayout == "pagets__Feeds"]
+    @import 'EXT:dlf/Configuration/TypoScript/Plugins/Feeds/setup.typoscript'
+[END]
+
+[tree.pagelayout == "pagets__OaiPmh"]
+    @import 'EXT:dlf/Configuration/TypoScript/Plugins/OaiPmh/setup.typoscript'
+[END]

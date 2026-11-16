@@ -39,18 +39,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  *
  * Requires a backend user with admin privileges, since all records are created via DataHandler.
  *
- * PlaceholderImageInfos: Title of a document and its images with their path relative to the document's directory,
- * whether they belong to the file group "THUMBS", and the page number (ORDER) and label (ORDERLABEL) of their page.
- *
  * @package TYPO3
  * @subpackage dlf
  *
  * @access public
- *
- * @phpstan-type PlaceholderImageInfos array{
- *     title: string,
- *     images: list<array{path: string, isThumbnail: bool, order: string, label: ?string}>
- * }
  */
 class BootstrapService
 {
@@ -63,24 +55,12 @@ class BootstrapService
     /**
      * Columns (colPos) of the backend layouts of the demo site sets indexed by their slot name
      */
-    protected const SLOTS = ['main' => 0, 'sidebar' => 1, 'header' => 2];
+    protected const SLOTS = ['main' => 0, 'sidebar' => 1, 'header' => 2, 'calendar' => 3, 'pages' => 4];
 
     /**
      * Placeholder in the METS files of the demo documents, which is replaced with the public URL of the document's directory.
      */
     protected const DOCUMENT_URL_PLACEHOLDER = '{documentUrl}';
-
-    /**
-     * SVG of a placeholder image with the arguments: drawing width and height, image width and height,
-     * vertical position and text of the page number, the title and the page label
-     */
-    protected const PLACEHOLDER_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %1$d %2$d" width="%3$d" height="%4$d">'
-        . '<rect width="100%%" height="100%%" fill="#fff"/>'
-        . '<g fill="#333" font-family="sans-serif" text-anchor="middle">'
-        . '<text x="50%%" y="%5$d" font-size="140">Page %6$s</text>'
-        . '<text x="50%%" y="%7$d" font-size="44">%8$s</text>'
-        . '<text x="50%%" y="%9$d" font-size="44">%10$s</text>'
-        . '</g></svg>';
 
     /**
      * @access protected
@@ -103,7 +83,8 @@ class BootstrapService
         protected readonly SiteWriter $siteWriter,
         protected readonly FlexFormTools $flexFormTools,
         protected readonly YamlFileLoader $yamlFileLoader,
-        protected readonly CacheManager $cacheManager
+        protected readonly CacheManager $cacheManager,
+        protected readonly PlaceholderImageGenerator $placeholderImageGenerator
     ) {
     }
 
@@ -192,16 +173,18 @@ class BootstrapService
         ]);
         $this->cacheManager->flushCachesInGroup('pages');
 
-        $this->createContent($solrCoreUid, $scenario['pluginSettings'] ?? []);
-
         $metsUrls = $this->createDocuments($scenarioName, $scenario, $baseUrl);
         $this->indexDocuments($metsUrls, $solrCoreUid);
+
+        // The content is created after indexing, since the library (owner) of the documents is created by the ingest.
+        $this->createContent($solrCoreUid, $this->ingestService->getOwner()?->getUid() ?? 0, $scenario['pluginSettings'] ?? []);
 
         return $this->pageUids;
     }
 
     /**
      * Save the given documents to the storage folder and add them to the Solr index, like the command "kitodo:index".
+     * Parent documents referenced by a "mets:mptr" (e.g. the year and title of a newspaper issue) are added by the ingest.
      *
      * @access protected
      *
@@ -232,23 +215,25 @@ class BootstrapService
             }
         }
         GeneralUtility::makeInstance(DocumentCacheManager::class)->flush();
-        $this->checkSolrIndex($solrCoreUid, count($metsUrls));
+        $this->checkSolrIndex($solrCoreUid);
     }
 
     /**
-     * Check that the Solr core returns the expected number of toplevel documents, so that they can be searched.
+     * Check that the Solr core returns a toplevel document for every document saved in the storage folder (including
+     * parent documents added by the ingest), so that they can be searched.
      *
      * @access protected
      *
      * @param int $solrCoreUid
-     * @param int $expectedCount
      *
      * @return void
      *
      * @throws \RuntimeException if Solr returns a different number of documents
      */
-    protected function checkSolrIndex(int $solrCoreUid, int $expectedCount): void
+    protected function checkSolrIndex(int $solrCoreUid): void
     {
+        $this->documentRepository->useStoragePid($this->pageUids['storage']);
+        $expectedCount = $this->documentRepository->countAll();
         $solr = Solr::getInstance($solrCoreUid);
         $numFound = $solr->service->select($solr->service->createSelect(['query' => 'toplevel:true', 'rows' => 0]))->getNumFound();
         if ($numFound !== $expectedCount) {
@@ -258,7 +243,11 @@ class BootstrapService
 
     /**
      * Copy the documents of the scenario to the public "kitodo-demo" directory of the fileadmin,
-     * replace the document URL placeholder in their METS files and generate placeholder images if configured.
+     * replace the document URL placeholder in their XML files and generate placeholder images if configured.
+     *
+     * A document directory may contain several METS files referencing each other, e.g. the title, years and issues
+     * of a newspaper. Only the files listed in "index" (default: "mets.xml") are indexed, their parents are added
+     * by the ingest.
      *
      * @access protected
      *
@@ -266,7 +255,7 @@ class BootstrapService
      * @param mixed[] $scenario
      * @param string $baseUrl
      *
-     * @return string[] URLs of the METS files of the copied documents
+     * @return string[] URLs of the METS files to be indexed
      */
     protected function createDocuments(string $scenarioName, array $scenario, string $baseUrl): array
     {
@@ -284,98 +273,21 @@ class BootstrapService
             $documentUrl = rtrim($baseUrl, '/') . '/' . $relativeDir . $document['name'];
             GeneralUtility::copyDirectory(GeneralUtility::getFileAbsFileName(self::DOCUMENTS_PATH . $document['name']), $documentDir);
 
-            $mets = (string) file_get_contents($documentDir . 'mets.xml');
-            if (!empty($scenario['generatePlaceholderImages'])) {
-                $this->generatePlaceholderImages($this->getPlaceholderImageInfos($mets), $documentDir, $document['pageSize'] ?? [1000, 1400]);
+            foreach (glob($documentDir . '*.xml') ?: [] as $file) {
+                $xml = (string) file_get_contents($file);
+                if (!empty($scenario['generatePlaceholderImages'])) {
+                    $this->placeholderImageGenerator->generate($xml, self::DOCUMENT_URL_PLACEHOLDER, $documentDir, $document['pageSize'] ?? [1000, 1400]);
+                }
+                GeneralUtility::writeFile($file, str_replace(self::DOCUMENT_URL_PLACEHOLDER, $documentUrl, $xml), true);
             }
-            GeneralUtility::writeFile($documentDir . 'mets.xml', str_replace(self::DOCUMENT_URL_PLACEHOLDER, $documentUrl, $mets), true);
-            $metsUrls[] = $documentUrl . '/mets.xml';
+            foreach ($document['index'] ?? ['mets.xml'] as $file) {
+                if (!is_file($documentDir . $file)) {
+                    throw new \InvalidArgumentException('Demo document "' . $document['name'] . '/' . $file . '" does not exist', 1762870010);
+                }
+                $metsUrls[] = $documentUrl . '/' . $file;
+            }
         }
         return $metsUrls;
-    }
-
-    /**
-     * Extract the information required to generate placeholder images from the given METS file: the title of the
-     * document and every SVG file referenced by a page with a URL relative to the document URL placeholder.
-     *
-     * @access protected
-     *
-     * @param string $mets Content of the METS file
-     *
-     * @return PlaceholderImageInfos
-     */
-    protected function getPlaceholderImageInfos(string $mets): array
-    {
-        $dom = new \DOMDocument();
-        $dom->loadXML($mets);
-        $xpath = new \DOMXPath($dom);
-        $xpath->registerNamespace('mets', 'http://www.loc.gov/METS/');
-        $xpath->registerNamespace('xlink', 'http://www.w3.org/1999/xlink');
-
-        $images = [];
-        foreach ($xpath->query('//mets:structMap[@TYPE="PHYSICAL"]//mets:div[@TYPE="page"]') ?: [] as $page) {
-            if (!$page instanceof \DOMElement) {
-                continue;
-            }
-            foreach ($xpath->query('mets:fptr/@FILEID', $page) ?: [] as $fileId) {
-                $file = ($xpath->query('//mets:file[@ID="' . $fileId->nodeValue . '"][@MIMETYPE="image/svg+xml"]') ?: null)?->item(0);
-                if (!$file instanceof \DOMElement || !$file->parentNode instanceof \DOMElement) {
-                    continue;
-                }
-                $href = (string) $xpath->evaluate('string(mets:FLocat/@xlink:href)', $file);
-                if (!str_starts_with($href, self::DOCUMENT_URL_PLACEHOLDER . '/')) {
-                    continue;
-                }
-                $images[] = [
-                    'path' => substr($href, strlen(self::DOCUMENT_URL_PLACEHOLDER . '/')),
-                    'isThumbnail' => $file->parentNode->getAttribute('USE') === 'THUMBS',
-                    'order' => $page->getAttribute('ORDER'),
-                    'label' => $page->hasAttribute('ORDERLABEL') ? $page->getAttribute('ORDERLABEL') : null,
-                ];
-            }
-        }
-
-        return [
-            'title' => (string) $xpath->evaluate('string(//mets:structMap[@TYPE="LOGICAL"]/mets:div/@LABEL)'),
-            'images' => $images,
-        ];
-    }
-
-    /**
-     * Generate the given SVG placeholder images, labeled with the page number, the title of the document and the page
-     * label. Thumbnails are scaled down to a maximum size of 150 pixels.
-     *
-     * @access protected
-     *
-     * @param PlaceholderImageInfos $infos Images to generate, see getPlaceholderImageInfos()
-     * @param string $documentDir Directory the image paths are relative to
-     * @param int[] $pageSize Width and height of the page images
-     *
-     * @return void
-     */
-    protected function generatePlaceholderImages(array $infos, string $documentDir, array $pageSize): void
-    {
-        [$width, $height] = $pageSize;
-        $thumbnailScale = 150 / max($width, $height);
-
-        foreach ($infos['images'] as $image) {
-            $scale = $image['isThumbnail'] ? $thumbnailScale : 1;
-            $path = $documentDir . $image['path'];
-            GeneralUtility::mkdir_deep(dirname($path));
-            GeneralUtility::writeFile($path, sprintf(
-                self::PLACEHOLDER_SVG,
-                $width,
-                $height,
-                (int) round($width * $scale),
-                (int) round($height * $scale),
-                intdiv($height, 2),
-                htmlspecialchars($image['order']),
-                intdiv($height, 2) + 100,
-                htmlspecialchars($infos['title']),
-                intdiv($height, 2) + 170,
-                $image['label'] !== null ? 'Label: ' . htmlspecialchars($image['label']) : ''
-            ), true);
-        }
     }
 
     /**
@@ -455,11 +367,12 @@ class BootstrapService
      * @access protected
      *
      * @param int $solrCoreUid
+     * @param int $libraryUid UID of the library owning the demo documents
      * @param mixed[] $pluginSettings Settings applied to all plugins having a setting with the same name
      *
      * @return void
      */
-    protected function createContent(int $solrCoreUid, array $pluginSettings): void
+    protected function createContent(int $solrCoreUid, int $libraryUid, array $pluginSettings): void
     {
         $data = [];
         $count = 0;
@@ -486,7 +399,7 @@ class BootstrapService
                 $data['tt_content']['NEW' . ++$count] = $contentElement;
             }
         }
-        $replacements = ['{solrCore}' => (string) $solrCoreUid];
+        $replacements = ['{solrCore}' => (string) $solrCoreUid, '{library}' => (string) $libraryUid];
         foreach ($this->pageUids as $key => $uid) {
             $replacements['{page:' . $key . '}'] = (string) $uid;
         }

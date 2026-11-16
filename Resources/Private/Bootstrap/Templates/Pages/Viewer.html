@@ -10,7 +10,10 @@
     For the full copyright and license information, please read the
     LICENSE.txt file that was distributed with this source code.
 
-    Page template of the viewer of the Kitodo.Presentation demo site sets, with the sidebar on the left.
+    Page template of the viewer of the Kitodo.Presentation demo site sets, with a sidebar on the left.
+    For newspapers and years (isCalendar), the calendar is shown instead of the main content (toolbox, page view, ...).
+    The content of the slot "pages" (e.g. the page grid) is shown in a sidebar on the right, except for newspapers and
+    years, which have no pages.
 </f:comment>
 
 <div class="demo-viewer">
@@ -23,12 +26,34 @@
     </f:if>
 
     <div class="demo-columns">
-        <aside id="demo-sidebar" class="demo-sidebar">
-            <f:format.raw>{contentSidebar}</f:format.raw>
+        <aside id="demo-sidebar" class="demo-panel demo-panel-left">
+            <div class="demo-heading">Document</div>
+            <div class="demo-panel-content demo-sidebar">
+                <f:format.raw>{contentSidebar}</f:format.raw>
+            </div>
         </aside>
-        <main id="demo-main" class="demo-main">
-            <f:format.raw>{contentMain}</f:format.raw>
-        </main>
+        <f:if condition="{isCalendar}">
+            <f:then>
+                <main id="demo-main" class="demo-main demo-calendar">
+                    <div class="demo-heading">Calendar</div>
+                    <f:format.raw>{contentCalendar}</f:format.raw>
+                </main>
+            </f:then>
+            <f:else>
+                <main id="demo-main" class="demo-main">
+                    <div class="demo-heading">Viewer</div>
+                    <f:format.raw>{contentMain}</f:format.raw>
+                </main>
+                <f:if condition="{contentPages}">
+                    <aside id="demo-pages" class="demo-panel demo-panel-right">
+                        <div class="demo-heading">Pages</div>
+                        <div class="demo-panel-content">
+                            <f:format.raw>{contentPages}</f:format.raw>
+                        </div>
+                    </aside>
+                </f:if>
+            </f:else>
+        </f:if>
     </div>
 
     <f:render partial="Footer" arguments="{_all}" />

@@ -20,6 +20,45 @@
     padding-left: var(--demo-space-m);
 }
 
+/* Every entry in one row with its basket link on the right, its subentries below. */
+.tx-dlf-tableofcontents li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+}
+
+.tx-dlf-tableofcontents li > :is(a, span.a) {
+    grid-column: 1;
+}
+
+.tx-dlf-tableofcontents li > ul {
+    grid-column: 1 / -1;
+}
+
+/*
+ * Basket link as icon. The text is kept in the markup, but hidden by a font size of 0, so the icon defines its size.
+ * The link has no title, so there is no tooltip. It fills the height of the entry, so that both are highlighted as
+ * one row.
+ */
+.tx-dlf-tableofcontents .tx-dlf-basket-button {
+    display: flex;
+    grid-column: 2;
+}
+
+.tx-dlf-tableofcontents .tx-dlf-basket-button a {
+    flex: 1;
+    font-size: 0;
+    text-decoration: none;
+    border-radius: 0 var(--demo-radius) var(--demo-radius) 0;
+}
+
+/* The spacing is set on the icon, since "em" values of the link are 0 because of its font size */
+.tx-dlf-tableofcontents .tx-dlf-basket-button a::before {
+    content: "\01F6D2";
+    display: inline-block;
+    padding: calc(var(--demo-space-xs) / 2) var(--demo-space-xs) calc(var(--demo-space-xs) / 2) var(--demo-space-xs);
+    font-size: var(--demo-font-size);
+}
+
 .tx-dlf-tableofcontents li > a {
     display: flex;
     justify-content: space-between;
@@ -29,7 +68,14 @@
     color: var(--demo-text);
 }
 
-.tx-dlf-tableofcontents li > a:hover {
+/* With a basket link, the entry link only has rounded corners on the left */
+.tx-dlf-tableofcontents li:has(> .tx-dlf-basket-button) > a {
+    border-radius: var(--demo-radius) 0 0 var(--demo-radius);
+}
+
+/* Entry and basket link are highlighted together if one of them is hovered */
+.tx-dlf-tableofcontents li:has(> a:hover, > .tx-dlf-basket-button a:hover) > a,
+.tx-dlf-tableofcontents li:has(> a:hover, > .tx-dlf-basket-button a:hover) > .tx-dlf-basket-button a {
     background: var(--demo-hover);
     text-decoration: none;
 }
@@ -40,5 +86,9 @@
 
 .tx-dlf-tableofcontents-current > a {
     font-weight: 600;
+}
+
+.tx-dlf-tableofcontents-current > a,
+.tx-dlf-tableofcontents-current > .tx-dlf-basket-button a {
     background: var(--demo-hover);
 }

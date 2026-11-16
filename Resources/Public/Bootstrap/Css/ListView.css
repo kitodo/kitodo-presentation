@@ -8,7 +8,7 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
-/* List view plugin: search results with index (list marker), thumbnail and metadata side by side, and pagination. */
+/* List view plugin: search results with index, thumbnail, metadata and actions side by side, and pagination. */
 
 /* Heading ("Search for ...") and information about the results in the same unobtrusive style */
 .tx-dlf-listview-label,
@@ -32,23 +32,46 @@
     margin-left: var(--demo-space-m);
 }
 
-.tx-dlf-abstracts {
+.tx-dlf-abstracts,
+.tx-dlf-volume {
     margin: 0;
-    padding-left: var(--demo-space-l);
+    padding: 0;
+    list-style: none;
+}
+
+/*
+ * Every result in three columns: index, link with thumbnail and metadata, and on the right the link "add to basket"
+ * above the button "show more". Volumes or full text hits of the result are listed below across all columns.
+ * As grid, the entry has no list marker, so the index is shown from the "value" of the entry as set by the template.
+ */
+.tx-dlf-abstracts > li,
+.tx-dlf-volume > li {
+    display: grid;
+    grid-template-columns: 2em 1fr auto;
+    grid-template-rows: auto 1fr;
+    column-gap: var(--demo-space-s);
+    color: var(--demo-muted);
 }
 
 .tx-dlf-abstracts > li {
     padding: var(--demo-space-s) 0;
     border-bottom: var(--demo-border-width) solid var(--demo-border);
-    color: var(--demo-muted);
 }
 
-/* Inline box aligned to the top, so that the list marker is shown next to the top of the entry. */
-.tx-dlf-abstracts > li > a {
-    display: inline-flex;
-    vertical-align: top;
-    width: 100%;
-    box-sizing: border-box;
+.tx-dlf-abstracts > li::before,
+.tx-dlf-volume > li::before {
+    content: attr(value) ".";
+    grid-column: 1;
+    grid-row: 1;
+    padding-top: var(--demo-space-xs);
+    text-align: right;
+}
+
+.tx-dlf-abstracts > li > a,
+.tx-dlf-volume > li > a {
+    display: flex;
+    grid-column: 2;
+    grid-row: 1 / span 2;
     gap: var(--demo-space-m);
     align-items: flex-start;
     padding: var(--demo-space-xs);
@@ -57,8 +80,47 @@
     text-decoration: none;
 }
 
-.tx-dlf-abstracts > li > a:hover {
+/* The whole entry is highlighted on hover, but not the result while one of its volumes is hovered */
+:is(.tx-dlf-abstracts, .tx-dlf-volume) > li:hover:not(:has(.tx-dlf-volume:hover)) {
     background: var(--demo-hover);
+}
+
+/* Link "add to basket" (in a div) */
+:is(.tx-dlf-abstracts, .tx-dlf-volume) > li > div {
+    grid-column: 3;
+    grid-row: 1;
+    padding: var(--demo-space-xs) var(--demo-space-s) 0 0;
+    text-align: right;
+}
+
+/*
+ * Volumes of a multi-volume work, years of a newspaper and full text hits on pages, listed below their document on a
+ * tinted background. The button "show more" is meant to show and hide them, but requires JavaScript, which the
+ * extension does not provide.
+ */
+.tx-dlf-morevolumes {
+    grid-column: 3;
+    grid-row: 2;
+    justify-self: end;
+    align-self: start;
+    margin: var(--demo-space-s) var(--demo-space-s) 0 0;
+}
+
+.tx-dlf-volume {
+    grid-column: 1 / -1;
+    margin: var(--demo-space-s) 0 0 var(--demo-space-l);
+    padding: var(--demo-space-xs);
+    background: var(--demo-background);
+    border-radius: var(--demo-radius);
+}
+
+.tx-dlf-volume > li + li {
+    border-top: var(--demo-border-width) solid var(--demo-border);
+}
+
+/* Years of a newspaper are links without thumbnail and metadata */
+.tx-dlf-volume > li.years > a {
+    padding: var(--demo-space-s);
 }
 
 /* Thumbnails of different aspect ratio centered in boxes of the same size */
@@ -66,6 +128,19 @@
     display: flex;
     flex: 0 0 var(--demo-thumbnail-size);
     justify-content: center;
+}
+
+/*
+ * Documents without pages (e.g. the title record of a multi-volume work or newspaper) have no thumbnail, so the
+ * template renders an empty container. A placeholder in the size of a portrait page indicates that there is no preview.
+ */
+.tx-dlf-listview-thumbnail:empty::before {
+    content: "";
+    width: calc(var(--demo-thumbnail-size) * 5 / 7);
+    height: var(--demo-thumbnail-size);
+    box-sizing: border-box;
+    border: var(--demo-border-width) solid var(--demo-border);
+    background: no-repeat center / 80% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 12'%3E%3Ctext x='30' y='9' fill='%23667085' font-family='sans-serif' font-size='9' text-anchor='middle'%3ENo preview%3C/text%3E%3C/svg%3E");
 }
 
 .tx-dlf-listview-thumbnail img {

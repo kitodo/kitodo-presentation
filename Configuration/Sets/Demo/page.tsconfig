@@ -2,13 +2,13 @@ mod.web_layout.BackendLayouts {
     Viewer {
         title = Kitodo.Presentation Demo: Viewer
         config.backend_layout {
-            colCount = 2
-            rowCount = 2
+            colCount = 3
+            rowCount = 3
             rows {
                 1.columns.1 {
                     name = Header
                     colPos = 2
-                    colspan = 2
+                    colspan = 3
                 }
                 2.columns {
                     1 {
@@ -19,21 +19,42 @@ mod.web_layout.BackendLayouts {
                         name = Main
                         colPos = 0
                     }
+                    # Sidebar on the right, e.g. for the page grid
+                    3 {
+                        name = Pages
+                        colPos = 4
+                    }
+                }
+                # Shown instead of "Main" for newspapers and years, see setup.typoscript
+                3.columns.1 {
+                    name = Calendar (replaces Main for newspapers and years)
+                    colPos = 3
+                    colspan = 3
                 }
             }
         }
     }
-    SearchResultList < .Viewer
     SearchResultList {
         title = Kitodo.Presentation Demo: Search result list
-        config.backend_layout.rows.2.columns {
-            1 {
-                name = Main
-                colPos = 0
-            }
-            2 {
-                name = Sidebar
-                colPos = 1
+        config.backend_layout {
+            colCount = 2
+            rowCount = 2
+            rows {
+                1.columns.1 {
+                    name = Header
+                    colPos = 2
+                    colspan = 2
+                }
+                2.columns {
+                    1 {
+                        name = Main
+                        colPos = 0
+                    }
+                    2 {
+                        name = Sidebar
+                        colPos = 1
+                    }
+                }
             }
         }
     }
@@ -48,4 +69,21 @@ mod.web_layout.BackendLayouts {
             }
         }
     }
+}
+
+# Pages using these layouts render plain XML instead of HTML, see setup.typoscript
+mod.web_layout.BackendLayouts {
+    Feeds {
+        title = Kitodo.Presentation Demo: RSS feed
+        config.backend_layout {
+            colCount = 1
+            rowCount = 1
+            rows.1.columns.1 {
+                name = Main
+                colPos = 0
+            }
+        }
+    }
+    OaiPmh < .Feeds
+    OaiPmh.title = Kitodo.Presentation Demo: OAI-PMH
 }

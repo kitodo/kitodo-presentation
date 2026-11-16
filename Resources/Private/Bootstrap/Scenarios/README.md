@@ -88,9 +88,14 @@ by their name (e.g. `backend_layout: Home` for `pagets__Home`):
 
 | Backend layout     | Slots                                                                       |
 |--------------------|-----------------------------------------------------------------------------|
-| `Viewer`           | `header` at the top, below it `sidebar` on the left and `main` on the right |
+| `Viewer`           | `header` at the top, below it `sidebar` on the left and `main` on the right; `calendar` replaces `main` for newspapers and years; `pages` in a sidebar on the right |
 | `SearchResultList` | `header` at the top, below it `main` on the left and `sidebar` on the right |
 | `Home`             | `main` with horizontally centered content                                   |
+| `Feeds`            | `main` only, the page renders the RSS feed (XML) of its feeds plugin         |
+| `OaiPmh`           | `main` only, the page renders the OAI-PMH response (XML) of its OAI plugin   |
+
+OAI-PMH requests (e.g. `?verb=Identify`) have no cHash, so the TYPO3 setting `FE.pageNotFoundOnCHashError` has to be
+disabled, see the configuration chapter of the documentation.
 
 In addition, a page supports the following keys:
 
@@ -115,7 +120,7 @@ In addition, a content element supports the following keys:
 
 | Key        | Description                                                                                                                                                                                  |
 |------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `slot`     | Slot of the backend layout the content element is shown in: `main` (default), `sidebar` or `header`. Alternatively, the column can be set by `colPos` (`0`, `1` or `2`).                    |
+| `slot`     | Slot of the backend layout the content element is shown in: `main` (default), `sidebar`, `header`, `calendar` or `pages`. Alternatively, the column can be set by `colPos` (`0` to `4`).                    |
 | `settings` | FlexForm values of the plugin without the `settings.` prefix, e.g. `targetPid` for `settings.targetPid`. Values not given are set to the defaults of the plugin's FlexForm, as when adding the plugin in the backend. |
 
 The top-level `pluginSettings` are applied to every plugin whose FlexForm contains a setting with the same name, e.g.
@@ -127,30 +132,38 @@ The available settings of each plugin are defined in `Configuration/FlexForms/`.
 
 ### Placeholders
 
-Field and setting values may contain placeholders, which are replaced after all pages and tenant records have been
-created:
+Field and setting values of content elements may contain placeholders, which are replaced after all pages, tenant
+records and documents have been created:
 
-| Placeholder    | Replaced with                                              |
-|----------------|------------------------------------------------------------|
-| `{page:<key>}` | UID of the page with the given key, e.g. `{page:search}`.  |
-| `{page:root}`  | UID of the root page.                                      |
-| `{solrCore}`   | UID of the Solr core record in the storage folder.         |
+| Placeholder    | Replaced with                                                                       |
+|----------------|-------------------------------------------------------------------------------------|
+| `{page:<key>}` | UID of the page with the given key, e.g. `{page:search}`.                           |
+| `{page:root}`  | UID of the root page.                                                               |
+| `{solrCore}`   | UID of the Solr core record in the storage folder.                                  |
+| `{library}`    | UID of the library owning the documents (created by the ingest, `0` without documents). |
 
 ### Documents
 
 Each entry of `documents` refers to a directory in `Resources/Private/Bootstrap/Documents/`, which contains the METS
-file of the document (`mets.xml`) and optionally its files (e.g. images). The directory is copied to
-`fileadmin/kitodo-demo/<scenario>/<name>/`, and the placeholder `{documentUrl}` in the METS file is replaced with the
-public URL of the copied directory. Since the METS file is loaded via HTTP, a base URL (`--base-url`) is required.
+file of the document (`mets.xml`) and optionally its files (e.g. images or ALTO full texts). The directory is copied to
+`fileadmin/kitodo-demo/<scenario>/<name>/`, and the placeholder `{documentUrl}` in its XML files is replaced with the
+public URL of the copied directory. Since the METS files are loaded via HTTP, a base URL (`--base-url`) is required.
 
-| Key        | Required | Description                                                                              |
-|------------|----------|------------------------------------------------------------------------------------------|
-| `name`     | yes      | Name of the document's directory.                                                        |
+A directory may contain several METS files referencing each other via `mets:mptr` and `{documentUrl}`, e.g. the title
+record, years and issues of a newspaper (`newspaper/`) or the title record and volumes of a multi-volume work
+(`encyclopedia/`). Only the files listed in `index` are indexed, their parent documents are added by the ingest.
+
+| Key        | Required | Description                                                                                        |
+|------------|----------|----------------------------------------------------------------------------------------------------|
+| `name`     | yes      | Name of the document's directory.                                                                  |
+| `index`    | no       | METS files of the directory to index, e.g. the issues of a newspaper. Defaults to `[mets.xml]`.    |
 | `pageSize` | no       | Width and height of generated placeholder images, e.g. `[1400, 1000]`. Defaults to `[1000, 1400]`. |
 
 With `generatePlaceholderImages: true`, a SVG image labeled with the page number (`ORDER`), the document's title and the page label (`ORDERLABEL`) is generated
-for every SVG file (`MIMETYPE="image/svg+xml"`) referenced by a page of the METS file with a URL starting with
-`{documentUrl}/`. Files of the file group `THUMBS` are scaled down to a maximum size of 150 pixels.
+for every SVG file (`MIMETYPE="image/svg+xml"`) referenced by a page of a METS file with a URL starting with
+`{documentUrl}/`. Files of the file group `THUMBS` are scaled down to a maximum size of 150 pixels. If the page has an
+ALTO full text (file group `FULLTEXT`), its words are drawn at their positions, so that the full text, its search
+highlighting and the image match.
 
 ## Site settings
 

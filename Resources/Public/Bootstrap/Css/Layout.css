@@ -242,16 +242,54 @@ input[type="submit"]:hover, button:hover {
     padding: 0;
 }
 
-.demo-viewer .demo-sidebar {
-    overflow-y: auto;
-    padding: var(--demo-space-m);
-    border-right: var(--demo-border-width) solid var(--demo-border);
-}
-
 /* Main column of the viewer: toolbox, page view and navigation stacked, the page view takes the remaining height. */
 .demo-viewer .demo-main {
     display: flex;
     flex-direction: column;
+}
+
+/*
+ * Sidebars of the viewer: on the left (e.g. table of contents and metadata) and the pages on the right (e.g. page
+ * grid). They scroll on their own.
+ */
+.demo-viewer .demo-panel {
+    flex: 0 0 auto;
+    overflow-y: auto;
+}
+
+.demo-viewer .demo-panel-left {
+    width: var(--demo-sidebar-width);
+    border-right: var(--demo-border-width) solid var(--demo-border);
+}
+
+.demo-viewer .demo-panel-right {
+    width: calc(var(--demo-thumbnail-size) + 2 * var(--demo-space-l));
+    border-left: var(--demo-border-width) solid var(--demo-border);
+}
+
+/* Headings of the sidebars and the main column of the viewer, which look the same and are aligned */
+.demo-heading {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: var(--demo-space-s) var(--demo-space-m);
+    font-weight: bold;
+    background: var(--demo-background);
+    border-bottom: var(--demo-border-width) solid var(--demo-border);
+}
+
+.demo-panel-content {
+    padding: var(--demo-space-m);
+}
+
+.demo-panel-right .demo-panel-content {
+    padding: var(--demo-space-s);
+}
+
+/* Calendar shown instead of toolbox, page view and navigation for newspapers and years */
+.demo-viewer .demo-main.demo-calendar {
+    display: block;
+    overflow-y: auto;
 }
 
 .demo-viewer .demo-main > .frame-type-dlf_pageview {
@@ -266,18 +304,19 @@ input[type="submit"]:hover, button:hover {
     height: auto;
 }
 
-/* Toolbox above and navigation below the page view, centered */
+/* Toolbox above the page view aligned to the left (see Toolbox.css for the search), navigation below it centered */
 .demo-viewer .demo-main > :is(.frame-type-dlf_toolbox, .frame-type-dlf_navigation) {
-    justify-content: center;
     padding: var(--demo-space-s) var(--demo-space-m);
     font-size: 0.9em;
     background: var(--demo-background);
 }
 
 .demo-viewer .demo-main > .frame-type-dlf_toolbox {
+    justify-content: flex-start;
     border-bottom: var(--demo-border-width) solid var(--demo-border);
 }
 
 .demo-viewer .demo-main > .frame-type-dlf_navigation {
+    justify-content: center;
     border-top: var(--demo-border-width) solid var(--demo-border);
 }

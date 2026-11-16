@@ -34,6 +34,49 @@
     min-width: 0;
 }
 
+/*
+ * Rows below the search field: the full text switch (radio buttons), then extended search and date search.
+ * The form has no wrappers for these rows, so an empty full-width element (::after) breaks the line before the
+ * radio buttons, and the order of the flex items places the rows below it.
+ */
+.frame-type-dlf_search .tx-dlf-search-form::after {
+    content: "";
+    flex-basis: 100%;
+    order: 1;
+    /* No additional gap for the empty row */
+    margin-bottom: calc(-1 * var(--demo-space-s));
+}
+
+.frame-type-dlf_search .tx-dlf-search-form > input[type="radio"],
+.frame-type-dlf_search .tx-dlf-search-form > input[type="radio"] + label {
+    order: 2;
+}
+
+.frame-type-dlf_search .tx-dlf-search-form > label + input[type="radio"] {
+    margin-left: var(--demo-space-m);
+}
+
+.frame-type-dlf_search .tx-dlf-search-form > :is(.tx-dlf-search-extended, .tx-dlf-search-date) {
+    flex-basis: 100%;
+    order: 3;
+}
+
+/* Extended search: operator, field and search term of every slot in one row */
+.tx-dlf-search-extended {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: var(--demo-space-s);
+    margin-top: var(--demo-space-s);
+}
+
+.tx-dlf-search-date {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--demo-space-s);
+    margin-top: var(--demo-space-s);
+}
+
 .tx-dlf-search-facets ul {
     margin: 0;
     padding: 0;
