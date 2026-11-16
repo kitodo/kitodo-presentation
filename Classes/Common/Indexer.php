@@ -156,9 +156,9 @@ class Indexer
                 }
                 // Index full text files if available.
                 if ($document->getCurrentDocument()->hasFulltext) {
-                    foreach ($document->getCurrentDocument()->physicalStructure as $pageNumber => $xmlId) {
+                    foreach (array_values($document->getCurrentDocument()->getPhysicalStructure()) as $pageNumber => $physicalNode) {
                         if ($success) {
-                            $success = self::processPhysical($document, $pageNumber, $document->getCurrentDocument()->physicalStructureInfo[$xmlId]);
+                            $success = self::processPhysical($document, $pageNumber, $physicalNode);
                         } else {
                             break;
                         }

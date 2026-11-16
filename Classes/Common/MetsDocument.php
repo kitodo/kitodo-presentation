@@ -47,8 +47,8 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property-read int $numPages the holds the total number of pages
  * @property-read int $numMeasures This holds the total number of measures
  * @property-read int $parentId this holds the UID of the parent document or zero if not multi-volumed
- * @property-read mixed[] $physicalStructure this holds the physical structure
- * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata
+ * @property-read mixed[] $physicalStructure this holds ordered physical node IDs; deprecated, use getPhysicalStructure()
+ * @property-read mixed[] $physicalStructureInfo this holds the physical structure metadata; deprecated, use getPhysicalStructure()
  * @property-read mixed[] $musicalStructure This holds the musical structure
  * @property-read mixed[] $musicalStructureInfo This holds the musical structure metadata
  * @property bool $physicalStructureLoaded flag with information if the physical structure is loaded
@@ -423,6 +423,37 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
+     * {@inheritDoc}
+     * @see AbstractDocument::loadPhysicalStructure()
+     */
+    protected function loadPhysicalStructure(): void
+    {
+        if ($this->physicalStructureLoaded) {
+            return;
+        }
+
+        if ($this->mets !== null) {
+            // Does the document have a structMap node of type "PHYSICAL"?
+            $elementNodes = $this->mets->xpath(self::STRUCTURE_MAP_PHYSICAL . '[@TYPE="physSequence"]/mets:div');
+            if (!empty($elementNodes)) {
+                // Get file groups.
+                $fileUse = $this->magicGetFileGrps();
+                // Get the physical sequence's metadata.
+                $physicalNodes = $this->mets->xpath(self::STRUCTURE_MAP_PHYSICAL . '[@TYPE="physSequence"]');
+                if (!empty($physicalNodes)) {
+                    $firstNode = $physicalNodes[0];
+                    $id = (string) $firstNode['ID'];
+                    $this->assignPhysicalStructureInfo($id, $firstNode);
+                    $this->getFileRepresentation($id, $firstNode);
+                    $this->assignPhysicalStructureElements($elementNodes, $fileUse);
+                }
+            }
+        }
+
+        $this->physicalStructureLoaded = true;
+    }
+
+    /**
      * This gets details about a logical structure element
      *
      * @access protected
@@ -469,8 +500,6 @@ final class MetsDocument extends AbstractDocument
 
         // Load smLinks.
         $this->magicGetSmLinks();
-        // Load physical structure.
-        $this->magicGetPhysicalStructure();
 
         $this->getPage($details, $structure->children(self::METS_NAMESPACE)->mptr);
         $this->getFiles($details, $structure->children(self::METS_NAMESPACE)->fptr);
@@ -531,11 +560,15 @@ final class MetsDocument extends AbstractDocument
             // Yes. Get the file reference.
             $details['points'] = (string) $metsPointers[0]->attributes(self::XLINK_NAMESPACE)->href;
         } elseif (
-            !empty($this->physicalStructure)
+            !empty($this->getPhysicalStructure())
             && array_key_exists($details['id'], $this->smLinks['l2p'])
         ) {
             // Link logical structure to the first corresponding physical page/track.
-            $details['points'] = max((int) array_search($this->smLinks['l2p'][$details['id']][0], $this->physicalStructure, true), 1);
+            $details['points'] = max((int) array_search(
+                $this->smLinks['l2p'][$details['id']][0],
+                array_column($this->getPhysicalStructure(), 'id'),
+                true
+            ), 1);
             $details['thumbnailId'] = $this->getThumbnail($details['id']);
             $details['pagination'] = $this->getFirstOrderLabel($details['id']);
             $details['mediaChapter'] = $this->getTimecode($details);
@@ -562,8 +595,9 @@ final class MetsDocument extends AbstractDocument
     {
         if (array_key_exists($id, $this->smLinks['l2p'])) {
             $firstElement = $this->smLinks['l2p'][$id][0] ?? null;
-            if (!empty($firstElement) && array_key_exists($firstElement, $this->physicalStructureInfo)) {
-                return $this->physicalStructureInfo[$firstElement]['orderlabel'];
+            $physicalStructure = $this->getPhysicalStructure();
+            if (!empty($firstElement) && array_key_exists($firstElement, $physicalStructure)) {
+                return $physicalStructure[$firstElement]['orderlabel'];
             }
         }
         return null;
@@ -595,8 +629,9 @@ final class MetsDocument extends AbstractDocument
             }
 
             $firstElement = $this->smLinks['l2p'][$logInfo['id']][0];
-            if (array_key_exists($firstElement, $this->physicalStructureInfo)) {
-                $physInfo = $this->physicalStructureInfo[$firstElement];
+            $physicalStructure = $this->getPhysicalStructure();
+            if (array_key_exists($firstElement, $physicalStructure)) {
+                $physInfo = $physicalStructure[$firstElement];
                 $fileIds = $physInfo['all_files'][$mediaplayerUseGroup] ?? [];
 
                 $chapter = null;
@@ -641,15 +676,13 @@ final class MetsDocument extends AbstractDocument
         $useGroups = $this->useGroupsConfiguration->getThumbnail();
         $thumbnail = null;
 
-        if (!empty($this->physicalStructure)) {
-            // There is a physical structure (no anchor or year mets).
-            while ($useGroup = array_shift($useGroups) && $thumbnail == null) {
-                if (empty($id)) {
-                    $thumbnail = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$useGroup] ?? null;
-                } else {
-                    $parentId = $this->smLinks['l2p'][$id][0] ?? null;
-                    $thumbnail = $this->physicalStructureInfo[$parentId]['files'][$useGroup] ?? null;
-                }
+        // There is a physical structure (no anchor or year mets).
+        while (($useGroup = array_shift($useGroups)) !== null && !empty($thumbnail)) {
+            if (empty($id)) {
+                $thumbnail = $this->getPhysicalStructureNodeFileByPage(1, $useGroup);
+            } else {
+                $parentId = $this->smLinks['l2p'][$id][0] ?? '';
+                $thumbnail = $this->getPhysicalStructureNodeFile($parentId, $useGroup);
             }
         }
         return $thumbnail;
@@ -1174,21 +1207,18 @@ final class MetsDocument extends AbstractDocument
         $fullText = '';
         // Load available text formats, ...
         $this->loadFormats();
-        // ... physical structure ...
-        $this->magicGetPhysicalStructure();
         // ... fileGrps and check for full text files.
         $this->ensureHasFulltextIsSet();
 
         if ($this->hasFulltext) {
             $useGroups = $this->useGroupsConfiguration->getFulltext();
-            $physicalStructureNode = $this->physicalStructureInfo[$id] ?? null;
+            $files = $this->getPhysicalStructureNodeFiles($id);
             $fileLocations = [];
 
-            if (!empty($physicalStructureNode)) {
-                while ($useGroup = array_shift($useGroups)) {
-                    if (in_array($useGroup, array_keys($physicalStructureNode['files'] ?? []))) {
-                        $fileLocations[$useGroup] = $this->getFileLocation($physicalStructureNode['files'][$useGroup]);
-                    }
+            while ($useGroup = array_shift($useGroups)) {
+                $file = $files[$useGroup] ?? null;
+                if (!empty($file)) {
+                    $fileLocations[$useGroup] = $this->getFileLocation($file);
                 }
             }
 
@@ -1197,7 +1227,7 @@ final class MetsDocument extends AbstractDocument
                 return $fullText;
             }
 
-            $fullText = GeneralUtility::makeInstance(FullTextReader::class, $this->formats)->getFromXml($id, $fileLocations, $physicalStructureNode);
+            $fullText = GeneralUtility::makeInstance(FullTextReader::class, $this->formats)->getFromXml($id, $fileLocations, $files);
         }
 
         return $fullText;
@@ -1259,7 +1289,8 @@ final class MetsDocument extends AbstractDocument
     {
         // Are there any fulltext files available?
         if (
-            !empty($this->useGroupsConfiguration->getFulltext())
+            !empty($this->getPhysicalStructure())
+            && !empty($this->useGroupsConfiguration->getFulltext())
             && array_intersect($this->useGroupsConfiguration->getFulltext(), $this->fileGrps) !== []
         ) {
             $this->hasFulltext = true;
@@ -1361,31 +1392,32 @@ final class MetsDocument extends AbstractDocument
 
             // Check if file has valid @USE attribute.
             if (!empty($fileUse[$fileId])) {
-                $this->physicalStructureInfo[$id]['files'][$fileUse[$fileId]] = $fileId;
-                $this->physicalStructureInfo[$id]['all_files'][$fileUse[$fileId]][] = $fileId;
+                $this->physicalStructure[$id]['files'][$fileUse[$fileId]] = $fileId;
+                $this->physicalStructure[$id]['all_files'][$fileUse[$fileId]][] = $fileId;
             }
         }
     }
 
     /**
-     * Build the physical elements' array from the physical structMap node.
+     * Assign physical structure metadata and file representations from the physical structMap nodes.
      *
      * @access private
      *
      * @param mixed[] $elementNodes
      * @param mixed[] $fileUse
      *
-     * @return mixed[]
+     * @return void
      */
-    private function getPhysicalElements(array $elementNodes, array $fileUse): array
+    private function assignPhysicalStructureElements(array $elementNodes, array $fileUse): void
     {
-        $elements = [];
-        $id = '';
-
+        $orderedElementNodes = [];
         foreach ($elementNodes as $elementNode) {
+            $orderedElementNodes[(int) $elementNode['ORDER']] = $elementNode;
+        }
+        ksort($orderedElementNodes);
+
+        foreach ($orderedElementNodes as $elementNode) {
             $id = (string) $elementNode['ID'];
-            $order = (int) $elementNode['ORDER'];
-            $elements[$order] = $id;
             $this->assignPhysicalStructureInfo($id, $elementNode);
 
             // Get the file representations from fileSec node.
@@ -1403,13 +1435,13 @@ final class MetsDocument extends AbstractDocument
 
                 // Check if file has valid @USE attribute.
                 if (!empty($fileUseValue)) {
-                    $this->physicalStructureInfo[$id]['files'][$fileUseValue] = $fileId;
+                    $this->physicalStructure[$id]['files'][$fileUseValue] = $fileId;
                     // List all files of the fileGrp that are referenced on the page, not only the last one
-                    $this->physicalStructureInfo[$id]['all_files'][$fileUseValue][] = $fileId;
+                    $this->physicalStructure[$id]['all_files'][$fileUseValue][] = $fileId;
                 } elseif ($area) {
                     $areaAttrs = $area->attributes();
                     $fileId = (string) $areaAttrs->FILEID;
-                    $physInfo = &$this->physicalStructureInfo[$id];
+                    $physInfo = &$this->physicalStructure[$id];
 
                     $physInfo['files'][$fileUse[$fileId]] = $fileId;
                     $physInfo['all_files'][$fileUse[$fileId]][] = $fileId;
@@ -1424,13 +1456,13 @@ final class MetsDocument extends AbstractDocument
             }
 
             // Get track info with begin and extent time for later assignment with musical
-            if ($this->physicalStructureInfo[$id]['type'] === 'track') {
+            if ($this->physicalStructure[$id]['type'] === 'track') {
                 foreach ($elementNode->children(self::METS_NAMESPACE)->fptr as $fptr) {
                     if (isset($fptr->area) &&  ((string) $fptr->area->attributes()->BETYPE === 'TIME')) {
                         // Check if file has valid @USE attribute.
                         $fileId = (string) $fptr->area->attributes()->FILEID;
                         if (!empty($fileUse[$fileId])) {
-                            $this->physicalStructureInfo[$id]['tracks'][$fileUse[$fileId]] = [
+                            $this->physicalStructure[$id]['tracks'][$fileUse[$fileId]] = [
                                 'fileid'  => $fileId,
                                 'begin'   => (string) $fptr->area->attributes()->BEGIN,
                                 'betype'  => (string) $fptr->area->attributes()->BETYPE,
@@ -1443,12 +1475,8 @@ final class MetsDocument extends AbstractDocument
             }
         }
 
-        // Sort array by keys (= @ORDER).
-        ksort($elements);
         // Set total number of pages/tracks.
-        $this->numPages = count($elements);
-
-        return $elements;
+        $this->numPages = count($orderedElementNodes);
     }
 
     /**
@@ -1707,7 +1735,7 @@ final class MetsDocument extends AbstractDocument
      */
     private function assignPhysicalStructureInfo(string $id, SimpleXMLElement $node): void
     {
-        $this->physicalStructureInfo[$id] = [
+        $this->physicalStructure[$id] = [
             'id' => $id,
             'dmdId' => $this->getAttribute($node['DMDID']),
             'admId' => $this->getAttribute($node['ADMID']),
@@ -1734,37 +1762,6 @@ final class MetsDocument extends AbstractDocument
     }
 
     // magic methods inherited from AbstractDocument
-
-    /**
-     * @see AbstractDocument::magicGetPhysicalStructure()
-     */
-    protected function magicGetPhysicalStructure(): array
-    {
-        // Is there no physical structure array yet?
-        if (!$this->physicalStructureLoaded) {
-            if ($this->mets !== null) {
-                // Does the document have a structMap node of type "PHYSICAL"?
-                $elementNodes = $this->mets->xpath(self::STRUCTURE_MAP_PHYSICAL . '[@TYPE="physSequence"]/mets:div');
-                if (!empty($elementNodes)) {
-                    // Get file groups.
-                    $fileUse = $this->magicGetFileGrps();
-                    // Get the physical sequence's metadata.
-                    $physicalNodes = $this->mets->xpath(self::STRUCTURE_MAP_PHYSICAL . '[@TYPE="physSequence"]');
-                    if (!empty($physicalNodes)) {
-                        $firstNode = $physicalNodes[0];
-                        $id = (string) $firstNode['ID'];
-                        $this->assignPhysicalStructureInfo($id, $firstNode);
-                        $this->getFileRepresentation($id, $firstNode);
-                        $this->physicalStructure = array_merge([$id], $this->getPhysicalElements($elementNodes, $fileUse));
-                    }
-                }
-            }
-            $this->physicalStructureLoaded = true;
-
-        }
-
-        return $this->physicalStructure;
-    }
 
     /**
      * @see AbstractDocument::magicGetSmLinks()
@@ -1823,17 +1820,15 @@ final class MetsDocument extends AbstractDocument
                 // Load smLinks.
                 $this->magicGetSmLinks();
                 // Get thumbnail location.
+                $physicalId = $this->smLinks['l2p'][$strctId][0] ?? '';
                 $useGroups = $this->useGroupsConfiguration->getThumbnail();
                 while ($useGroup = array_shift($useGroups)) {
-                    if (
-                        $this->magicGetPhysicalStructure()
-                        && !empty($this->smLinks['l2p'][$strctId])
-                        && !empty($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$useGroup])
-                    ) {
-                        $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->smLinks['l2p'][$strctId][0]]['files'][$useGroup]);
-                        break;
-                    } elseif (isset($this->physicalStructure[1]) && !empty($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$useGroup])) {
-                        $this->thumbnail = $this->getFileLocation($this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$useGroup]);
+                    $fileId = $this->getPhysicalStructureNodeFile($physicalId, $useGroup);
+                    if (empty($fileId)) {
+                        $fileId = $this->getPhysicalStructureNodeFileByPage(1, $useGroup);
+                    }
+                    if (!empty($fileId)) {
+                        $this->thumbnail = $this->getFileLocation($fileId);
                         break;
                     }
                 }
@@ -1960,7 +1955,7 @@ final class MetsDocument extends AbstractDocument
                         // Get the track/page info (begin and extent time).
                         $this->musicalStructure = [];
                         $measurePages = [];
-                        foreach ($this->magicGetPhysicalStructureInfo() as $physicalId => $page) {
+                        foreach ($this->getPhysicalStructure() as $physicalId => $page) {
                             if (isset($page['files']['DEFAULT'])) {
                                 $measurePages[$physicalId] = $page['files']['DEFAULT'];
                             }
@@ -1972,7 +1967,11 @@ final class MetsDocument extends AbstractDocument
                                     $this->musicalStructure[$measureInfo['order']] = [
                                         'measureid' => $measureId,
                                         'physicalid' => $physicalId,
-                                        'page' => array_search($physicalId, $this->physicalStructure)
+                                        'page' => array_search(
+                                            $physicalId,
+                                            array_column($this->getPhysicalStructure(), 'id'),
+                                            true
+                                        )
                                     ];
                                 }
                             }
