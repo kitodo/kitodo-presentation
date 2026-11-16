@@ -1,7 +1,7 @@
 # Minimal demo: search and collections, search results with facets and a viewer. See README.md for the file format.
 
 label: 'Minimal demo'
-siteSet: kitodo/presentation-demo-minimal
+siteSet: kitodo/presentation-demo
 basePath: /demo-minimal/
 
 generatePlaceholderImages: true

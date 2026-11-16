@@ -1,4 +1,0 @@
-name: kitodo/presentation-demo-minimal
-label: 'Kitodo.Presentation Demo: Minimal'
-dependencies:
-  - kitodo/presentation-demo

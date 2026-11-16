@@ -21,7 +21,7 @@ creates it from scratch. The site configuration is stored with the identifier `k
 
 ```yaml
 label: 'Minimal demo'
-siteSet: kitodo/presentation-demo-minimal
+siteSet: kitodo/presentation-demo
 basePath: /demo-minimal/
 
 pluginSettings:
@@ -83,7 +83,7 @@ Any field of the table `pages` can be set, e.g.:
 
 Pages are visible (`hidden: 0`) unless specified otherwise. The root page is always marked as site root.
 
-The demo site sets (`Configuration/Sets/Demo/page.tsconfig`) provide the following backend layouts, which can be given
+The demo site set (`Configuration/Sets/Demo/page.tsconfig`) provides the following backend layouts, which can be given
 by their name (e.g. `backend_layout: Home` for `pagets__Home`):
 
 | Backend layout     | Slots                                                                       |
