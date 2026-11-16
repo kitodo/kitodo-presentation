@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="178" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="288" VPOS="950" HPOS="100">
+                        <String CONTENT="New" HEIGHT="32" WIDTH="64" VPOS="950" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="Bridge" HEIGHT="32" WIDTH="92" VPOS="950" HPOS="173"/>
+                        <SP/>
+                        <String CONTENT="Opened" HEIGHT="32" WIDTH="114" VPOS="950" HPOS="274"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="801" VPOS="1016" HPOS="100">
+                        <String CONTENT="The" HEIGHT="32" WIDTH="55" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="new" HEIGHT="32" WIDTH="59" VPOS="1016" HPOS="164"/>
+                        <SP/>
+                        <String CONTENT="bridge" HEIGHT="32" WIDTH="89" VPOS="1016" HPOS="232"/>
+                        <SP/>
+                        <String CONTENT="over" HEIGHT="32" WIDTH="62" VPOS="1016" HPOS="330"/>
+                        <SP/>
+                        <String CONTENT="the" HEIGHT="32" WIDTH="44" VPOS="1016" HPOS="401"/>
+                        <SP/>
+                        <String CONTENT="river" HEIGHT="32" WIDTH="62" VPOS="1016" HPOS="454"/>
+                        <SP/>
+                        <String CONTENT="was" HEIGHT="32" WIDTH="57" VPOS="1016" HPOS="525"/>
+                        <SP/>
+                        <String CONTENT="opened" HEIGHT="32" WIDTH="107" VPOS="1016" HPOS="591"/>
+                        <SP/>
+                        <String CONTENT="by" HEIGHT="32" WIDTH="34" VPOS="1016" HPOS="707"/>
+                        <SP/>
+                        <String CONTENT="the" HEIGHT="32" WIDTH="44" VPOS="1016" HPOS="750"/>
+                        <SP/>
+                        <String CONTENT="mayor." HEIGHT="32" WIDTH="98" VPOS="1016" HPOS="803"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="665" VPOS="1062" HPOS="100">
+                        <String CONTENT="Hundreds" HEIGHT="32" WIDTH="139" VPOS="1062" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="of" HEIGHT="32" WIDTH="27" VPOS="1062" HPOS="248"/>
+                        <SP/>
+                        <String CONTENT="citizens" HEIGHT="32" WIDTH="107" VPOS="1062" HPOS="284"/>
+                        <SP/>
+                        <String CONTENT="crossed" HEIGHT="32" WIDTH="112" VPOS="1062" HPOS="400"/>
+                        <SP/>
+                        <String CONTENT="it" HEIGHT="32" WIDTH="16" VPOS="1062" HPOS="521"/>
+                        <SP/>
+                        <String CONTENT="on" HEIGHT="32" WIDTH="36" VPOS="1062" HPOS="546"/>
+                        <SP/>
+                        <String CONTENT="the" HEIGHT="32" WIDTH="44" VPOS="1062" HPOS="591"/>
+                        <SP/>
+                        <String CONTENT="first" HEIGHT="32" WIDTH="52" VPOS="1062" HPOS="644"/>
+                        <SP/>
+                        <String CONTENT="day." HEIGHT="32" WIDTH="60" VPOS="1062" HPOS="705"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="178" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="229" VPOS="950" HPOS="100">
+                        <String CONTENT="Carnival" HEIGHT="32" WIDTH="117" VPOS="950" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="Parade" HEIGHT="32" WIDTH="103" VPOS="950" HPOS="226"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="725" VPOS="1016" HPOS="100">
+                        <String CONTENT="The" HEIGHT="32" WIDTH="55" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="carnival" HEIGHT="32" WIDTH="110" VPOS="1016" HPOS="164"/>
+                        <SP/>
+                        <String CONTENT="parade" HEIGHT="32" WIDTH="100" VPOS="1016" HPOS="283"/>
+                        <SP/>
+                        <String CONTENT="will" HEIGHT="32" WIDTH="44" VPOS="1016" HPOS="392"/>
+                        <SP/>
+                        <String CONTENT="pass" HEIGHT="32" WIDTH="68" VPOS="1016" HPOS="445"/>
+                        <SP/>
+                        <String CONTENT="the" HEIGHT="32" WIDTH="44" VPOS="1016" HPOS="522"/>
+                        <SP/>
+                        <String CONTENT="market" HEIGHT="32" WIDTH="98" VPOS="1016" HPOS="575"/>
+                        <SP/>
+                        <String CONTENT="square" HEIGHT="32" WIDTH="98" VPOS="1016" HPOS="682"/>
+                        <SP/>
+                        <String CONTENT="on" HEIGHT="32" WIDTH="36" VPOS="1016" HPOS="789"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="603" VPOS="1062" HPOS="100">
+                        <String CONTENT="Monday." HEIGHT="32" WIDTH="123" VPOS="1062" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="Masks" HEIGHT="32" WIDTH="92" VPOS="1062" HPOS="232"/>
+                        <SP/>
+                        <String CONTENT="are" HEIGHT="32" WIDTH="46" VPOS="1062" HPOS="333"/>
+                        <SP/>
+                        <String CONTENT="allowed" HEIGHT="32" WIDTH="108" VPOS="1062" HPOS="388"/>
+                        <SP/>
+                        <String CONTENT="until" HEIGHT="32" WIDTH="59" VPOS="1062" HPOS="505"/>
+                        <SP/>
+                        <String CONTENT="midnight." HEIGHT="32" WIDTH="130" VPOS="1062" HPOS="573"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="198" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="558" VPOS="950" HPOS="100">
+                        <String CONTENT="HANDBOOK" HEIGHT="32" WIDTH="183" VPOS="950" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="OF" HEIGHT="32" WIDTH="44" VPOS="950" HPOS="292"/>
+                        <SP/>
+                        <String CONTENT="IMAGINARY" HEIGHT="32" WIDTH="180" VPOS="950" HPOS="345"/>
+                        <SP/>
+                        <String CONTENT="PLANTS" HEIGHT="32" WIDTH="124" VPOS="950" HPOS="534"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="221" VPOS="1016" HPOS="100">
+                        <String CONTENT="by" HEIGHT="32" WIDTH="34" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="Olivia" HEIGHT="32" WIDTH="80" VPOS="1016" HPOS="143"/>
+                        <SP/>
+                        <String CONTENT="Green" HEIGHT="32" WIDTH="89" VPOS="1016" HPOS="232"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="429" VPOS="1082" HPOS="100">
+                        <String CONTENT="Edinburgh," HEIGHT="32" WIDTH="155" VPOS="1082" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="Demo" HEIGHT="32" WIDTH="85" VPOS="1082" HPOS="264"/>
+                        <SP/>
+                        <String CONTENT="Press," HEIGHT="32" WIDTH="91" VPOS="1082" HPOS="358"/>
+                        <SP/>
+                        <String CONTENT="1898" HEIGHT="32" WIDTH="71" VPOS="1082" HPOS="458"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

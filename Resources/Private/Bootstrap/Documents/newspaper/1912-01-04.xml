@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Demo document of the Kitodo.Presentation bootstrap mechanism, see Resources/Private/Bootstrap/Scenarios/README.md.
+    The placeholder {documentUrl} is replaced with the public URL of this document's directory.
+-->
+<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/mods.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
+    <mets:dmdSec ID="DMDLOG_0000">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:recordInfo>
+                        <mods:recordIdentifier source="kitodo-demo">kitodo-demo-gazette</mods:recordIdentifier>
+                    </mods:recordInfo>
+                    <mods:titleInfo>
+                        <mods:title>Kitodo Demo Gazette</mods:title>
+                    </mods:titleInfo>
+                    <mods:name type="corporate">
+                        <mods:displayForm>Kitodo Demo Library</mods:displayForm>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">own</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:language>
+                        <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+                    </mods:language>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:dmdSec ID="DMDLOG_0001">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:recordInfo>
+                        <mods:recordIdentifier source="kitodo-demo">kitodo-demo-gazette-1912</mods:recordIdentifier>
+                    </mods:recordInfo>
+                    <mods:name type="corporate">
+                        <mods:displayForm>Kitodo Demo Library</mods:displayForm>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">own</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:language>
+                        <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+                    </mods:language>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:dmdSec ID="DMDLOG_0002">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:recordInfo>
+                        <mods:recordIdentifier source="kitodo-demo">kitodo-demo-gazette-1912-01-04</mods:recordIdentifier>
+                    </mods:recordInfo>
+                    <mods:name type="corporate">
+                        <mods:displayForm>Kitodo Demo Library</mods:displayForm>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">own</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:originInfo eventType="publication">
+                        <mods:place>
+                            <mods:placeTerm type="text">Leipzig</mods:placeTerm>
+                        </mods:place>
+                        <mods:publisher>Demo Press</mods:publisher>
+                        <mods:dateIssued encoding="iso8601" keyDate="yes">1912-01-04</mods:dateIssued>
+                    </mods:originInfo>
+                    <mods:language>
+                        <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+                    </mods:language>
+                    <mods:classification>Newspapers</mods:classification>
+                    <mods:physicalDescription>
+                        <mods:extent>2 pages</mods:extent>
+                    </mods:physicalDescription>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:fileSec>
+        <mets:fileGrp USE="DEFAULT">
+            <mets:file ID="FILE_0001_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/1912-01-04_00000001.svg"/></mets:file>
+            <mets:file ID="FILE_0002_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/1912-01-04_00000002.svg"/></mets:file>
+        </mets:fileGrp>
+        <mets:fileGrp USE="THUMBS">
+            <mets:file ID="FILE_0001_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/1912-01-04_00000001.svg"/></mets:file>
+            <mets:file ID="FILE_0002_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/1912-01-04_00000002.svg"/></mets:file>
+        </mets:fileGrp>
+        <mets:fileGrp USE="FULLTEXT">
+            <mets:file ID="FILE_0001_FULLTEXT" MIMETYPE="text/xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/fulltext/1912-01-04_00000001.xml"/></mets:file>
+            <mets:file ID="FILE_0002_FULLTEXT" MIMETYPE="text/xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/fulltext/1912-01-04_00000002.xml"/></mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap TYPE="LOGICAL">
+        <mets:div ID="LOG_0000" DMDID="DMDLOG_0000" TYPE="newspaper" LABEL="Kitodo Demo Gazette">
+            <mets:mptr LOCTYPE="URL" xlink:href="{documentUrl}/newspaper.xml"/>
+            <mets:div ID="LOG_0001" DMDID="DMDLOG_0001" TYPE="year" LABEL="1912" ORDERLABEL="1912">
+                <mets:mptr LOCTYPE="URL" xlink:href="{documentUrl}/1912.xml"/>
+                <mets:div ID="LOG_0002" TYPE="month" LABEL="January" ORDERLABEL="1912-01">
+                    <mets:div ID="LOG_0003" TYPE="day" LABEL="4" ORDERLABEL="1912-01-04">
+                        <mets:div ID="LOG_0004" DMDID="DMDLOG_0002" TYPE="issue" LABEL="No. 1" ORDERLABEL="1912-01-04">
+                            <mets:div ID="LOG_0005" TYPE="article" LABEL="New Bridge Opened"/>
+                            <mets:div ID="LOG_0006" TYPE="article" LABEL="Weather"/>
+                        </mets:div>
+                    </mets:div>
+                </mets:div>
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+    <mets:structMap TYPE="PHYSICAL">
+        <mets:div ID="PHYS_0000" TYPE="physSequence">
+            <mets:div ID="PHYS_0001" ORDER="1" ORDERLABEL="1" TYPE="page"><mets:fptr FILEID="FILE_0001_DEFAULT"/><mets:fptr FILEID="FILE_0001_THUMBS"/><mets:fptr FILEID="FILE_0001_FULLTEXT"/></mets:div>
+            <mets:div ID="PHYS_0002" ORDER="2" ORDERLABEL="2" TYPE="page"><mets:fptr FILEID="FILE_0002_DEFAULT"/><mets:fptr FILEID="FILE_0002_THUMBS"/><mets:fptr FILEID="FILE_0002_FULLTEXT"/></mets:div>
+        </mets:div>
+    </mets:structMap>
+    <mets:structLink>
+        <mets:smLink xlink:from="LOG_0004" xlink:to="PHYS_0001"/>
+        <mets:smLink xlink:from="LOG_0004" xlink:to="PHYS_0002"/>
+        <mets:smLink xlink:from="LOG_0005" xlink:to="PHYS_0001"/>
+        <mets:smLink xlink:from="LOG_0006" xlink:to="PHYS_0002"/>
+    </mets:structLink>
+</mets:mets>
