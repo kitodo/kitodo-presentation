@@ -319,7 +319,7 @@ class MetadataController extends AbstractController
 
         foreach ($metadata as $i => $section) {
             if (!empty($this->settings['linkTitle']) && $section['_id'] && !empty($section['title'])) {
-                $details = $this->currentDocument->getLogicalStructure($section['_id'][0]);
+                $details = $this->currentDocument->getLogicalStructureNode($section['_id'][0]);
                 $buildUrl[$i]['title'] = [
                     'id' => $this->document->getUid(),
                     'page' => (!empty($details['points']) ? (int) $details['points'] : 1),

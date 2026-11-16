@@ -46,7 +46,8 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
  * @property-read bool $hasFulltext flag with information if there are any fulltext files available
  * @property array<string, mixed> $lastSearchedPhysicalPage the last searched logical and physical page
- * @property mixed[] $logicalUnits this holds the logical units
+ * @property bool $logicalStructureLoaded flag with information if the logical structure is loaded
+ * @property-read mixed[] $logicalUnits deprecated alias for logicalStructure; use getLogicalStructure()
  * @property-read mixed[] $metadataArray this holds the documents' parsed metadata array
  * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
  * @property-read int $numPages the holds the total number of pages
@@ -368,14 +369,11 @@ final class IiifManifest extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::getLogicalStructure()
+     * @see AbstractDocument::loadLogicalStructure()
      */
-    public function getLogicalStructure(string $id, bool $recursive = false): array
+    protected function loadLogicalStructure(string $id = '', bool $recursive = false): void
     {
-        $details = [];
-        if (!$recursive && !empty($this->logicalUnits[$id])) {
-            return $this->logicalUnits[$id];
-        } elseif (!empty($id)) {
+        if (!empty($id)) {
             $logUnits[] = $this->iiif->getContainedResourceById($id);
         } else {
             $logUnits[] = $this->iiif;
@@ -384,7 +382,7 @@ final class IiifManifest extends AbstractDocument
         if (!empty($logUnits[0])) {
             /** @var IiifResourceInterface[] $logUnits */
             if (!$recursive) {
-                $details = $this->getLogicalStructureInfo($logUnits[0]);
+                $this->getLogicalStructureInfo($logUnits[0]);
             } else {
                 // cache the ranges - they might occur multiple times in the structures "tree" - with full data as well as referenced as id
                 $processedStructures = [];
@@ -395,7 +393,6 @@ final class IiifManifest extends AbstractDocument
                 }
             }
         }
-        return $details;
     }
 
     /**
@@ -471,7 +468,7 @@ final class IiifManifest extends AbstractDocument
         $this->applyStartCanvasInfo($details, $resource);
 
         // Keep for later usage.
-        $this->logicalUnits[$details['id']] = $details;
+        $this->logicalStructure[$details['id']] = $details;
 
         // Walk the structure recursively? And are there any children of the current element?
         if ($recursive) {

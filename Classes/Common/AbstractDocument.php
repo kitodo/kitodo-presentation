@@ -39,7 +39,8 @@ use Ubl\Iiif\Tools\IiifHelper;
  * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
  * @property-read bool $hasFulltext flag with information if there are any fulltext files available
  * @property array<string, mixed> $lastSearchedPhysicalPage the last searched logical and physical page
- * @property mixed[] $logicalUnits this holds the logical units
+ * @property bool $logicalStructureLoaded flag with information if the logical structure is loaded
+ * @property-read mixed[] $logicalUnits deprecated alias for logicalStructure; use getLogicalStructure()
  * @property-read mixed[] $metadataArray this holds the documents' parsed metadata array
  * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
  * @property-read int $numPages the holds the total number of pages
@@ -141,9 +142,15 @@ abstract class AbstractDocument
 
     /**
      * @access protected
-     * @var mixed[] This holds the logical units
+     * @var mixed[] This holds the logical structure
      */
-    protected array $logicalUnits = [];
+    protected array $logicalStructure = [];
+
+    /**
+     * @access protected
+     * @var bool Is the logical structure loaded?
+     */
+    protected bool $logicalStructureLoaded = false;
 
     /**
      * This holds the documents' parsed metadata array with their corresponding
@@ -358,19 +365,58 @@ abstract class AbstractDocument
     abstract public function getFullText(string $id): string;
 
     /**
-     * This gets details about a logical structure element
+     * Returns the complete logical structure, keyed by node ID.
      *
      * @access public
      *
+     * @return mixed[] The logical structure
+     */
+    public function getLogicalStructure(): array
+    {
+        if (!$this->logicalStructureLoaded) {
+            $this->loadLogicalStructure('', true);
+            $this->logicalStructureLoaded = true;
+            $this->tableOfContentsLoaded = true;
+        }
+
+        return $this->logicalStructure;
+    }
+
+    /**
+     * Returns details about a logical structure node.
+     *
+     * @access public
+     *
+     * @param string $id The logical node / resource ID
+     *
+     * @return mixed[] The logical structure node's details
+     */
+    public function getLogicalStructureNode(string $id): array
+    {
+        if (empty($id)) {
+            return [];
+        }
+
+        if (empty($this->logicalStructure[$id])) {
+            $this->loadLogicalStructure($id);
+        }
+
+        return $this->logicalStructure[$id] ?? [];
+    }
+
+    /**
+     * Loads logical structure data into the logical structure cache.
+     *
+     * @access protected
+     *
      * @abstract
      *
-     * @param string $id The "@ID" attribute of the logical structure node (METS) or
-     * the "@id" property of the Manifest / Range (IIIF)
-     * @param bool $recursive Whether to include the child elements / resources
+     * @param string $id The logical node / resource ID, or empty for the top-level structure
+     * @param bool $recursive Whether to recursively load children / resources
      *
-     * @return mixed[] Array of the element's id, label, type and physical page indexes/mptr link
+     * @return void
      */
-    abstract public function getLogicalStructure(string $id, bool $recursive = false): array;
+    abstract protected function loadLogicalStructure(string $id = '', bool $recursive = false): void;
 
     /**
      * This extracts all the metadata for a logical structure node
@@ -1103,8 +1149,7 @@ abstract class AbstractDocument
         // Is there no logical structure array yet?
         if (!$this->tableOfContentsLoaded) {
             // Get all logical structures.
-            $this->getLogicalStructure('', true);
-            $this->tableOfContentsLoaded = true;
+            $this->getLogicalStructure();
         }
         return $this->tableOfContents;
     }
@@ -1181,7 +1226,7 @@ abstract class AbstractDocument
         }
         $method = 'magicGet' . ucfirst($var);
         if (
-            (!property_exists($this, $var) && $var !== 'physicalStructureInfo')
+            (!property_exists($this, $var) && !in_array($var, ['physicalStructureInfo', 'logicalUnits'], true))
             || !method_exists($this, $method)
         ) {
             $this->logger->warning('There is no getter function for property "' . $var . '"');

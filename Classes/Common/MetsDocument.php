@@ -41,7 +41,8 @@ use Ubl\Iiif\Services\AbstractImageService;
  * @property bool $formatsLoaded flag with information if the available metadata formats are loaded
  * @property-read bool $hasFulltext flag with information if there are any fulltext files available
  * @property array<string, mixed> $lastSearchedPhysicalPage the last searched logical and physical page
- * @property mixed[] $logicalUnits this holds the logical units
+ * @property bool $logicalStructureLoaded flag with information if the logical structure is loaded
+ * @property-read mixed[] $logicalUnits deprecated alias for logicalStructure; use getLogicalStructure()
  * @property-read mixed[] $metadataArray this holds the documents' parsed metadata array
  * @property bool $metadataArrayLoaded flag with information if the metadata array is loaded
  * @property-read int $numPages the holds the total number of pages
@@ -255,7 +256,7 @@ final class MetsDocument extends AbstractDocument
      */
     public function addMetadataFromMets(array &$metadata, string $id): void
     {
-        $details = $this->getLogicalStructure($id);
+        $details = $this->getLogicalStructureNode($id);
         if (!empty($details)) {
             $metadata['mets_order'][0] = $details['order'];
             $metadata['mets_label'][0] = $details['label'];
@@ -387,19 +388,11 @@ final class MetsDocument extends AbstractDocument
     }
 
     /**
-     * @see AbstractDocument::getLogicalStructure()
+     * @see AbstractDocument::loadLogicalStructure()
      */
-    public function getLogicalStructure(string $id, bool $recursive = false): array
+    protected function loadLogicalStructure(string $id = '', bool $recursive = false): void
     {
-        $details = [];
-        // Is the requested logical unit already loaded?
-        if (
-            !$recursive
-            && !empty($this->logicalUnits[$id])
-        ) {
-            // Yes. Return it.
-            return $this->logicalUnits[$id];
-        } elseif ($this->mets !== null) {
+        if ($this->mets !== null) {
             if (!empty($id)) {
                 // Get specified logical unit.
                 $divs = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@ID="' . $id . '"]');
@@ -410,7 +403,7 @@ final class MetsDocument extends AbstractDocument
             if (!empty($divs)) {
                 if (!$recursive) {
                     // Get the details for the first xpath hit.
-                    $details = $this->getLogicalStructureInfo($divs[0]);
+                    $this->getLogicalStructureInfo($divs[0]);
                 } else {
                     // Walk the logical structure recursively and fill the whole table of contents.
                     foreach ($divs as $div) {
@@ -419,7 +412,6 @@ final class MetsDocument extends AbstractDocument
                 }
             }
         }
-        return $details;
     }
 
     /**
@@ -505,7 +497,7 @@ final class MetsDocument extends AbstractDocument
         $this->getFiles($details, $structure->children(self::METS_NAMESPACE)->fptr);
 
         // Keep for later usage.
-        $this->logicalUnits[$details['id']] = $details;
+        $this->logicalStructure[$details['id']] = $details;
         // Walk the structure recursively? And are there any children of the current element?
         if (
             $recursive
@@ -868,8 +860,8 @@ final class MetsDocument extends AbstractDocument
      */
     private function getLogicalUnitType(string $id): array
     {
-        if (!empty($this->logicalUnits[$id])) {
-            return [$this->logicalUnits[$id]['type']];
+        if (!empty($this->logicalStructure[$id])) {
+            return [$this->logicalStructure[$id]['type']];
         } elseif ($this->mets !== null) {
             $struct = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@ID="' . $id . '"]/@TYPE');
             if (!empty($struct)) {
@@ -1151,9 +1143,9 @@ final class MetsDocument extends AbstractDocument
         $fileInfo = $this->getFileInfo($id);
 
         // Get DMDID and ADMID of logical structure node
-        if (!empty($this->logicalUnits[$id])) {
-            $dmdIds = $this->logicalUnits[$id]['dmdId'] ?? '';
-            $admIds = $this->logicalUnits[$id]['admId'] ?? '';
+        if (!empty($this->logicalStructure[$id])) {
+            $dmdIds = $this->logicalStructure[$id]['dmdId'] ?? '';
+            $admIds = $this->logicalStructure[$id]['admId'] ?? '';
         } elseif ($this->mets !== null) {
             $mdSec = $this->mets->xpath(self::STRUCTURE_MAP_LOGICAL_ALL . '[@ID="' . $id . '"]')[0] ?? null;
             if ($mdSec) {

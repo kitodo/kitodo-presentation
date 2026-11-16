@@ -578,7 +578,7 @@ class ToolboxController extends AbstractController
                 $workLink = $this->getFileInfo($file);
                 break;
             } else {
-                $details = $currentDocument->getLogicalStructure($currentDocument->getToplevelId());
+                $details = $currentDocument->getLogicalStructureNode($currentDocument->getToplevelId());
                 if (!empty($details['files'][$useGroup])) {
                     $workLink = $this->getFileInfo($details['files'][$useGroup]);
                     break;
