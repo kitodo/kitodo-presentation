@@ -452,6 +452,15 @@
             <trans-unit id="tx_dlf_toolbox.scoretool">
                 <source>Score</source>
             </trans-unit>
+            <trans-unit id="tx_dlf_toolbox.rotationtool">
+                <source>Rotation</source>
+            </trans-unit>
+            <trans-unit id="tx_dlf_toolbox.viewerselectiontool">
+                <source>Viewer Selection</source>
+            </trans-unit>
+            <trans-unit id="tx_dlf_toolbox.zoomtool">
+                <source>Zoom</source>
+            </trans-unit>
             <trans-unit id="tt_content.dlf_basket">
                 <source>DLF: Basket</source>
             </trans-unit>

@@ -601,6 +601,18 @@
                 <target>Notentext</target>
                 <source>Score</source>
             </trans-unit>
+            <trans-unit id="tx_dlf_toolbox.rotationtool">
+                <source>Rotation</source>
+                <target>Rotation</target>
+            </trans-unit>
+            <trans-unit id="tx_dlf_toolbox.viewerselectiontool">
+                <source>Viewer Selection</source>
+                <target>Viewer-Auswahl</target>
+            </trans-unit>
+            <trans-unit id="tx_dlf_toolbox.zoomtool">
+                <source>Zoom</source>
+                <target>Zoom</target>
+            </trans-unit>
             <trans-unit id="tt_content.dlf_basket">
                 <source>DLF: Basket</source>
                 <target>DLF: Warenkorb</target>

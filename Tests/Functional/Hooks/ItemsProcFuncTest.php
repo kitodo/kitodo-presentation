@@ -48,12 +48,16 @@ class ItemsProcFuncTest extends FunctionalTestCase
                 ['Fulltext', 'fulltextTool'],
                 ['Add Multiview Source', 'multiViewAddSourceTool'],
                 ['IIIF Annotations', 'annotationTool'],
+                ['Audio/Video Tool', 'audioVideoTool'],
                 ['Fulltext Download', 'fulltextDownloadTool'],
                 ['Image Download', 'imageDownloadTool'],
                 ['Image Manipulation', 'imageManipulationTool'],
                 ['Model Download', 'modelDownloadTool'],
                 ['File Download', 'fileDownloadTool'],
-                ['Search in Document', 'searchInDocumentTool']
+                ['Search in Document', 'searchInDocumentTool'],
+                ['Rotation', 'rotationTool'],
+                ['Viewer Selection', 'viewerSelectionTool'],
+                ['Zoom', 'zoomTool']
             ]
         ];
         $this->assertEquals($expected, $params);
