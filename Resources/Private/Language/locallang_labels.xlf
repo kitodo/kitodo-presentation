@@ -528,37 +528,37 @@
                 <source>Metadata fields required for indexing documents</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsDisplayImage">
-                <source>Display image file use groups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
+                <source>Display image filegroups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsDownloadImage">
-                <source>Download image file use groups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
+                <source>Download image filegroups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX")</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsImage">
-                <source>Page file use groups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX") (will be removed in Kitodo.Presentation 9.0.0, please use Display image file use groups and Download image file use groups)</source>
+                <source>Page filegroups: comma-separated list of @USE attribute values ordered by increasing size (default is "DEFAULT,MAX") (will be removed in Kitodo.Presentation 9.0.0, please use "Display image filegroups" and "Download image filegroups" instead)</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsThumbnail">
-                <source>Thumbnail file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "THUMBS")</source>
+                <source>Thumbnail filegroups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "THUMBS")</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsDownload">
-                <source>Download file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DOWNLOAD") (will be removed in Kitodo.Presentation 9.0.0, please use Download file use groups(config.files.useGroupsDownloadFile))</source>
+                <source>Download filegroups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DOWNLOAD") (will be removed in Kitodo.Presentation 9.0.0, please use "Download file filegroups" instead (config.files.useGroupsDownloadFile))</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsDownloadFile">
-                <source>Download file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DOWNLOAD")</source>
+                <source>Download file filegroups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DOWNLOAD")</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsFulltext">
-                <source>Fulltext file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "FULLTEXT")</source>
+                <source>Fulltext filegroups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "FULLTEXT")</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsAudio">
-                <source>Audio file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "AUDIO")</source>
+                <source>Audio filegroups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "AUDIO")</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsVideo">
-                <source>Video file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "VIDEO,DEFAULT")</source>
+                <source>Video filegroups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "VIDEO,DEFAULT")</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsWaveform">
-                <source>Waveform file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "WAVEFORM")</source>
+                <source>Waveform filegroups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "WAVEFORM")</source>
             </trans-unit>
             <trans-unit id="config.files.useGroupsModel">
-                <source>Model file use groups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DEFAULT")</source>
+                <source>3d model filegroups: comma-separated list of @USE attribute values ordered by decreasing priority (default is "DEFAULT")</source>
             </trans-unit>
             <trans-unit id="config.iiif.indexAnnotations">
                 <source>Handle IIIF annotations with motivation "painting" as fulltext?: Handling annotations as fulltexts means they are ided (default is "FALSE")</source>
