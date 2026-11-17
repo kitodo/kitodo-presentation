@@ -48,6 +48,57 @@
             </mets:xmlData>
         </mets:mdWrap>
     </mets:dmdSec>
+    <!-- Metadata of chapters and sections, shown by the metadata plugin with all levels of the current page (rootline) -->
+    <mets:dmdSec ID="DMDLOG_0003">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:titleInfo>
+                        <mods:title>Trees</mods:title>
+                    </mods:titleInfo>
+                    <mods:name type="personal">
+                        <mods:displayForm>Birch, Henry</mods:displayForm>
+                        <mods:namePart type="family">Birch</mods:namePart>
+                        <mods:namePart type="given">Henry</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">aut</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:dmdSec ID="DMDLOG_0004">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:titleInfo>
+                        <mods:title>Glass Oaks</mods:title>
+                        <mods:subTitle>a survey of their habitats</mods:subTitle>
+                    </mods:titleInfo>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:dmdSec ID="DMDLOG_0007">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:titleInfo>
+                        <mods:title>Flowers</mods:title>
+                    </mods:titleInfo>
+                    <mods:name type="personal">
+                        <mods:displayForm>Bloom, Clara</mods:displayForm>
+                        <mods:namePart type="family">Bloom</mods:namePart>
+                        <mods:namePart type="given">Clara</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">aut</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
     <mets:fileSec>
         <mets:fileGrp USE="DEFAULT">
             <mets:file ID="FILE_0001_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/00000001.svg"/></mets:file>
@@ -90,13 +141,13 @@
         <mets:div ID="LOG_0000" DMDID="DMDLOG_0000" TYPE="monograph" LABEL="Handbook of Imaginary Plants">
             <mets:div ID="LOG_0001" TYPE="title_page" LABEL="Title page"/>
             <mets:div ID="LOG_0002" TYPE="contents" LABEL="Contents"/>
-            <mets:div ID="LOG_0003" TYPE="chapter" LABEL="Chapter 1: Trees">
-                <mets:div ID="LOG_0004" TYPE="section" LABEL="1.1 Glass Oaks">
+            <mets:div ID="LOG_0003" DMDID="DMDLOG_0003" TYPE="chapter" LABEL="Chapter 1: Trees">
+                <mets:div ID="LOG_0004" DMDID="DMDLOG_0004" TYPE="section" LABEL="1.1 Glass Oaks">
                     <mets:div ID="LOG_0005" TYPE="section" LABEL="1.1.1 Growth of the Glass Oak"/>
                 </mets:div>
                 <mets:div ID="LOG_0006" TYPE="section" LABEL="1.2 Singing Birches"/>
             </mets:div>
-            <mets:div ID="LOG_0007" TYPE="chapter" LABEL="Chapter 2: Flowers">
+            <mets:div ID="LOG_0007" DMDID="DMDLOG_0007" TYPE="chapter" LABEL="Chapter 2: Flowers">
                 <mets:div ID="LOG_0008" TYPE="section" LABEL="2.1 Moon Lilies">
                     <mets:div ID="LOG_0009" TYPE="section" LABEL="2.1.1 Blossoming at Night"/>
                 </mets:div>

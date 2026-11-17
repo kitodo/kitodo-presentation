@@ -110,6 +110,8 @@ pages:
         header: 'Metadata'
         settings:
           targetPid: '{page:viewer}'
+          # Metadata of all levels of the current page, e.g. monograph, chapter and section of the handbook
+          rootline: 1
       - CType: dlf_pagegrid
         slot: pages
         settings:
