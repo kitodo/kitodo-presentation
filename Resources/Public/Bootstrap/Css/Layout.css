@@ -286,6 +286,21 @@ input[type="submit"]:hover, button:hover {
     padding: var(--demo-space-s);
 }
 
+/*
+ * Media player or 3D viewer shown instead of toolbox, page view and navigation, filling the remaining height.
+ * The player is positioned absolutely within its frame, so the frame needs a position.
+ */
+.demo-viewer .demo-main.demo-media > .frame {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+}
+
+.demo-viewer .demo-media .tx-dlf-embedded3dviewer > iframe {
+    display: block;
+    border: 0;
+}
+
 /* Calendar shown instead of toolbox, page view and navigation for newspapers and years */
 .demo-viewer .demo-main.demo-calendar {
     display: block;

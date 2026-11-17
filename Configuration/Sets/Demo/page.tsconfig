@@ -3,7 +3,7 @@ mod.web_layout.BackendLayouts {
         title = Kitodo.Presentation Demo: Viewer
         config.backend_layout {
             colCount = 3
-            rowCount = 3
+            rowCount = 4
             rows {
                 1.columns.1 {
                     name = Header
@@ -29,6 +29,12 @@ mod.web_layout.BackendLayouts {
                 3.columns.1 {
                     name = Calendar (replaces Main for newspapers and years)
                     colPos = 3
+                    colspan = 3
+                }
+                # Shown instead of "Main" for audio, video and 3D objects, see setup.typoscript
+                4.columns.1 {
+                    name = Media (replaces Main for audio, video and 3D objects)
+                    colPos = 5
                     colspan = 3
                 }
             }

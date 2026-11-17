@@ -88,7 +88,7 @@ by their name (e.g. `backend_layout: Home` for `pagets__Home`):
 
 | Backend layout     | Slots                                                                       |
 |--------------------|-----------------------------------------------------------------------------|
-| `Viewer`           | `header` at the top, below it `sidebar` on the left and `main` on the right; `calendar` replaces `main` for newspapers and years; `pages` in a sidebar on the right |
+| `Viewer`           | `header` at the top, below it `sidebar` on the left and `main` on the right; `calendar` replaces `main` for newspapers and years, `media` replaces it for audio, video and 3D objects; `pages` in a sidebar on the right |
 | `SearchResultList` | `header` at the top, below it `main` on the left and `sidebar` on the right |
 | `Home`             | `main` with horizontally centered content                                   |
 | `Feeds`            | `main` only, the page renders the RSS feed (XML) of its feeds plugin         |
@@ -120,7 +120,7 @@ In addition, a content element supports the following keys:
 
 | Key        | Description                                                                                                                                                                                  |
 |------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `slot`     | Slot of the backend layout the content element is shown in: `main` (default), `sidebar`, `header`, `calendar` or `pages`. Alternatively, the column can be set by `colPos` (`0` to `4`).                    |
+| `slot`     | Slot of the backend layout the content element is shown in: `main` (default), `sidebar`, `header`, `calendar`, `pages` or `media`. Alternatively, the column can be set by `colPos` (`0` to `5`).                    |
 | `settings` | FlexForm values of the plugin without the `settings.` prefix, e.g. `targetPid` for `settings.targetPid`. Values not given are set to the defaults of the plugin's FlexForm, as when adding the plugin in the backend. |
 
 The top-level `pluginSettings` are applied to every plugin whose FlexForm contains a setting with the same name, e.g.
