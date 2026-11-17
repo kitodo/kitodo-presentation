@@ -497,7 +497,6 @@ class MetadataController extends AbstractController
                 }
             }
             ksort($ids);
-            reset($ids);
             // Check if we should display all metadata up to the root.
             if ($this->settings['rootline'] == 1) {
                 foreach ($ids as $id) {
