@@ -36,6 +36,9 @@ page {
 
             contentPages < styles.content.get
             contentPages.select.where = {#colPos}=4
+
+            contentMedia < styles.content.get
+            contentMedia.select.where = {#colPos}=5
         }
 
         dataProcessing.10 = menu
@@ -53,6 +56,22 @@ page {
 [getDocumentType({$plugin.tx_dlf.persistence.storagePid}) in ['newspaper', 'ephemera', 'year']]
     page.10.variables.isCalendar = TEXT
     page.10.variables.isCalendar.value = 1
+[END]
+
+# Audio, video and 3D objects are shown by the media player or the 3D viewer instead of the page view.
+[isAudio({$plugin.tx_dlf.persistence.storagePid})]
+    page.10.variables.mediaType = TEXT
+    page.10.variables.mediaType.value = audio
+[END]
+
+[isVideo({$plugin.tx_dlf.persistence.storagePid})]
+    page.10.variables.mediaType = TEXT
+    page.10.variables.mediaType.value = video
+[END]
+
+[getDocumentType({$plugin.tx_dlf.persistence.storagePid}) === 'object']
+    page.10.variables.mediaType = TEXT
+    page.10.variables.mediaType.value = object
 [END]
 
 # The RSS feed and OAI-PMH configurations replace the whole page, so they are restricted to pages using the respective layout.

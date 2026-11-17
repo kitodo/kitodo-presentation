@@ -55,7 +55,7 @@ class BootstrapService
     /**
      * Columns (colPos) of the backend layouts of the demo site sets indexed by their slot name
      */
-    protected const SLOTS = ['main' => 0, 'sidebar' => 1, 'header' => 2, 'calendar' => 3, 'pages' => 4];
+    protected const SLOTS = ['main' => 0, 'sidebar' => 1, 'header' => 2, 'calendar' => 3, 'pages' => 4, 'media' => 5];
 
     /**
      * Placeholder in the METS files of the demo documents, which is replaced with the public URL of the document's directory.
@@ -438,6 +438,11 @@ class BootstrapService
         }
         $defaults = [];
         foreach ($dataStructure['sheets']['sDEF']['ROOT']['el'] ?? [] as $name => $field) {
+            // Sections (lists of elements, e.g. the share buttons of the media player) are empty by default, so no
+            // value is stored, as in the backend. An empty string would override the settings from TypoScript.
+            if (!empty($field['section'])) {
+                continue;
+            }
             $defaults[substr($name, strlen('settings.'))] = $field['config']['default'] ?? '';
         }
         return $defaults;
