@@ -343,10 +343,11 @@ class MetadataController extends AbstractController
     private function hasExternalUrlForMetadata(array $metadata): array
     {
         $hasExternalUrl = [];
+        $externalNames = ['geonames', 'wikidata', 'wikipedia'];
 
         foreach ($metadata as $i => $section) {
             foreach ($section as $name => $value) {
-                if (($name == 'geonames' || $name == 'wikidata' || $name == 'wikipedia') && !empty($value)) {
+                if (in_array($name, $externalNames, true) && !empty($value)) {
                     $hasExternalUrl[$i][$name][] = true;
                 }
             }
