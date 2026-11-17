@@ -745,7 +745,7 @@ dlfTmplFulltext.space.className = "sp";
 dlfViewerFullTextControl.prototype.showFulltext = function(features) {
     let target = document.getElementById(this.getFullTextScrollElementId());
 
-    if (features === undefined) {
+    if (features === undefined || features.length === 0) {
         if (target !== null) {
             target.innerHTML = this.dic['fulltext-missing'];
         }
