@@ -73,7 +73,7 @@ class TableOfContentsController extends AbstractController
         $menuArray = [];
         // Does the document have physical elements or is it an external file?
         if (
-            !empty($this->document->getCurrentDocument()->physicalStructure)
+            !empty($this->document->getCurrentDocument()->getPhysicalStructure())
             || !MathUtility::canBeInterpretedAsInteger($this->requestData['id'])
         ) {
             $this->getAllLogicalUnits();
@@ -283,27 +283,33 @@ class TableOfContentsController extends AbstractController
      */
     private function getAllLogicalUnits(): void
     {
-        $physicalStructure = $this->document->getCurrentDocument()->physicalStructure;
+        $currentDocument = $this->document->getCurrentDocument();
+        $physicalStructure = $currentDocument->getPhysicalStructure();
 
         if (isset($this->requestData['page']) &&
             !empty($this->requestData['page'])
             && !empty($physicalStructure)
         ) {
             $page = $this->requestData['page'];
-            $structureMapLinks = $this->document->getCurrentDocument()->smLinks;
+            $structureMapLinks = $currentDocument->smLinks;
+            $firstPhysicalNode = $currentDocument->getPhysicalStructureNodeByPage(0)['id'] ?? '';
+            $pagePhysicalNode = $currentDocument->getPhysicalStructureNodeByPage((int) $page)['id'] ?? '';
 
             $this->activeEntries = array_merge(
-                (array) ($structureMapLinks['p2l'][$physicalStructure[0]] ?? []),
-                (array) ($structureMapLinks['p2l'][$physicalStructure[$page]] ?? [])
+                (array) ($structureMapLinks['p2l'][$firstPhysicalNode] ?? []),
+                (array) ($structureMapLinks['p2l'][$pagePhysicalNode] ?? [])
             );
             if (
                 !empty($this->requestData['double'])
-                && $page < $this->document->getCurrentDocument()->numPages
+                && $page < $currentDocument->numPages
             ) {
-                $this->activeEntries = array_merge(
-                    $this->activeEntries,
-                    (array) ($structureMapLinks['p2l'][$physicalStructure[$page + 1]] ?? [])
-                );
+                $nextPhysicalNode = $currentDocument->getPhysicalStructureNodeByPage((int) $page + 1);
+                if (!empty($nextPhysicalNode['id'])) {
+                    $this->activeEntries = array_merge(
+                        $this->activeEntries,
+                        (array) ($structureMapLinks['p2l'][$nextPhysicalNode['id']] ?? [])
+                    );
+                }
             }
         }
     }

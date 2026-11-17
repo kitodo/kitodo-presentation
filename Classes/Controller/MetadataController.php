@@ -319,7 +319,7 @@ class MetadataController extends AbstractController
 
         foreach ($metadata as $i => $section) {
             if (!empty($this->settings['linkTitle']) && $section['_id'] && !empty($section['title'])) {
-                $details = $this->currentDocument->getLogicalStructure($section['_id'][0]);
+                $details = $this->currentDocument->getLogicalStructureNode($section['_id'][0]);
                 $buildUrl[$i]['title'] = [
                     'id' => $this->document->getUid(),
                     'page' => (!empty($details['points']) ? (int) $details['points'] : 1),
@@ -487,8 +487,8 @@ class MetadataController extends AbstractController
         if ($this->settings['rootline'] < 2) {
             // Get current structure's @ID.
             $ids = [];
-            if (!empty($this->currentDocument->physicalStructure) && isset($this->requestData['page'])) {
-                $page = $this->currentDocument->physicalStructure[$this->requestData['page']];
+            if (!empty($this->currentDocument->getPhysicalStructure()) && isset($this->requestData['page'])) {
+                $page = $this->currentDocument->getPhysicalStructureNodeByPage((int) $this->requestData['page'])['id'] ?? '';
                 if (!empty($page) && !empty($this->currentDocument->smLinks['p2l'][$page])) {
                     foreach ($this->currentDocument->smLinks['p2l'][$page] as $logId) {
                         $count = $this->currentDocument->getStructureDepth($logId);
