@@ -20,13 +20,14 @@ $(
         // jQuery autocomplete integration
         $("#tx-dlf-search-query").autocomplete({
             source(request, response) {
+                var form = $("#tx-dlf-search-query").closest('form');
                 return $.post(
-                    "/",
+                    form.attr('action'),
                     {
                         middleware: "dlf/search-suggest",
-                        q: encodeURIComponent(request.term.toLowerCase()),
-                        uHash: $("input[name='uHash']").val(),
-                        solrcore: $("input[name='solrcore']").val()
+                        q: request.term.toLowerCase(),
+                        uHash: form.find("input[name$='[uHash]']").val(),
+                        solrcore: form.find("input[name$='[solrcore]']").val()
                     },
                     function (data) {
                         var result = [];
