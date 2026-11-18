@@ -643,12 +643,15 @@ final class MetsDocument extends AbstractDocument
 
         if (!empty($this->physicalStructure)) {
             // There is a physical structure (no anchor or year mets).
-            while ($useGroup = array_shift($useGroups) && $thumbnail == null) {
+            foreach ($useGroups as $useGroup) {
                 if (empty($id)) {
                     $thumbnail = $this->physicalStructureInfo[$this->physicalStructure[1]]['files'][$useGroup] ?? null;
                 } else {
                     $parentId = $this->smLinks['l2p'][$id][0] ?? null;
                     $thumbnail = $this->physicalStructureInfo[$parentId]['files'][$useGroup] ?? null;
+                }
+                if ($thumbnail !== null) {
+                    break;
                 }
             }
         }
