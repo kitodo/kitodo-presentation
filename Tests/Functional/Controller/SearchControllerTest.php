@@ -109,7 +109,7 @@ class SearchControllerTest extends AbstractControllerTestCase
     }
 
     /**
-     * Return different search parameters with default (empty) values, which 
+     * Return different search parameters with default (empty) values, which
      * all should lead to the same facet array as if only the title is provided.
      *
      * @return array<string, array{0: array<string, string|string[]>}>
@@ -139,7 +139,7 @@ class SearchControllerTest extends AbstractControllerTestCase
 
     /**
      * Check that facets menu can be built.
-     * 
+     *
      * @param array<string, string|string[]> $search
      */
     #[DataProvider('provideSearchParametersForFacetsMenu')]
