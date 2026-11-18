@@ -152,6 +152,7 @@ public URL of the copied directory. Since the METS files are loaded via HTTP, a 
 A directory may contain several METS files referencing each other via `mets:mptr` and `{documentUrl}`, e.g. the title
 record, years and issues of a newspaper (`newspaper/`) or the title record and volumes of a multi-volume work
 (`encyclopedia/`). Only the files listed in `index` are indexed, their parent documents are added by the ingest.
+After indexing, the search suggestions of the search plugin are built (like `kitodo:suggestBuild`).
 
 | Key        | Required | Description                                                                                        |
 |------------|----------|----------------------------------------------------------------------------------------------------|

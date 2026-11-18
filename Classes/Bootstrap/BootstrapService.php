@@ -185,6 +185,7 @@ class BootstrapService
     /**
      * Save the given documents to the storage folder and add them to the Solr index, like the command "kitodo:index".
      * Parent documents referenced by a "mets:mptr" (e.g. the year and title of a newspaper issue) are added by the ingest.
+     * Afterwards, the search suggestions are built from the index.
      *
      * @access protected
      *
@@ -193,7 +194,7 @@ class BootstrapService
      *
      * @return void
      *
-     * @throws \RuntimeException if a document could not be indexed
+     * @throws \RuntimeException if a document could not be indexed or the search suggestions could not be built
      */
     protected function indexDocuments(array $metsUrls, int $solrCoreUid): void
     {
@@ -216,6 +217,10 @@ class BootstrapService
         }
         GeneralUtility::makeInstance(DocumentCacheManager::class)->flush();
         $this->checkSolrIndex($solrCoreUid);
+        // Build the search suggestions of the search plugin, like the command "kitodo:suggestBuild".
+        if (!Solr::getInstance($solrCoreUid)->suggestBuild()) {
+            throw new \RuntimeException('Search suggestions of the demo documents could not be built', 1762870011);
+        }
     }
 
     /**
