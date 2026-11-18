@@ -27,6 +27,45 @@
 .frame-type-dlf_search .tx-dlf-search-form #tx-dlf-search-suggest {
     display: block;
     position: absolute;
+    z-index: 10;
+}
+
+/*
+ * Search suggestions (jQuery UI autocomplete, see Resources/Public/JavaScript/Search/Suggester.js). jQuery UI sets the
+ * position and the width of the list (width of the search field) inline.
+ */
+#tx-dlf-search-suggest .ui-autocomplete {
+    margin: 0;
+    padding: var(--demo-space-xs) 0;
+    list-style: none;
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    background: #fff;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.12);
+}
+
+#tx-dlf-search-suggest .ui-menu-item-wrapper {
+    padding: var(--demo-space-xs) var(--demo-space-s);
+    cursor: pointer;
+}
+
+/* Suggestion selected with the mouse or the arrow keys */
+#tx-dlf-search-suggest .ui-menu-item-wrapper.ui-state-active {
+    color: #fff;
+    background: var(--demo-accent);
+}
+
+/*
+ * Status message of jQuery UI for screen readers (e.g. "1 result is available"), appended to the end of the page.
+ * Visually hidden as in the jQuery UI theme, but still read by screen readers.
+ */
+.ui-helper-hidden-accessible {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
 }
 
 .frame-type-dlf_search .tx-dlf-search-form input[type="text"] {
