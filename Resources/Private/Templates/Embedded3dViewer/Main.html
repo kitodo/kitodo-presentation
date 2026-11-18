@@ -15,8 +15,10 @@
     <f:debug title="all">{_all}</f:debug>
 </f:if>
 
-<div class="tx-dlf-embedded3dviewer">
-    <iframe src="{embedded3dViewerUrl}" ></iframe>
-</div>
+<f:if condition="{embedded3dViewerUrl}">
+    <div class="tx-dlf-embedded3dviewer">
+        <iframe src="{embedded3dViewerUrl}" ></iframe>
+    </div>
+</f:if>
 
 </html>
