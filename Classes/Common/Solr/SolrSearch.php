@@ -380,7 +380,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
         // replace array_values with for each to trigger the title check
         // its necessary to get the title of the parent/grandparent/... if empty
         // and to set the title of the document
-        foreach ($this->result['documents'] as $document) {
+        foreach ($this as $document) {
             $documents[] = $document;
         }
 
