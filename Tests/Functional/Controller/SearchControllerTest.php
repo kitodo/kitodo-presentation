@@ -13,6 +13,7 @@
 namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\SearchController;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use TYPO3\CMS\Core\Session\UserSession;
 use TYPO3\CMS\Core\Session\UserSessionManager;
@@ -62,7 +63,7 @@ class SearchControllerTest extends AbstractControllerTestCase
             'extendedSlotCount' => 1
         ];
         $templateHtml = '<html>
-            lastSearch:<f:for each="{lastSearch}" as="searchEntry" key="key">{key}:{searchEntry},</f:for>
+            lastSearch:{lastSearch -> f:format.json() -> f:format.raw()}
             currentDocument:{currentDocument.uid}
             searchFields:<f:for each="{searchFields}" as="field">{field},</f:for>
         </html>';
@@ -100,15 +101,50 @@ class SearchControllerTest extends AbstractControllerTestCase
         $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>
-            lastSearch:dateFrom:1800,dateTo:*,
+            lastSearch:{"dateFrom":"1800","dateTo":"*"}
             currentDocument:1001
             searchFields:field1,field2,field3,
         </html>';
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * Return different search parameters with default (empty) values, which
+     * all should lead to the same facet array as if only the title is provided.
+     *
+     * @return array<string, array{0: array<string, string|string[]>}>
+     */
+    public static function provideSearchParametersForFacetsMenu(): array
+    {
+        return [
+            // only the main search parameter
+            'title only' => [
+                ['title' => '10 Keyboard pieces'],
+            ],
+            // the full text switch and empty dates
+            'metadata search with empty dates' => [
+                ['title' => '10 Keyboard pieces', 'fulltext' => '0', 'dateFrom' => '', 'dateTo' => ''],
+            ],
+            // empty extended search slots
+            'metadata search with empty extended search slots' => [
+                [
+                    'title' => '10 Keyboard pieces',
+                    'extOperator' => ['AND', 'AND'],
+                    'extField' => ['title', 'title'],
+                    'extQuery' => ['', ''],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Check that facets menu can be built.
+     *
+     * @param array<string, string|string[]> $search
+     */
+    #[DataProvider('provideSearchParametersForFacetsMenu')]
     #[Test]
-    public function canMakeFacetsMenuArray()
+    public function canMakeFacetsMenuArray(array $search)
     {
         $queryParameters = [
             'tx_dlf' => [
@@ -119,9 +155,7 @@ class SearchControllerTest extends AbstractControllerTestCase
             ]
         ];
         $arguments = [
-            'search' => [
-                'title' => '10 Keyboard pieces'
-            ],
+            'search' => $search,
             'query' => '*'
         ];
         $settings = [
@@ -131,7 +165,7 @@ class SearchControllerTest extends AbstractControllerTestCase
             'facetCollections' => '1'
         ];
         $templateHtml = '<html>
-            lastSearch:<f:for each="{lastSearch}" as="searchEntry" key="key">{key}:{searchEntry},</f:for>
+            lastSearch:{lastSearch -> f:format.json() -> f:format.raw()}
             currentDocument:{currentDocument.uid}
             facetsMenu:<f:for each="{facetsMenu}" as="menuEntry">
                 {menuEntry.field}
@@ -171,7 +205,7 @@ class SearchControllerTest extends AbstractControllerTestCase
         $response->getBody()->rewind();
         $actual = $response->getBody()->getContents();
         $expected = '<html>
-            lastSearch:title:10 Keyboard pieces,
+            lastSearch:' . json_encode($search) . '
             currentDocument:1001
             facetsMenu:
                 type

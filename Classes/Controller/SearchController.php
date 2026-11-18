@@ -271,7 +271,7 @@ class SearchController extends AbstractController
         // Set search query.
         $searchParams = $this->search;
         if (
-            (array_key_exists('fulltext', $searchParams))
+            !empty($searchParams['fulltext'])
             || preg_match('/' . $fields['fulltext'] . ':\((.*)\)/', trim($searchParams['query'] ?? ''), $matches)
         ) {
             // If the query already is a fulltext query e.g using the facets
@@ -294,7 +294,7 @@ class SearchController extends AbstractController
         }
 
         // add filter query for date search
-        if (array_key_exists('dateFrom', $this->search) && array_key_exists('dateTo', $this->search)) {
+        if (!empty($this->search['dateFrom']) && !empty($this->search['dateTo'])) {
             // combine dateFrom and dateTo into filterquery as range search
             $search['params']['filterquery'][]['query'] = '{!join from=' . $fields['uid'] . ' to=' . $fields['uid'] . '}' . $fields['date'] . ':[' . $this->search['dateFrom'] . ' TO ' . $this->search['dateTo'] . ']';
         }
@@ -304,8 +304,6 @@ class SearchController extends AbstractController
             !empty($searchParams['extQuery'])
             && is_array($searchParams['extQuery'])
         ) {
-            // If the search query is already set by the simple search field, we have to reset it.
-            $search['query'] = '';
             $allowedOperators = ['AND', 'OR', 'NOT'];
             $numberOfExtQueries = count($searchParams['extQuery']);
             for ($i = 0; $i < $numberOfExtQueries; $i++) {
