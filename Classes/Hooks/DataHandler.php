@@ -128,7 +128,7 @@ class DataHandler implements LoggerAwareInterface
                     ->from($table)
                     ->where(
                         $queryBuilder->expr()->eq($table . '.uid', (int) $id),
-                        Helper::whereExpression($table)
+                        ...Helper::whereExpression($table)
                     )
                     ->setMaxResults(1)
                     ->executeQuery();
@@ -154,7 +154,7 @@ class DataHandler implements LoggerAwareInterface
                     ->from($table)
                     ->where(
                         $queryBuilder->expr()->eq($table . '.uid', (int) $id),
-                        Helper::whereExpression($table)
+                        ...Helper::whereExpression($table)
                     )
                     ->setMaxResults(1)
                     ->executeQuery();

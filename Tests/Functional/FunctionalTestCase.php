@@ -46,25 +46,14 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
                     'tx_dlf_doc' => [
                         'backend' => \TYPO3\CMS\Core\Cache\Backend\NullBackend::class,
                     ],
+                    'extbase' => [
+                        // use TransientMemoryBackend to avoid https://forge.typo3.org/issues/110909
+                        // until patch https://review.typo3.org/c/Packages/TYPO3.CMS/+/96351 is merged
+                        'backend' => \TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend::class
+                    ]
                 ],
             ],
             'displayErrors' => '1'
-        ],
-        'SC_OPTIONS' => [
-            'dlf/Classes/Plugin/Toolbox.php' => [
-                'tools' => [
-                    'scoreTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.scoretool',
-                    'fulltextTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.fulltexttool',
-                    'multiViewAddSourceTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.multiviewaddsourcetool',
-                    'annotationTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.annotationtool',
-                    'fulltextDownloadTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.fulltextdownloadtool',
-                    'imageDownloadTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagedownloadtool',
-                    'imageManipulationTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.imagemanipulationtool',
-                    'modelDownloadTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.modeldownloadtool',
-                    'fileDownloadTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.filedownloadtool',
-                    'searchInDocumentTool' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_toolbox.searchindocumenttool',
-                ]
-            ]
         ],
         'EXTENSIONS' => [
             'dlf' => [], // = $this->getDlfConfiguration(), set in constructor

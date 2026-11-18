@@ -79,11 +79,9 @@ class SaxonXslToSvrlValidatorTest extends UnitTestCase
         $reflection = new ReflectionClass($saxonXslToSvrlValidator);
 
         $result = $reflection->getProperty("result");
-        $result->setAccessible(true);
         $result->setValue($saxonXslToSvrlValidator, new Result());
 
         $method = $reflection->getMethod("addErrorsOfSvrl");
-        $method->setAccessible(true);
         $method->invoke($saxonXslToSvrlValidator, self::SVRL);
 
         self::assertTrue($result->getValue($saxonXslToSvrlValidator)->hasErrors());

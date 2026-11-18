@@ -1,0 +1,33 @@
+parameters:
+  ignoreErrors:
+    - '#Call to an undefined method Psr\\Http\\Message\\RequestFactoryInterface::request\(\)\.#'
+    -
+      message: '#Method TYPO3\\CMS\\Core\\Database\\Schema\\Parser\\Parser::parse\(\) invoked with 0 parameters, 1 required\.#'
+      path: ../Classes/Command/DatabaseDocs/Generator.php
+    -
+      message: '#Call to an undefined method DOMXPath|SimpleXMLElement::getName\(\)\.#'
+      path: ../Classes/Common/MetsDocument.php
+    -
+      message: '#PHPDoc tag @var with type Ubl\\Iiif\\Presentation\\Common\\Model\\Resources\\CanvasInterface is not subtype of native type Ubl\\Iiif\\Presentation\\Common\\Model\\AbstractIiifEntity\|null.#'
+      path: ../Classes/Controller/PageViewController.php
+    -
+      message: '#Parameter \#1 \$separator of function explode expects non-empty-string, string given\.#'
+      path: ../Classes/Controller/ToolboxController.php
+    -
+      message: '#PHPDoc tag @var for variable \$action contains unknown class TYPO3\\CMS\\Scheduler\\Task\\Enumeration\\Action\.#'
+      path: ../Classes/Task/BaseAdditionalFieldProvider.php
+    -
+      message: '#Access to constant EDIT on an unknown class TYPO3\\CMS\\Scheduler\\Task\\Enumeration\\Action\.#'
+      path: ../Classes/Task/BaseAdditionalFieldProvider.php
+    -
+      message: '#Call to method equals\(\) on an unknown class TYPO3\\CMS\\Scheduler\\Task\\Enumeration\\Action\.#'
+      path: ../Classes/Task/BaseAdditionalFieldProvider.php
+    -
+      message: '#PHPDoc tag \@var with type TYPO3\\CMS\\Scheduler\\Task\\Enumeration\\Action is not subtype of native type TYPO3\\CMS\\Scheduler\\SchedulerManagementAction\.#'
+      path: ../Classes/Task/BaseAdditionalFieldProvider.php
+  level: 7
+  paths:
+    - ../Classes
+  excludePaths:
+    - ../Classes/Common/IiifManifest.php
+  treatPhpDocTypesAsCertain: false
