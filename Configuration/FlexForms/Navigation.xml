@@ -34,12 +34,12 @@
                                     <value>pageFirst</value>
                                 </numIndex>
                                 <numIndex index="2">
-                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.pageBack</label>
-                                    <value>pageBack</value>
-                                </numIndex>
-                                <numIndex index="3">
                                     <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.pageStepBack</label>
                                     <value>pageStepBack</value>
+                                </numIndex>
+                                <numIndex index="3">
+                                    <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexForm.features.pageBack</label>
+                                    <value>pageBack</value>
                                 </numIndex>
                                 <numIndex index="4">
                                     <label>LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:navigation.flexform.features.pageSelect</label>
@@ -78,7 +78,7 @@
                                     <value>documentForward</value>
                                 </numIndex>
                             </items>
-                            <default>doublePage,pageFirst,pageBack,pageStepBack,pageSelect,pageForward,pageStepForward,pageLast,listView,measureForward,measureBack,documentBack,documentForward</default>
+                            <default>doublePage,pageFirst,pageStepBack,pageBack,pageSelect,pageForward,pageStepForward,pageLast,listView,measureForward,measureBack,documentBack,documentForward</default>
                             <minitems>1</minitems>
                         </config>
                     </settings.features>
