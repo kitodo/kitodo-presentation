@@ -288,9 +288,11 @@ input[type="submit"]:hover, button:hover {
 
 /*
  * Media player or 3D viewer shown instead of toolbox, page view and navigation, filling the remaining height.
- * The player is positioned absolutely within its frame, so the frame needs a position.
+ * The player is positioned absolutely within its frame, so the frame needs a position. The frame of a plugin that
+ * renders nothing for the current document (e.g. the 3D viewer for a video) only contains whitespace and does not
+ * take any space.
  */
-.demo-viewer .demo-main.demo-media > .frame {
+.demo-viewer .demo-main.demo-media > .frame:has(> *) {
     position: relative;
     flex: 1;
     min-height: 0;
