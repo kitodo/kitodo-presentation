@@ -232,7 +232,7 @@ $(document).ready(function() {
         $(id + '-button-previous').hide();
         // Send the data using post
         $.post(
-            "/",
+            $(this).attr('action'),
             {
                 middleware: "dlf/search-in-document",
                 q: $( "input[id='" + input + "-query']" ).val(),
