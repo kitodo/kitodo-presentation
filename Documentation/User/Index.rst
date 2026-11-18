@@ -574,6 +574,60 @@ With the command `kitodo:optimize` it is possible to hard commit documents to an
        Increase the verbosity of messages (standard Symfony option).
    :Example:
 
+.. _suggest_build:
+
+Build search suggestions
+------------------------
+
+The search plugin shows suggestions while typing a search query (setting ``suggest``). Suggestions are taken from
+the values of all metadata marked with "Use for search suggestion?" in their metadata record (by default title and
+author). Solr does not update these suggestions automatically when documents are indexed. The command
+`kitodo:suggestBuild` instructs Solr to built suggestions from the current index::
+
+    # example
+    ./vendor/bin/typo3 kitodo:suggestBuild --solr=<CORE>
+
+Run the command after indexing or deleting documents, e.g. regularly as a scheduled task. Until it has been run for
+the first time, no suggestions are shown.
+
+.. t3-field-list-table::
+ :header-rows: 1
+
+ - :Option:
+       Option
+   :Required:
+       Required
+   :Description:
+       Description
+   :Example:
+       Example
+
+ - :Option:
+       ``-s|--solr``
+   :Required:
+       yes
+   :Description:
+       This may be the UID of the solrcore record in `tx_dlf_solrcores`.
+       Alternatively you may write the index name of the solr core.
+   :Example:
+       123 or 'dlfCore1'
+
+ - :Option:
+       ``-q|--quiet``
+   :Required:
+       no
+   :Description:
+       Do not output any message (standard Symfony option).
+   :Example:
+
+ - :Option:
+       ``-v|--verbose``
+   :Required:
+       no
+   :Description:
+       Increase the verbosity of messages (standard Symfony option).
+   :Example:
+
 
 .. _indexing_fulltexts:
 
