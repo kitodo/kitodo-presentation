@@ -11,8 +11,8 @@ namespace Kitodo\Dlf\ViewHelpers;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
+use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3\CMS\Core\Localization\Locale;
 use TYPO3\CMS\Core\Localization\LocalizationFactory;
@@ -35,27 +35,19 @@ class MediaPlayerConfigViewHelper extends AbstractViewHelper
         $this->registerArgument('settings', 'array', 'the settings array that is converted to JSON', true);
     }
 
-    /**
-     * @access public
-     *
-     * @static
-     *
-     * @param mixed[] $arguments
-     * @param \Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     *
-     * @return string
-     */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ): string {
-        $id = $arguments['id'];
-        $inputSettings = $arguments['settings'];
+    public function render(): string
+    {
+        $id = $this->arguments['id'];
+        $inputSettings = $this->arguments['settings'];
 
         /** @var RenderingContext $renderingContext */
-        $request = $renderingContext->getRequest();
+        $renderingContext = $this->renderingContext;
+
+        /** @var ServerRequestInterface|null $request */
+        $request = null;
+        if ($renderingContext->hasAttribute(ServerRequestInterface::class)) {
+            $request = $renderingContext->getAttribute(ServerRequestInterface::class);
+        }
 
         /** @var SiteLanguage $language */
         $language = $request->getAttribute('language');
@@ -127,10 +119,19 @@ CONFIG;
         $localizationFactory = GeneralUtility::makeInstance(LocalizationFactory::class);
         $defaultTranslations = $localizationFactory->getParsedData($translationFile, 'default');
 
-        $phrases = [];
+        /** @var array<string>|null $translationKeys */
+        $translationKeys = null;
         if (isset($defaultTranslations['default']) && is_array($defaultTranslations['default'])) {
-            foreach (array_keys($defaultTranslations['default']) as $translationKey) {
+            // in Typo3 v13, translations are structured as ["default"] => [$key] => [0] => ["target"] => "translation"
+            $translationKeys = array_keys($defaultTranslations['default']);
+        } elseif (is_array($defaultTranslations)) {
+            // in Typo3 v14, translations are structured as [$key] => "translation"
+            $translationKeys = array_keys($defaultTranslations);
+        }
 
+        $phrases = [];
+        if (is_array($translationKeys)) {
+            foreach ($translationKeys as $translationKey) {
                 // Translate each available key as per the current language.
                 // - This falls back to default language if a key isn't translated
                 // - Pass $languageKey to ensure that translation matches ISO code

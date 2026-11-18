@@ -35,3 +35,4 @@ tt_content.stdWrap.editPanel = 0
 
 # Use custom template for List.html of EXT:fluid_styled_content
 lib.contentElement.templateRootPaths.5 = EXT:dlf/Resources/Private/fluid_styled_content/Templates
+lib.contentElement.layoutRootPaths.5 = EXT:dlf/Resources/Private/fluid_styled_content/Layouts
