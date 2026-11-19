@@ -218,8 +218,14 @@
             <trans-unit id="newTenant.createStructure">
                 <source><![CDATA[Create structures]]></source>
             </trans-unit>
+            <trans-unit id="newTenant.createMissingStructure">
+                <source><![CDATA[Add missing structures]]></source>
+            </trans-unit>
             <trans-unit id="newTenant.createMetadata">
                 <source><![CDATA[Create metadata]]></source>
+            </trans-unit>
+            <trans-unit id="newTenant.createMissingMetadata">
+                <source><![CDATA[Add missing metadata]]></source>
             </trans-unit>
             <trans-unit id="newTenant.createFormat">
                 <source><![CDATA[Create default namespaces]]></source>

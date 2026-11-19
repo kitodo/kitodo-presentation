@@ -241,6 +241,30 @@ class NewTenantController extends AbstractController
      */
     public function addMetadataAction(): ResponseInterface
     {
+        return $this->addMetadataRecords(false);
+    }
+
+    /**
+     * Action adding missing metadata records
+     *
+     * @access public
+     *
+     * @return ResponseInterface the response
+     */
+    public function addMissingMetadataAction(): ResponseInterface
+    {
+        return $this->addMetadataRecords(true);
+    }
+
+    /**
+     * Add metadata records, optionally skipping records that already exist.
+     *
+     * @param bool $onlyMissing
+     *
+     * @return ResponseInterface
+     */
+    private function addMetadataRecords(bool $onlyMissing): ResponseInterface
+    {
         // Include metadata definition file.
         $metadataRecords = $this->getRecords('metadata');
 
@@ -259,6 +283,10 @@ class NewTenantController extends AbstractController
 
         $data = [];
         foreach ($metadataRecords as $indexName => $values) {
+            if ($onlyMissing && $this->metadataRepository->findOneBy(['indexName' => $indexName]) !== null) {
+                continue;
+            }
+
             $formatIds = [];
 
             foreach ($values['format'] as $format) {
@@ -365,6 +393,30 @@ class NewTenantController extends AbstractController
      */
     public function addStructureAction(): ResponseInterface
     {
+        return $this->addStructureRecords(false);
+    }
+
+    /**
+     * Action adding missing structure records
+     *
+     * @access public
+     *
+     * @return ResponseInterface the response
+     */
+    public function addMissingStructureAction(): ResponseInterface
+    {
+        return $this->addStructureRecords(true);
+    }
+
+    /**
+     * Add structure records, optionally skipping records that already exist.
+     *
+     * @param bool $onlyMissing
+     *
+     * @return ResponseInterface
+     */
+    private function addStructureRecords(bool $onlyMissing): ResponseInterface
+    {
         // Include structure definition file.
         $structureRecords = $this->getRecords('structure');
 
@@ -373,6 +425,10 @@ class NewTenantController extends AbstractController
 
         $data = [];
         foreach ($structureRecords as $indexName => $values) {
+            if ($onlyMissing && $this->structureRepository->findOneBy(['indexName' => $indexName]) !== null) {
+                continue;
+            }
+
             $data['tx_dlf_structures'][uniqid('NEW')] = [
                 'pid' => $this->pid,
                 'toplevel' => $values['toplevel'],
