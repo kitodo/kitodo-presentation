@@ -11,7 +11,7 @@
     LICENSE.txt file that was distributed with this source code.
 </f:comment>
 
-<f:variable name="navigationPage" value="{numPages - requestData.double}" />
+<f:variable name="navigationPage" value="{totalPages - requestData.double}" />
 
 <f:render partial="Navigation/Page" arguments="{class: 'tx-dlf-navigation-last', condition: pageLastActive, navigationPage: navigationPage, value: 'navigation.page.lastPage', requestData: requestData}" />
 

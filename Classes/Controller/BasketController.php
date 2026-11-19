@@ -472,7 +472,7 @@ class BasketController extends AbstractController
             }
             // add whole document
             if ($piVars['addToBasket'] == 'list') {
-                $documentItem['endpage'] = $this->document->getCurrentDocument()->numPages;
+                $documentItem['endpage'] = $this->document->getCurrentDocument()->getTotalPages();
             }
             $arrayKey = $documentItem['id'] . '_' . $page;
             if (!empty($documentItem['startX'])) {

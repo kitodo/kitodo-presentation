@@ -75,7 +75,7 @@ class NavigationController extends AbstractController
         $currentDocument = $this->document->getCurrentDocument();
 
         // Set default values if not set.
-        if ($currentDocument->numPages > 0) {
+        if ($currentDocument->getTotalPages() > 0) {
             $this->setPage();
         } else {
             $this->requestData['page'] = 0;
@@ -102,7 +102,7 @@ class NavigationController extends AbstractController
         $this->view->assign('pageStepBackActive', $this->isPageStepBackActive());
         $this->view->assign('pageStepForwardActive', $this->isPageStepForwardActive());
         $this->view->assign('pageSteps', $this->getPageSteps());
-        $this->view->assign('numPages', $currentDocument->numPages);
+        $this->view->assign('totalPages', $currentDocument->getTotalPages());
         $this->view->assign('requestData', $this->requestData);
         $this->view->assign('uniqueId', $this->uniqueId);
 
@@ -119,8 +119,8 @@ class NavigationController extends AbstractController
         }
 
         $pageOptions = [];
-        for ($i = 1; $i <= $currentDocument->numPages; $i++) {
-            $orderLabel = $currentDocument->physicalStructureInfo[$currentDocument->physicalStructure[$i]]['orderlabel'];
+        for ($i = 1; $i <= $currentDocument->getTotalPages(); $i++) {
+            $orderLabel = $currentDocument->getPhysicalStructureNodeByPage($i)['orderlabel'];
             $pageOptions[$i] = '[' . $i . ']' . ($orderLabel ? ' - ' . htmlspecialchars($orderLabel) : '');
         }
 
@@ -215,7 +215,7 @@ class NavigationController extends AbstractController
      */
     private function isPageForwardActive(): bool
     {
-        return (int) ($this->requestData['page'] + $this->requestData['double']) < $this->document->getCurrentDocument()->numPages;
+        return (int) ($this->requestData['page'] + $this->requestData['double']) < $this->document->getCurrentDocument()->getTotalPages();
     }
 
     /**
@@ -228,7 +228,7 @@ class NavigationController extends AbstractController
      */
     private function isPageLastActive(): bool
     {
-        return $this->requestData['page'] < ($this->document->getCurrentDocument()->numPages - $this->requestData['double']);
+        return $this->requestData['page'] < ($this->document->getCurrentDocument()->getTotalPages() - $this->requestData['double']);
     }
 
     /**
@@ -254,6 +254,6 @@ class NavigationController extends AbstractController
      */
     private function isPageStepForwardActive(): bool
     {
-        return $this->requestData['page'] <= ($this->document->getCurrentDocument()->numPages - $this->getPageSteps());
+        return $this->requestData['page'] <= ($this->document->getCurrentDocument()->getTotalPages() - $this->getPageSteps());
     }
 }

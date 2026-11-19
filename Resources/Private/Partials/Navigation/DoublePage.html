@@ -20,7 +20,7 @@
                     <kitodo:link requestData="{requestData}" additionalParams="{'double':'0'}" excludedParams="{0: 'measure'}"><f:translate key="navigation.doublePage.singlePageView"/></kitodo:link>
                 </div>
                 <div class="tx-dlf-navigation-double+">
-                    <f:if condition="{requestData.double} && ({requestData.page} < {numPages})">
+                    <f:if condition="{requestData.double} && ({requestData.page} < {totalPages})">
                         <f:then>
                             <kitodo:link requestData="{requestData}" additionalParams="{'page':'{requestData.page + 1}'}" excludedParams="{0: 'measure'}"><f:translate key="navigation.doublePage.rectoVerso"/></kitodo:link>
                         </f:then>
