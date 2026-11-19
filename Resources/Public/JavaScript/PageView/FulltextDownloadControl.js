@@ -104,6 +104,7 @@ dlfViewerFullTextDownloadControl.prototype.createFullTextFile = function (fullte
       var textLines = feature.get('textlines');
       for (var textLine of textLines) {
         fileContent = fileContent.concat(this.appendTextLine(textLine));
+        fileContent = fileContent.concat('\n');
       }
       fileContent = fileContent.concat('\n\n');
     }
