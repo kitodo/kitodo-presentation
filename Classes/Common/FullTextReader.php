@@ -50,19 +50,19 @@ class FullTextReader
      * @param string $id The "@ID" attribute of the physical structure node (METS) or the "@id" property
      * of the Manifest / Range (IIIF)
      * @param mixed[] $fileLocations The locations of the XML files
-     * @param mixed $physicalStructureNode The physical structure node (METS) or the Manifest / Range (IIIF)
+     * @param mixed[] $files The files for physical structure node (METS) or the Manifest / Range (IIIF)
      *
      * @return string The OCR full text
      */
-    public function getFromXml(string $id, array $fileLocations, $physicalStructureNode): string
+    public function getFromXml(string $id, array $fileLocations, array $files): string
     {
         $fullText = '';
 
         $useGroupsFulltext = $this->getFullTextUseGroups();
         $textFormat = "";
-        if (!empty($physicalStructureNode)) {
+        if (!empty($files)) {
             while ($useGroupFulltext = array_shift($useGroupsFulltext)) {
-                if (!empty($physicalStructureNode['files'][$useGroupFulltext])) {
+                if (!empty($files[$useGroupFulltext])) {
                     // Get full text file.
                     // Use Helper::getUrl() instead of GeneralUtility::getUrl(),
                     // because the latter falls back to file_get_contents() for
