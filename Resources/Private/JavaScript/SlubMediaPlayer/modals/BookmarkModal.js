@@ -262,6 +262,7 @@ export default class BookmarkModal extends SimpleModal {
         endTime: null,
       };
       case 'marker': return state.timing.markerRange;
+      default: return null;
     }
   }
 
@@ -391,6 +392,7 @@ export default class BookmarkModal extends SimpleModal {
       case 'begin': return true;
       case 'current-time': return state.timing.currentTime !== 0;
       case 'marker': return state.timing.markerRange !== null;
+      default: return false;
     }
   }
 
