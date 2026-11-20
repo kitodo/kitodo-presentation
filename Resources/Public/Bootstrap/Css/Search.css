@@ -1,0 +1,156 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* Search plugin: search form in one row and facets as grouped lists. */
+
+.frame-type-dlf_search .tx-dlf-search-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--demo-space-s);
+    max-width: 40em;
+}
+
+/* Wrappers of hidden fields would add gaps. */
+.frame-type-dlf_search .tx-dlf-search-form > div:not(:has(> :not(input[type="hidden"]))) {
+    display: none;
+}
+
+/* The container of search suggestions is filled by JavaScript and shown as a dropdown, not as part of the row. */
+.frame-type-dlf_search .tx-dlf-search-form #tx-dlf-search-suggest {
+    display: block;
+    position: absolute;
+    z-index: 10;
+}
+
+/*
+ * Search suggestions (jQuery UI autocomplete, see Resources/Public/JavaScript/Search/Suggester.js). jQuery UI sets the
+ * position and the width of the list (width of the search field) inline.
+ */
+#tx-dlf-search-suggest .ui-autocomplete {
+    margin: 0;
+    padding: var(--demo-space-xs) 0;
+    list-style: none;
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    background: #fff;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.12);
+}
+
+#tx-dlf-search-suggest .ui-menu-item-wrapper {
+    padding: var(--demo-space-xs) var(--demo-space-s);
+    cursor: pointer;
+}
+
+/* Suggestion selected with the mouse or the arrow keys */
+#tx-dlf-search-suggest .ui-menu-item-wrapper.ui-state-active {
+    color: #fff;
+    background: var(--demo-accent);
+}
+
+/*
+ * Status message of jQuery UI for screen readers (e.g. "1 result is available"), appended to the end of the page.
+ * Visually hidden as in the jQuery UI theme, but still read by screen readers.
+ */
+.ui-helper-hidden-accessible {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.frame-type-dlf_search .tx-dlf-search-form input[type="text"] {
+    flex: 1 1 12em;
+    min-width: 0;
+}
+
+/*
+ * Rows below the search field: the full text switch (radio buttons), then extended search and date search.
+ * The form has no wrappers for these rows, so an empty full-width element (::after) breaks the line before the
+ * radio buttons, and the order of the flex items places the rows below it.
+ */
+.frame-type-dlf_search .tx-dlf-search-form::after {
+    content: "";
+    flex-basis: 100%;
+    order: 1;
+    /* No additional gap for the empty row */
+    margin-bottom: calc(-1 * var(--demo-space-s));
+}
+
+.frame-type-dlf_search .tx-dlf-search-form > input[type="radio"],
+.frame-type-dlf_search .tx-dlf-search-form > input[type="radio"] + label {
+    order: 2;
+}
+
+.frame-type-dlf_search .tx-dlf-search-form > label + input[type="radio"] {
+    margin-left: var(--demo-space-m);
+}
+
+.frame-type-dlf_search .tx-dlf-search-form > :is(.tx-dlf-search-extended, .tx-dlf-search-date) {
+    flex-basis: 100%;
+    order: 3;
+}
+
+/* Extended search: operator, field and search term of every slot in one row */
+.tx-dlf-search-extended {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: var(--demo-space-s);
+    margin-top: var(--demo-space-s);
+}
+
+.tx-dlf-search-date {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--demo-space-s);
+    margin-top: var(--demo-space-s);
+}
+
+.tx-dlf-search-facets ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tx-dlf-search-facets > ul > li {
+    margin-bottom: var(--demo-space-m);
+}
+
+.tx-dlf-search-facets .tx-dlf-facet-title {
+    display: block;
+    margin-bottom: var(--demo-space-xs);
+    padding: 0 var(--demo-space-xs);
+    font-size: var(--demo-font-size-small);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--demo-muted);
+}
+
+.tx-dlf-search-facets li li a {
+    display: block;
+    padding: calc(var(--demo-space-xs) / 2) var(--demo-space-xs);
+    border-radius: var(--demo-radius);
+}
+
+.tx-dlf-search-facets li li a:hover {
+    background: var(--demo-hover);
+    text-decoration: none;
+}
+
+/* Selected facet (requires the setting "resetFacets"), clicking it removes the facet again */
+.tx-dlf-search-facets .tx-dlf-search-cur > a {
+    font-weight: 600;
+    color: var(--demo-text);
+    background: var(--demo-hover);
+}

@@ -17,6 +17,7 @@ use Kitodo\Dlf\Common\IiifManifest;
 use Kitodo\Dlf\Common\TypoScriptHelper;
 use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Repository\DocumentRepository;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Symfony\Component\ExpressionLanguage\ExpressionFunction;
@@ -81,10 +82,13 @@ class DocumentTypeFunctionProvider implements ExpressionFunctionProviderInterfac
      */
     protected function initializeRepositories(int $storagePid): void
     {
-        $GLOBALS['TYPO3_REQUEST'] = $GLOBALS['TYPO3_REQUEST']->withAttribute(
-            'frontend.typoscript',
-            TypoScriptHelper::getFrontendTypoScript($this->pageId)
-        );
+        $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
+        if ($request instanceof ServerRequestInterface && $request->getAttribute('frontend.typoscript') === null) {
+            $GLOBALS['TYPO3_REQUEST'] = $request->withAttribute(
+                'frontend.typoscript',
+                TypoScriptHelper::getFrontendTypoScript($this->pageId)
+            );
+        }
 
         $this->documentRepository = GeneralUtility::makeInstance(DocumentRepository::class);
         $this->documentRepository->useStoragePid(MathUtility::forceIntegerInRange($storagePid, 0));

@@ -10,6 +10,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+$t3ver = (new TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+
 return [
     'ctrl' => [
         'title'     => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_basket',
@@ -23,7 +25,7 @@ return [
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfbasket.png',
         'rootLevel' => 0,
-        'searchFields' => '',
+        ...($t3ver >= 14 ? [] : ['searchFields' => '']),
     ],
     'interface' => [
     ],
@@ -37,6 +39,7 @@ return [
                 'required' => true,
                 'eval' => 'trim',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'session_id' => [
@@ -47,6 +50,7 @@ return [
                 'max' => 32,
                 'eval' => 'alphanum,unique',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'doc_ids' => [
@@ -57,6 +61,7 @@ return [
                 'max' => 255,
                 'eval' => 'alphanum_x',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'fe_user_id' => [

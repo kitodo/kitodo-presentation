@@ -1,0 +1,67 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* Page grid plugin: thumbnails of the pages one below the other, the current page is highlighted. */
+
+.tx-dlf-pagegrid-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--demo-space-s);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tx-dlf-pagegrid-thumbnail a {
+    display: block;
+    padding: var(--demo-space-s);
+    text-align: center;
+    text-decoration: none;
+    color: var(--demo-text);
+    border: var(--demo-border-width) solid transparent;
+    border-radius: var(--demo-radius);
+}
+
+.tx-dlf-pagegrid-thumbnail a:hover {
+    background: var(--demo-hover);
+}
+
+.tx-dlf-pagegrid-thumbnail img {
+    display: block;
+    max-width: 100%;
+    max-height: var(--demo-thumbnail-size);
+    margin: 0 auto;
+    border: var(--demo-border-width) solid var(--demo-border);
+}
+
+.tx-dlf-pagegrid-pagination {
+    margin-top: var(--demo-space-xs);
+    font-size: var(--demo-font-size-small);
+}
+
+/* Current page */
+.tx-dlf-pagegrid-cur .tx-dlf-pagegrid-thumbnail a {
+    font-weight: bold;
+    background: var(--demo-hover);
+    border-color: var(--demo-accent);
+}
+
+/* Pagination of the thumbnails below the list, smaller than in the list view to fit into one row of the sidebar */
+.tx-dlf-pagegrid .tx-dlf-pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px;
+    margin-top: var(--demo-space-m);
+    font-size: var(--demo-font-size-small);
+}
+
+.tx-dlf-pagegrid .tx-dlf-pagination :is(a, span) {
+    padding: 2px 4px;
+}

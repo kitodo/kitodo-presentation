@@ -225,7 +225,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     public function offsetExists($offset): bool
     {
         $idx = $this->result['document_keys'][$offset] ?? null;
-        return isset($this->result['documents'][$idx]);
+        return $idx !== null && isset($this->result['documents'][$idx]);
     }
 
     /**
@@ -241,7 +241,7 @@ class SolrSearch implements \Countable, \Iterator, \ArrayAccess, QueryResultInte
     public function offsetGet($offset)
     {
         $idx = $this->result['document_keys'][$offset] ?? null;
-        $document = $this->result['documents'][$idx] ?? null;
+        $document = $idx !== null ? ($this->result['documents'][$idx] ?? null) : null;
 
         if ($document !== null) {
             // It may happen that a Solr group only includes non-toplevel results,
