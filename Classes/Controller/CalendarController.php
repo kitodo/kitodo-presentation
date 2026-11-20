@@ -288,7 +288,7 @@ class CalendarController extends AbstractController
                         if (array_key_exists($currentMonth, $calendarIssuesByMonth) && is_array($calendarIssuesByMonth[$currentMonth])) {
                             foreach ($calendarIssuesByMonth[$currentMonth] as $id => $day) {
                                 if ($id == date('j', $currentDayTime)) {
-                                    $dayLinks = $id;
+                                    $dayLinks = (string) $id;
                                     $dayLinksText = array_merge($dayLinksText, $this->getDayLinksText($day, $currentDayTime));
                                 }
                             }

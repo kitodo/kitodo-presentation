@@ -559,18 +559,12 @@ class ToolboxController extends AbstractController
             }
         }
 
-        if (
-            empty($firstPage)
-            && empty($secondPage)
-        ) {
+        if (empty($firstPage)) {
             $this->logger->warning('File not found in fileGrps "' . $this->extConf['files']['useGroupsDownloadFile'] . '"');
             return [];
         }
 
-        $pageLink = [];
-        if (!empty($firstPage)) {
-            $pageLink[0] = $firstPage;
-        }
+        $pageLink = [$firstPage];
         if (!empty($secondPage)) {
             $pageLink[1] = $secondPage;
         }
