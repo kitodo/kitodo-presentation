@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Tests\Functional\Controller;
 
 use Kitodo\Dlf\Controller\SearchController;
 use PHPUnit\Framework\Attributes\Test;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Session\UserSession;
 use TYPO3\CMS\Core\Session\UserSessionManager;
 use TYPO3\CMS\Core\Utility\StringUtility;
@@ -189,6 +190,7 @@ class SearchControllerTest extends AbstractControllerTestCase
         $controller = $this->setUpController(SearchController::class, $settings, '');
         $request = $this->setUpRequest('search');
         $request = $request->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
+        $request = $request->withAttribute('normalizedParams', NormalizedParams::createFromRequest($request));
 
         $response = $controller->processRequest($request);
         $this->assertEquals(303, $response->getStatusCode());
