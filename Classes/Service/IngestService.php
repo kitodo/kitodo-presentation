@@ -133,10 +133,11 @@ class IngestService
      *
      * @param Document $document The document instance
      * @param bool $softCommit If true, documents are just added to the index by a soft commit
+     * @param bool $commit If false, parent documents are added to the index without a commit
      *
      * @return bool true on success, false otherwise
      */
-    public function saveToDatabase(Document $document, bool $softCommit = false): bool
+    public function saveToDatabase(Document $document, bool $softCommit = false, bool $commit = true): bool
     {
         $doc = $document->getCurrentDocument();
         if ($doc === null) {
@@ -195,7 +196,7 @@ class IngestService
 
             // Get UID of parent document.
             if ($document->getDocumentFormat() === 'METS') {
-                $document->setPartof($this->getParentDocumentUidForSaving($document, $softCommit));
+                $document->setPartof($this->getParentDocumentUidForSaving($document, $softCommit, $commit));
             }
 
             if ($document->getUid() === null) {
@@ -222,10 +223,11 @@ class IngestService
      *
      * @param Document $document for which parent UID should be taken
      * @param bool $softCommit If true, documents are just added to the index by a soft commit
+     * @param bool $commit If false, the parent document is added to the index without a commit
      *
      * @return int The parent document's id.
      */
-    protected function getParentDocumentUidForSaving(Document $document, bool $softCommit = false): int
+    protected function getParentDocumentUidForSaving(Document $document, bool $softCommit = false, bool $commit = true): int
     {
         $doc = $document->getCurrentDocument();
 
@@ -246,11 +248,11 @@ class IngestService
                 $parentDocument->setLocation($doc->parentHref);
                 $parentDocument->setSolrcore($document->getSolrcore());
 
-                $success = $this->saveToDatabase($parentDocument, $softCommit);
+                $success = $this->saveToDatabase($parentDocument, $softCommit, $commit);
 
                 if ($success === true) {
                     // add to index
-                    Indexer::add($parentDocument, $this->documentRepository, $softCommit);
+                    Indexer::add($parentDocument, $this->documentRepository, $softCommit, $commit);
                     return $parentDocument->getUid();
                 }
             }

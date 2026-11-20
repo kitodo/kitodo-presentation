@@ -22,6 +22,7 @@ use Kitodo\Dlf\Domain\Model\Document;
 use Kitodo\Dlf\Domain\Model\Library;
 use Kitodo\Dlf\Service\IngestService;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -211,16 +212,50 @@ class BaseCommand extends Command
      *
      * @param Document $document The document instance
      * @param bool $softCommit If true, documents are just added to the index by a soft commit
+     * @param bool $commit If false, parent documents are added to the index without a commit
      *
      * @return bool true on success, false otherwise
      */
-    protected function saveToDatabase(Document $document, bool $softCommit = false): bool
+    protected function saveToDatabase(Document $document, bool $softCommit = false, bool $commit = true): bool
     {
         $this->ingestService->initialize($this->storagePid, $this->owner);
-        $isSaved = $this->ingestService->saveToDatabase($document, $softCommit);
+        $isSaved = $this->ingestService->saveToDatabase($document, $softCommit, $commit);
         // The owner may have been determined from the metadata and is kept for subsequent documents.
         $this->owner = $this->ingestService->getOwner();
         return $isSaved;
+    }
+
+    /**
+     * Get the validated value of the option "commit-every" controlling after how many documents the Solr index is committed.
+     *
+     * @access protected
+     *
+     * @param InputInterface $input The input parameters
+     *
+     * @return int|null Number of documents per commit or null if the option is invalid
+     */
+    protected function getCommitEvery(InputInterface $input): ?int
+    {
+        $value = $input->getOption('commit-every');
+        if (!is_scalar($value) || !MathUtility::canBeInterpretedAsInteger($value) || (int) $value < 1) {
+            return null;
+        }
+        return (int) $value;
+    }
+
+    /**
+     * Handle invalid commit interval error output.
+     *
+     * @access protected
+     *
+     * @param SymfonyStyle $io
+     *
+     * @return int
+     */
+    protected function handleCommitEveryError(SymfonyStyle $io): int
+    {
+        $io->error('Parameter --commit-every must be a positive integer.');
+        return Command::FAILURE;
     }
 
     /**

@@ -26,6 +26,7 @@ use TYPO3\CMS\Core\Configuration\FlexForm\FlexFormTools;
 use TYPO3\CMS\Core\Configuration\Loader\YamlFileLoader;
 use TYPO3\CMS\Core\Configuration\SiteWriter;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
@@ -86,7 +87,8 @@ class BootstrapService
         protected readonly TcaSchemaFactory $tcaSchemaFactory,
         protected readonly YamlFileLoader $yamlFileLoader,
         protected readonly CacheManager $cacheManager,
-        protected readonly PlaceholderImageGenerator $placeholderImageGenerator
+        protected readonly PlaceholderImageGenerator $placeholderImageGenerator,
+        protected readonly ConnectionPool $connectionPool
     ) {
     }
 
@@ -125,28 +127,83 @@ class BootstrapService
         $scenario = $this->loadScenario($scenarioName);
         $siteIdentifier = self::SITE_IDENTIFIER_PREFIX . $scenarioName;
 
-        $this->removeSite($siteIdentifier);
+        try {
+            return $this->createSite($scenarioName, $scenario, $siteIdentifier, $baseUrl);
+        } finally {
+            // Caches are flushed at the end and outside of any transaction, see runInTransaction().
+            // The frontend caches are flushed, since the TypoScript constants derived from the settings of a
+            // previously created demo site would be used otherwise.
+            $this->cacheManager->flushCachesInGroup('pages');
+            GeneralUtility::makeInstance(DocumentCacheManager::class)->flush();
+        }
+    }
+
+    /**
+     * Run the given step in a database transaction for performance only. Otherwise, every single write of
+     * DataHandler and Extbase (including history, log and reference index entries) is committed on its own,
+     * which takes a multiple of the time when committing requires the database to sync to disk.
+     *
+     * Every step gets its own transaction, since MySQL/MariaDB implicitly commit an open transaction when a table
+     * is truncated, e.g. when flushing a database cache. The Typo3 core does this while creating pages.
+     *
+     * @access protected
+     *
+     * @template T
+     *
+     * @param callable(): T $step
+     *
+     * @return T The return value of the step
+     */
+    protected function runInTransaction(callable $step): mixed
+    {
+        $connection = $this->connectionPool->getConnectionForTable('pages');
+        $connection->beginTransaction();
+        try {
+            return $step();
+        } finally {
+            $connection->commit();
+        }
+    }
+
+    /**
+     * Create pages, tenant records, site configuration, documents and content of the given scenario, replacing a
+     * previously created demo site.
+     *
+     * Every database step runs in its own transaction, see runInTransaction().
+     *
+     * @access protected
+     *
+     * @param string $scenarioName Name of the scenario file without extension
+     * @param mixed[] $scenario
+     * @param string $siteIdentifier
+     * @param string $baseUrl
+     *
+     * @return array<string, positive-int> UIDs of the created pages indexed by their scenario key
+     */
+    protected function createSite(string $scenarioName, array $scenario, string $siteIdentifier, string $baseUrl): array
+    {
+        $this->runInTransaction(fn () => $this->removeSite($siteIdentifier));
 
         $this->pageUids = [];
         $this->contentByPage = [];
         $root = $scenario['root'] ?? [];
         $root['is_siteroot'] = 1;
         $root['children'] = $scenario['pages'] ?? [];
-        $this->createPages(['root' => $root], 0);
+        $this->runInTransaction(fn () => $this->createPages(['root' => $root], 0));
         if (!isset($this->pageUids['storage'])) {
             throw new \InvalidArgumentException('Demo scenario "' . $scenarioName . '" has no page with key "storage"', 1762870002);
         }
 
-        $this->tenantService->addAll($this->pageUids['storage']);
-        $this->solrCoreRepository->useStoragePid($this->pageUids['storage']);
-        /** @var SolrCore|null $solrCore */
-        $solrCore = $this->solrCoreRepository->findAll()->getFirst();
-        $solrCoreUid = $solrCore?->getUid() ?? 0;
+        $solrCoreUid = $this->runInTransaction(function (): int {
+            $this->tenantService->addAll($this->pageUids['storage']);
+            $this->solrCoreRepository->useStoragePid($this->pageUids['storage']);
+            /** @var SolrCore|null $solrCore */
+            $solrCore = $this->solrCoreRepository->findAll()->getFirst();
+            return $solrCore?->getUid() ?? 0;
+        });
 
         // Write the site configuration and settings directly after each other, since Typo3 caches the site settings
         // when the site is first accessed, but does not invalidate them when the settings are written later.
-        // The frontend caches are flushed afterward, since the TypoScript constants derived from the settings of a
-        // previously created demo site would be used otherwise.
         $this->siteWriter->write($siteIdentifier, [
             'rootPageId' => $this->pageUids['root'],
             'base' => rtrim($baseUrl, '/') . $scenario['basePath'],
@@ -173,13 +230,12 @@ class BootstrapService
                 ],
             ],
         ]);
-        $this->cacheManager->flushCachesInGroup('pages');
 
         $metsUrls = $this->createDocuments($scenarioName, $scenario, $baseUrl);
-        $this->indexDocuments($metsUrls, $solrCoreUid);
+        $this->runInTransaction(fn () => $this->indexDocuments($metsUrls, $solrCoreUid));
 
         // The content is created after indexing, since the library (owner) of the documents is created by the ingest.
-        $this->createContent($solrCoreUid, $this->ingestService->getOwner()?->getUid() ?? 0, $scenario['pluginSettings'] ?? []);
+        $this->runInTransaction(fn () => $this->createContent($solrCoreUid, $this->ingestService->getOwner()?->getUid() ?? 0, $scenario['pluginSettings'] ?? []));
 
         return $this->pageUids;
     }
@@ -187,7 +243,7 @@ class BootstrapService
     /**
      * Save the given documents to the storage folder and add them to the Solr index, like the command "kitodo:index".
      * Parent documents referenced by a "mets:mptr" (e.g. the year and title of a newspaper issue) are added by the ingest.
-     * Afterwards, the search suggestions are built from the index.
+     * Afterwards, the index is committed once for all documents and the search suggestions are built from the index.
      *
      * @access protected
      *
@@ -213,11 +269,16 @@ class BootstrapService
             $document = $this->ingestService->getDocumentFromUrl($doc, $metsUrl);
             $document->setSolrcore($solrCoreUid);
             $document->setCurrentDocument($doc);
-            if (!$this->ingestService->saveToDatabase($document) || !Indexer::add($document, $this->documentRepository)) {
+            if (
+                !$this->ingestService->saveToDatabase($document, commit: false)
+                || !Indexer::add($document, $this->documentRepository, commit: false)
+            ) {
                 throw new \RuntimeException('Demo document "' . $metsUrl . '" could not be indexed', 1762870007);
             }
         }
-        GeneralUtility::makeInstance(DocumentCacheManager::class)->flush();
+        if (!Solr::getInstance($solrCoreUid)->optimize(true, false)) {
+            throw new \RuntimeException('Solr index of the demo documents could not be committed', 1763542801);
+        }
         $this->checkSolrIndex($solrCoreUid);
         // Build the search suggestions of the search plugin, like the command "kitodo:suggestBuild".
         if (!Solr::getInstance($solrCoreUid)->suggestBuild()) {
