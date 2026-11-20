@@ -28,6 +28,7 @@ use TYPO3\CMS\Core\Configuration\SiteWriter;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -82,6 +83,7 @@ class BootstrapService
         protected readonly SiteFinder $siteFinder,
         protected readonly SiteWriter $siteWriter,
         protected readonly FlexFormTools $flexFormTools,
+        protected readonly TcaSchemaFactory $tcaSchemaFactory,
         protected readonly YamlFileLoader $yamlFileLoader,
         protected readonly CacheManager $cacheManager,
         protected readonly PlaceholderImageGenerator $placeholderImageGenerator
@@ -433,10 +435,12 @@ class BootstrapService
             $fieldTca['config'],
             $GLOBALS['TCA']['tt_content']['types'][$cType]['columnsOverrides']['pi_flexform']['config'] ?? []
         );
+        // Typo3 v14 requires the TCA schema to resolve the default data structure, Typo3 v13 ignores it.
+        $schema = $this->tcaSchemaFactory->get('tt_content');
         try {
             // Typo3 v13 resolves the data structure by the pointer fields "list_type,CType".
-            $identifier = $this->flexFormTools->getDataStructureIdentifier($fieldTca, 'tt_content', 'pi_flexform', ['CType' => $cType, 'list_type' => '']);
-            $dataStructure = $this->flexFormTools->parseDataStructureByIdentifier($identifier);
+            $identifier = $this->flexFormTools->getDataStructureIdentifier($fieldTca, 'tt_content', 'pi_flexform', ['CType' => $cType, 'list_type' => ''], $schema);
+            $dataStructure = $this->flexFormTools->parseDataStructureByIdentifier($identifier, $schema);
         } catch (\Exception $e) {
             // Plugin has no FlexForm.
             return [];
