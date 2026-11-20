@@ -114,10 +114,11 @@ class Indexer
      * @param Document $document The document to add
      * @param DocumentRepository $documentRepository The document repository for search of parent
      * @param bool $softCommit If true, documents are just added by a soft commit to the index
+     * @param bool $commit If false, no commit is sent, so the caller has to commit after adding several documents
      *
      * @return bool true on success or false on failure
      */
-    public static function add(Document $document, DocumentRepository $documentRepository, bool $softCommit = false): bool
+    public static function add(Document $document, DocumentRepository $documentRepository, bool $softCommit = false, bool $commit = true): bool
     {
         if (in_array($document->getUid(), self::$processedDocs)) {
             return true;
@@ -133,7 +134,7 @@ class Indexer
                     $doc = AbstractDocument::getInstance($parent->getLocation(), ['storagePid' => $parent->getPid()], true, isTrustedLocation: true);
                     if ($doc !== null) {
                         $parent->setCurrentDocument($doc);
-                        $success = self::add($parent, $documentRepository);
+                        $success = self::add($parent, $documentRepository, commit: $commit);
                     } else {
                         Helper::error('Could not load parent document with UID ' . $document->getCurrentDocument()->parentId);
                         return false;
@@ -144,7 +145,7 @@ class Indexer
                 // Add document to list of processed documents.
                 self::$processedDocs[] = $document->getUid();
                 // Delete old Solr documents.
-                self::deleteDocument('uid', (string) $document->getUid());
+                self::deleteDocument('uid', (string) $document->getUid(), commit: $commit);
 
                 // Index every logical unit as separate Solr document.
                 foreach ($document->getCurrentDocument()->tableOfContents as $logicalUnit) {
@@ -165,9 +166,11 @@ class Indexer
                     }
                 }
                 // Commit all changes.
-                $updateQuery = self::$solr->service->createUpdate();
-                $updateQuery->addCommit($softCommit);
-                self::$solr->service->update($updateQuery);
+                if ($commit) {
+                    $updateQuery = self::$solr->service->createUpdate();
+                    $updateQuery->addCommit($softCommit);
+                    self::$solr->service->update($updateQuery);
+                }
 
                 if (!(Environment::isCli())) {
                     if ($success) {
@@ -651,10 +654,11 @@ class Indexer
      * @param string $field by which document should be removed
      * @param string $value of the field by which document should be removed
      * @param bool $softCommit If true, documents are just deleted from the index by a soft commit
+     * @param bool $commit If false, no commit is sent
      *
      * @return void
      */
-    private static function deleteDocument(string $field, string $value, bool $softCommit = false): void
+    private static function deleteDocument(string $field, string $value, bool $softCommit = false, bool $commit = true): void
     {
         $update = self::$solr->service->createUpdate();
         $query = "";
@@ -664,7 +668,9 @@ class Indexer
             $query = $field . ':"' . $value . '"';
         }
         $update->addDeleteQuery($query);
-        $update->addCommit($softCommit);
+        if ($commit) {
+            $update->addCommit($softCommit);
+        }
         self::$solr->service->update($update);
     }
 
@@ -976,5 +982,24 @@ class Indexer
     public static function resetProcessedDocs(): void
     {
         self::$processedDocs = [];
+    }
+
+    /**
+     * Reset the loaded index configuration in case a different configuration is used e.g. during testing.
+     *
+     * @return void
+     */
+    public static function resetIndexConf(): void
+    {
+        self::$fields = [
+            'autocomplete' => [],
+            'facets' => [],
+            'sortables' => [],
+            'indexed' => [],
+            'stored' => [],
+            'tokenized' => []
+        ];
+        self::$solrFields = [];
+        self::$fieldsLoaded = false;
     }
 }

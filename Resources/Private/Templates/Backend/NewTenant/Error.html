@@ -14,6 +14,13 @@
 <div class="module-body t3js-module-body">
     <h1><f:translate key="newTenant.module" /></h1>
 
+    <f:flashMessages queueIdentifier="{flashMessageQueueIdentifier}" />
+
+    <h2><f:translate key="newTenant.initialize" /></h2>
+    <p><f:translate key="newTenant.initializeMsg" /></p>
+
     <f:render partial="Backend/InfoBox" arguments="{title: '{f:translate(key: \'newTenant.wrongPageType\')}', message: '{f:translate(key: \'newTenant.wrongPageTypeMsg\')}', alert: 'danger'}" />
+
+    <f:render partial="Backend/Bootstrap" arguments="{scenarios: scenarios}" />
 </div>
 </html>

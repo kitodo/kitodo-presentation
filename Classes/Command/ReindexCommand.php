@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Command;
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\DocumentCacheManager;
 use Kitodo\Dlf\Common\Indexer;
+use Kitodo\Dlf\Common\Solr\CommitTracker;
 use Kitodo\Dlf\Domain\Model\Document;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -106,6 +107,13 @@ class ReindexCommand extends BaseCommand
                 'uc',
                 InputOption::VALUE_NONE,
                 'If this option is set, the document will be taken from cache if cache exists.'
+            )
+            ->addOption(
+                'commit-every',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Commit the Solr index after every N documents to improve performance with N > 1',
+                '1'
             );
     }
 
@@ -123,9 +131,15 @@ class ReindexCommand extends BaseCommand
     {
         $dryRun = $input->getOption('dry-run') != false;
         $useCache = $input->getOption('use-cache') != false;
+        $softCommit = (bool) $input->getOption('softCommit');
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
+
+        $commitEvery = $this->getCommitEvery($input);
+        if ($commitEvery === null) {
+            return $this->handleCommitEveryError($io);
+        }
 
         $this->initializeRepositories((int) $input->getOption('pid'));
 
@@ -172,6 +186,8 @@ class ReindexCommand extends BaseCommand
         /** @var QueryResultInterface<int, Document> $documents PHPStan: narrows iterable|QueryResultInterface union to Countable */
         $amount = count($documents);
 
+        $commitTracker = new CommitTracker($solrCoreUid, $commitEvery, $softCommit);
+
         foreach ($documents as $id => $document) {
             $doc = AbstractDocument::getInstance($document->getLocation(), ['storagePid' => $this->storagePid], !$useCache, isTrustedLocation: true);
 
@@ -187,13 +203,19 @@ class ReindexCommand extends BaseCommand
                     $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . ($id + 1) . '/' . $amount . ' with UID "' . $document->getUid() . '" ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                 }
                 $document->setCurrentDocument($doc);
+                $commit = $commitTracker->addDocument();
                 // save to database
-                $this->saveToDatabase($document, $input->getOption('softCommit'));
+                $this->saveToDatabase($document, $softCommit, $commit);
                 // add to index
-                Indexer::add($document, $this->documentRepository, $input->getOption('softCommit'));
+                Indexer::add($document, $this->documentRepository, $softCommit, $commit);
             }
             // Clear document cache to prevent memory exhaustion.
             GeneralUtility::makeInstance(DocumentCacheManager::class)->remove($document->getLocation());
+        }
+
+        if (!$commitTracker->commitRemaining()) {
+            $io->error('The Solr index could not be committed. Check TYPO3 log for more details.');
+            return Command::FAILURE;
         }
 
         $io->success('All done!');

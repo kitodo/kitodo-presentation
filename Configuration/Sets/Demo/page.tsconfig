@@ -1,0 +1,95 @@
+mod.web_layout.BackendLayouts {
+    Viewer {
+        title = Kitodo.Presentation Demo: Viewer
+        config.backend_layout {
+            colCount = 3
+            rowCount = 4
+            rows {
+                1.columns.1 {
+                    name = Header
+                    colPos = 2
+                    colspan = 3
+                }
+                2.columns {
+                    1 {
+                        name = Sidebar
+                        colPos = 1
+                    }
+                    2 {
+                        name = Main
+                        colPos = 0
+                    }
+                    # Sidebar on the right, e.g. for the page grid
+                    3 {
+                        name = Pages
+                        colPos = 4
+                    }
+                }
+                # Shown instead of "Main" for newspapers and years, see setup.typoscript
+                3.columns.1 {
+                    name = Calendar (replaces Main for newspapers and years)
+                    colPos = 3
+                    colspan = 3
+                }
+                # Shown instead of "Main" for audio, video and 3D objects, see setup.typoscript
+                4.columns.1 {
+                    name = Media (replaces Main for audio, video and 3D objects)
+                    colPos = 5
+                    colspan = 3
+                }
+            }
+        }
+    }
+    SearchResultList {
+        title = Kitodo.Presentation Demo: Search result list
+        config.backend_layout {
+            colCount = 2
+            rowCount = 2
+            rows {
+                1.columns.1 {
+                    name = Header
+                    colPos = 2
+                    colspan = 2
+                }
+                2.columns {
+                    1 {
+                        name = Main
+                        colPos = 0
+                    }
+                    2 {
+                        name = Sidebar
+                        colPos = 1
+                    }
+                }
+            }
+        }
+    }
+    Home {
+        title = Kitodo.Presentation Demo: Home
+        config.backend_layout {
+            colCount = 1
+            rowCount = 1
+            rows.1.columns.1 {
+                name = Main
+                colPos = 0
+            }
+        }
+    }
+}
+
+# Pages using these layouts render plain XML instead of HTML, see setup.typoscript
+mod.web_layout.BackendLayouts {
+    Feeds {
+        title = Kitodo.Presentation Demo: RSS feed
+        config.backend_layout {
+            colCount = 1
+            rowCount = 1
+            rows.1.columns.1 {
+                name = Main
+                colPos = 0
+            }
+        }
+    }
+    OaiPmh < .Feeds
+    OaiPmh.title = Kitodo.Presentation Demo: OAI-PMH
+}

@@ -179,6 +179,9 @@ collections or even to reindex all documents on the given page.::
     ./vendor/bin/typo3 kitodo:reindex --all --index-limit=1000 --index-begin=0 --pid 123 --solr dlfCore1
     ./vendor/bin/typo3 kitodo:reindex --all --index-limit=1000 --index-begin=1000 --pid 123 --solr dlfCore1
 
+    # reindex all documents on page 123 with solr core 'dlfCore1', committing the index only after every 100 documents
+    ./vendor/bin/typo3 kitodo:reindex --all --pid 123 --solr dlfCore1 --commit-every=100
+
 
 .. t3-field-list-table::
  :header-rows: 1
@@ -298,6 +301,17 @@ collections or even to reindex all documents on the given page.::
    :Example:
 
  - :Option:
+       ``--commit-every``
+   :Required:
+       no
+   :Description:
+       The index is committed only every X documents instead of after each 
+       document to improve performance. Committing less often considerably 
+       speeds up reindexing of many documents.
+   :Example:
+       100
+
+ - :Option:
        ``-q|--quiet``
    :Required:
        no
@@ -324,6 +338,9 @@ interface and index all fetched records.::
 
     # example
     ./vendor/bin/typo3 kitodo:harvest --owner=<UID> --pid=<PID> --solr=<CORE> --from=<timestamp> --until=<timestamp> --set=<set>
+
+    # committing the index only after every 100 documents
+    ./vendor/bin/typo3 kitodo:harvest --owner=<UID> --pid=<PID> --solr=<CORE> --commit-every=100
 
 In order to use the command, you first have to configure a library in the
 backend, setting at least a label and oai_base. The latter should be a valid
@@ -423,6 +440,17 @@ OAI-PMH base URL (e.g. https://digital.slub-dresden.de/oai/).
        hard commit, which is faster but they are visible to searches only
        after a later hard commit or index optimization.
    :Example:
+
+ - :Option:
+       ``--commit-every``
+   :Required:
+       no
+   :Description:
+       The index is committed only every X documents instead of after each 
+       document to improve performance. Committing less often considerably 
+       speeds up harvesting of many documents.
+   :Example:
+       100
 
  - :Option:
        ``-q|--quiet``
