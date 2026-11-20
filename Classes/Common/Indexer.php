@@ -977,4 +977,23 @@ class Indexer
     {
         self::$processedDocs = [];
     }
+
+    /**
+     * Reset the loaded index configuration in case a different configuration is used e.g. during testing.
+     *
+     * @return void
+     */
+    public static function resetIndexConf(): void
+    {
+        self::$fields = [
+            'autocomplete' => [],
+            'facets' => [],
+            'sortables' => [],
+            'indexed' => [],
+            'stored' => [],
+            'tokenized' => []
+        ];
+        self::$solrFields = [];
+        self::$fieldsLoaded = false;
+    }
 }

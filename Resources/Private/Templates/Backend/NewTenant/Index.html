@@ -15,9 +15,21 @@
     0:'@typo3/backend/modal.js'
 }" />
 
+<f:comment>Select the current page in the page tree, e.g. after being redirected to the storage folder of a new demo site.</f:comment>
+<f:variable name="moduleStateArgs" value="{0: 'web', 1: pageUid}" />
+<typo3-immediate-action
+    action="TYPO3.Backend.Storage.ModuleStateStorage.update"
+    args="{moduleStateArgs -> f:format.json() -> f:format.htmlspecialchars()}"
+></typo3-immediate-action>
+
 <div class="module-body t3js-module-body">
 
     <h1><f:translate key="newTenant.module" /></h1>
+
+    <f:flashMessages queueIdentifier="{flashMessageQueueIdentifier}" />
+
+    <h2><f:translate key="newTenant.initialize" /></h2>
+    <p><f:translate key="newTenant.initializeMsg" /></p>
 
     <div style="padding: 5px;">
 
@@ -114,6 +126,8 @@
             </f:else>
         </f:if>
     </div>
+
+    <f:render partial="Backend/Bootstrap" arguments="{scenarios: scenarios}" />
 
 </div>
 

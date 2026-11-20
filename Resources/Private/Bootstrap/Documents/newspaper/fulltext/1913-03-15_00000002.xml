@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="178" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="112" VPOS="950" HPOS="100">
+                        <String CONTENT="Concert" HEIGHT="32" WIDTH="112" VPOS="950" HPOS="100"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="743" VPOS="1016" HPOS="100">
+                        <String CONTENT="The" HEIGHT="32" WIDTH="55" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="city" HEIGHT="32" WIDTH="48" VPOS="1016" HPOS="164"/>
+                        <SP/>
+                        <String CONTENT="orchestra" HEIGHT="32" WIDTH="133" VPOS="1016" HPOS="221"/>
+                        <SP/>
+                        <String CONTENT="plays" HEIGHT="32" WIDTH="75" VPOS="1016" HPOS="363"/>
+                        <SP/>
+                        <String CONTENT="in" HEIGHT="32" WIDTH="25" VPOS="1016" HPOS="447"/>
+                        <SP/>
+                        <String CONTENT="the" HEIGHT="32" WIDTH="44" VPOS="1016" HPOS="481"/>
+                        <SP/>
+                        <String CONTENT="town" HEIGHT="32" WIDTH="68" VPOS="1016" HPOS="534"/>
+                        <SP/>
+                        <String CONTENT="hall" HEIGHT="32" WIDTH="50" VPOS="1016" HPOS="611"/>
+                        <SP/>
+                        <String CONTENT="on" HEIGHT="32" WIDTH="36" VPOS="1016" HPOS="670"/>
+                        <SP/>
+                        <String CONTENT="Saturday" HEIGHT="32" WIDTH="128" VPOS="1016" HPOS="715"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="121" VPOS="1062" HPOS="100">
+                        <String CONTENT="evening." HEIGHT="32" WIDTH="121" VPOS="1062" HPOS="100"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="178" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="157" VPOS="950" HPOS="100">
+                        <String CONTENT="Shangri-La" HEIGHT="32" WIDTH="157" VPOS="950" HPOS="100"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="802" VPOS="1016" HPOS="100">
+                        <String CONTENT="Shangri-La" HEIGHT="32" WIDTH="157" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="is" HEIGHT="32" WIDTH="23" VPOS="1016" HPOS="266"/>
+                        <SP/>
+                        <String CONTENT="a" HEIGHT="32" WIDTH="18" VPOS="1016" HPOS="298"/>
+                        <SP/>
+                        <String CONTENT="valley" HEIGHT="32" WIDTH="82" VPOS="1016" HPOS="325"/>
+                        <SP/>
+                        <String CONTENT="where" HEIGHT="32" WIDTH="87" VPOS="1016" HPOS="416"/>
+                        <SP/>
+                        <String CONTENT="nobody" HEIGHT="32" WIDTH="105" VPOS="1016" HPOS="512"/>
+                        <SP/>
+                        <String CONTENT="grows" HEIGHT="32" WIDTH="85" VPOS="1016" HPOS="626"/>
+                        <SP/>
+                        <String CONTENT="old." HEIGHT="32" WIDTH="52" VPOS="1016" HPOS="720"/>
+                        <SP/>
+                        <String CONTENT="The" HEIGHT="32" WIDTH="55" VPOS="1016" HPOS="781"/>
+                        <SP/>
+                        <String CONTENT="way" HEIGHT="32" WIDTH="57" VPOS="1016" HPOS="845"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="410" VPOS="1062" HPOS="100">
+                        <String CONTENT="there" HEIGHT="32" WIDTH="73" VPOS="1062" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="leads" HEIGHT="32" WIDTH="76" VPOS="1062" HPOS="182"/>
+                        <SP/>
+                        <String CONTENT="over" HEIGHT="32" WIDTH="62" VPOS="1062" HPOS="267"/>
+                        <SP/>
+                        <String CONTENT="a" HEIGHT="32" WIDTH="18" VPOS="1062" HPOS="338"/>
+                        <SP/>
+                        <String CONTENT="high" HEIGHT="32" WIDTH="60" VPOS="1062" HPOS="365"/>
+                        <SP/>
+                        <String CONTENT="pass." HEIGHT="32" WIDTH="76" VPOS="1062" HPOS="434"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

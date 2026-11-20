@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="356" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="128" VPOS="950" HPOS="100">
+                        <String CONTENT="Contents" HEIGHT="32" WIDTH="128" VPOS="950" HPOS="100"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="803" VPOS="1016" HPOS="100">
+                        <String CONTENT="Chapter" HEIGHT="32" WIDTH="114" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="1:" HEIGHT="32" WIDTH="27" VPOS="1016" HPOS="223"/>
+                        <SP/>
+                        <String CONTENT="Trees." HEIGHT="32" WIDTH="91" VPOS="1016" HPOS="259"/>
+                        <SP/>
+                        <String CONTENT="Glass" HEIGHT="32" WIDTH="82" VPOS="1016" HPOS="359"/>
+                        <SP/>
+                        <String CONTENT="Oaks," HEIGHT="32" WIDTH="84" VPOS="1016" HPOS="450"/>
+                        <SP/>
+                        <String CONTENT="Growth" HEIGHT="32" WIDTH="103" VPOS="1016" HPOS="543"/>
+                        <SP/>
+                        <String CONTENT="of" HEIGHT="32" WIDTH="27" VPOS="1016" HPOS="655"/>
+                        <SP/>
+                        <String CONTENT="the" HEIGHT="32" WIDTH="44" VPOS="1016" HPOS="691"/>
+                        <SP/>
+                        <String CONTENT="Glass" HEIGHT="32" WIDTH="82" VPOS="1016" HPOS="744"/>
+                        <SP/>
+                        <String CONTENT="Oak," HEIGHT="32" WIDTH="68" VPOS="1016" HPOS="835"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="232" VPOS="1062" HPOS="100">
+                        <String CONTENT="Singing" HEIGHT="32" WIDTH="107" VPOS="1062" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="Birches." HEIGHT="32" WIDTH="116" VPOS="1062" HPOS="216"/>
+                    </TextLine>
+                    <TextLine ID="Line4" HEIGHT="32" WIDTH="763" VPOS="1128" HPOS="100">
+                        <String CONTENT="Chapter" HEIGHT="32" WIDTH="114" VPOS="1128" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="2:" HEIGHT="32" WIDTH="27" VPOS="1128" HPOS="223"/>
+                        <SP/>
+                        <String CONTENT="Flowers." HEIGHT="32" WIDTH="121" VPOS="1128" HPOS="259"/>
+                        <SP/>
+                        <String CONTENT="Moon" HEIGHT="32" WIDTH="80" VPOS="1128" HPOS="389"/>
+                        <SP/>
+                        <String CONTENT="Lilies," HEIGHT="32" WIDTH="82" VPOS="1128" HPOS="478"/>
+                        <SP/>
+                        <String CONTENT="Blossoming" HEIGHT="32" WIDTH="165" VPOS="1128" HPOS="569"/>
+                        <SP/>
+                        <String CONTENT="at" HEIGHT="32" WIDTH="27" VPOS="1128" HPOS="743"/>
+                        <SP/>
+                        <String CONTENT="Night," HEIGHT="32" WIDTH="84" VPOS="1128" HPOS="779"/>
+                    </TextLine>
+                    <TextLine ID="Line5" HEIGHT="32" WIDTH="194" VPOS="1174" HPOS="100">
+                        <String CONTENT="Paper" HEIGHT="32" WIDTH="85" VPOS="1174" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="Roses." HEIGHT="32" WIDTH="100" VPOS="1174" HPOS="194"/>
+                    </TextLine>
+                    <TextLine ID="Line6" HEIGHT="32" WIDTH="78" VPOS="1240" HPOS="100">
+                        <String CONTENT="Index" HEIGHT="32" WIDTH="78" VPOS="1240" HPOS="100"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

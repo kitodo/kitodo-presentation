@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Demo document of the Kitodo.Presentation bootstrap mechanism, see Resources/Private/Bootstrap/Scenarios/README.md.
+    The placeholder {documentUrl} is replaced with the public URL of this document's directory.
+-->
+<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/mods.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
+    <mets:dmdSec ID="DMDLOG_0000">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:recordInfo>
+                        <mods:recordIdentifier source="kitodo-demo">kitodo-demo-gazette</mods:recordIdentifier>
+                    </mods:recordInfo>
+                    <mods:titleInfo>
+                        <mods:title>Kitodo Demo Gazette</mods:title>
+                    </mods:titleInfo>
+                    <mods:name type="corporate">
+                        <mods:displayForm>Kitodo Demo Library</mods:displayForm>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">own</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:language>
+                        <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+                    </mods:language>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:dmdSec ID="DMDLOG_0001">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:recordInfo>
+                        <mods:recordIdentifier source="kitodo-demo">kitodo-demo-gazette-1913</mods:recordIdentifier>
+                    </mods:recordInfo>
+                    <mods:titleInfo>
+                        <mods:title>1913</mods:title>
+                    </mods:titleInfo>
+                    <mods:name type="corporate">
+                        <mods:displayForm>Kitodo Demo Library</mods:displayForm>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">own</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:originInfo eventType="publication">
+                        <mods:place>
+                            <mods:placeTerm type="text">Leipzig</mods:placeTerm>
+                        </mods:place>
+                        <mods:dateIssued encoding="iso8601" keyDate="yes">1913</mods:dateIssued>
+                    </mods:originInfo>
+                    <mods:language>
+                        <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+                    </mods:language>
+                    <mods:classification>Newspapers</mods:classification>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:structMap TYPE="LOGICAL">
+        <mets:div ID="LOG_0000" DMDID="DMDLOG_0000" TYPE="newspaper" LABEL="Kitodo Demo Gazette">
+            <mets:mptr LOCTYPE="URL" xlink:href="{documentUrl}/newspaper.xml"/>
+            <mets:div ID="LOG_0001" DMDID="DMDLOG_0001" TYPE="year" LABEL="1913" ORDERLABEL="1913">
+                <mets:div ID="LOG_0002" TYPE="month" LABEL="March" ORDERLABEL="1913-03">
+                    <mets:div ID="LOG_0003" TYPE="day" LABEL="15" ORDERLABEL="1913-03-15">
+                        <mets:div ID="LOG_0004" TYPE="issue" LABEL="No. 1" ORDERLABEL="1913-03-15">
+                            <mets:mptr LOCTYPE="URL" xlink:href="{documentUrl}/1913-03-15.xml"/>
+                        </mets:div>
+                    </mets:div>
+                </mets:div>
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+</mets:mets>

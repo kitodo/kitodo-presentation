@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="132" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="196" VPOS="950" HPOS="100">
+                        <String CONTENT="Market" HEIGHT="32" WIDTH="98" VPOS="950" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="Prices" HEIGHT="32" WIDTH="89" VPOS="950" HPOS="207"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="663" VPOS="1016" HPOS="100">
+                        <String CONTENT="Apples" HEIGHT="32" WIDTH="98" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="are" HEIGHT="32" WIDTH="46" VPOS="1016" HPOS="207"/>
+                        <SP/>
+                        <String CONTENT="cheap" HEIGHT="32" WIDTH="87" VPOS="1016" HPOS="262"/>
+                        <SP/>
+                        <String CONTENT="this" HEIGHT="32" WIDTH="50" VPOS="1016" HPOS="358"/>
+                        <SP/>
+                        <String CONTENT="week," HEIGHT="32" WIDTH="84" VPOS="1016" HPOS="417"/>
+                        <SP/>
+                        <String CONTENT="coal" HEIGHT="32" WIDTH="59" VPOS="1016" HPOS="510"/>
+                        <SP/>
+                        <String CONTENT="is" HEIGHT="32" WIDTH="23" VPOS="1016" HPOS="578"/>
+                        <SP/>
+                        <String CONTENT="expensive." HEIGHT="32" WIDTH="153" VPOS="1016" HPOS="610"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

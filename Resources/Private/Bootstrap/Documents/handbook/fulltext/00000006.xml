@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="112" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="732" VPOS="950" HPOS="100">
+                        <String CONTENT="The" HEIGHT="32" WIDTH="55" VPOS="950" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="bark" HEIGHT="32" WIDTH="62" VPOS="950" HPOS="164"/>
+                        <SP/>
+                        <String CONTENT="of" HEIGHT="32" WIDTH="27" VPOS="950" HPOS="235"/>
+                        <SP/>
+                        <String CONTENT="the" HEIGHT="32" WIDTH="44" VPOS="950" HPOS="271"/>
+                        <SP/>
+                        <String CONTENT="singing" HEIGHT="32" WIDTH="101" VPOS="950" HPOS="324"/>
+                        <SP/>
+                        <String CONTENT="birch" HEIGHT="32" WIDTH="69" VPOS="950" HPOS="434"/>
+                        <SP/>
+                        <String CONTENT="is" HEIGHT="32" WIDTH="23" VPOS="950" HPOS="512"/>
+                        <SP/>
+                        <String CONTENT="white" HEIGHT="32" WIDTH="75" VPOS="950" HPOS="544"/>
+                        <SP/>
+                        <String CONTENT="and" HEIGHT="32" WIDTH="53" VPOS="950" HPOS="628"/>
+                        <SP/>
+                        <String CONTENT="thin." HEIGHT="32" WIDTH="60" VPOS="950" HPOS="690"/>
+                        <SP/>
+                        <String CONTENT="Birds" HEIGHT="32" WIDTH="73" VPOS="950" HPOS="759"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="654" VPOS="996" HPOS="100">
+                        <String CONTENT="avoid" HEIGHT="32" WIDTH="76" VPOS="996" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="the" HEIGHT="32" WIDTH="44" VPOS="996" HPOS="185"/>
+                        <SP/>
+                        <String CONTENT="trees," HEIGHT="32" WIDTH="80" VPOS="996" HPOS="238"/>
+                        <SP/>
+                        <String CONTENT="since" HEIGHT="32" WIDTH="75" VPOS="996" HPOS="327"/>
+                        <SP/>
+                        <String CONTENT="the" HEIGHT="32" WIDTH="44" VPOS="996" HPOS="411"/>
+                        <SP/>
+                        <String CONTENT="song" HEIGHT="32" WIDTH="69" VPOS="996" HPOS="464"/>
+                        <SP/>
+                        <String CONTENT="frightens" HEIGHT="32" WIDTH="123" VPOS="996" HPOS="542"/>
+                        <SP/>
+                        <String CONTENT="them." HEIGHT="32" WIDTH="80" VPOS="996" HPOS="674"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

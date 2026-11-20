@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="178" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="98" VPOS="950" HPOS="100">
+                        <String CONTENT="Avalon" HEIGHT="32" WIDTH="98" VPOS="950" HPOS="100"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="787" VPOS="1016" HPOS="100">
+                        <String CONTENT="Avalon" HEIGHT="32" WIDTH="98" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="is" HEIGHT="32" WIDTH="23" VPOS="1016" HPOS="207"/>
+                        <SP/>
+                        <String CONTENT="an" HEIGHT="32" WIDTH="36" VPOS="1016" HPOS="239"/>
+                        <SP/>
+                        <String CONTENT="island" HEIGHT="32" WIDTH="84" VPOS="1016" HPOS="284"/>
+                        <SP/>
+                        <String CONTENT="of" HEIGHT="32" WIDTH="27" VPOS="1016" HPOS="377"/>
+                        <SP/>
+                        <String CONTENT="apple" HEIGHT="32" WIDTH="78" VPOS="1016" HPOS="413"/>
+                        <SP/>
+                        <String CONTENT="trees," HEIGHT="32" WIDTH="80" VPOS="1016" HPOS="500"/>
+                        <SP/>
+                        <String CONTENT="hidden" HEIGHT="32" WIDTH="96" VPOS="1016" HPOS="589"/>
+                        <SP/>
+                        <String CONTENT="in" HEIGHT="32" WIDTH="25" VPOS="1016" HPOS="694"/>
+                        <SP/>
+                        <String CONTENT="mist." HEIGHT="32" WIDTH="68" VPOS="1016" HPOS="728"/>
+                        <SP/>
+                        <String CONTENT="Boats" HEIGHT="32" WIDTH="82" VPOS="1016" HPOS="805"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="309" VPOS="1062" HPOS="100">
+                        <String CONTENT="find" HEIGHT="32" WIDTH="52" VPOS="1062" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="it" HEIGHT="32" WIDTH="16" VPOS="1062" HPOS="161"/>
+                        <SP/>
+                        <String CONTENT="only" HEIGHT="32" WIDTH="59" VPOS="1062" HPOS="186"/>
+                        <SP/>
+                        <String CONTENT="by" HEIGHT="32" WIDTH="34" VPOS="1062" HPOS="254"/>
+                        <SP/>
+                        <String CONTENT="chance." HEIGHT="32" WIDTH="112" VPOS="1062" HPOS="297"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

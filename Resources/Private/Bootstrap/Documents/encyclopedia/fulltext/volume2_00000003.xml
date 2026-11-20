@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="178" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="92" VPOS="950" HPOS="100">
+                        <String CONTENT="Utopia" HEIGHT="32" WIDTH="92" VPOS="950" HPOS="100"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="785" VPOS="1016" HPOS="100">
+                        <String CONTENT="Utopia" HEIGHT="32" WIDTH="92" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="is" HEIGHT="32" WIDTH="23" VPOS="1016" HPOS="201"/>
+                        <SP/>
+                        <String CONTENT="an" HEIGHT="32" WIDTH="36" VPOS="1016" HPOS="233"/>
+                        <SP/>
+                        <String CONTENT="island" HEIGHT="32" WIDTH="84" VPOS="1016" HPOS="278"/>
+                        <SP/>
+                        <String CONTENT="with" HEIGHT="32" WIDTH="57" VPOS="1016" HPOS="371"/>
+                        <SP/>
+                        <String CONTENT="a" HEIGHT="32" WIDTH="18" VPOS="1016" HPOS="437"/>
+                        <SP/>
+                        <String CONTENT="perfect" HEIGHT="32" WIDTH="98" VPOS="1016" HPOS="464"/>
+                        <SP/>
+                        <String CONTENT="government." HEIGHT="32" WIDTH="178" VPOS="1016" HPOS="571"/>
+                        <SP/>
+                        <String CONTENT="Its" HEIGHT="32" WIDTH="34" VPOS="1016" HPOS="758"/>
+                        <SP/>
+                        <String CONTENT="towns" HEIGHT="32" WIDTH="84" VPOS="1016" HPOS="801"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="184" VPOS="1062" HPOS="100">
+                        <String CONTENT="all" HEIGHT="32" WIDTH="32" VPOS="1062" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="look" HEIGHT="32" WIDTH="59" VPOS="1062" HPOS="141"/>
+                        <SP/>
+                        <String CONTENT="alike." HEIGHT="32" WIDTH="75" VPOS="1062" HPOS="209"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

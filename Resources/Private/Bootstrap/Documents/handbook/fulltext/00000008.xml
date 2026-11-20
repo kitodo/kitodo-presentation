@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="178" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="365" VPOS="950" HPOS="100">
+                        <String CONTENT="2.1.1" HEIGHT="32" WIDTH="71" VPOS="950" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="Blossoming" HEIGHT="32" WIDTH="165" VPOS="950" HPOS="180"/>
+                        <SP/>
+                        <String CONTENT="at" HEIGHT="32" WIDTH="27" VPOS="950" HPOS="354"/>
+                        <SP/>
+                        <String CONTENT="Night" HEIGHT="32" WIDTH="75" VPOS="950" HPOS="390"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="794" VPOS="1016" HPOS="100">
+                        <String CONTENT="Gardeners" HEIGHT="32" WIDTH="151" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="wait" HEIGHT="32" WIDTH="57" VPOS="1016" HPOS="260"/>
+                        <SP/>
+                        <String CONTENT="many" HEIGHT="32" WIDTH="78" VPOS="1016" HPOS="326"/>
+                        <SP/>
+                        <String CONTENT="nights" HEIGHT="32" WIDTH="85" VPOS="1016" HPOS="413"/>
+                        <SP/>
+                        <String CONTENT="to" HEIGHT="32" WIDTH="27" VPOS="1016" HPOS="507"/>
+                        <SP/>
+                        <String CONTENT="see" HEIGHT="32" WIDTH="52" VPOS="1016" HPOS="543"/>
+                        <SP/>
+                        <String CONTENT="a" HEIGHT="32" WIDTH="18" VPOS="1016" HPOS="604"/>
+                        <SP/>
+                        <String CONTENT="moon" HEIGHT="32" WIDTH="80" VPOS="1016" HPOS="631"/>
+                        <SP/>
+                        <String CONTENT="lily" HEIGHT="32" WIDTH="37" VPOS="1016" HPOS="720"/>
+                        <SP/>
+                        <String CONTENT="blossom." HEIGHT="32" WIDTH="128" VPOS="1016" HPOS="766"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="557" VPOS="1062" HPOS="100">
+                        <String CONTENT="The" HEIGHT="32" WIDTH="55" VPOS="1062" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="flower" HEIGHT="32" WIDTH="85" VPOS="1062" HPOS="164"/>
+                        <SP/>
+                        <String CONTENT="closes" HEIGHT="32" WIDTH="91" VPOS="1062" HPOS="258"/>
+                        <SP/>
+                        <String CONTENT="again" HEIGHT="32" WIDTH="78" VPOS="1062" HPOS="358"/>
+                        <SP/>
+                        <String CONTENT="before" HEIGHT="32" WIDTH="91" VPOS="1062" HPOS="445"/>
+                        <SP/>
+                        <String CONTENT="sunrise." HEIGHT="32" WIDTH="112" VPOS="1062" HPOS="545"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

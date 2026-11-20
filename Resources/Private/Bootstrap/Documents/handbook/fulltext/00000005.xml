@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="224" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="276" VPOS="950" HPOS="100">
+                        <String CONTENT="1.2" HEIGHT="32" WIDTH="44" VPOS="950" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="Singing" HEIGHT="32" WIDTH="107" VPOS="950" HPOS="153"/>
+                        <SP/>
+                        <String CONTENT="Birches" HEIGHT="32" WIDTH="107" VPOS="950" HPOS="269"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="656" VPOS="1016" HPOS="100">
+                        <String CONTENT="The" HEIGHT="32" WIDTH="55" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="singing" HEIGHT="32" WIDTH="101" VPOS="1016" HPOS="164"/>
+                        <SP/>
+                        <String CONTENT="birch" HEIGHT="32" WIDTH="69" VPOS="1016" HPOS="274"/>
+                        <SP/>
+                        <String CONTENT="hums" HEIGHT="32" WIDTH="78" VPOS="1016" HPOS="352"/>
+                        <SP/>
+                        <String CONTENT="a" HEIGHT="32" WIDTH="18" VPOS="1016" HPOS="439"/>
+                        <SP/>
+                        <String CONTENT="low" HEIGHT="32" WIDTH="48" VPOS="1016" HPOS="466"/>
+                        <SP/>
+                        <String CONTENT="melody" HEIGHT="32" WIDTH="103" VPOS="1016" HPOS="523"/>
+                        <SP/>
+                        <String CONTENT="at" HEIGHT="32" WIDTH="27" VPOS="1016" HPOS="635"/>
+                        <SP/>
+                        <String CONTENT="dawn." HEIGHT="32" WIDTH="85" VPOS="1016" HPOS="671"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="749" VPOS="1062" HPOS="100">
+                        <String CONTENT="Travellers" HEIGHT="32" WIDTH="140" VPOS="1062" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="use" HEIGHT="32" WIDTH="52" VPOS="1062" HPOS="249"/>
+                        <SP/>
+                        <String CONTENT="the" HEIGHT="32" WIDTH="44" VPOS="1062" HPOS="310"/>
+                        <SP/>
+                        <String CONTENT="song" HEIGHT="32" WIDTH="69" VPOS="1062" HPOS="363"/>
+                        <SP/>
+                        <String CONTENT="of" HEIGHT="32" WIDTH="27" VPOS="1062" HPOS="441"/>
+                        <SP/>
+                        <String CONTENT="the" HEIGHT="32" WIDTH="44" VPOS="1062" HPOS="477"/>
+                        <SP/>
+                        <String CONTENT="birches" HEIGHT="32" WIDTH="103" VPOS="1062" HPOS="530"/>
+                        <SP/>
+                        <String CONTENT="to" HEIGHT="32" WIDTH="27" VPOS="1062" HPOS="642"/>
+                        <SP/>
+                        <String CONTENT="find" HEIGHT="32" WIDTH="52" VPOS="1062" HPOS="678"/>
+                        <SP/>
+                        <String CONTENT="the" HEIGHT="32" WIDTH="44" VPOS="1062" HPOS="739"/>
+                        <SP/>
+                        <String CONTENT="way" HEIGHT="32" WIDTH="57" VPOS="1062" HPOS="792"/>
+                    </TextLine>
+                    <TextLine ID="Line4" HEIGHT="32" WIDTH="89" VPOS="1108" HPOS="100">
+                        <String CONTENT="home." HEIGHT="32" WIDTH="89" VPOS="1108" HPOS="100"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

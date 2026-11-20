@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Demo document of the Kitodo.Presentation bootstrap mechanism, see Resources/Private/Bootstrap/Scenarios/README.md.
+    The placeholder {documentUrl} is replaced with the public URL of this document's directory.
+-->
+<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/mods.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
+    <mets:dmdSec ID="DMDLOG_0000">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:recordInfo>
+                        <mods:recordIdentifier source="kitodo-demo">kitodo-demo-encyclopedia</mods:recordIdentifier>
+                    </mods:recordInfo>
+                    <mods:titleInfo>
+                        <mods:title>Encyclopedia of Fictional Places</mods:title>
+                    </mods:titleInfo>
+                    <mods:name type="corporate">
+                        <mods:displayForm>Kitodo Demo Library</mods:displayForm>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">own</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:language>
+                        <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+                    </mods:language>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:dmdSec ID="DMDLOG_0001">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:recordInfo>
+                        <mods:recordIdentifier source="kitodo-demo">kitodo-demo-encyclopedia-volume2</mods:recordIdentifier>
+                    </mods:recordInfo>
+                    <mods:titleInfo>
+                        <mods:title>Encyclopedia of Fictional Places</mods:title>
+                        <mods:subTitle>Volume 2: F-Z</mods:subTitle>
+                    </mods:titleInfo>
+                    <mods:name type="personal">
+                        <mods:displayForm>Brown, Thomas</mods:displayForm>
+                        <mods:namePart type="family">Brown</mods:namePart>
+                        <mods:namePart type="given">Thomas</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">aut</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name type="corporate">
+                        <mods:displayForm>Kitodo Demo Library</mods:displayForm>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">own</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:originInfo eventType="publication">
+                        <mods:place>
+                            <mods:placeTerm type="text">London</mods:placeTerm>
+                        </mods:place>
+                        <mods:publisher>Demo Press</mods:publisher>
+                        <mods:dateIssued encoding="iso8601" keyDate="yes">1906</mods:dateIssued>
+                    </mods:originInfo>
+                    <mods:language>
+                        <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+                    </mods:language>
+                    <mods:classification>Geography</mods:classification>
+                    <mods:classification>Encyclopedias</mods:classification>
+                    <mods:part order="2" type="host">
+                        <mods:detail>
+                            <mods:number>2</mods:number>
+                        </mods:detail>
+                    </mods:part>
+                    <mods:physicalDescription>
+                        <mods:extent>4 pages</mods:extent>
+                    </mods:physicalDescription>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:fileSec>
+        <mets:fileGrp USE="DEFAULT">
+            <mets:file ID="FILE_0001_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/volume2_00000001.svg"/></mets:file>
+            <mets:file ID="FILE_0002_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/volume2_00000002.svg"/></mets:file>
+            <mets:file ID="FILE_0003_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/volume2_00000003.svg"/></mets:file>
+            <mets:file ID="FILE_0004_DEFAULT" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/default/volume2_00000004.svg"/></mets:file>
+        </mets:fileGrp>
+        <mets:fileGrp USE="THUMBS">
+            <mets:file ID="FILE_0001_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/volume2_00000001.svg"/></mets:file>
+            <mets:file ID="FILE_0002_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/volume2_00000002.svg"/></mets:file>
+            <mets:file ID="FILE_0003_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/volume2_00000003.svg"/></mets:file>
+            <mets:file ID="FILE_0004_THUMBS" MIMETYPE="image/svg+xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/thumbs/volume2_00000004.svg"/></mets:file>
+        </mets:fileGrp>
+        <mets:fileGrp USE="FULLTEXT">
+            <mets:file ID="FILE_0001_FULLTEXT" MIMETYPE="text/xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/fulltext/volume2_00000001.xml"/></mets:file>
+            <mets:file ID="FILE_0002_FULLTEXT" MIMETYPE="text/xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/fulltext/volume2_00000002.xml"/></mets:file>
+            <mets:file ID="FILE_0003_FULLTEXT" MIMETYPE="text/xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/fulltext/volume2_00000003.xml"/></mets:file>
+            <mets:file ID="FILE_0004_FULLTEXT" MIMETYPE="text/xml"><mets:FLocat LOCTYPE="URL" xlink:href="{documentUrl}/fulltext/volume2_00000004.xml"/></mets:file>
+        </mets:fileGrp>
+    </mets:fileSec>
+    <mets:structMap TYPE="LOGICAL">
+        <mets:div ID="LOG_0000" DMDID="DMDLOG_0000" TYPE="multivolume_work" LABEL="Encyclopedia of Fictional Places">
+            <mets:mptr LOCTYPE="URL" xlink:href="{documentUrl}/encyclopedia.xml"/>
+            <mets:div ID="LOG_0001" DMDID="DMDLOG_0001" TYPE="volume" LABEL="Volume 2: F-Z">
+                <mets:div ID="LOG_0002" TYPE="article" LABEL="Lilliput"/>
+                <mets:div ID="LOG_0003" TYPE="article" LABEL="Shangri-La"/>
+                <mets:div ID="LOG_0004" TYPE="article" LABEL="Utopia"/>
+                <mets:div ID="LOG_0005" TYPE="article" LABEL="Xanadu"/>
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+    <mets:structMap TYPE="PHYSICAL">
+        <mets:div ID="PHYS_0000" TYPE="physSequence">
+            <mets:div ID="PHYS_0001" ORDER="1" ORDERLABEL="1" TYPE="page"><mets:fptr FILEID="FILE_0001_DEFAULT"/><mets:fptr FILEID="FILE_0001_THUMBS"/><mets:fptr FILEID="FILE_0001_FULLTEXT"/></mets:div>
+            <mets:div ID="PHYS_0002" ORDER="2" ORDERLABEL="2" TYPE="page"><mets:fptr FILEID="FILE_0002_DEFAULT"/><mets:fptr FILEID="FILE_0002_THUMBS"/><mets:fptr FILEID="FILE_0002_FULLTEXT"/></mets:div>
+            <mets:div ID="PHYS_0003" ORDER="3" ORDERLABEL="3" TYPE="page"><mets:fptr FILEID="FILE_0003_DEFAULT"/><mets:fptr FILEID="FILE_0003_THUMBS"/><mets:fptr FILEID="FILE_0003_FULLTEXT"/></mets:div>
+            <mets:div ID="PHYS_0004" ORDER="4" ORDERLABEL="4" TYPE="page"><mets:fptr FILEID="FILE_0004_DEFAULT"/><mets:fptr FILEID="FILE_0004_THUMBS"/><mets:fptr FILEID="FILE_0004_FULLTEXT"/></mets:div>
+        </mets:div>
+    </mets:structMap>
+    <mets:structLink>
+        <mets:smLink xlink:from="LOG_0001" xlink:to="PHYS_0001"/>
+        <mets:smLink xlink:from="LOG_0001" xlink:to="PHYS_0002"/>
+        <mets:smLink xlink:from="LOG_0001" xlink:to="PHYS_0003"/>
+        <mets:smLink xlink:from="LOG_0001" xlink:to="PHYS_0004"/>
+        <mets:smLink xlink:from="LOG_0002" xlink:to="PHYS_0001"/>
+        <mets:smLink xlink:from="LOG_0003" xlink:to="PHYS_0002"/>
+        <mets:smLink xlink:from="LOG_0004" xlink:to="PHYS_0003"/>
+        <mets:smLink xlink:from="LOG_0005" xlink:to="PHYS_0004"/>
+    </mets:structLink>
+</mets:mets>

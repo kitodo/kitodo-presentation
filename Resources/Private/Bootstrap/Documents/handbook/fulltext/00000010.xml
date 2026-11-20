@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="330" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="78" VPOS="950" HPOS="100">
+                        <String CONTENT="Index" HEIGHT="32" WIDTH="78" VPOS="950" HPOS="100"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="251" VPOS="1016" HPOS="100">
+                        <String CONTENT="birch," HEIGHT="32" WIDTH="78" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="singing" HEIGHT="32" WIDTH="101" VPOS="1016" HPOS="187"/>
+                        <SP/>
+                        <String CONTENT="3," HEIGHT="32" WIDTH="27" VPOS="1016" HPOS="297"/>
+                        <SP/>
+                        <String CONTENT="4" HEIGHT="32" WIDTH="18" VPOS="1016" HPOS="333"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="198" VPOS="1082" HPOS="100">
+                        <String CONTENT="lily," HEIGHT="32" WIDTH="46" VPOS="1082" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="moon" HEIGHT="32" WIDTH="80" VPOS="1082" HPOS="155"/>
+                        <SP/>
+                        <String CONTENT="5," HEIGHT="32" WIDTH="27" VPOS="1082" HPOS="244"/>
+                        <SP/>
+                        <String CONTENT="6" HEIGHT="32" WIDTH="18" VPOS="1082" HPOS="280"/>
+                    </TextLine>
+                    <TextLine ID="Line4" HEIGHT="32" WIDTH="207" VPOS="1148" HPOS="100">
+                        <String CONTENT="oak," HEIGHT="32" WIDTH="60" VPOS="1148" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="glass" HEIGHT="32" WIDTH="75" VPOS="1148" HPOS="169"/>
+                        <SP/>
+                        <String CONTENT="1," HEIGHT="32" WIDTH="27" VPOS="1148" HPOS="253"/>
+                        <SP/>
+                        <String CONTENT="2" HEIGHT="32" WIDTH="18" VPOS="1148" HPOS="289"/>
+                    </TextLine>
+                    <TextLine ID="Line5" HEIGHT="32" WIDTH="189" VPOS="1214" HPOS="100">
+                        <String CONTENT="rose," HEIGHT="32" WIDTH="71" VPOS="1214" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="paper" HEIGHT="32" WIDTH="82" VPOS="1214" HPOS="180"/>
+                        <SP/>
+                        <String CONTENT="7" HEIGHT="32" WIDTH="18" VPOS="1214" HPOS="271"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>
