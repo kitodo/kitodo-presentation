@@ -1,0 +1,65 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* Basket plugin: number of entries, the list of entries with checkboxes, and the actions for the selected entries. */
+
+.tx-dlf-basket-counts {
+    margin: 0 0 var(--demo-space-s);
+    color: var(--demo-muted);
+}
+
+.tx-dlf-basket-list {
+    margin: 0 0 var(--demo-space-m);
+    padding: 0;
+    list-style: none;
+    border-top: var(--demo-border-width) solid var(--demo-border);
+}
+
+.tx-dlf-basket-list > li {
+    border-bottom: var(--demo-border-width) solid var(--demo-border);
+}
+
+.tx-dlf-basket-list > li:hover {
+    background: var(--demo-hover);
+}
+
+/* Every entry in one row: the checkbox (in "dd") on the left, the title and the selected pages ("dt") on the right. */
+.tx-dlf-basket-list dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    gap: var(--demo-space-s);
+    margin: 0;
+    padding: var(--demo-space-xs) var(--demo-space-s);
+}
+
+.tx-dlf-basket-list dt {
+    grid-column: 2;
+    grid-row: 1;
+    color: var(--demo-muted);
+}
+
+.tx-dlf-basket-list dd {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+}
+
+/* Actions in one row: the selects (in "div") and the submit button. */
+.tx-dlf-basket-list + div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--demo-space-s);
+}
+
+.tx-dlf-goto-basket {
+    margin-top: var(--demo-space-m);
+}

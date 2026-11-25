@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Demo document of the Kitodo.Presentation bootstrap mechanism, see Resources/Private/Bootstrap/Scenarios/README.md.
+    The placeholder {documentUrl} is replaced with the public URL of this document's directory.
+-->
+<mets:mets xmlns:mets="http://www.loc.gov/METS/" xmlns:mods="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/mods.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd">
+    <mets:dmdSec ID="DMDLOG_0000">
+        <mets:mdWrap MDTYPE="MODS">
+            <mets:xmlData>
+                <mods:mods>
+                    <mods:recordInfo>
+                        <mods:recordIdentifier source="kitodo-demo">kitodo-demo-encyclopedia</mods:recordIdentifier>
+                    </mods:recordInfo>
+                    <mods:titleInfo>
+                        <mods:title>Encyclopedia of Fictional Places</mods:title>
+                    </mods:titleInfo>
+                    <mods:name type="personal">
+                        <mods:displayForm>Brown, Thomas</mods:displayForm>
+                        <mods:namePart type="family">Brown</mods:namePart>
+                        <mods:namePart type="given">Thomas</mods:namePart>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">aut</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:name type="corporate">
+                        <mods:displayForm>Kitodo Demo Library</mods:displayForm>
+                        <mods:role>
+                            <mods:roleTerm authority="marcrelator" type="code">own</mods:roleTerm>
+                        </mods:role>
+                    </mods:name>
+                    <mods:originInfo eventType="publication">
+                        <mods:place>
+                            <mods:placeTerm type="text">London</mods:placeTerm>
+                        </mods:place>
+                        <mods:publisher>Demo Press</mods:publisher>
+                        <mods:dateIssued encoding="iso8601" keyDate="yes">1905</mods:dateIssued>
+                    </mods:originInfo>
+                    <mods:language>
+                        <mods:languageTerm authority="iso639-2b" type="code">eng</mods:languageTerm>
+                    </mods:language>
+                    <mods:classification>Geography</mods:classification>
+                    <mods:classification>Encyclopedias</mods:classification>
+                </mods:mods>
+            </mets:xmlData>
+        </mets:mdWrap>
+    </mets:dmdSec>
+    <mets:structMap TYPE="LOGICAL">
+        <mets:div ID="LOG_0000" DMDID="DMDLOG_0000" TYPE="multivolume_work" LABEL="Encyclopedia of Fictional Places">
+            <mets:div ID="LOG_0001" TYPE="volume" LABEL="Volume 1: A-E">
+                <mets:mptr LOCTYPE="URL" xlink:href="{documentUrl}/volume1.xml"/>
+            </mets:div>
+            <mets:div ID="LOG_0002" TYPE="volume" LABEL="Volume 2: F-Z">
+                <mets:mptr LOCTYPE="URL" xlink:href="{documentUrl}/volume2.xml"/>
+            </mets:div>
+        </mets:div>
+    </mets:structMap>
+</mets:mets>

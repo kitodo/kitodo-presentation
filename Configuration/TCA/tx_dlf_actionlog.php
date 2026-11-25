@@ -10,6 +10,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+$t3ver = (new TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+
 return [
     'ctrl' => [
         'title'     => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_actionlog',
@@ -19,11 +21,7 @@ return [
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlfreport.png',
         'rootLevel' => 0,
-        'searchFields' => 'label,name,crdate',
-    ],
-    'interface' => [
-        'maxDBListItems' => 25,
-        'maxSingleDBListItems' => 50,
+        ...($t3ver >= 14 ? [] : ['searchFields' => 'label,name,crdate']),
     ],
     'columns' => [
         'label' => [
@@ -64,6 +62,7 @@ return [
                 'max' => 255,
                 'eval' => 'alphanum_x,unique',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'count_pages' => [

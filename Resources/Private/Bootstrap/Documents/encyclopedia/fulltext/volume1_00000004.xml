@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="178" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="142" VPOS="950" HPOS="100">
+                        <String CONTENT="El" HEIGHT="32" WIDTH="28" VPOS="950" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="Dorado" HEIGHT="32" WIDTH="105" VPOS="950" HPOS="137"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="703" VPOS="1016" HPOS="100">
+                        <String CONTENT="El" HEIGHT="32" WIDTH="28" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="Dorado" HEIGHT="32" WIDTH="105" VPOS="1016" HPOS="137"/>
+                        <SP/>
+                        <String CONTENT="is" HEIGHT="32" WIDTH="23" VPOS="1016" HPOS="251"/>
+                        <SP/>
+                        <String CONTENT="a" HEIGHT="32" WIDTH="18" VPOS="1016" HPOS="283"/>
+                        <SP/>
+                        <String CONTENT="city" HEIGHT="32" WIDTH="48" VPOS="1016" HPOS="310"/>
+                        <SP/>
+                        <String CONTENT="of" HEIGHT="32" WIDTH="27" VPOS="1016" HPOS="367"/>
+                        <SP/>
+                        <String CONTENT="gold" HEIGHT="32" WIDTH="60" VPOS="1016" HPOS="403"/>
+                        <SP/>
+                        <String CONTENT="in" HEIGHT="32" WIDTH="25" VPOS="1016" HPOS="472"/>
+                        <SP/>
+                        <String CONTENT="the" HEIGHT="32" WIDTH="44" VPOS="1016" HPOS="506"/>
+                        <SP/>
+                        <String CONTENT="mountains." HEIGHT="32" WIDTH="157" VPOS="1016" HPOS="559"/>
+                        <SP/>
+                        <String CONTENT="Many" HEIGHT="32" WIDTH="78" VPOS="1016" HPOS="725"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="489" VPOS="1062" HPOS="100">
+                        <String CONTENT="searched" HEIGHT="32" WIDTH="132" VPOS="1062" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="for" HEIGHT="32" WIDTH="37" VPOS="1062" HPOS="241"/>
+                        <SP/>
+                        <String CONTENT="it," HEIGHT="32" WIDTH="25" VPOS="1062" HPOS="287"/>
+                        <SP/>
+                        <String CONTENT="none" HEIGHT="32" WIDTH="71" VPOS="1062" HPOS="321"/>
+                        <SP/>
+                        <String CONTENT="returned" HEIGHT="32" WIDTH="119" VPOS="1062" HPOS="401"/>
+                        <SP/>
+                        <String CONTENT="rich." HEIGHT="32" WIDTH="60" VPOS="1062" HPOS="529"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

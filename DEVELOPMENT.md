@@ -5,8 +5,8 @@
 Before running any of the tests, please install the project dependencies. Choose which version of TYPO3 you would like to test against.
 
 ```bash
-composer install-via-docker -- -t 12.4
 composer install-via-docker -- -t 13.4
+composer install-via-docker -- -t 14.3
 ```
 
 ### Quick Start

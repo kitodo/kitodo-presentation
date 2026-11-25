@@ -1,0 +1,187 @@
+# Showcase demo: all major features of Kitodo.Presentation
+
+label: 'Showcase demo'
+siteSet: kitodo/presentation-demo
+basePath: /demo-showcase/
+
+generatePlaceholderImages: true
+documents:
+  - name: monograph
+  - name: manuscript
+  - name: letter
+  - name: map
+    pageSize: [1400, 1000]
+  - name: handbook
+  - name: encyclopedia
+    index:
+      - volume1.xml
+      - volume2.xml
+  - name: newspaper
+    index:
+      - 1912-01-04.xml
+      - 1912-01-11.xml
+      - 1912-02-01.xml
+      - 1913-03-15.xml
+
+pluginSettings:
+  solrcore: '{solrCore}'
+  targetPidPageView: '{page:viewer}'
+  targetBasket: '{page:basket}'
+  basketButton: 1
+
+siteSettings:
+  # Shows the login status in the menu
+  demo.loginPid: '{page:login}'
+
+records:
+  fe_groups:
+    demoGroup:
+      page: users
+      title: 'Demo users'
+  fe_users:
+    demoUser:
+      page: users
+      username: demo
+      password: 'Pass123!'
+      name: 'Demo User'
+      usergroup: '{record:demoGroup}'
+
+root:
+  title: 'Kitodo.Presentation Showcase'
+  backend_layout: Home
+  content:
+    - CType: dlf_search
+      settings:
+        targetPid: '{page:results}'
+        fulltext: 1
+        suggest: 1
+    - CType: dlf_collection
+      header: 'Collections'
+      settings:
+        targetPid: '{page:results}'
+    - CType: dlf_statistics
+      header: 'Statistics'
+      settings:
+        description: 'This demo contains ###TITLES### and ###VOLUMES###.'
+
+pages:
+  storage:
+    title: 'Kitodo Storage'
+    doktype: 254
+
+  users:
+    title: 'Frontend Users'
+    doktype: 254
+
+  results:
+    title: 'Search Results'
+    backend_layout: SearchResultList
+    content:
+      - CType: dlf_search
+        slot: header
+        settings:
+          targetPid: '{page:results}'
+          fulltext: 1
+          datesearch: 1
+          extendedSlotCount: 3
+          extendedFields: 'title,author,place,year'
+      - CType: dlf_listview
+        slot: main
+        settings:
+          getTitle: 1
+          limit: 5
+      # Second search plugin showing only the facets, its search form is hidden by CSS.
+      - CType: dlf_search
+        slot: sidebar
+        header: 'Facets'
+        settings:
+          targetPid: '{page:results}'
+          facets: 'type,collection,author,year,place,language'
+          resetFacets: 1
+
+  viewer:
+    title: 'Viewer'
+    backend_layout: Viewer
+    # Only useful with a selected document
+    nav_hide: 1
+    content:
+      - CType: dlf_toolbox
+        slot: main
+        settings:
+          tools: 'zoomTool,rotationTool,imageManipulationTool,imageDownloadTool,fulltextTool,fulltextDownloadTool,searchInDocumentTool'
+      - CType: dlf_pageview
+        slot: main
+        settings:
+          basket.crop: 1
+          basket.magnifier: 1
+      - CType: dlf_navigation
+        slot: main
+        settings:
+          targetPid: '{page:results}'
+      - CType: dlf_calendar
+        slot: calendar
+        settings:
+          targetPid: '{page:viewer}'
+      - CType: dlf_tableofcontents
+        slot: sidebar
+        header: 'Table of contents'
+        settings:
+          targetPid: '{page:viewer}'
+      - CType: dlf_metadata
+        slot: sidebar
+        header: 'Metadata'
+        settings:
+          targetPid: '{page:viewer}'
+          # Metadata of all levels of the current page, e.g. monograph, chapter and section of the handbook
+          rootline: 1
+      - CType: dlf_pagegrid
+        slot: pages
+        settings:
+          targetPid: '{page:viewer}'
+          # Few thumbnails per page, so that the pagination is shown for documents with more pages (e.g. the handbook)
+          paginate.itemsPerPage: 4
+
+  basket:
+    title: 'Basket'
+    backend_layout: Home
+    content:
+      - CType: dlf_basket
+        header: 'Basket'
+        settings:
+          # There is no PDF service in the demo, so downloading the basket does not work.
+          pdfgenerate: 'https://pdf.example.org/generate/'
+
+  login:
+    title: 'Login'
+    backend_layout: Home
+    content:
+      - CType: text
+        header: 'Demo user'
+        bodytext: '<p>Log in as user <strong>demo</strong> with password <strong>Pass123!</strong>.</p>'
+      - CType: felogin_login
+        header: 'Login'
+        settings:
+          pages: '{page:users}'
+
+  feeds:
+    title: 'RSS Feed'
+    backend_layout: Feeds
+    content:
+      - CType: dlf_feeds
+        settings:
+          title: 'Kitodo.Presentation Showcase'
+          description: 'Recently added documents'
+          library: '{library}'
+          limit: 10
+          prependSuperiorTitle: 1
+          targetPid: '{page:viewer}'
+
+  oai:
+    title: 'OAI-PMH'
+    backend_layout: OaiPmh
+    content:
+      - CType: dlf_oaipmh
+        settings:
+          library: '{library}'
+          limit: 5
+          expired: 1800

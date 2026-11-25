@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="178" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="238" VPOS="950" HPOS="100">
+                        <String CONTENT="2.2" HEIGHT="32" WIDTH="44" VPOS="950" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="Paper" HEIGHT="32" WIDTH="85" VPOS="950" HPOS="153"/>
+                        <SP/>
+                        <String CONTENT="Roses" HEIGHT="32" WIDTH="91" VPOS="950" HPOS="247"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="777" VPOS="1016" HPOS="100">
+                        <String CONTENT="The" HEIGHT="32" WIDTH="55" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="paper" HEIGHT="32" WIDTH="82" VPOS="1016" HPOS="164"/>
+                        <SP/>
+                        <String CONTENT="rose" HEIGHT="32" WIDTH="62" VPOS="1016" HPOS="255"/>
+                        <SP/>
+                        <String CONTENT="rustles" HEIGHT="32" WIDTH="94" VPOS="1016" HPOS="326"/>
+                        <SP/>
+                        <String CONTENT="like" HEIGHT="32" WIDTH="48" VPOS="1016" HPOS="429"/>
+                        <SP/>
+                        <String CONTENT="old" HEIGHT="32" WIDTH="43" VPOS="1016" HPOS="486"/>
+                        <SP/>
+                        <String CONTENT="letters." HEIGHT="32" WIDTH="96" VPOS="1016" HPOS="538"/>
+                        <SP/>
+                        <String CONTENT="Its" HEIGHT="32" WIDTH="34" VPOS="1016" HPOS="643"/>
+                        <SP/>
+                        <String CONTENT="petals" HEIGHT="32" WIDTH="85" VPOS="1016" HPOS="686"/>
+                        <SP/>
+                        <String CONTENT="can" HEIGHT="32" WIDTH="52" VPOS="1016" HPOS="780"/>
+                        <SP/>
+                        <String CONTENT="be" HEIGHT="32" WIDTH="36" VPOS="1016" HPOS="841"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="675" VPOS="1062" HPOS="100">
+                        <String CONTENT="written" HEIGHT="32" WIDTH="94" VPOS="1062" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="on," HEIGHT="32" WIDTH="44" VPOS="1062" HPOS="203"/>
+                        <SP/>
+                        <String CONTENT="and" HEIGHT="32" WIDTH="53" VPOS="1062" HPOS="256"/>
+                        <SP/>
+                        <String CONTENT="poets" HEIGHT="32" WIDTH="78" VPOS="1062" HPOS="318"/>
+                        <SP/>
+                        <String CONTENT="use" HEIGHT="32" WIDTH="52" VPOS="1062" HPOS="405"/>
+                        <SP/>
+                        <String CONTENT="them" HEIGHT="32" WIDTH="71" VPOS="1062" HPOS="466"/>
+                        <SP/>
+                        <String CONTENT="for" HEIGHT="32" WIDTH="37" VPOS="1062" HPOS="546"/>
+                        <SP/>
+                        <String CONTENT="short" HEIGHT="32" WIDTH="71" VPOS="1062" HPOS="592"/>
+                        <SP/>
+                        <String CONTENT="verses." HEIGHT="32" WIDTH="103" VPOS="1062" HPOS="672"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

@@ -1,0 +1,107 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* Page view plugin: the map needs an explicit height, the background shows the edges of white pages. */
+
+.tx-dlf-map {
+    height: 600px;
+    background: #eee;
+}
+
+/* Container of the magnifier, which is positioned relative to the page view */
+.frame-type-dlf_pageview {
+    position: relative;
+}
+
+/*
+ * Basket controls below the map (if enabled in the plugin): links to set and remove a cutout and to toggle the
+ * magnifier, and the form "add to basket" (only hidden fields and the submit button), all as buttons in a row.
+ */
+.frame-type-dlf_pageview > :is(.tx-dlf-navigation-edit, .tx-dlf-navigation-editRemove, .tx-dlf-navigation-magnifier, .tx-dlf-interaction-addbasket) {
+    display: inline-block;
+    margin: var(--demo-space-s) var(--demo-space-s) 0 0;
+}
+
+.frame-type-dlf_pageview > :is(.tx-dlf-navigation-edit, .tx-dlf-navigation-editRemove, .tx-dlf-navigation-magnifier) a {
+    display: inline-block;
+    padding: var(--demo-control-padding);
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    color: var(--demo-text);
+    background: #fff;
+    text-decoration: none;
+}
+
+.frame-type-dlf_pageview > :is(.tx-dlf-navigation-edit, .tx-dlf-navigation-editRemove, .tx-dlf-navigation-magnifier) a:hover {
+    background: var(--demo-hover);
+}
+
+.tx-dlf-interaction-addbasket form {
+    margin: 0;
+}
+
+/*
+ * Icons instead of text, as in the toolbox. The text is kept in the markup, but hidden by a font size of 0, so the
+ * icon defines the size of the button. The title of the links and the button is shown as tooltip.
+ */
+.frame-type-dlf_pageview > :is(.tx-dlf-navigation-edit, .tx-dlf-navigation-editRemove, .tx-dlf-navigation-magnifier) a[title],
+.tx-dlf-interaction-addbasket button[title] {
+    padding: 0;
+    font-size: 0;
+}
+
+.frame-type-dlf_pageview > :is(.tx-dlf-navigation-edit, .tx-dlf-navigation-editRemove, .tx-dlf-navigation-magnifier) a[title]::before,
+.tx-dlf-interaction-addbasket button[title]::before {
+    display: inline-block;
+    min-width: 1.2em;
+    padding: var(--demo-control-padding);
+    font-size: var(--demo-font-size);
+    text-align: center;
+}
+
+/* Dotted square */
+.tx-dlf-navigation-edit a[title]::before {
+    content: "\2B1A";
+}
+
+/* Ballot box with X */
+.tx-dlf-navigation-editRemove a[title]::before {
+    content: "\2612";
+}
+
+/*
+ * Telephone recorder (looks like a magnifying glass), which appears smaller than the others; scaling does not change
+ * the size of the button.
+ */
+.tx-dlf-navigation-magnifier a[title]::before {
+    content: "\2315";
+    transform: scale(1.5);
+}
+
+/* White star, as the basket links of the table of contents */
+.tx-dlf-interaction-addbasket button[title]::before {
+    content: "\2606";
+}
+
+/* Magnifier at the top right of the map, hidden until it is shown by the link "Magnifier" */
+#ov_map {
+    display: none;
+    position: absolute;
+    top: var(--demo-space-m);
+    right: var(--demo-space-m);
+    z-index: 2;
+    width: 300px;
+    height: 300px;
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    background: #eee;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 20%);
+    overflow: hidden;
+}

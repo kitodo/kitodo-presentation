@@ -18,316 +18,153 @@ $excludeList = 'layout,select_key,pages,recursive';
 $addList = 'pi_flexform';
 
 $flexFormsPathPrefix = 'FILE:EXT:dlf/Configuration/FlexForms/';
-$iconsDirectory = 'EXT:dlf/Resources/Public/Icons/';
 $langFile = 'LLL:EXT:dlf/Resources/Private/Language/locallang_be.xlf:';
 $title = '.plugin.title';
+$description = '.plugin.description';
+$pluginGroup = 'dlf';
 
-// Plugin "annotation".
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'Annotation',
-    $langFile . 'annotation' . $title,
+$pluginDefinitions = [
+    [
+        'name' => 'Annotation',
+        'langKey' => 'annotation',
+        'icon' => null,
+        'flexFormFile' => null
+    ],
+    [
+        'name' => 'Basket',
+        'langKey' => 'basket',
+        'icon' => 'tx-dlf-basket',
+        'flexFormFile' => 'Basket.xml'
+    ],
+    [
+        'name' => 'Calendar',
+        'langKey' => 'calendar',
+        'icon' => 'tx-dlf-calendar',
+        'flexFormFile' => 'Calendar.xml'
+    ],
+    [
+        'name' => 'Collection',
+        'langKey' => 'collection',
+        'icon' => 'tx-dlf-collection',
+        'flexFormFile' => 'Collection.xml'
+    ],
+    [
+        'name' => 'Embedded3dViewer',
+        'langKey' => 'embedded3dViewer',
+        'icon' => 'tx-dlf-embedded3dviewer',
+        'flexFormFile' => 'Embedded3dViewer.xml'
+    ],
+    [
+        'name' => 'Validation',
+        'langKey' => 'validation',
+        'icon' => 'tx-dlf-validation',
+        'flexFormFile' => 'Validation.xml'
+    ],
+    [
+        'name' => 'Feeds',
+        'langKey' => 'feeds',
+        'icon' => 'tx-dlf-feeds',
+        'flexFormFile' => 'Feeds.xml'
+    ],
+    [
+        'name' => 'ListView',
+        'langKey' => 'listView',
+        'icon' => 'tx-dlf-listview',
+        'flexFormFile' => 'ListView.xml'
+    ],
+    [
+        'name' => 'MediaPlayer',
+        'langKey' => 'mediaPlayer',
+        'icon' => 'tx-dlf-mediaplayer',
+        'flexFormFile' => 'MediaPlayer.xml'
+    ],
+    [
+        'name' => 'Metadata',
+        'langKey' => 'metadata',
+        'icon' => 'tx-dlf-metadata',
+        'flexFormFile' => 'Metadata.xml'
+    ],
+    [
+        'name' => 'Navigation',
+        'langKey' => 'navigation',
+        'icon' => 'tx-dlf-navigation',
+        'flexFormFile' => 'Navigation.xml'
+    ],
+    [
+        'name' => 'OaiPmh',
+        'langKey' => 'oaiPmh',
+        'icon' => 'tx-dlf-oaipmh',
+        'flexFormFile' => 'OaiPmh.xml'
+    ],
+    [
+        'name' => 'PageGrid',
+        'langKey' => 'pageGrid',
+        'icon' => 'tx-dlf-pagegrid',
+        'flexFormFile' => 'PageGrid.xml'
+    ],
+    [
+        'name' => 'PageView',
+        'langKey' => 'pageView',
+        'icon' => 'tx-dlf-pageview',
+        'flexFormFile' => 'PageView.xml'
+    ],
+    [
+        'name' => 'Search',
+        'langKey' => 'search',
+        'icon' => 'tx-dlf-search',
+        'flexFormFile' => 'Search.xml'
+    ],
+    [
+        'name' => 'Statistics',
+        'langKey' => 'statistics',
+        'icon' => 'tx-dlf-statistics',
+        'flexFormFile' => 'Statistics.xml'
+    ],
+    [
+        'name' => 'TableOfContents',
+        'langKey' => 'tableOfContents',
+        'icon' => 'tx-dlf-tableofcontents',
+        'flexFormFile' => 'TableOfContents.xml'
+    ],
+    [
+        'name' => 'Toolbox',
+        'langKey' => 'toolbox',
+        'icon' => 'tx-dlf-toolbox',
+        'flexFormFile' => 'Toolbox.xml'
+    ]
+];
+
+// Create wizard item group for all plugins
+TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTcaSelectItemGroup(
+    'tt_content',
+    'CType',
+    $pluginGroup,
+    'Kitodo Plugins',
 );
 
-// Plugin "basket".
-$plugin = 'dlf_basket';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'Basket.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'Basket',
-    $langFile . 'basket' . $title,
-    $iconsDirectory . 'tx-dlf-basket.svg'
-);
-
-// Plugin "calendar".
-$plugin = 'dlf_calendar';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'Calendar.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'Calendar',
-    $langFile . 'calendar' . $title,
-    $iconsDirectory . 'tx-dlf-calendar.svg'
-);
-
-// Plugin "collection".
-$plugin = 'dlf_collection';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'Collection.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'Collection',
-    $langFile . 'collection' . $title,
-    $iconsDirectory . 'tx-dlf-collection.svg'
-);
-
-// Plugin "embedded3dviewer".
-$plugin = 'dlf_embedded3dviewer';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    'dlf_embedded3dviewer',
-    $flexFormsPathPrefix . 'Embedded3dViewer.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'Embedded3dViewer',
-    $langFile . 'embedded3dViewer' . $title,
-    $iconsDirectory . 'tx-dlf-embedded3dviewer.svg'
-);
-
-// Plugin "validation".
-$plugin = 'dlf_validation';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    'dlf_validation',
-    $flexFormsPathPrefix . 'Validation.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'Validation',
-    $langFile . 'validation' . $title,
-    $iconsDirectory . 'tx-dlf-validation.svg'
-);
-
-// Plugin "feeds".
-$plugin = 'dlf_feeds';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'Feeds.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'Feeds',
-    $langFile . 'feeds' . $title,
-    $iconsDirectory . 'tx-dlf-feeds.svg'
-);
-
-// Plugin "listview".
-$plugin = 'dlf_listview';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'ListView.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'ListView',
-    $langFile . 'listView' . $title,
-    $iconsDirectory . 'tx-dlf-listview.svg'
-);
-
-// Plugin "mediaplayer".
-$plugin = 'dlf_mediaplayer';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'MediaPlayer.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'MediaPlayer',
-    $langFile . 'mediaPlayer' . $title,
-    $iconsDirectory . 'tx-dlf-mediaplayer.svg'
-);
-
-// Plugin "metadata".
-$plugin = 'dlf_metadata';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'Metadata.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'Metadata',
-    $langFile . 'metadata' . $title,
-    $iconsDirectory . 'tx-dlf-metadata.svg'
-);
-
-// Plugin "navigation".
-$plugin = 'dlf_navigation';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'Navigation.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'Navigation',
-    $langFile . 'navigation' . $title,
-    $iconsDirectory . 'tx-dlf-navigation.svg'
-);
-
-// Plugin "oaipmh".
-$plugin = 'dlf_oaipmh';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'OaiPmh.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'OaiPmh',
-    $langFile . 'oaiPmh' . $title,
-    $iconsDirectory . 'tx-dlf-oaipmh.svg'
-);
-
-// Plugin "pagegrid".
-$plugin = 'dlf_pagegrid';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'PageGrid.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'PageGrid',
-    $langFile . 'pageGrid' . $title,
-    $iconsDirectory . 'tx-dlf-pagegrid.svg'
-);
-
-// Plugin "pageview".
-$plugin = 'dlf_pageview';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'PageView.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'PageView',
-    $langFile . 'pageView' . $title,
-    $iconsDirectory . 'tx-dlf-pageview.svg'
-);
-
-// Plugin "search".
-$plugin = 'dlf_search';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'Search.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'Search',
-    $langFile . 'search' . $title,
-    $iconsDirectory . 'tx-dlf-search.svg'
-);
-
-// Plugin "statistics".
-$plugin = 'dlf_statistics';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'Statistics.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'Statistics',
-    $langFile . 'statistics' . $title,
-    $iconsDirectory . 'tx-dlf-statistics.svg'
-);
-
-// Plugin "tableofcontents".
-$plugin = 'dlf_tableofcontents';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'TableOfContents.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'TableOfContents',
-    $langFile . 'tableOfContents' . $title,
-    $iconsDirectory . 'tx-dlf-tableofcontents.svg'
-);
-
-// Plugin "toolbox".
-$plugin = 'dlf_toolbox';
-
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_excludelist'][$plugin] = $excludeList;
-$GLOBALS['TCA']['tt_content']['types']['list']['subtypes_addlist'][$plugin] = $addList;
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
-    $plugin,
-    $flexFormsPathPrefix . 'Toolbox.xml'
-);
-
-\TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
-    'Dlf',
-    'Toolbox',
-    $langFile . 'toolbox' . $title,
-    $iconsDirectory . 'tx-dlf-toolbox.svg'
-);
+foreach ($pluginDefinitions as $pluginDefinition) {
+    $pluginSignature = \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerPlugin(
+        'Dlf',
+        $pluginDefinition['name'],
+        $langFile . $pluginDefinition['langKey'] . $title,
+        $pluginDefinition['icon'],
+        $pluginGroup,
+        $langFile . $pluginDefinition['langKey'] . $description,
+        empty($pluginDefinition['flexFormFile']) ? '' : $flexFormsPathPrefix . $pluginDefinition['flexFormFile']
+    );
+
+    if (!empty($pluginDefinition['flexFormFile'])) {
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+            'tt_content',
+            '--div--;Configuration,pi_flexform,',
+            $pluginSignature,
+            'after:subheader',
+        );
+
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPiFlexFormValue(
+            '*',
+            $flexFormsPathPrefix . $pluginDefinition['flexFormFile'],
+            $pluginSignature,
+        );
+    }
+}

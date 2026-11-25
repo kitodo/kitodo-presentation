@@ -1,0 +1,208 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* List view plugin: search results with index, thumbnail, metadata and actions side by side, and pagination. */
+
+/* Heading ("Search for ...") and information about the results in the same unobtrusive style */
+.tx-dlf-listview-label,
+.tx-dlf-search-numHits,
+.tx-dlf-sortinfo {
+    margin: 0 0 var(--demo-space-m);
+    font-size: 1em;
+    font-weight: normal;
+    color: var(--demo-muted);
+}
+
+.tx-dlf-listview .tx-dlf-search-form {
+    margin-bottom: var(--demo-space-m);
+}
+
+.tx-dlf-listview .tx-dlf-search-form label {
+    margin-right: var(--demo-space-xs);
+}
+
+.tx-dlf-listview .tx-dlf-search-form select + label {
+    margin-left: var(--demo-space-m);
+}
+
+.tx-dlf-abstracts,
+.tx-dlf-volume {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/*
+ * Every result in three columns: index, link with thumbnail and metadata, and on the right the link "add to basket"
+ * above the button "show more". Volumes or full text hits of the result are listed below across all columns.
+ * As grid, the entry has no list marker, so the index is shown from the "value" of the entry as set by the template.
+ */
+.tx-dlf-abstracts > li,
+.tx-dlf-volume > li {
+    display: grid;
+    grid-template-columns: 2em 1fr auto;
+    grid-template-rows: auto 1fr;
+    column-gap: var(--demo-space-s);
+    color: var(--demo-muted);
+}
+
+.tx-dlf-abstracts > li {
+    padding: var(--demo-space-s) 0;
+    border-bottom: var(--demo-border-width) solid var(--demo-border);
+}
+
+.tx-dlf-abstracts > li::before,
+.tx-dlf-volume > li::before {
+    content: attr(value) ".";
+    grid-column: 1;
+    grid-row: 1;
+    padding-top: var(--demo-space-xs);
+    text-align: right;
+}
+
+.tx-dlf-abstracts > li > a,
+.tx-dlf-volume > li > a {
+    display: flex;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    gap: var(--demo-space-m);
+    align-items: flex-start;
+    padding: var(--demo-space-xs);
+    border-radius: var(--demo-radius);
+    color: var(--demo-text);
+    text-decoration: none;
+}
+
+/* The whole entry is highlighted on hover, but not the result while one of its volumes is hovered */
+:is(.tx-dlf-abstracts, .tx-dlf-volume) > li:hover:not(:has(.tx-dlf-volume:hover)) {
+    background: var(--demo-hover);
+}
+
+/* Link "add to basket" (in a div) */
+:is(.tx-dlf-abstracts, .tx-dlf-volume) > li > div {
+    grid-column: 3;
+    grid-row: 1;
+    padding: var(--demo-space-xs) var(--demo-space-s) 0 0;
+    text-align: right;
+}
+
+/*
+ * Volumes of a multi-volume work, years of a newspaper and full text hits on pages, listed below their document on a
+ * tinted background. The button "show more" is meant to show and hide them, but requires JavaScript, which the
+ * extension does not provide.
+ */
+.tx-dlf-morevolumes {
+    grid-column: 3;
+    grid-row: 2;
+    justify-self: end;
+    align-self: start;
+    margin: var(--demo-space-s) var(--demo-space-s) 0 0;
+}
+
+.tx-dlf-volume {
+    grid-column: 1 / -1;
+    margin: var(--demo-space-s) 0 0 var(--demo-space-l);
+    padding: var(--demo-space-xs);
+    background: var(--demo-background);
+    border-radius: var(--demo-radius);
+}
+
+.tx-dlf-volume > li + li {
+    border-top: var(--demo-border-width) solid var(--demo-border);
+}
+
+/* Years of a newspaper are links without thumbnail and metadata */
+.tx-dlf-volume > li.years > a {
+    padding: var(--demo-space-s);
+}
+
+/* Thumbnails of different aspect ratio centered in boxes of the same size */
+.tx-dlf-listview-thumbnail {
+    display: flex;
+    flex: 0 0 var(--demo-thumbnail-size);
+    justify-content: center;
+}
+
+/*
+ * Documents without pages (e.g. the title record of a multi-volume work or newspaper) have no thumbnail, so the
+ * template renders an empty container. A placeholder in the size of a portrait page indicates that there is no preview.
+ */
+.tx-dlf-listview-thumbnail:empty::before {
+    content: "";
+    width: calc(var(--demo-thumbnail-size) * 5 / 7);
+    height: var(--demo-thumbnail-size);
+    box-sizing: border-box;
+    border: var(--demo-border-width) solid var(--demo-border);
+    background: no-repeat center / 80% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 12'%3E%3Ctext x='30' y='9' fill='%23667085' font-family='sans-serif' font-size='9' text-anchor='middle'%3ENo preview%3C/text%3E%3C/svg%3E");
+}
+
+.tx-dlf-listview-thumbnail img {
+    display: block;
+    box-sizing: border-box;
+    max-width: 100%;
+    max-height: var(--demo-thumbnail-size);
+    border: var(--demo-border-width) solid var(--demo-border);
+}
+
+.tx-dlf-abstracts dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0 var(--demo-space-m);
+    margin: 0;
+}
+
+.tx-dlf-abstracts dt {
+    color: var(--demo-muted);
+}
+
+.tx-dlf-abstracts dd {
+    margin: 0;
+}
+
+.tx-dlf-abstracts dd.tx-dlf-title {
+    font-weight: 600;
+    color: var(--demo-accent);
+}
+
+.tx-dlf-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--demo-space-xs);
+    margin: var(--demo-space-m) 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tx-dlf-pagination a,
+.tx-dlf-pagination span {
+    display: inline-block;
+    min-width: 1em;
+    padding: var(--demo-control-padding);
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    text-align: center;
+}
+
+.tx-dlf-pagination a:hover {
+    background: var(--demo-hover);
+    text-decoration: none;
+}
+
+.tx-dlf-pagination .tx-dlf-pagination-current a {
+    color: #fff;
+    border-color: var(--demo-accent);
+    background: var(--demo-accent);
+}
+
+.tx-dlf-pagination .disabled span {
+    color: var(--demo-muted);
+    opacity: 0.6;
+}

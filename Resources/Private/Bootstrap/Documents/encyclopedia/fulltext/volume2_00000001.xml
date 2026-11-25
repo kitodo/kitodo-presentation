@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="178" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="91" VPOS="950" HPOS="100">
+                        <String CONTENT="Lilliput" HEIGHT="32" WIDTH="91" VPOS="950" HPOS="100"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="795" VPOS="1016" HPOS="100">
+                        <String CONTENT="Lilliput" HEIGHT="32" WIDTH="91" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="is" HEIGHT="32" WIDTH="23" VPOS="1016" HPOS="200"/>
+                        <SP/>
+                        <String CONTENT="a" HEIGHT="32" WIDTH="18" VPOS="1016" HPOS="232"/>
+                        <SP/>
+                        <String CONTENT="country" HEIGHT="32" WIDTH="105" VPOS="1016" HPOS="259"/>
+                        <SP/>
+                        <String CONTENT="of" HEIGHT="32" WIDTH="27" VPOS="1016" HPOS="373"/>
+                        <SP/>
+                        <String CONTENT="tiny" HEIGHT="32" WIDTH="50" VPOS="1016" HPOS="409"/>
+                        <SP/>
+                        <String CONTENT="people." HEIGHT="32" WIDTH="105" VPOS="1016" HPOS="468"/>
+                        <SP/>
+                        <String CONTENT="Its" HEIGHT="32" WIDTH="34" VPOS="1016" HPOS="582"/>
+                        <SP/>
+                        <String CONTENT="emperor" HEIGHT="32" WIDTH="119" VPOS="1016" HPOS="625"/>
+                        <SP/>
+                        <String CONTENT="rules" HEIGHT="32" WIDTH="69" VPOS="1016" HPOS="753"/>
+                        <SP/>
+                        <String CONTENT="from" HEIGHT="32" WIDTH="64" VPOS="1016" HPOS="831"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="476" VPOS="1062" HPOS="100">
+                        <String CONTENT="a" HEIGHT="32" WIDTH="18" VPOS="1062" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="palace" HEIGHT="32" WIDTH="94" VPOS="1062" HPOS="127"/>
+                        <SP/>
+                        <String CONTENT="no" HEIGHT="32" WIDTH="36" VPOS="1062" HPOS="230"/>
+                        <SP/>
+                        <String CONTENT="larger" HEIGHT="32" WIDTH="82" VPOS="1062" HPOS="275"/>
+                        <SP/>
+                        <String CONTENT="than" HEIGHT="32" WIDTH="62" VPOS="1062" HPOS="366"/>
+                        <SP/>
+                        <String CONTENT="a" HEIGHT="32" WIDTH="18" VPOS="1062" HPOS="437"/>
+                        <SP/>
+                        <String CONTENT="cabinet." HEIGHT="32" WIDTH="112" VPOS="1062" HPOS="464"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

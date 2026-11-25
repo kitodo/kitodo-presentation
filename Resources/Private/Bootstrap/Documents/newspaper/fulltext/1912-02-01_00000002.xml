@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="132" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="121" VPOS="950" HPOS="100">
+                        <String CONTENT="Weather" HEIGHT="32" WIDTH="121" VPOS="950" HPOS="100"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="634" VPOS="1016" HPOS="100">
+                        <String CONTENT="Mild" HEIGHT="32" WIDTH="59" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="and" HEIGHT="32" WIDTH="53" VPOS="1016" HPOS="168"/>
+                        <SP/>
+                        <String CONTENT="rainy." HEIGHT="32" WIDTH="78" VPOS="1016" HPOS="230"/>
+                        <SP/>
+                        <String CONTENT="The" HEIGHT="32" WIDTH="55" VPOS="1016" HPOS="317"/>
+                        <SP/>
+                        <String CONTENT="ice" HEIGHT="32" WIDTH="41" VPOS="1016" HPOS="381"/>
+                        <SP/>
+                        <String CONTENT="on" HEIGHT="32" WIDTH="36" VPOS="1016" HPOS="431"/>
+                        <SP/>
+                        <String CONTENT="the" HEIGHT="32" WIDTH="44" VPOS="1016" HPOS="476"/>
+                        <SP/>
+                        <String CONTENT="lake" HEIGHT="32" WIDTH="59" VPOS="1016" HPOS="529"/>
+                        <SP/>
+                        <String CONTENT="is" HEIGHT="32" WIDTH="23" VPOS="1016" HPOS="597"/>
+                        <SP/>
+                        <String CONTENT="unsafe." HEIGHT="32" WIDTH="105" VPOS="1016" HPOS="629"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>

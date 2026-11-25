@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Demo full text of the Kitodo.Presentation bootstrap mechanism, drawn into the generated placeholder images. -->
+<alto xmlns="http://www.loc.gov/standards/alto/ns-v2#">
+    <Description>
+        <MeasurementUnit>pixel</MeasurementUnit>
+    </Description>
+    <Layout>
+        <Page ID="Page1" HEIGHT="1400" WIDTH="1000">
+            <PrintSpace HEIGHT="1400" WIDTH="1000" VPOS="0" HPOS="0">
+                <TextBlock ID="Block1" HEIGHT="244" WIDTH="800" VPOS="950" HPOS="100" language="en">
+                    <TextLine ID="Line1" HEIGHT="32" WIDTH="271" VPOS="950" HPOS="100">
+                        <String CONTENT="Chapter" HEIGHT="32" WIDTH="114" VPOS="950" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="2:" HEIGHT="32" WIDTH="27" VPOS="950" HPOS="223"/>
+                        <SP/>
+                        <String CONTENT="Flowers" HEIGHT="32" WIDTH="112" VPOS="950" HPOS="259"/>
+                    </TextLine>
+                    <TextLine ID="Line2" HEIGHT="32" WIDTH="215" VPOS="1016" HPOS="100">
+                        <String CONTENT="2.1" HEIGHT="32" WIDTH="44" VPOS="1016" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="Moon" HEIGHT="32" WIDTH="80" VPOS="1016" HPOS="153"/>
+                        <SP/>
+                        <String CONTENT="Lilies" HEIGHT="32" WIDTH="73" VPOS="1016" HPOS="242"/>
+                    </TextLine>
+                    <TextLine ID="Line3" HEIGHT="32" WIDTH="757" VPOS="1082" HPOS="100">
+                        <String CONTENT="The" HEIGHT="32" WIDTH="55" VPOS="1082" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="moon" HEIGHT="32" WIDTH="80" VPOS="1082" HPOS="164"/>
+                        <SP/>
+                        <String CONTENT="lily" HEIGHT="32" WIDTH="37" VPOS="1082" HPOS="253"/>
+                        <SP/>
+                        <String CONTENT="opens" HEIGHT="32" WIDTH="87" VPOS="1082" HPOS="299"/>
+                        <SP/>
+                        <String CONTENT="only" HEIGHT="32" WIDTH="59" VPOS="1082" HPOS="395"/>
+                        <SP/>
+                        <String CONTENT="under" HEIGHT="32" WIDTH="82" VPOS="1082" HPOS="463"/>
+                        <SP/>
+                        <String CONTENT="a" HEIGHT="32" WIDTH="18" VPOS="1082" HPOS="554"/>
+                        <SP/>
+                        <String CONTENT="full" HEIGHT="32" WIDTH="41" VPOS="1082" HPOS="581"/>
+                        <SP/>
+                        <String CONTENT="moon." HEIGHT="32" WIDTH="89" VPOS="1082" HPOS="631"/>
+                        <SP/>
+                        <String CONTENT="Its" HEIGHT="32" WIDTH="34" VPOS="1082" HPOS="729"/>
+                        <SP/>
+                        <String CONTENT="petals" HEIGHT="32" WIDTH="85" VPOS="1082" HPOS="772"/>
+                    </TextLine>
+                    <TextLine ID="Line4" HEIGHT="32" WIDTH="413" VPOS="1128" HPOS="100">
+                        <String CONTENT="shine" HEIGHT="32" WIDTH="76" VPOS="1128" HPOS="100"/>
+                        <SP/>
+                        <String CONTENT="silver" HEIGHT="32" WIDTH="75" VPOS="1128" HPOS="185"/>
+                        <SP/>
+                        <String CONTENT="and" HEIGHT="32" WIDTH="53" VPOS="1128" HPOS="269"/>
+                        <SP/>
+                        <String CONTENT="smell" HEIGHT="32" WIDTH="75" VPOS="1128" HPOS="331"/>
+                        <SP/>
+                        <String CONTENT="of" HEIGHT="32" WIDTH="27" VPOS="1128" HPOS="415"/>
+                        <SP/>
+                        <String CONTENT="rain." HEIGHT="32" WIDTH="62" VPOS="1128" HPOS="451"/>
+                    </TextLine>
+                </TextBlock>
+            </PrintSpace>
+        </Page>
+    </Layout>
+</alto>
