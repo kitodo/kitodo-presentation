@@ -52,10 +52,10 @@ return [
         'doc_ids' => [
             'label' => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_basket.docIds',
             'config' => [
-                'type' => 'input',
-                'size' => 30,
-                'max' => 255,
-                'eval' => 'alphanum_x',
+                'type' => 'text',
+                'cols' => 30,
+                'rows' => 5,
+                'readOnly' => true,
                 'default' => '',
             ],
         ],

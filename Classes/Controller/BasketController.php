@@ -41,6 +41,12 @@ class BasketController extends AbstractController
 {
     /**
      * @access protected
+     * @var mixed[] The arguments of this plugin ('tx_dlf_basket' namespace, query string and request body)
+     */
+    protected array $basketArguments = [];
+
+    /**
+     * @access protected
      * @var BasketRepository
      */
     protected BasketRepository $basketRepository;
@@ -112,6 +118,18 @@ class BasketController extends AbstractController
     }
 
     /**
+     * Read the plugin form arguments submitted via POST.
+     *
+     * @access protected
+     *
+     * @return void
+     */
+    protected function initializeAction(): void
+    {
+        $this->basketArguments = $this->request->getArguments();
+    }
+
+    /**
      * Different actions which depends on the chosen action (form)
      *
      * @access public
@@ -125,18 +143,18 @@ class BasketController extends AbstractController
         $basket = $this->getBasketData();
 
         // action remove from basket
-        if (($this->requestData['basket_action'] ?? '') === 'remove') {
+        if (($this->basketArguments['basket_action'] ?? '') === 'remove') {
             // remove entry from list
-            if (isset($this->requestData['selected'])) {
-                $basket = $this->removeFromBasket($this->requestData, $basket);
+            if (isset($this->basketArguments['selected'])) {
+                $basket = $this->removeFromBasket($this->basketArguments, $basket);
             }
         }
         // action remove from basket
-        if (($this->requestData['basket_action'] ?? '') == 'download') {
+        if (($this->basketArguments['basket_action'] ?? '') == 'download') {
             // open selected documents
-            if (isset($this->requestData['selected'])) {
+            if (isset($this->basketArguments['selected'])) {
                 $pdfUrl = $this->settings['pdfgenerate'];
-                foreach ($this->requestData['selected'] as $docValue) {
+                foreach ($this->basketArguments['selected'] as $docValue) {
                     if ($docValue['id']) {
                         $docData = $this->getDocumentData($docValue['id'], $docValue) ?: [];
                         $pdfUrl .= $docData['urlParams'] . $this->settings['pdfparamseparator'];
@@ -146,15 +164,15 @@ class BasketController extends AbstractController
             }
         }
         // action print from basket
-        if ($this->requestData['print_action'] ?? false) {
+        if ($this->basketArguments['print_action'] ?? false) {
             // open selected documents
-            if (isset($this->requestData['selected'])) {
+            if (isset($this->basketArguments['selected'])) {
                 $this->printDocument();
             }
         }
         // action send mail
-        if ($this->requestData['mail_action'] ?? false) {
-            if (isset($this->requestData['selected'])) {
+        if ($this->basketArguments['mail_action'] ?? false) {
+            if (isset($this->basketArguments['selected'])) {
                 $this->sendMail();
             }
         }
@@ -176,10 +194,10 @@ class BasketController extends AbstractController
         $basket = $this->getBasketData();
 
         if (
-            !empty($this->requestData['id'])
-            && $this->requestData['addToBasket']
+            !empty($this->basketArguments['id'])
+            && !empty($this->basketArguments['addToBasket'])
         ) {
-            $basket = $this->addToBasket($this->requestData, $basket);
+            $basket = $this->addToBasket($this->basketArguments, $basket);
         }
 
         return $this->redirect('main');
@@ -272,6 +290,7 @@ class BasketController extends AbstractController
         if ($basket === null) {
             // create new basket in db
             $basket = GeneralUtility::makeInstance(Basket::class);
+            $basket->setPid(max(0, (int) $this->settings['storagePid']));
             $basket->setSessionId($userSession->getIdentifier());
             $basket->setFeUserId($userIsLoggedIn ? $feUser->getUserId() : 0);
         }
@@ -304,13 +323,7 @@ class BasketController extends AbstractController
 
             $docData = $this->getDocumentData($id, $data);
 
-            $entryKey = $id . '_' . $startPage;
-            if (!empty($startX)) {
-                $entryKey .= '_' . $startX;
-            }
-            if (!empty($endX)) {
-                $entryKey .= '_' . $endX;
-            }
+            $entryKey = $this->getEntryKey($data);
 
             if ($docData !== false) {
                 $entry = [
@@ -371,9 +384,9 @@ class BasketController extends AbstractController
             }
             if ($data['startpage'] == $data['endpage']) {
                 // One page
-                $info .= htmlspecialchars(LocalizationUtility::translate('page', 'dlf')) . ' ' . $data['startpage'];
+                $info .= htmlspecialchars(LocalizationUtility::translate('basket.page', 'dlf')) . ' ' . $data['startpage'];
             } else {
-                $info .= htmlspecialchars(LocalizationUtility::translate('page', 'dlf')) . ' ' . $data['startpage'] . '-' . $data['endpage'];
+                $info .= htmlspecialchars(LocalizationUtility::translate('basket.page', 'dlf')) . ' ' . $data['startpage'] . '-' . $data['endpage'];
             }
             $downloadLink = '<a href="' . $downloadUrl . '" target="_blank">' . htmlspecialchars($title) . '</a> (' . $info . ')';
             if ($data['startpage'] == $data['endpage']) {
@@ -452,12 +465,7 @@ class BasketController extends AbstractController
             ];
 
             // update basket
-            if (!empty(json_decode($basket->getDocIds()))) {
-                $items = json_decode($basket->getDocIds());
-                $items = get_object_vars($items);
-            } else {
-                $items = [];
-            }
+            $items = $this->getBasketItems($basket);
             // get document instance to load further information
             $this->loadDocument($documentItem['id']);
             if ($this->isDocMissing()) {
@@ -467,26 +475,26 @@ class BasketController extends AbstractController
             // set endpage for toc and subentry based on logid
             if (($piVars['addToBasket'] == 'subentry') or ($piVars['addToBasket'] == 'toc')) {
                 $smLinks = $this->document->getCurrentDocument()->smLinks;
-                $pageCounter = count($smLinks['l2p'][$piVars['logId']]);
-                $documentItem['endpage'] = ($documentItem['startpage'] + $pageCounter) - 1;
+                $pageCounter = count($smLinks['l2p'][$piVars['logId'] ?? ''] ?? []);
+                if ($pageCounter > 0) {
+                    $documentItem['endpage'] = ($documentItem['startpage'] + $pageCounter) - 1;
+                }
             }
             // add whole document
             if ($piVars['addToBasket'] == 'list') {
                 $documentItem['endpage'] = $this->document->getCurrentDocument()->numPages;
             }
-            $arrayKey = $documentItem['id'] . '_' . $page;
-            if (!empty($documentItem['startX'])) {
-                $arrayKey .= '_' . $documentItem['startX'];
+            // a single page if no end page is given
+            if ($documentItem['endpage'] === '' || $documentItem['endpage'] < $documentItem['startpage']) {
+                $documentItem['endpage'] = $documentItem['startpage'];
             }
-            if (!empty($documentItem['endX'])) {
-                $arrayKey .= '_' . $documentItem['endX'];
-            }
+            $arrayKey = $this->getEntryKey($documentItem);
             // do not add more than one identical object
-            if (!in_array($arrayKey, $items)) {
+            if (!isset($items[$arrayKey])) {
                 $items[$arrayKey] = $documentItem;
 
                 $pdfGenerateUrl = $this->getPdfGenerationUrl($documentItem);
-                if ($this->settings['pregeneration']) {
+                if (!empty($this->settings['pregeneration'])) {
                     // send ajax request to webapp
                     $output .= '
      <script>
@@ -551,31 +559,22 @@ class BasketController extends AbstractController
      */
     protected function removeFromBasket(array $piVars, Basket $basket): Basket
     {
-        if (!empty($basket->getDocIds())) {
-            $items = json_decode($basket->getDocIds());
-            $items = get_object_vars($items);
-        }
+        $items = $this->getBasketItems($basket);
         foreach ($piVars['selected'] as $value) {
-            if (isset($value['id'])) {
-                $arrayKey = $value['id'] . '_' . $value['startpage'];
-                if (!empty($value['startX'])) {
-                    $arrayKey .= '_' . $value['startX'];
-                }
-                if (!empty($value['endX'])) {
-                    $arrayKey .= '_' . $value['endX'];
-                }
-                if (isset($items[$arrayKey])) {
-                    unset($items[$arrayKey]);
-                }
+            // Unchecked entries are submitted with an empty id (hidden field of the checkbox).
+            if (is_array($value) && !empty($value['id'])) {
+                unset($items[$this->getEntryKey($value)]);
             }
         }
-        $update = null;
+        $update = '';
         if (!empty($items)) {
-            $update = json_encode($items) ?: null;
+            $update = json_encode($items) ?: '';
         }
 
         $basket->setDocIds($update);
-        $this->basketRepository->update($basket);
+        if ($basket->getUid() !== null) {
+            $this->basketRepository->update($basket);
+        }
 
         return $basket;
     }
@@ -590,7 +589,7 @@ class BasketController extends AbstractController
     protected function sendMail(): void
     {
         // send mail
-        $mailId = $this->requestData['mail_action'];
+        $mailId = $this->basketArguments['mail_action'];
 
         /** @var Mail $mailObject */
         $mailObject = $this->mailRepository->findByUid((int) $mailId);
@@ -599,7 +598,7 @@ class BasketController extends AbstractController
         $numberOfPages = 0;
         $pdfUrl = $this->settings['pdfdownload'];
         // prepare links
-        foreach ($this->requestData['selected'] as $docValue) {
+        foreach ($this->basketArguments['selected'] as $docValue) {
             if ($docValue['id']) {
                 $explodeId = explode("_", $docValue['id']);
                 $docData = $this->getDocumentData($explodeId[0], $docValue);
@@ -670,7 +669,7 @@ class BasketController extends AbstractController
     {
         $pdfUrl = $this->settings['pdfprint'];
         $numberOfPages = 0;
-        foreach ($this->requestData['selected'] as $docId => $docValue) {
+        foreach ($this->basketArguments['selected'] as $docId => $docValue) {
             if ($docValue['id']) {
                 $docData = $this->getDocumentData($docValue['id'], $docValue);
                 if ($docData !== false) {
@@ -680,7 +679,7 @@ class BasketController extends AbstractController
             }
         }
         // get printer data
-        $printerId = $this->requestData['print_action'];
+        $printerId = $this->basketArguments['print_action'];
 
         // get id from db and send selected doc download link
         $printer = $this->printerRepository->findByUid($printerId);
@@ -689,7 +688,7 @@ class BasketController extends AbstractController
         if ($printer) {
             $pdfUrl = $printer->getPrint();
             $numberOfPages = 0;
-            foreach ($this->requestData['selected'] as $docId => $docValue) {
+            foreach ($this->basketArguments['selected'] as $docId => $docValue) {
                 if ($docValue['id']) {
                     $explodeId = explode("_", $docId);
                     $docData = $this->getDocumentData($explodeId[0], $docValue);
@@ -723,6 +722,47 @@ class BasketController extends AbstractController
         $this->actionLogRepository->add($actionLog);
 
         $this->redirectToUri($pdfUrl);
+    }
+
+    /**
+     * Get the entries stored in the basket.
+     *
+     * @access private
+     *
+     * @param Basket $basket basket object
+     *
+     * @return array<string,mixed[]> basket entries indexed by entry key
+     */
+    private function getBasketItems(Basket $basket): array
+    {
+        $items = json_decode($basket->getDocIds() ?? '', true);
+        return is_array($items) ? $items : [];
+    }
+
+    /**
+     * Build the key identifying a basket entry (document, page range and optional cutout).
+     *
+     * The same key is used to store, render and remove an entry, so that identical
+     * entries are only added once.
+     *
+     * @access private
+     *
+     * @param mixed[] $item basket entry or submitted entry data
+     *
+     * @return string the entry key
+     */
+    private function getEntryKey(array $item): string
+    {
+        $startPage = (int) ($item['startpage'] ?? 0);
+        $endPage = (int) ($item['endpage'] ?? 0) ?: $startPage;
+        $key = ($item['id'] ?? '') . '_' . $startPage . '_' . $endPage;
+        if (!empty($item['startX'])) {
+            $key .= '_' . $item['startX'];
+        }
+        if (!empty($item['endX'])) {
+            $key .= '_' . $item['endX'];
+        }
+        return $key;
     }
 
     /**

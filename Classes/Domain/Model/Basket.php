@@ -61,7 +61,7 @@ class Basket extends AbstractEntity
      */
     public function setDocIds(?string $docIds): void
     {
-        $this->docIds = $docIds;
+        $this->docIds = $docIds ?? '';
     }
 
     /**

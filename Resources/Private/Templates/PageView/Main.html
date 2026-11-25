@@ -42,7 +42,8 @@
     </f:if>
 
     <div class="tx-dlf-interaction-addbasket">
-        <f:form id="addToBasketForm" pluginName="basket" controller="Basket" action="add" additionalParams="{'tx_dlf[addToBasket]': '1'}" absolute="{forceAbsoluteUrl}" pageUid="{settings.targetBasket}" fieldNamePrefix="tx_dlf">
+        <f:form id="addToBasketForm" pluginName="Basket" controller="Basket" action="add" absolute="{forceAbsoluteUrl}" pageUid="{settings.targetBasket}">
+            <f:form.hidden name="addToBasket" value="1"/>
             <f:form.hidden name="id" value="{docId}" id="id"/>
             <f:form.hidden name="startpage" value="{page}" id="startpage"/>
             <f:form.hidden name="endpage" value="{page}" id="endpage"/>
