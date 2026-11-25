@@ -15,6 +15,7 @@ namespace Kitodo\Dlf\Tests\Functional\Api;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Http\Message\ResponseInterface;
+use TYPO3\CMS\Core\Crypto\HashService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\Framework\Frontend\InternalRequest;
 
@@ -45,7 +46,8 @@ class PageViewProxyDisabledTest extends FunctionalTestCase
     public function cannotAccessPageWhenProxyIsDisabled(): void
     {
         $targetUrl = 'http://web:8001/Tests/Fixtures/PageViewProxy/test.txt';
-        $uHash = GeneralUtility::hmac($targetUrl, 'PageViewProxy');
+        $hashService = GeneralUtility::makeInstance(HashService::class);
+        $uHash = $hashService->hmac($targetUrl, 'PageViewProxy');
 
         $response = $this->queryProxy([
             'url' => $targetUrl,

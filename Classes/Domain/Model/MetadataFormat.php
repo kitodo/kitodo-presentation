@@ -60,9 +60,9 @@ class MetadataFormat extends AbstractEntity
      * Collection of ``tx_dlf_metadatasubentries`` specified with this metadata entry.
      *
      * @var \TYPO3\CMS\Extbase\Persistence\ObjectStorage<MetadataSubentry>
-     * @Extbase\ORM\Lazy
-     * @Extbase\ORM\Cascade("remove")
      */
+    #[Extbase\ORM\Lazy]
+    #[Extbase\ORM\Cascade(['value' => 'remove'])]
     protected $subentries;
 
     /**

@@ -1,0 +1,44 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* Collection plugin: collections as a list of cards with their number of titles. */
+
+.tx-dlf-collection-list {
+    display: grid;
+    gap: var(--demo-space-s);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tx-dlf-collection-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--demo-space-m);
+    padding: var(--demo-space-s) var(--demo-space-m);
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+}
+
+.tx-dlf-collection-item:hover {
+    background: var(--demo-hover);
+}
+
+.tx-dlf-collection-item h2 {
+    margin: 0;
+    font-size: 1em;
+}
+
+.tx-dlf-collection-counts {
+    margin: 0;
+    font-size: var(--demo-font-size-small);
+    color: var(--demo-muted);
+}

@@ -1,0 +1,153 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* Calendar plugin: the years of a newspaper as tiles, the issues of a year as a grid of month calendars. */
+
+.tx-dlf-calendar-years,
+.tx-dlf-calendar {
+    padding: var(--demo-space-l);
+}
+
+/* Header with the link to all years of the newspaper (and the current year) */
+.tx-dlf-calendar-meta-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--demo-space-m);
+    padding-bottom: var(--demo-space-m);
+    border-bottom: var(--demo-border-width) solid var(--demo-border);
+}
+
+.tx-dlf-calendar-meta-header .tx-dlf-calendar-year {
+    font-size: var(--demo-font-size-heading);
+    font-weight: bold;
+}
+
+.tx-dlf-calendar-meta-hint-year {
+    color: var(--demo-muted);
+}
+
+/* Years as tiles */
+.tx-dlf-calendar-year-view ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--demo-space-l);
+    margin: var(--demo-space-l) 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tx-dlf-calendar-year-view li > * {
+    display: block;
+    min-width: 6em;
+    margin: 0;
+    padding: var(--demo-space-l) var(--demo-space-m);
+    font-size: 1.4em;
+    text-align: center;
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+}
+
+.tx-dlf-calendar-year-view a {
+    text-decoration: none;
+    color: var(--demo-accent);
+    background: var(--demo-background);
+}
+
+.tx-dlf-calendar-year-view a:hover {
+    background: var(--demo-hover);
+}
+
+.tx-dlf-calendar-year-empty p {
+    color: var(--demo-muted);
+}
+
+/*
+ * The calendar view and the list view of the issues are both shown below each other. Switching between them requires
+ * JavaScript, which the plugin does not provide, so the switch has no function.
+ */
+.tx-dlf-calendar-list-selection {
+    display: flex;
+    gap: var(--demo-space-m);
+}
+
+.tx-dlf-calendar-list-view ul {
+    margin: var(--demo-space-l) 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.tx-dlf-calendar-list-view li {
+    display: flex;
+    gap: var(--demo-space-m);
+    padding: var(--demo-space-xs) 0;
+    border-bottom: var(--demo-border-width) solid var(--demo-border);
+}
+
+/* Months as a grid of small calendars */
+.tx-dlf-calendar-calendar-view {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16em, 1fr));
+    gap: var(--demo-space-l);
+    margin-top: var(--demo-space-l);
+}
+
+/* Year heading in front of the first month of a year */
+.tx-dlf-calendar-calendar-view > .tx-dlf-calendar-year {
+    grid-column: 1 / -1;
+    font-size: var(--demo-font-size-heading);
+    font-weight: bold;
+}
+
+.tx-dlf-calendar-month table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.tx-dlf-calendar-month caption {
+    padding-bottom: var(--demo-space-s);
+    font-weight: bold;
+}
+
+.tx-dlf-calendar-month th {
+    font-size: var(--demo-font-size-small);
+    font-weight: normal;
+    color: var(--demo-muted);
+}
+
+.tx-dlf-calendar-month td {
+    width: calc(100% / 7);
+    padding: var(--demo-space-xs);
+    vertical-align: top;
+    color: var(--demo-muted);
+}
+
+/* The day is wrapped in a paragraph by the template */
+.tx-dlf-calendar-issues p {
+    margin: 0;
+}
+
+/* Days with issues: the day is highlighted and its issues are listed below */
+.tx-dlf-calendar-issues h4 {
+    margin: 0;
+    font-size: 1em;
+    color: #fff;
+    background: var(--demo-accent);
+    border-radius: var(--demo-radius);
+}
+
+.tx-dlf-calendar-day-link-list ul {
+    margin: var(--demo-space-xs) 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--demo-font-size-small);
+}

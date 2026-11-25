@@ -46,6 +46,11 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
                     'tx_dlf_doc' => [
                         'backend' => \TYPO3\CMS\Core\Cache\Backend\NullBackend::class,
                     ],
+                    'extbase' => [
+                        // use TransientMemoryBackend to avoid https://forge.typo3.org/issues/110909
+                        // until patch https://review.typo3.org/c/Packages/TYPO3.CMS/+/96351 is merged
+                        'backend' => \TYPO3\CMS\Core\Cache\Backend\TransientMemoryBackend::class
+                    ]
                 ],
             ],
             'displayErrors' => '1'
@@ -122,6 +127,10 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         // individual tests; reset it so that no document loaded by a
         // previous test (possibly with different settings) leaks in.
         DocumentCacheManager::resetPool();
+        // The same applies to the static caches of the indexer.
+        Helper::resetIndexNameCache();
+        Indexer::resetProcessedDocs();
+        Indexer::resetIndexConf();
 
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
 

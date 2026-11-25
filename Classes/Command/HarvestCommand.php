@@ -143,7 +143,7 @@ class HarvestCommand extends BaseCommand
         if ($this->owner) {
             $baseUrl = $this->owner->getOaiBase();
         } else {
-            $io->error('Required parameter --lib|-l is not a valid UID.');
+            $io->error('Required parameter --owner|-o is not a valid UID.');
             return Command::FAILURE;
         }
         if (!GeneralUtility::isValidUrl($baseUrl)) {

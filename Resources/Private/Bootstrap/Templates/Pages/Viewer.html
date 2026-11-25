@@ -1,0 +1,69 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:comment>
+    (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+
+    This file is part of the Kitodo and TYPO3 projects.
+
+    @license GNU General Public License version 3 or later.
+    For the full copyright and license information, please read the
+    LICENSE.txt file that was distributed with this source code.
+
+    Page template of the viewer of the Kitodo.Presentation demo site sets, with a sidebar on the left.
+    For newspapers and years (isCalendar), the calendar is shown instead of the main content (toolbox, page view, ...).
+    For audio, video and 3D objects (mediaType), the media player or 3D viewer is shown instead of the main content.
+    The content of the slot "pages" (e.g. the page grid) is shown in a sidebar on the right, except for newspapers,
+    years and media, which have no page images.
+</f:comment>
+
+<div class="demo-viewer">
+    <f:render partial="Menu" arguments="{_all}" />
+
+    <f:if condition="{contentHeader}">
+        <header id="demo-header" class="demo-header">
+            <f:format.raw>{contentHeader}</f:format.raw>
+        </header>
+    </f:if>
+
+    <div class="demo-columns">
+        <aside id="demo-sidebar" class="demo-panel demo-panel-left">
+            <div class="demo-heading">Document</div>
+            <div class="demo-panel-content demo-sidebar">
+                <f:format.raw>{contentSidebar}</f:format.raw>
+            </div>
+        </aside>
+        <f:if condition="{isCalendar}">
+            <f:then>
+                <main id="demo-main" class="demo-main demo-calendar">
+                    <div class="demo-heading">Calendar</div>
+                    <f:format.raw>{contentCalendar}</f:format.raw>
+                </main>
+            </f:then>
+            <f:else if="{mediaType}">
+                <main id="demo-main" class="demo-main demo-media">
+                    <div class="demo-heading">{f:if(condition: '{mediaType} == \'object\'', then: '3D Viewer', else: 'Media Player')}</div>
+                    <f:format.raw>{contentMedia}</f:format.raw>
+                </main>
+            </f:else>
+            <f:else>
+                <main id="demo-main" class="demo-main">
+                    <div class="demo-heading">Viewer</div>
+                    <f:format.raw>{contentMain}</f:format.raw>
+                </main>
+                <f:if condition="{contentPages}">
+                    <aside id="demo-pages" class="demo-panel demo-panel-right">
+                        <div class="demo-heading">Pages</div>
+                        <div class="demo-panel-content">
+                            <f:format.raw>{contentPages}</f:format.raw>
+                        </div>
+                    </aside>
+                </f:if>
+            </f:else>
+        </f:if>
+    </div>
+
+    <f:render partial="Footer" arguments="{_all}" />
+</div>
+
+</html>

@@ -78,12 +78,12 @@ Options:
             - functional: PHP functional tests
             - unit (default): PHP unit tests
 
-    -t <12.4|13.4>
+    -t <13.4|14.3>
         Only with -s composerInstall
         Specifies which TYPO3 version to install. When unset, installs either the packages from
         composer.lock, or the latest version otherwise (default behavior of "composer install").
-            - 12.4
             - 13.4
+            - 14.3
 
     -a <mysqli|pdo_mysql>
         Only with -s functional
@@ -115,11 +115,12 @@ Options:
         Specifies on which version of mysql tests are performed
             - 8.0 (default)
 
-    -p <8.2|8.3|8.4>
+    -p <8.2|8.3|8.4|8.5>
         Specifies the PHP minor version to be used
             - 8.2: use PHP 8.2 (default)
             - 8.3: use PHP 8.3
             - 8.4: use PHP 8.4
+            - 8.5: use PHP 8.5
 
     -e "<phpunit options>"
         Only with -s functional|functionalDeprecated|unit|unitDeprecated|unitRandom|acceptance
@@ -220,7 +221,7 @@ while getopts ":a:s:t:d:i:j:p:e:xy:whuv" OPT; do
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(8.2|8.3|8.4)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(8.2|8.3|8.4|8.5)$ ]]; then
                 INVALID_OPTIONS+=("${OPTARG}")
             fi
             ;;
