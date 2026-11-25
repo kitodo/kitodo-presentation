@@ -62,7 +62,7 @@ class IndexCommand extends BaseCommand
                 'pid',
                 'p',
                 InputOption::VALUE_REQUIRED,
-                'UID of the page the document should be added to.'
+                'Page UID of the Kitodo.Presentation data folder.'
             )
             ->addOption(
                 'solr',

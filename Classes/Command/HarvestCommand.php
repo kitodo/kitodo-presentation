@@ -63,7 +63,7 @@ class HarvestCommand extends BaseCommand
                 'pid',
                 'p',
                 InputOption::VALUE_REQUIRED,
-                'UID of the page the documents should be added to.'
+                'Page UID of the Kitodo.Presentation data folder.'
             )
             ->addOption(
                 'solr',
