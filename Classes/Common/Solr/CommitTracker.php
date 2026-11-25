@@ -13,7 +13,7 @@
 namespace Kitodo\Dlf\Common\Solr;
 
 /**
- * Keeps track of the number of documents added to a Solr core without a commit, 
+ * Keeps track of the number of documents added to a Solr core without a commit,
  * so that the index is committed only after a certain number of documents, e.g., 100.
  *
  * Usage:
