@@ -31,7 +31,9 @@ use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Site\SiteFinder;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
  * Creates a demo site (page tree, site configuration, tenant records and plugin content elements)
@@ -220,7 +222,7 @@ class BootstrapService
                 ],
             ],
         ]);
-        $this->siteWriter->writeSettings($siteIdentifier, [
+        $this->siteWriter->writeSettings($siteIdentifier, $this->addScenarioSiteSettings([
             'plugin' => [
                 'tx_dlf' => [
                     'persistence' => [
@@ -229,13 +231,15 @@ class BootstrapService
                     ],
                 ],
             ],
-        ]);
+        ], $scenario['siteSettings'] ?? [], $solrCoreUid));
 
         $metsUrls = $this->createDocuments($scenarioName, $scenario, $baseUrl);
         $this->runInTransaction(fn () => $this->indexDocuments($metsUrls, $solrCoreUid));
 
         // The content is created after indexing, since the library (owner) of the documents is created by the ingest.
-        $this->runInTransaction(fn () => $this->createContent($solrCoreUid, $this->ingestService->getOwner()?->getUid() ?? 0, $scenario['pluginSettings'] ?? []));
+        $libraryUid = $this->ingestService->getOwner()?->getUid() ?? 0;
+        $this->runInTransaction(fn () => $this->createContent($solrCoreUid, $libraryUid, $scenario['pluginSettings'] ?? []));
+        $this->runInTransaction(fn () => $this->createRecords($scenario['records'] ?? [], $solrCoreUid, $libraryUid));
 
         return $this->pageUids;
     }
@@ -467,17 +471,117 @@ class BootstrapService
                 $data['tt_content']['NEW' . ++$count] = $contentElement;
             }
         }
+        $this->replacePlaceholders($data, $this->getPlaceholderReplacements($solrCoreUid, $libraryUid));
+        // Process in reverse order, since every new content element is inserted as first element of its page.
+        $this->process($data, [], true);
+    }
+
+    /**
+     * Create additional records with resolved placeholders, e.g. frontend users.
+     *
+     * Records may reference each other by the placeholder "{record:<key>}", which is resolved by DataHandler,
+     * since all records are created at once.
+     *
+     * @access protected
+     *
+     * @param mixed[] $records Record definitions indexed by table and their scenario key
+     * @param int $solrCoreUid
+     * @param int $libraryUid UID of the library owning the demo documents
+     *
+     * @return void
+     */
+    protected function createRecords(array $records, int $solrCoreUid, int $libraryUid): void
+    {
+        if (empty($records)) {
+            return;
+        }
+        $data = [];
+        $replacements = $this->getPlaceholderReplacements($solrCoreUid, $libraryUid);
+        foreach ($records as $table => $tableRecords) {
+            if (!isset($GLOBALS['TCA'][$table])) {
+                throw new \InvalidArgumentException('Unknown table "' . $table . '" of demo records', 1764072001);
+            }
+            foreach ($tableRecords as $key => $record) {
+                $pageKey = $record['page'] ?? 'storage';
+                if (!isset($this->pageUids[$pageKey])) {
+                    throw new \InvalidArgumentException('Unknown page "' . $pageKey . '" of demo record "' . $key . '"', 1764072002);
+                }
+                unset($record['page']);
+                $record['pid'] = $this->pageUids[$pageKey];
+                $data[$table]['NEW' . $key] = $record;
+                $replacements['{record:' . $key . '}'] = 'NEW' . $key;
+            }
+        }
+        $this->replacePlaceholders($data, $replacements);
+        $this->process($data, []);
+    }
+
+    /**
+     * Add the site settings of the scenario with resolved placeholders to the given site settings.
+     *
+     * The site settings are written before the documents are ingested, so the placeholder "{library}" is not available.
+     *
+     * @access protected
+     *
+     * @param mixed[] $settings Site settings
+     * @param mixed[] $scenarioSettings Site settings of the scenario indexed by their name, e.g. "demo.loginPid"
+     * @param int $solrCoreUid
+     *
+     * @return mixed[] Site settings including the settings of the scenario
+     */
+    protected function addScenarioSiteSettings(array $settings, array $scenarioSettings, int $solrCoreUid): array
+    {
+        $replacements = $this->getPlaceholderReplacements($solrCoreUid, 0);
+        unset($replacements['{library}']);
+        foreach ($scenarioSettings as $name => $value) {
+            if (is_string($value)) {
+                $value = strtr($value, $replacements);
+                // Placeholders of UIDs are replaced by strings
+                if (MathUtility::canBeInterpretedAsInteger($value)) {
+                    $value = (int) $value;
+                }
+            }
+            $settings = ArrayUtility::setValueByPath($settings, (string) $name, $value, '.');
+        }
+        return $settings;
+    }
+
+    /**
+     * Get the replacements of the placeholders available in content elements and records.
+     *
+     * @access protected
+     *
+     * @param int $solrCoreUid
+     * @param int $libraryUid UID of the library owning the demo documents
+     *
+     * @return array<string, string> Replacement values indexed by placeholder
+     */
+    protected function getPlaceholderReplacements(int $solrCoreUid, int $libraryUid): array
+    {
         $replacements = ['{solrCore}' => (string) $solrCoreUid, '{library}' => (string) $libraryUid];
         foreach ($this->pageUids as $key => $uid) {
             $replacements['{page:' . $key . '}'] = (string) $uid;
         }
+        return $replacements;
+    }
+
+    /**
+     * Replace the placeholders in all string values of the given data.
+     *
+     * @access protected
+     *
+     * @param mixed[] $data passed by reference
+     * @param array<string, string> $replacements Replacement values indexed by placeholder
+     *
+     * @return void
+     */
+    protected function replacePlaceholders(array &$data, array $replacements): void
+    {
         array_walk_recursive($data, function (&$value) use ($replacements) {
             if (is_string($value)) {
                 $value = strtr($value, $replacements);
             }
         });
-        // Process in reverse order, since every new content element is inserted as first element of its page.
-        $this->process($data, [], true);
     }
 
     /**

@@ -57,6 +57,8 @@ pages:
 | `pluginSettings`            | no       | Settings applied to all plugins, see [Content elements](#content-elements).                  |
 | `root`                      | no       | Fields of the root page, see [Page fields](#page-fields).                                    |
 | `pages`                     | yes      | Subpages of the root page, see [Pages](#pages).                                              |
+| `records`                   | no       | Additional records, e.g. frontend users, see [Records](#records).                            |
+| `siteSettings`              | no       | Additional site settings, see [Site settings](#site-settings).                               |
 | `documents`                 | no       | Demo documents of the scenario, see [Documents](#documents).                                 |
 | `generatePlaceholderImages` | no       | Generate the page images of the documents, see [Documents](#documents). Defaults to `false`. |
 
@@ -130,17 +132,46 @@ the list view for the search plugin, but to the page view for the table of conte
 
 The available settings of each plugin are defined in `Configuration/FlexForms/`.
 
+### Records
+
+`records` is a map of tables, each containing a map of records to create, e.g. the frontend users of the demo:
+
+```yaml
+records:
+  fe_groups:
+    demoGroup:
+      page: users
+      title: 'Demo users'
+  fe_users:
+    demoUser:
+      page: users
+      username: demo
+      password: 'Pass123!'
+      usergroup: '{record:demoGroup}'
+```
+
+The key of each record is used to reference it in other records (see [Placeholders](#placeholders)) and must be unique
+within the scenario. Any field of the table can be set. In addition, a record supports the following key:
+
+| Key    | Description                                                                         |
+|--------|-------------------------------------------------------------------------------------|
+| `page` | Key of the page the record is stored on, see [Pages](#pages). Defaults to `storage`. |
+
+The records are created via DataHandler after the content elements, so the configuration of the table (TCA) applies,
+e.g. passwords of frontend users are hashed and have to fulfill the password policy of the frontend.
+
 ### Placeholders
 
-Field and setting values of content elements may contain placeholders, which are replaced after all pages, tenant
-records and documents have been created:
+Field and setting values of content elements and records may contain placeholders, which are replaced after all
+pages, tenant records and documents have been created:
 
-| Placeholder    | Replaced with                                                                       |
-|----------------|-------------------------------------------------------------------------------------|
-| `{page:<key>}` | UID of the page with the given key, e.g. `{page:search}`.                           |
-| `{page:root}`  | UID of the root page.                                                               |
-| `{solrCore}`   | UID of the Solr core record in the storage folder.                                  |
-| `{library}`    | UID of the library owning the documents (created by the ingest, `0` without documents). |
+| Placeholder      | Replaced with                                                                       |
+|------------------|-------------------------------------------------------------------------------------|
+| `{page:<key>}`   | UID of the page with the given key, e.g. `{page:search}`.                           |
+| `{page:root}`    | UID of the root page.                                                               |
+| `{solrCore}`     | UID of the Solr core record in the storage folder.                                  |
+| `{library}`      | UID of the library owning the documents (created by the ingest, `0` without documents). |
+| `{record:<key>}` | UID of the record with the given key (only in [records](#records), e.g. the group of a user). |
 
 ### Documents
 
@@ -174,3 +205,20 @@ The following site settings are written to the site configuration and are availa
 |----------------------------------------|------------------------------------|
 | `plugin.tx_dlf.persistence.storagePid`  | UID of the page with key `storage` |
 | `plugin.tx_dlf.persistence.solrCoreUid` | UID of the Solr core record        |
+
+In addition, the site settings given by `siteSettings` are written, indexed by their name as defined in the
+`settings.definitions.yaml` of a site set, e.g. the login page of the demo site set:
+
+```yaml
+siteSettings:
+  demo.loginPid: '{page:login}'
+```
+
+Values may contain the placeholders `{page:<key>}` and `{solrCore}` (see [Placeholders](#placeholders)), but not
+`{library}`, since the site settings are written before the documents are ingested.
+
+The demo site set (`Configuration/Sets/Demo/settings.definitions.yaml`) provides the following settings:
+
+| Setting         | Description                                                                                          |
+|-----------------|------------------------------------------------------------------------------------------------------|
+| `demo.loginPid` | Page with the login form of frontend users. If set, the menu shows "Not logged in" to visitors who are not logged in (a logged-in user is always shown with a logout link). |
