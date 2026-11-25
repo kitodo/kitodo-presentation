@@ -5,9 +5,11 @@ page {
     # One CSS file per plugin (usable as blueprint when using the plugin), and the layout of the demo page templates.
     # The layout is included last, since it overrides plugin styles in the context of the demo pages.
     includeCSS {
+        demoBasket = EXT:dlf/Resources/Public/Bootstrap/Css/Basket.css
         demoCalendar = EXT:dlf/Resources/Public/Bootstrap/Css/Calendar.css
         demoCollection = EXT:dlf/Resources/Public/Bootstrap/Css/Collection.css
         demoListView = EXT:dlf/Resources/Public/Bootstrap/Css/ListView.css
+        demoLogin = EXT:dlf/Resources/Public/Bootstrap/Css/Login.css
         demoMetadata = EXT:dlf/Resources/Public/Bootstrap/Css/Metadata.css
         demoNavigation = EXT:dlf/Resources/Public/Bootstrap/Css/Navigation.css
         demoPageGrid = EXT:dlf/Resources/Public/Bootstrap/Css/PageGrid.css
@@ -49,6 +51,37 @@ page {
 
         # Versions and git commit shown in the footer
         dataProcessing.20 = Kitodo\Dlf\Bootstrap\DebugInformationProcessor
+    }
+
+    # Status of the frontend user shown in the top navigation mainMenu
+    10.variables.userStatus = COA_INT
+    10.variables.userStatus {
+        stdWrap.required = 1
+        stdWrap.wrap = <li class="demo-user">|</li>
+
+        10 = COA
+        10 {
+            if.isTrue.data = context:frontend.user:isLoggedIn
+
+            10 = TEXT
+            10.data = context:frontend.user:username
+            10.htmlSpecialChars = 1
+            10.noTrimWrap = |<span>User: |</span> |
+
+            20 = TEXT
+            20.value = Logout
+            20.typolink {
+                parameter.data = page:uid
+                additionalParams = &logintype=logout
+            }
+        }
+
+        20 = TEXT
+        20 {
+            if.isFalse.data = context:frontend.user:isLoggedIn
+            if.isTrue = {$demo.loginPid}
+            value = <span>Not logged in</span>
+        }
     }
 }
 

@@ -3,3 +3,4 @@ label: 'Kitodo.Presentation Demo'
 dependencies:
   - kitodo/presentation
   - typo3/fluid-styled-content
+  - typo3/felogin

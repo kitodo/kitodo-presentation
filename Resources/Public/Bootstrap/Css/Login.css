@@ -1,0 +1,56 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/*
+ * Login plugin of the TYPO3 system extension "felogin" (used by the demo for the basket of logged-in users): the
+ * form fields with their labels stacked, the submit button below them.
+ */
+
+.frame-type-felogin_login h3 {
+    margin: 0 0 var(--demo-space-xs);
+    font-size: var(--demo-font-size);
+}
+
+.frame-type-felogin_login p {
+    margin: 0 0 var(--demo-space-m);
+    color: var(--demo-muted);
+}
+
+.frame-type-felogin_login fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: var(--demo-space-s);
+    margin: 0;
+    padding: var(--demo-space-m);
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    background: var(--demo-background);
+}
+
+.frame-type-felogin_login legend {
+    padding: 0 var(--demo-space-xs);
+    font-weight: 600;
+}
+
+.frame-type-felogin_login fieldset > div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--demo-space-xs);
+}
+
+/* The submit button is not stretched to the width of the form */
+.frame-type-felogin_login fieldset > div:has(> input[type="submit"]) {
+    align-items: flex-start;
+}
+
+.frame-type-felogin_login label {
+    font-size: var(--demo-font-size-small);
+    color: var(--demo-muted);
+}

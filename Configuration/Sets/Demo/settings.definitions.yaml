@@ -1,0 +1,10 @@
+categories:
+  kitodoDemo:
+    label: 'Kitodo.Presentation Demo'
+
+settings:
+  demo.loginPid:
+    label: 'Page with the login form of frontend users (0 means the demo has no frontend login)'
+    category: kitodoDemo
+    type: int
+    default: 0
