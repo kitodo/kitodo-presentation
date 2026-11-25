@@ -15,8 +15,10 @@ namespace Kitodo\Dlf\Tests\Functional\Bootstrap;
 use Kitodo\Dlf\Bootstrap\BootstrapService;
 use Kitodo\Dlf\Tests\Functional\FunctionalTestCase;
 use PHPUnit\Framework\Attributes\Test;
+use Symfony\Component\Yaml\Yaml;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\UserAspect;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,6 +27,7 @@ class BootstrapServiceTest extends FunctionalTestCase
 {
     // Required by the site set of the demo sites (kitodo/presentation-demo)
     protected array $coreExtensionsToLoad = [
+        'felogin',
         'fluid_styled_content',
     ];
 
@@ -87,6 +90,30 @@ class BootstrapServiceTest extends FunctionalTestCase
                 ->fetchAssociative();
             self::assertSame($backendLayout, $page['backend_layout'] ?? null);
         }
+
+        // check that the demo frontend user was created (records with "{record:<key>}" reference) with a hashed password
+        $group = $this->getConnectionPool()->getConnectionForTable('fe_groups')
+            ->select(['uid'], 'fe_groups', ['pid' => $pageUids['users'], 'title' => 'Demo users', 'deleted' => 0])
+            ->fetchAssociative();
+        self::assertIsArray($group, 'Demo user group was not created.');
+        $user = $this->getConnectionPool()->getConnectionForTable('fe_users')
+            ->select(['password', 'usergroup'], 'fe_users', ['pid' => $pageUids['users'], 'username' => 'demo', 'deleted' => 0])
+            ->fetchAssociative();
+        self::assertIsArray($user, 'Demo user was not created.');
+        self::assertSame((string) $group['uid'], (string) $user['usergroup']);
+        self::assertNotSame('Pass123!', $user['password'], 'Password of the demo user was not hashed.');
+
+        // check that the login plugin uses the folder of the demo user
+        $flexForm = $this->getConnectionPool()->getConnectionForTable('tt_content')
+            ->select(['pi_flexform'], 'tt_content', ['CType' => 'felogin_login', 'pid' => $pageUids['login'], 'deleted' => 0])
+            ->fetchOne();
+        $settings = GeneralUtility::xml2array((string) $flexForm)['data']['sDEF']['lDEF'] ?? [];
+        self::assertSame((string) $pageUids['users'], $settings['settings.pages']['vDEF'] ?? null);
+
+        // check that the site settings of the scenario were written with resolved placeholders
+        $siteSettings = Yaml::parseFile(Environment::getConfigPath() . '/sites/kitodo-demo-showcase/settings.yaml');
+        self::assertSame($pageUids['login'], $siteSettings['demo']['loginPid'] ?? null);
+        self::assertSame($pageUids['storage'], $siteSettings['plugin']['tx_dlf']['persistence']['storagePid'] ?? null);
 
         // check that the title record of the multi-volume work was added by the ingest of its volumes
         $documents = $this->getConnectionPool()->getConnectionForTable('tx_dlf_documents')

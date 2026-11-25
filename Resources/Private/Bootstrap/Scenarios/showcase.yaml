@@ -1,6 +1,4 @@
-# Showcase demo: all major features except 3D viewer, multimedia playback and music scores, i.e. extended and full text
-# search, multi-level tables of contents, multi-volume works, newspapers with calendar, page grid, basket, RSS feed and
-# OAI-PMH. See README.md for the file format.
+# Showcase demo: all major features of Kitodo.Presentation
 
 label: 'Showcase demo'
 siteSet: kitodo/presentation-demo
@@ -31,6 +29,23 @@ pluginSettings:
   targetBasket: '{page:basket}'
   basketButton: 1
 
+siteSettings:
+  # Shows the login status in the menu
+  demo.loginPid: '{page:login}'
+
+records:
+  fe_groups:
+    demoGroup:
+      page: users
+      title: 'Demo users'
+  fe_users:
+    demoUser:
+      page: users
+      username: demo
+      password: 'Pass123!'
+      name: 'Demo User'
+      usergroup: '{record:demoGroup}'
+
 root:
   title: 'Kitodo.Presentation Showcase'
   backend_layout: Home
@@ -52,6 +67,10 @@ root:
 pages:
   storage:
     title: 'Kitodo Storage'
+    doktype: 254
+
+  users:
+    title: 'Frontend Users'
     doktype: 254
 
   results:
@@ -92,6 +111,9 @@ pages:
           tools: 'zoomTool,rotationTool,imageManipulationTool,imageDownloadTool,fulltextTool,fulltextDownloadTool,searchInDocumentTool'
       - CType: dlf_pageview
         slot: main
+        settings:
+          basket.crop: 1
+          basket.magnifier: 1
       - CType: dlf_navigation
         slot: main
         settings:
@@ -128,6 +150,18 @@ pages:
         settings:
           # There is no PDF service in the demo, so downloading the basket does not work.
           pdfgenerate: 'https://pdf.example.org/generate/'
+
+  login:
+    title: 'Login'
+    backend_layout: Home
+    content:
+      - CType: text
+        header: 'Demo user'
+        bodytext: '<p>Log in as user <strong>demo</strong> with password <strong>Pass123!</strong>.</p>'
+      - CType: felogin_login
+        header: 'Login'
+        settings:
+          pages: '{page:users}'
 
   feeds:
     title: 'RSS Feed'
