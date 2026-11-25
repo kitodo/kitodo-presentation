@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Command;
 
 use Kitodo\Dlf\Common\AbstractDocument;
 use Kitodo\Dlf\Common\Indexer;
+use Kitodo\Dlf\Common\Solr\CommitTracker;
 use Kitodo\Dlf\Domain\Model\Document;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -94,6 +95,15 @@ class HarvestCommand extends BaseCommand
                 null,
                 InputOption::VALUE_NONE,
                 'If this option is set, documents are just added to the index by a soft commit.'
+            )
+            ->addOption(
+                'commit-every',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Commit the Solr index after every N documents instead of after each document, which speeds up'
+                . ' harvesting many documents considerably. Remaining documents are committed at the end. A value'
+                . ' of 1 commits after each document.',
+                '1'
             );
     }
 
@@ -110,9 +120,15 @@ class HarvestCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $dryRun = $input->getOption('dry-run') != false;
+        $softCommit = (bool) $input->getOption('softCommit');
 
         $io = new SymfonyStyle($input, $output);
         $io->title($this->getDescription());
+
+        $commitEvery = $this->getCommitEvery($input);
+        if ($commitEvery === null) {
+            return $this->handleCommitEveryError($io);
+        }
 
         $this->initializeRepositories((int) $input->getOption('pid'));
 
@@ -143,7 +159,7 @@ class HarvestCommand extends BaseCommand
         if ($this->owner) {
             $baseUrl = $this->owner->getOaiBase();
         } else {
-            $io->error('Required parameter --lib|-l is not a valid UID.');
+            $io->error('Required parameter --owner|-o is not a valid UID.');
             return Command::FAILURE;
         }
         if (!GeneralUtility::isValidUrl($baseUrl)) {
@@ -193,6 +209,7 @@ class HarvestCommand extends BaseCommand
 
         // Process all identifiers.
         $baseLocation = $baseUrl . (parse_url($baseUrl, PHP_URL_QUERY) ? '&' : '?');
+        $commitTracker = new CommitTracker($solrCoreUid, $commitEvery, $softCommit);
         foreach ($identifiers as $identifier) {
             // Build OAI GetRecord URL...
             $params = [
@@ -229,11 +246,17 @@ class HarvestCommand extends BaseCommand
                     $io->writeln(date('Y-m-d H:i:s') . ' Indexing ' . $document->getUid() . ' ("' . $document->getLocation() . '") on PID ' . $this->storagePid . ' and Solr core ' . $solrCoreUid . '.');
                 }
                 $document->setCurrentDocument($doc);
+                $commit = $commitTracker->addDocument();
                 // save to database
-                $this->saveToDatabase($document, $input->getOption('softCommit'));
+                $this->saveToDatabase($document, $softCommit, $commit);
                 // add to index
-                Indexer::add($document, $this->documentRepository, $input->getOption('softCommit'));
+                Indexer::add($document, $this->documentRepository, $softCommit, $commit);
             }
+        }
+
+        if (!$commitTracker->commitRemaining()) {
+            $io->error('The Solr index could not be committed. Check TYPO3 log for more details.');
+            return Command::FAILURE;
         }
 
         $io->success('All done!');

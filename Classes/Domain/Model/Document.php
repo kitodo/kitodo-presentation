@@ -181,8 +181,8 @@ class Document extends AbstractEntity
     /**
      * @access protected
      * @var ObjectStorage<Collection>
-     * @Extbase\ORM\Lazy
      */
+    #[Extbase\ORM\Lazy]
     protected $collections = null;
 
     /**
@@ -200,8 +200,8 @@ class Document extends AbstractEntity
     /**
      * @access protected
      * @var Library
-     * @Extbase\ORM\Lazy
      */
+    #[Extbase\ORM\Lazy]
     protected $owner;
 
     /**

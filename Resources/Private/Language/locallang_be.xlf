@@ -35,6 +35,24 @@
             <trans-unit id="basket.plugin.title">
                 <source><![CDATA[Kitodo: Basket]]></source>
             </trans-unit>
+            <trans-unit id="bootstrap.addSite">
+                <source><![CDATA[add site]]></source>
+            </trans-unit>
+            <trans-unit id="bootstrap.description">
+                <source><![CDATA[Creates a demo site with pages and plugins of the selected scenario. A demo site previously created for the same scenario is overwritten.]]></source>
+            </trans-unit>
+            <trans-unit id="bootstrap.failure">
+                <source><![CDATA[Creating demo site for scenario "%s" failed: %s]]></source>
+            </trans-unit>
+            <trans-unit id="bootstrap.inProgress">
+                <source><![CDATA[Creating demo site, please wait...]]></source>
+            </trans-unit>
+            <trans-unit id="bootstrap.success">
+                <source><![CDATA[Demo site for scenario "%s" created with root page %d.]]></source>
+            </trans-unit>
+            <trans-unit id="bootstrap.title">
+                <source><![CDATA[Create Demo Site]]></source>
+            </trans-unit>
             <trans-unit id="calendar.flexForm.initialDocument">
                 <source><![CDATA[Initial document to show (e.g. of type "newspaper" or "ephemera")]]></source>
             </trans-unit>

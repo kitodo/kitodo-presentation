@@ -10,6 +10,8 @@
  * LICENSE.txt file that was distributed with this source code.
  */
 
+$t3ver = (new TYPO3\CMS\Core\Information\Typo3Version())->getMajorVersion();
+
 return [
     'ctrl' => [
         'title'     => 'LLL:EXT:dlf/Resources/Private/Language/locallang_labels.xlf:tx_dlf_libraries',
@@ -23,7 +25,7 @@ return [
         'delete' => 'deleted',
         'iconfile' => 'EXT:dlf/Resources/Public/Icons/txdlflibraries.png',
         'rootLevel' => 0,
-        'searchFields' => 'label,website,contact',
+        ...($t3ver >= 14 ? [] : ['searchFields' => 'label,website,contact']),
     ],
     'interface' => [
     ],
@@ -85,6 +87,7 @@ return [
                         'renderType' => 'editInProductionWarning',
                     ],
                 ],
+                'searchable' => false,
             ],
         ],
         'website' => [
@@ -129,6 +132,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'oai_base' => [
@@ -140,6 +144,7 @@ return [
                 'max' => 255,
                 'eval' => 'nospace',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'opac_label' => [
@@ -150,6 +155,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'opac_base' => [
@@ -161,6 +167,7 @@ return [
                 'max' => 255,
                 'eval' => 'nospace',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'union_label' => [
@@ -171,6 +178,7 @@ return [
                 'size' => 30,
                 'max' => 255,
                 'default' => '',
+                'searchable' => false,
             ],
         ],
         'union_base' => [
@@ -182,6 +190,7 @@ return [
                 'max' => 255,
                 'eval' => 'nospace',
                 'default' => '',
+                'searchable' => false,
             ],
         ],
     ],

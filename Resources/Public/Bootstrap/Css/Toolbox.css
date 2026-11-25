@@ -1,0 +1,308 @@
+/*
+ * (c) Kitodo. Key to digital objects e.V. <contact@kitodo.org>
+ *
+ * This file is part of the Kitodo and TYPO3 projects.
+ *
+ * @license GNU General Public License version 3 or later.
+ * For the full copyright and license information, please read the
+ * LICENSE.txt file that was distributed with this source code.
+ */
+
+/* Toolbox plugin: tool links as buttons in a wrapping row, unavailable tools are rendered as "span" without link. */
+
+.frame-type-dlf_toolbox {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--demo-space-s);
+}
+
+.frame-type-dlf_toolbox > * {
+    list-style: none;
+}
+
+.frame-type-dlf_toolbox a,
+.frame-type-dlf_toolbox > li > span:not(:has(a)):not(:empty) {
+    display: inline-block;
+    padding: var(--demo-control-padding);
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    color: var(--demo-text);
+    background: #fff;
+    text-decoration: none;
+}
+
+.frame-type-dlf_toolbox a:hover {
+    background: var(--demo-hover);
+    text-decoration: none;
+}
+
+.frame-type-dlf_toolbox > li > span:not(:has(a)) {
+    color: var(--demo-muted);
+    background: transparent;
+    opacity: 0.6;
+}
+
+/*
+ * Icons instead of text for tools with a title, which is shown as tooltip.
+ * The text is kept in the markup, but hidden by a font size of 0, so the icon defines the size of the button.
+ */
+.frame-type-dlf_toolbox :is(.tx-dlf-tools-zoom-in, .tx-dlf-tools-zoom-out, .tx-dlf-tools-fullscreen, .tx-dlf-tools-rotate-left, .tx-dlf-tools-rotate-right, .tx-dlf-tools-rotate-reset, .tx-dlf-tools-imagemanipulation, .tx-dlf-tools-fulltext, .tx-dlf-tools-fulltextdownload) a[title] {
+    padding: 0;
+    font-size: 0;
+}
+
+.frame-type-dlf_toolbox :is(.tx-dlf-tools-zoom-in, .tx-dlf-tools-zoom-out, .tx-dlf-tools-fullscreen, .tx-dlf-tools-rotate-left, .tx-dlf-tools-rotate-right, .tx-dlf-tools-rotate-reset, .tx-dlf-tools-imagemanipulation, .tx-dlf-tools-fulltext, .tx-dlf-tools-fulltextdownload) a[title]::before {
+    display: inline-block;
+    min-width: 1.2em;
+    padding: var(--demo-control-padding);
+    font-size: var(--demo-font-size);
+    text-align: center;
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-zoom-in a[title]::before {
+    content: "\2295";
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-zoom-out a[title]::before {
+    content: "\2296";
+}
+
+/* The circled zoom symbols appear larger than the others; scaling does not change the size of the buttons. */
+.frame-type-dlf_toolbox :is(.tx-dlf-tools-zoom-in, .tx-dlf-tools-zoom-out) a[title]::before {
+    transform: scale(0.8);
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-fullscreen a[title]::before {
+    content: "\2922";
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-rotate-left a[title]::before {
+    content: "\21BA";
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-rotate-right a[title]::before {
+    content: "\21BB";
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-rotate-reset a[title]::before {
+    content: "\2191";
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-imagemanipulation a[title]::before {
+    content: "\2600";
+}
+
+/* Full text: the same symbol for activating and deactivating, shown as pressed while the full text is visible */
+.frame-type-dlf_toolbox .tx-dlf-tools-fulltext a[title]::before {
+    content: "\00B6";
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-fulltext a.fulltext-visible {
+    background: var(--demo-hover);
+}
+
+/* Download of the full text of the current page */
+.frame-type-dlf_toolbox .tx-dlf-tools-fulltextdownload a[title]::before {
+    content: "txt";
+}
+
+/*
+ * Image download: icon instead of the text, like the other tools. The link has no title, so there is no tooltip,
+ * and the file type contained in the text (e.g. "SVG") is not shown.
+ */
+.frame-type-dlf_toolbox .tx-dlf-tools-imagedownload a {
+    padding: 0;
+    font-size: 0;
+}
+
+.frame-type-dlf_toolbox .tx-dlf-tools-imagedownload a::before {
+    content: "\2913";
+    display: inline-block;
+    min-width: 1.2em;
+    padding: var(--demo-control-padding);
+    font-size: var(--demo-font-size);
+    text-align: center;
+}
+
+/*
+ * Image manipulation tool: panel with sliders (jQuery UI slider, whose stylesheet is not included) shown below the
+ * toolbox. The name of each slider is taken from its title, its current value is shown right of the slider.
+ */
+.frame-type-dlf_toolbox .tx-dlf-tools-imagemanipulation {
+    position: relative;
+}
+
+/* Tool button while the panel is open */
+.frame-type-dlf_toolbox .tx-dlf-tools-imagemanipulation a.active {
+    background: var(--demo-hover);
+}
+
+.frame-type-dlf_toolbox .image-manipulation {
+    position: absolute;
+    top: calc(100% + var(--demo-space-s));
+    left: 50%;
+    z-index: 1010;
+    transform: translateX(-50%);
+}
+
+.image-manipulation .slider-container {
+    display: grid;
+    gap: var(--demo-space-m);
+    padding: var(--demo-space-m);
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    background: #fff;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 20%);
+}
+
+.image-manipulation .slider {
+    position: relative;
+    width: 200px;
+    height: 4px;
+    margin: calc(var(--demo-space-m) * 1.5) 4em 0 0;
+    border-radius: 2px;
+    background: var(--demo-border);
+}
+
+.image-manipulation .slider::before {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    margin-bottom: var(--demo-space-xs);
+    font-size: var(--demo-font-size-small);
+    color: var(--demo-muted);
+    content: attr(title);
+}
+
+.image-manipulation .ui-slider-handle {
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    margin: -7px 0 0 -7px;
+    border-radius: 50%;
+    background: var(--demo-accent);
+    cursor: grab;
+}
+
+/* The JavaScript moves the value along with the handle by an inline style, which only "!important" can override. */
+.image-manipulation .tooltip {
+    position: absolute;
+    top: 50%;
+    left: calc(100% + var(--demo-space-m)) !important;
+    transform: translateY(-50%);
+    font-size: var(--demo-font-size-small);
+    color: var(--demo-muted);
+}
+
+.image-manipulation .checkbox input {
+    margin-right: var(--demo-space-xs);
+}
+
+.image-manipulation .reset-btn {
+    justify-self: start;
+}
+
+/*
+ * Search in document: the search form aligned to the right of the tool buttons (also in a row of its own), followed by
+ * "Delete Search..." and the results as overlay panel.
+ */
+.frame-type-dlf_toolbox .tx-dlf-toolbox-searchindocument {
+    margin-left: auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--demo-space-xs);
+}
+
+.tx-dlf-toolbox-searchindocument form > div {
+    display: flex;
+    align-items: center;
+    gap: var(--demo-space-xs);
+}
+
+/*
+ * "Delete Search..." (a div with a click handler) right of the search button, shown as a button with a cross.
+ * The text is kept in the markup, but hidden by a font size of 0. There is no title, so there is no tooltip.
+ */
+#tx-dlf-toolbox-searchindocument-clearing {
+    font-size: 0;
+    cursor: pointer;
+    border: var(--demo-border-width) solid var(--demo-border);
+    border-radius: var(--demo-radius);
+    background: #fff;
+}
+
+#tx-dlf-toolbox-searchindocument-clearing:hover {
+    background: var(--demo-hover);
+}
+
+#tx-dlf-toolbox-searchindocument-clearing::before {
+    content: "\2715";
+    display: inline-block;
+    min-width: 1.2em;
+    padding: var(--demo-control-padding);
+    font-size: var(--demo-font-size);
+    text-align: center;
+}
+
+/*
+ * The results are loaded by JavaScript into the empty container "...-results" and shown as an overlay panel below the
+ * search field, above the page view. The panel is only shown with content, so it appears as soon as results (or
+ * "no results") are loaded.
+ */
+#tx-dlf-toolbox-searchindocument-results:not(:empty) {
+    position: absolute;
+    top: calc(100% + var(--demo-space-s));
+    right: 0;
+    z-index: 10;
+    width: 28em;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: var(--demo-space-s) var(--demo-space-m);
+    color: #fff;
+    background: var(--demo-accent-dark);
+    border-radius: var(--demo-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+#tx-dlf-toolbox-searchindocument-results ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#tx-dlf-toolbox-searchindocument-results li {
+    padding: var(--demo-space-s) 0;
+}
+
+#tx-dlf-toolbox-searchindocument-results li + li {
+    border-top: var(--demo-border-width) solid rgba(255, 255, 255, 0.3);
+}
+
+#tx-dlf-toolbox-searchindocument-results .structure {
+    font-size: var(--demo-font-size-small);
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+#tx-dlf-toolbox-searchindocument-results a {
+    display: inline;
+    padding: 0;
+    color: #fff;
+    background: none;
+    border: 0;
+    text-decoration: underline;
+}
+
+/* Words found */
+#tx-dlf-toolbox-searchindocument-results em {
+    font-style: normal;
+    font-weight: bold;
+}
+
+/* Buttons for the previous and next results */
+#tx-dlf-toolbox-searchindocument-results input[type="button"] {
+    margin-top: var(--demo-space-s);
+}

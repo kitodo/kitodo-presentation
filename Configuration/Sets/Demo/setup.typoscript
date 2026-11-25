@@ -1,0 +1,117 @@
+@import 'EXT:dlf/Configuration/TypoScript/setup.typoscript'
+
+page = PAGE
+page {
+    # One CSS file per plugin (usable as blueprint when using the plugin), and the layout of the demo page templates.
+    # The layout is included last, since it overrides plugin styles in the context of the demo pages.
+    includeCSS {
+        demoBasket = EXT:dlf/Resources/Public/Bootstrap/Css/Basket.css
+        demoCalendar = EXT:dlf/Resources/Public/Bootstrap/Css/Calendar.css
+        demoCollection = EXT:dlf/Resources/Public/Bootstrap/Css/Collection.css
+        demoListView = EXT:dlf/Resources/Public/Bootstrap/Css/ListView.css
+        demoLogin = EXT:dlf/Resources/Public/Bootstrap/Css/Login.css
+        demoMetadata = EXT:dlf/Resources/Public/Bootstrap/Css/Metadata.css
+        demoNavigation = EXT:dlf/Resources/Public/Bootstrap/Css/Navigation.css
+        demoPageGrid = EXT:dlf/Resources/Public/Bootstrap/Css/PageGrid.css
+        demoPageView = EXT:dlf/Resources/Public/Bootstrap/Css/PageView.css
+        demoSearch = EXT:dlf/Resources/Public/Bootstrap/Css/Search.css
+        demoTableOfContents = EXT:dlf/Resources/Public/Bootstrap/Css/TableOfContents.css
+        demoToolbox = EXT:dlf/Resources/Public/Bootstrap/Css/Toolbox.css
+        demoLayout = EXT:dlf/Resources/Public/Bootstrap/Css/Layout.css
+    }
+
+    10 = PAGEVIEW
+    10 {
+        paths.10 = EXT:dlf/Resources/Private/Bootstrap/Templates/
+
+        variables {
+            contentMain < styles.content.get
+
+            contentSidebar < styles.content.get
+            contentSidebar.select.where = {#colPos}=1
+
+            contentHeader < styles.content.get
+            contentHeader.select.where = {#colPos}=2
+
+            contentCalendar < styles.content.get
+            contentCalendar.select.where = {#colPos}=3
+
+            contentPages < styles.content.get
+            contentPages.select.where = {#colPos}=4
+
+            contentMedia < styles.content.get
+            contentMedia.select.where = {#colPos}=5
+        }
+
+        dataProcessing.10 = menu
+        dataProcessing.10 {
+            levels = 2
+            as = mainMenu
+        }
+
+        # Versions and git commit shown in the footer
+        dataProcessing.20 = Kitodo\Dlf\Bootstrap\DebugInformationProcessor
+    }
+
+    # Status of the frontend user shown in the top navigation mainMenu
+    10.variables.userStatus = COA_INT
+    10.variables.userStatus {
+        stdWrap.required = 1
+        stdWrap.wrap = <li class="demo-user">|</li>
+
+        10 = COA
+        10 {
+            if.isTrue.data = context:frontend.user:isLoggedIn
+
+            10 = TEXT
+            10.data = context:frontend.user:username
+            10.htmlSpecialChars = 1
+            10.noTrimWrap = |<span>User: |</span> |
+
+            20 = TEXT
+            20.value = Logout
+            20.typolink {
+                parameter.data = page:uid
+                additionalParams = &logintype=logout
+            }
+        }
+
+        20 = TEXT
+        20 {
+            if.isFalse.data = context:frontend.user:isLoggedIn
+            if.isTrue = {$demo.loginPid}
+            value = <span>Not logged in</span>
+        }
+    }
+}
+
+# Newspapers, ephemera and their years have no pages, so the viewer template shows the calendar instead of the page view.
+[getDocumentType({$plugin.tx_dlf.persistence.storagePid}) in ['newspaper', 'ephemera', 'year']]
+    page.10.variables.isCalendar = TEXT
+    page.10.variables.isCalendar.value = 1
+[END]
+
+# Audio, video and 3D objects are shown by the media player or the 3D viewer instead of the page view.
+[isAudio({$plugin.tx_dlf.persistence.storagePid})]
+    page.10.variables.mediaType = TEXT
+    page.10.variables.mediaType.value = audio
+[END]
+
+[isVideo({$plugin.tx_dlf.persistence.storagePid})]
+    page.10.variables.mediaType = TEXT
+    page.10.variables.mediaType.value = video
+[END]
+
+[getDocumentType({$plugin.tx_dlf.persistence.storagePid}) === 'object']
+    page.10.variables.mediaType = TEXT
+    page.10.variables.mediaType.value = object
+[END]
+
+# The RSS feed and OAI-PMH configurations replace the whole page, so they are restricted to pages using the respective layout.
+[tree.pagelayout == "pagets__Feeds"]
+    @import 'EXT:dlf/Configuration/TypoScript/Plugins/Feeds/setup.typoscript'
+[END]
+
+[tree.pagelayout == "pagets__OaiPmh"]
+    @import 'EXT:dlf/Configuration/TypoScript/Plugins/OaiPmh/setup.typoscript'
+[END]

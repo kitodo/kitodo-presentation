@@ -45,6 +45,30 @@
                 <source><![CDATA[Kitodo: Basket]]></source>
                 <target><![CDATA[Kitodo: Warenkorb]]></target>
             </trans-unit>
+            <trans-unit id="bootstrap.addSite" approved="yes">
+                <source><![CDATA[add site]]></source>
+                <target><![CDATA[Seite anlegen]]></target>
+            </trans-unit>
+            <trans-unit id="bootstrap.description" approved="yes">
+                <source><![CDATA[Creates a demo site with pages and plugins of the selected scenario. A demo site previously created for the same scenario is overwritten.]]></source>
+                <target><![CDATA[Legt eine Demo-Seite mit den Seiten und Plugins des gewählten Szenarios an. Eine zuvor für dasselbe Szenario angelegte Demo-Seite wird überschrieben.]]></target>
+            </trans-unit>
+            <trans-unit id="bootstrap.failure" approved="yes">
+                <source><![CDATA[Creating demo site for scenario "%s" failed: %s]]></source>
+                <target><![CDATA[Anlegen der Demo-Seite für Szenario "%s" fehlgeschlagen: %s]]></target>
+            </trans-unit>
+            <trans-unit id="bootstrap.inProgress" approved="yes">
+                <source><![CDATA[Creating demo site, please wait...]]></source>
+                <target><![CDATA[Demo-Seite wird angelegt, bitte warten...]]></target>
+            </trans-unit>
+            <trans-unit id="bootstrap.success" approved="yes">
+                <source><![CDATA[Demo site for scenario "%s" created with root page %d.]]></source>
+                <target><![CDATA[Demo-Seite für Szenario "%s" mit Startseite %d angelegt.]]></target>
+            </trans-unit>
+            <trans-unit id="bootstrap.title" approved="yes">
+                <source><![CDATA[Create Demo Site]]></source>
+                <target><![CDATA[Demo-Seite anlegen]]></target>
+            </trans-unit>
             <trans-unit id="calendar.flexForm.initialDocument" approved="yes">
                 <source><![CDATA[Initial document to show (e.g. of type "newspaper" or "ephemera")]]></source>
                 <target><![CDATA[Anfangsdokument (z.B. vom Typ "newspaper" oder "ephemera)]]></target>

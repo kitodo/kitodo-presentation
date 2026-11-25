@@ -15,6 +15,8 @@ config {
     concatenateJs = 1
     # concatenate all CSS files by default
     concatenateCss = 1
+    # show stacktrace when errors
+    contentObjectExceptionHandler = 0
 }
 
 page {
@@ -145,4 +147,9 @@ plugin.tx_dlf_tableofcontents {
             }
         }
     }
+}
+
+mod.web_list {
+    itemsLimitSingleTable = 10
+    itemsLimitPerTable = 10 
 }
