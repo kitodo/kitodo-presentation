@@ -321,7 +321,7 @@ CREATE TABLE tx_dlf_basket (
     l10n_state text COLLATE utf8_unicode_ci DEFAULT NULL,
     label varchar(255) DEFAULT '' NOT NULL,
     session_id varchar(190) DEFAULT '' NOT NULL,
-    doc_ids varchar(255) DEFAULT '' NOT NULL,
+    doc_ids text NOT NULL,
 
     PRIMARY KEY (uid),
     KEY parent (pid),

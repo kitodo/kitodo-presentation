@@ -73,6 +73,10 @@
                 <source><![CDATA[No title]]></source>
                 <target><![CDATA[Kein Titel vorhanden]]></target>
             </trans-unit>
+            <trans-unit id="basket.page" approved="yes">
+                <source><![CDATA[Page]]></source>
+                <target><![CDATA[Seite]]></target>
+            </trans-unit>
             <trans-unit id="basket.no_entries" approved="yes">
                 <source><![CDATA[No entries]]></source>
                 <target><![CDATA[Keine Einträge]]></target>

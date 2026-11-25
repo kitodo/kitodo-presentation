@@ -209,12 +209,11 @@ class TableOfContentsController extends AbstractController
             $entryArray['id'] = $points;
             $entryArray['page'] = 1;
             $entryArray['doNotLinkIt'] = 0;
-            $this->setBasket($entryArray, $id, $points);
         } elseif (!empty($targetUid)) {
+            // TODO: allow to add multi-volume entries to basket
             $entryArray['id'] = $targetUid;
             $entryArray['page'] = 1;
             $entryArray['doNotLinkIt'] = 0;
-            $this->setBasket($entryArray, $id, $targetUid);
         }
     }
 
@@ -231,7 +230,7 @@ class TableOfContentsController extends AbstractController
      */
     private function setBasket(array &$entryArray, mixed $id, mixed $startPage): void
     {
-        if (isset($this->settings['basketButton'])) {
+        if (!empty($this->settings['basketButton'])) {
             $entryArray['basketButton'] = [
                 'logId' => $id,
                 'startpage' => $startPage

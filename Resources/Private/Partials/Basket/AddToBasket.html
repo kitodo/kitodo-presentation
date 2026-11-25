@@ -14,9 +14,10 @@
 <f:if condition="{settings.basketButton} && {settings.targetBasket}">
     <div>
         <f:link.action pageUid="{settings.targetBasket}"
-            action="add"
+            pluginName="Basket"
             controller="Basket"
-            additionalParams="{'tx_dlf[id]':result.uid, 'tx_dlf[startpage]':result.page, 'tx_dlf[addToBasket]':'list'}">
+            action="add"
+            arguments="{id: result.uid, startpage: result.page, addToBasket: 'list'}">
             <f:translate key="basket.addBasket"/>
         </f:link.action>
     </div>

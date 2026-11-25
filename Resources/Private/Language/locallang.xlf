@@ -62,6 +62,9 @@
             <trans-unit id="basket.noTitle">
                 <source><![CDATA[No title]]></source>
             </trans-unit>
+            <trans-unit id="basket.page">
+                <source><![CDATA[Page]]></source>
+            </trans-unit>
             <trans-unit id="basket.remove">
                 <source><![CDATA[Remove]]></source>
             </trans-unit>

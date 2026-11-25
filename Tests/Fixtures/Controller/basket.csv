@@ -1,0 +1,3 @@
+tx_dlf_basket,,,,,,,,,
+,uid,pid,tstamp,deleted,fe_user_id,session_id,label,doc_ids,l18n_diffsource
+,1,2,1631775000,0,0,basket-test-session,,"{""1001_1_76"":{""id"":""1001"",""startpage"":1,""endpage"":76,""startX"":"""",""startY"":"""",""endX"":"""",""endY"":"""",""rotation"":""""},""1001_5_5"":{""id"":""1001"",""startpage"":5,""endpage"":5,""startX"":"""",""startY"":"""",""endX"":"""",""endY"":"""",""rotation"":""""},""1001_7_7_100_400"":{""id"":""1001"",""startpage"":7,""endpage"":7,""startX"":100,""startY"":200,""endX"":400,""endY"":500,""rotation"":0}}",
