@@ -425,6 +425,20 @@ class Solr implements LoggerAwareInterface
     }
 
     /**
+     * Reset the registry of instances, e.g. during testing.
+     *
+     * @access public
+     *
+     * @static
+     *
+     * @return void
+     */
+    public static function resetRegistry(): void
+    {
+        self::$registry = [];
+    }
+
+    /**
      * Get next unused Solr core number
      *
      * @access public
