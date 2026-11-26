@@ -14,6 +14,7 @@ namespace Kitodo\Dlf\Tests\Functional;
 
 use Dotenv\Dotenv;
 use GuzzleHttp\Client as HttpClient;
+use Kitodo\Dlf\Common\DocumentAnnotation;
 use Kitodo\Dlf\Common\DocumentCacheManager;
 use Kitodo\Dlf\Common\Helper;
 use Kitodo\Dlf\Common\Indexer;
@@ -122,6 +123,9 @@ class FunctionalTestCase extends \TYPO3\TestingFramework\Core\Functional\Functio
         // individual tests; reset it so that no document loaded by a
         // previous test (possibly with different settings) leaks in.
         DocumentCacheManager::resetPool();
+        Solr::resetRegistry();
+        Helper::resetDocumentInstances();
+        DocumentAnnotation::resetInstance();
 
         $this->persistenceManager = GeneralUtility::makeInstance(PersistenceManager::class);
 

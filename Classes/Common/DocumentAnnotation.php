@@ -429,4 +429,18 @@ class DocumentAnnotation
         }
         return self::$instance;
     }
+
+    /**
+     * Reset the singleton instance, e.g. during testing.
+     *
+     * @access public
+     *
+     * @static
+     *
+     * @return void
+     */
+    public static function resetInstance(): void
+    {
+        self::$instance = null;
+    }
 }

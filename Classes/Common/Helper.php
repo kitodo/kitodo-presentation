@@ -446,6 +446,20 @@ class Helper
     }
 
     /**
+     * Reset the list of loaded documents, e.g. during testing.
+     *
+     * @access public
+     *
+     * @static
+     *
+     * @return void
+     */
+    public static function resetDocumentInstances(): void
+    {
+        self::$docs = [];
+    }
+
+    /**
      * Get language name from ISO code
      *
      * @access public
